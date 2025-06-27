@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { Identity } from '@ory/kratos-client';
-import { useUpdateIdentity } from '@/hooks/useKratos';
+import { useUpdateIdentity } from '../hooks/useIdentities';
 import { DottedLoader } from '@/components/ui/DottedLoader';
 
 interface IdentityEditModalProps {

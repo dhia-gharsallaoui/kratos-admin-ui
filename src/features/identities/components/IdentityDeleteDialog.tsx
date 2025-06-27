@@ -11,7 +11,7 @@ import {
   Chip,
 } from '@mui/material';
 import { Identity } from '@ory/kratos-client';
-import { useDeleteIdentity } from '@/hooks/useKratos';
+import { useDeleteIdentity } from '../hooks/useIdentities';
 import { DottedLoader } from '@/components/ui/DottedLoader';
 
 interface IdentityDeleteDialogProps {
