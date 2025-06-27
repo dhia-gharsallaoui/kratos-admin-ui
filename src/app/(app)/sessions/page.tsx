@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, Chip, CircularProgress, Card, CardContent, IconButton, Tooltip, TextField, InputAdornment, Paper } from '@mui/material';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { useQuery } from '@tanstack/react-query';
-import { listSessions } from '@/services/kratos';
+import { getAllSessions, listSessions } from '@/services/kratos';
 import { Search, Refresh, Close, Person, AccessTime, Warning } from '@mui/icons-material';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import { UserRole } from '@/features/auth';
@@ -36,8 +36,8 @@ export default function SessionsPage() {
     queryKey: ['sessions'],
     queryFn: async () => {
       try {
-        const response = await listSessions();
-        return response.data;
+        const response = await getAllSessions()
+        return response.sessions;
       } catch (err) {
         console.error('Error fetching sessions:', err);
         throw err;

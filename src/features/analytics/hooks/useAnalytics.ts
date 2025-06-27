@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getAllIdentities, listSessions, listIdentitySchemas } from '@/services/kratos';
-import { Identity, Session } from '@ory/kratos-client';
+import { getAllIdentities, getSessionsUntilDate, listIdentitySchemas, listSessions } from '@/services/kratos';
 import { IdentityAnalytics, SessionAnalytics, SystemAnalytics } from '../types';
 
 // Hook to fetch comprehensive identity analytics
@@ -83,12 +82,19 @@ export const useSessionAnalytics = () => {
   return useQuery({
     queryKey: ['analytics', 'sessions'],
     queryFn: async (): Promise<SessionAnalytics> => {
-      // Fetch all sessions (both active and expired) for historical data
-      const response = await listSessions(false);
-      const sessions = response.data;
+      // Fetch sessions until 7 days ago (smart pagination stops when reaching older sessions)
+      const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+      const result = await getSessionsUntilDate({
+        maxPages: 10,
+        pageSize: 250,
+        active: undefined, // Get all sessions (active and inactive)
+        untilDate: sevenDaysAgo,
+        onProgress: (count, page) => console.log(`Analytics: Fetched ${count} sessions (page ${page})`)
+      });
+      
+      const sessions = result.sessions;
       
       const now = new Date();
-      const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
 
       // Count sessions in last 7 days
       const sessionsLast7Days = sessions.filter(session => {
@@ -142,14 +148,9 @@ export const useSessionAnalytics = () => {
         ? sessionDurations.reduce((sum, duration) => sum + duration, 0) / sessionDurations.length
         : 0;
 
-      // Count truly active sessions (not expired)
-      const activeSessions = sessions.filter(session => {
-        // Check if session has an expiry date and if it's still valid
-        if (!session.expires_at) return true; // If no expiry, consider active
-        const expiresAt = new Date(session.expires_at);
-        if (isNaN(expiresAt.getTime())) return true; // If invalid date, consider active
-        return expiresAt > now;
-      }).length;
+      // Get active sessions count using API filter
+      const activeSessionsResponse = await listSessions(true);
+      const activeSessions = activeSessionsResponse.data.length;
 
 
       return {
