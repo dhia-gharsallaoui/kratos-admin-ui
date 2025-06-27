@@ -20,7 +20,7 @@ import {
   RemoveRedEye
 } from '@mui/icons-material';
 import { useUser, useLogout } from '@/lib/stores/authStore';
-import { UserRole } from '@/config/users';
+import { UserRole } from '@/features/auth';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 

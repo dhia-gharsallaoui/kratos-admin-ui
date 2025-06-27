@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useTheme } from '@/providers/ThemeProvider';
 import { useUser, useLogout } from '@/features/auth/hooks/useAuth';
-import { UserRole } from '@/config/users';
+import { UserRole } from '@/features/auth';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 
 const drawerWidth = 240;

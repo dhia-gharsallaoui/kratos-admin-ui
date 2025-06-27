@@ -24,7 +24,7 @@ import {
 } from '@mui/material';
 import { Visibility, VisibilityOff, AdminPanelSettings, RemoveRedEye } from '@mui/icons-material';
 import { useLogin } from '@/features/auth/hooks/useAuth';
-import { USERS, UserRole } from '@/config/users';
+import { USERS, UserRole } from '@/features/auth';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');

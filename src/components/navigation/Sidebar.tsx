@@ -9,7 +9,7 @@ import {
 } from '@mui/icons-material';
 import { Divider, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography, Box } from '@mui/material';
 import { useLogout, useUser } from '@/lib/stores/authStore';
-import { UserRole } from '@/config/users';
+import { UserRole } from '@/features/auth';
 
 interface NavItem {
   title: string;

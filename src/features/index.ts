@@ -2,6 +2,9 @@
 // Analytics
 export * as Analytics from './analytics';
 
+// Auth
+export * as Auth from './auth';
+
 // Identities
 export * as Identities from './identities';
 

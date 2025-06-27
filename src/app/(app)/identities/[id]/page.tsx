@@ -5,7 +5,7 @@ import { Box, Button, Typography, Paper, Grid, Chip, Card, CardContent, Divider,
 import { ArrowBack, Edit, Delete, Refresh, Link as LinkIcon } from '@mui/icons-material';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
-import { UserRole } from '@/config/users';
+import { UserRole } from '@/features/auth';
 import { useIdentity } from '@/features/identities/hooks';
 import { DottedLoader } from '@/components/ui/DottedLoader';
 import { IdentityEditModal } from '@/features/identities/components/IdentityEditModal';

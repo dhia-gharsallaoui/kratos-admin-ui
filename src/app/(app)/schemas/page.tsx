@@ -8,7 +8,7 @@ import { getIdentitySchema } from '@/services/kratos';
 import { useSchemas } from '@/features/schemas/hooks';
 import { Code, Description, Search, Refresh, Add, MoreVert, Close } from '@mui/icons-material';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
-import { UserRole } from '@/config/users';
+import { UserRole } from '@/features/auth';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { github, vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { useTheme } from '@mui/material/styles';

@@ -1,3 +1,6 @@
+// Export components
+export { ProtectedRoute } from './components/ProtectedRoute';
+
 // Export hooks
 export * from './hooks';
 

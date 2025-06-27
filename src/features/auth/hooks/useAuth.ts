@@ -1,18 +1,11 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { findUserByCredentials, UserRole } from '@/config/users';
-
-// Define user interface
-export interface User {
-  username: string;
-  role: UserRole;
-  displayName: string;
-  email: string;
-}
+import { findUserByCredentials, toAuthUser } from '../utils';
+import { UserRole, AuthUser } from '../types';
 
 // Define auth store interface
-interface AuthState {
-  user: User | null;
+interface AuthStoreState {
+  user: AuthUser | null;
   isAuthenticated: boolean;
   isLoading: boolean; 
   login: (username: string, password: string) => Promise<boolean>;
@@ -22,7 +15,7 @@ interface AuthState {
 }
 
 // Create auth store with persistence
-export const useAuthStore = create<AuthState>()(
+export const useAuthStore = create<AuthStoreState>()(
   persist(
     (set, get) => ({
       user: null,
@@ -36,13 +29,7 @@ export const useAuthStore = create<AuthState>()(
         const userRecord = findUserByCredentials(username, password);
         
         if (userRecord) {
-          const user: User = {
-            username: userRecord.username,
-            role: userRecord.role,
-            displayName: userRecord.displayName,
-            email: userRecord.email
-          };
-          
+          const user = toAuthUser(userRecord);
           set({ user, isAuthenticated: true });
           return true;
         }
@@ -87,5 +74,6 @@ export const useLogin = () => useAuthStore((state) => state.login);
 export const useLogout = () => useAuthStore((state) => state.logout);
 export const useHasPermission = () => useAuthStore((state) => state.hasPermission);
 
-// Re-export UserRole for backward compatibility
-export { UserRole } from '@/config/users';
+// Re-export types for easier access
+export { UserRole } from '../types';
+export type { AuthUser, UserCredentials } from '../types';

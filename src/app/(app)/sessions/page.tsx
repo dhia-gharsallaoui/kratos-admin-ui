@@ -7,7 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 import { listSessions } from '@/services/kratos';
 import { Search, Refresh, Close, Person, AccessTime, Warning } from '@mui/icons-material';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
-import { UserRole } from '@/config/users';
+import { UserRole } from '@/features/auth';
 
 // Define interfaces for type safety
 interface Session {
