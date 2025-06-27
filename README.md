@@ -6,6 +6,11 @@ A modern, responsive admin interface for [Ory Kratos](https://www.ory.sh/kratos/
 ![Material-UI](https://img.shields.io/badge/Material--UI-7-blue?style=flat-square&logo=mui)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript)
 ![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
+![Development Status](https://img.shields.io/badge/Status-Development-yellow?style=flat-square)
+
+> **⚠️ Development Phase**: This project is currently in active development. Features may change and breaking updates can occur. We encourage testing and feedback, but recommend caution for production use.
+
+> **🐛 Found an Issue?** Please [open an issue](https://github.com/dhia-gharsallaoui/kratos-admin-ui/issues) on GitHub. Your feedback helps improve the project!
 
 ## ✨ Features
 
@@ -28,8 +33,6 @@ A modern, responsive admin interface for [Ory Kratos](https://www.ory.sh/kratos/
 - **Modern UI**: Clean, professional interface with dark/light theme support
 - **Interactive Charts**: MUI X Charts for analytics visualization
 - **Search & Filtering**: Advanced filtering capabilities across all data views
-- **Professional Footer**: Clean branding with creator attribution
-- **Custom Favicon**: Themed icons matching the application design
 
 ## 🛠️ Technology Stack
 
@@ -43,7 +46,7 @@ A modern, responsive admin interface for [Ory Kratos](https://www.ory.sh/kratos/
 
 ## 📋 Prerequisites
 
-- Node.js 18+ and npm
+- Node.js 22+ and npm
 - Running Ory Kratos instance
 - Docker (optional, for containerized deployment)
 
@@ -213,19 +216,6 @@ npm run format       # Format code with Prettier
 - **Session Analytics**: Active sessions, usage patterns, duration metrics
 - **System Health**: Real-time status monitoring
 
-### Smart Data Loading
-- **Date-based Pagination**: Stops fetching when reaching time boundaries
-- **Efficient Caching**: TanStack Query with intelligent cache management
-- **Progressive Loading**: Data loads progressively with progress indicators
-
-## 🔐 Security
-
-- **Role-Based Access**: Admin and Viewer role separation
-- **API Proxy**: Secure API communication through Next.js rewrites
-- **No Secrets Exposure**: Environment variables properly managed
-- **Input Validation**: Comprehensive form validation
-- **CSRF Protection**: Built-in Next.js security features
-
 ## 🐳 Production Deployment
 
 ### Docker Best Practices
@@ -284,36 +274,6 @@ spec:
 - Update documentation as needed
 - Run `npm run lint` and `npm run format` before committing
 
-## 📝 API Reference
-
-### Kratos Integration
-
-The application provides a clean abstraction over Kratos APIs:
-
-```typescript
-// Identity operations
-import { getAllIdentities, getIdentity, createIdentity } from '@/services/kratos';
-
-// Session operations  
-import { getAllSessions, getSessionsUntilDate } from '@/services/kratos';
-
-// Schema operations
-import { listIdentitySchemas } from '@/services/kratos';
-```
-
-### Custom Hooks
-
-```typescript
-// Analytics hooks
-import { useIdentityAnalytics, useSessionAnalytics } from '@/features/analytics';
-
-// Auth hooks
-import { useUser, useIsAuthenticated, useLogin } from '@/features/auth';
-
-// Data hooks
-import { useIdentities, useSessions } from '@/features/[feature]';
-```
-
 ## 🔧 Troubleshooting
 
 ### Common Issues
@@ -344,20 +304,9 @@ import { useIdentities, useSessions } from '@/features/[feature]';
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 👨‍💻 Author
-
-**Dhia Gharsallaoui**
-- GitHub: [@dhia-gharsallaoui](https://github.com/dhia-gharsallaoui)
-- LinkedIn: [Dhia Gharsallaoui](https://linkedin.com/in/dhia-gharsallaoui)
-
 ## 🙏 Acknowledgments
 
 - [Ory Kratos](https://www.ory.sh/kratos/) for the excellent identity management system
 - [Next.js](https://nextjs.org/) team for the amazing React framework
 - [Material-UI](https://mui.com/) for the beautiful component library
 - [TanStack Query](https://tanstack.com/query) for state management
-- [Vercel](https://vercel.com/) for deployment platform
-
----
-
-**Built with ❤️ by [Dhia Gharsallaoui](https://github.com/dhia-gharsallaoui)**
