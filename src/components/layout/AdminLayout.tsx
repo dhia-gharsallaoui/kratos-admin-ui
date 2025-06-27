@@ -62,18 +62,19 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         <AppBar
           position="fixed"
           sx={{
-            width: { sm: `calc(100% - ${drawerWidth}px)` },
-            ml: { sm: `${drawerWidth}px` },
+            width: open ? { sm: `calc(100% - ${drawerWidth}px)` } : '100%',
+            ml: open ? { sm: `${drawerWidth}px` } : 0,
             boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+            transition: 'all 0.3s ease',
           }}
         >
           <Toolbar sx={{ justifyContent: 'space-between' }}>
             <IconButton
               color="inherit"
-              aria-label="open drawer"
+              aria-label="toggle drawer"
               onClick={handleDrawerToggle}
               edge="start"
-              sx={{ mr: 2, display: { sm: 'none' } }}
+              sx={{ mr: 2 }}
             >
               <MenuIcon />
             </IconButton>
@@ -133,13 +134,17 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
           </Toolbar>
         </AppBar>
         <Drawer
-          variant={isMobile ? 'temporary' : 'permanent'}
-          open={isMobile ? open : true}
+          variant={isMobile ? 'temporary' : 'persistent'}
+          open={open}
           onClose={handleDrawerToggle}
           sx={{
             width: drawerWidth,
             flexShrink: 0,
-            [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
+            [`& .MuiDrawer-paper`]: { 
+              width: drawerWidth, 
+              boxSizing: 'border-box',
+              transition: 'all 0.3s ease',
+            },
           }}
         >
           <Toolbar
@@ -154,7 +159,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
               Kratos Admin
             </Typography>
             <IconButton onClick={handleDrawerToggle}>
-              {muiTheme.direction === 'rtl' ? <ChevronRight /> : <ChevronLeft />}
+              {open ? <ChevronLeft /> : <ChevronRight />}
             </IconButton>
           </Toolbar>
           <Divider />
@@ -191,9 +196,10 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
           sx={{
             flexGrow: 1,
             p: 3,
-            width: { sm: `calc(100% - ${drawerWidth}px)` },
+            width: open ? { sm: `calc(100% - ${drawerWidth}px)` } : '100%',
             minHeight: '100vh',
             backgroundColor: 'background.default',
+            transition: 'all 0.3s ease',
           }}
         >
           <Toolbar />
