@@ -6,3 +6,6 @@ export * from './endpoints/health';
 
 // Export client utilities
 export { getAdminApi, getPublicApi, getMetadataApi } from './client';
+
+// Export configuration utilities
+export * from './config';

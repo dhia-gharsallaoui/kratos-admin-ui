@@ -4,7 +4,7 @@ import {
   IdentityApi,
   MetadataApi,
 } from '@ory/kratos-client';
-import { getAdminUrl, getPublicUrl } from '../../lib/api/kratos/config';
+import { getAdminUrl, getPublicUrl } from './config';
 
 // Create configurations for API clients
 const getAdminConfiguration = (): Configuration => {
