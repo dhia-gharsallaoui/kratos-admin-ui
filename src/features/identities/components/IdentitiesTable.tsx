@@ -102,7 +102,8 @@ const IdentitiesTable: React.FC = () => {
     { 
       field: 'id', 
       headerName: 'ID', 
-      width: 250,
+      flex: 1,
+      minWidth: 200,
       renderCell: (params) => (
         <Tooltip title={params.value}>
           <span>{params.value.substring(0, 8)}...</span>
@@ -112,7 +113,8 @@ const IdentitiesTable: React.FC = () => {
     { 
       field: 'email', 
       headerName: 'Email', 
-      width: 250,
+      flex: 1.5,
+      minWidth: 220,
       valueGetter: (value, row) => {
         const traits = (row.traits as any);
         return traits?.email || 'N/A';
@@ -121,7 +123,8 @@ const IdentitiesTable: React.FC = () => {
     { 
       field: 'username', 
       headerName: 'Username', 
-      width: 150,
+      flex: 1,
+      minWidth: 140,
       valueGetter: (value, row) => {
         const traits = (row.traits as any);
         return traits?.username || 'N/A';
@@ -130,7 +133,8 @@ const IdentitiesTable: React.FC = () => {
     { 
       field: 'state', 
       headerName: 'State', 
-      width: 120,
+      flex: 0.5,
+      minWidth: 100,
       renderCell: (params) => (
         <Tooltip title={params.value}>
           <span style={{ 
@@ -145,7 +149,8 @@ const IdentitiesTable: React.FC = () => {
     { 
       field: 'created_at', 
       headerName: 'Created', 
-      width: 200,
+      flex: 1,
+      minWidth: 160,
       valueFormatter: (value) => {
         return new Date(value as string).toLocaleString();
       }
@@ -153,7 +158,8 @@ const IdentitiesTable: React.FC = () => {
     { 
       field: 'updated_at', 
       headerName: 'Updated', 
-      width: 200,
+      flex: 1,
+      minWidth: 160,
       valueFormatter: (value) => {
         return new Date(value as string).toLocaleString();
       }
@@ -161,7 +167,8 @@ const IdentitiesTable: React.FC = () => {
     {
       field: 'actions',
       headerName: 'Actions',
-      width: 150,
+      flex: 0.8,
+      minWidth: 140,
       sortable: false,
       filterable: false,
       renderCell: (params) => (
