@@ -1,6 +1,5 @@
 import React from 'react';
 import { Box, Typography, Link } from '@mui/material';
-import { Favorite } from '@mui/icons-material';
 
 const Footer: React.FC = () => {
   return (
@@ -27,32 +26,7 @@ const Footer: React.FC = () => {
           gap: 0.5,
         }}
       >
-        Made with{' '}
-        <Favorite
-          sx={{
-            fontSize: 16,
-            color: 'error.main',
-            animation: 'heartbeat 1.5s ease-in-out infinite',
-            '@keyframes heartbeat': {
-              '0%': {
-                transform: 'scale(1)',
-              },
-              '14%': {
-                transform: 'scale(1.1)',
-              },
-              '28%': {
-                transform: 'scale(1)',
-              },
-              '42%': {
-                transform: 'scale(1.1)',
-              },
-              '70%': {
-                transform: 'scale(1)',
-              },
-            },
-          }}
-        />{' '}
-        by{' '}
+        Built by{' '}
         <Link
           href="https://github.com/dhia-gharsallaoui"
           target="_blank"
