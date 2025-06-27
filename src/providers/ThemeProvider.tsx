@@ -19,7 +19,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     // Initialize theme based on localStorage or system preference
     const storedTheme = localStorage.getItem('theme') as Theme;
     const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
+
     if (storedTheme) {
       setTheme(storedTheme);
     } else if (systemPrefersDark) {
@@ -30,26 +30,22 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     // Apply theme to document
     const root = document.documentElement;
-    
+
     if (theme === 'dark') {
       root.classList.add('dark-theme');
     } else {
       root.classList.remove('dark-theme');
     }
-    
+
     // Save theme preference
     localStorage.setItem('theme', theme);
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
+    setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
   };
 
-  return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={{ theme, toggleTheme }}>{children}</ThemeContext.Provider>;
 }
 
 export function useTheme() {

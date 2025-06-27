@@ -1,11 +1,7 @@
 'use client';
 
 import React from 'react';
-import {
-  DataGrid,
-  GridColDef,
-  GridRenderCellParams,
-} from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import { Box, Chip, Tooltip } from '@mui/material';
 import { Session } from '@ory/kratos-client';
 import { formatSessionForDisplay, getSessionStatusColor, getSessionStatusLabel } from '../utils';
@@ -41,11 +37,7 @@ const SessionsTable: React.FC<SessionsTableProps> = ({ sessions, loading }) => {
       headerName: 'Status',
       width: 120,
       renderCell: (params: GridRenderCellParams) => (
-        <Chip
-          label={getSessionStatusLabel(params.value)}
-          color={getSessionStatusColor(params.value)}
-          size="small"
-        />
+        <Chip label={getSessionStatusLabel(params.value)} color={getSessionStatusColor(params.value)} size="small" />
       ),
     },
     {

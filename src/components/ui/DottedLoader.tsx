@@ -27,21 +27,16 @@ const loaderStyles = {
     innerBorderWidth: '4px',
     animationDuration: '2s',
     innerAnimationDuration: '1s',
-  }
+  },
 };
 
-export const DottedLoader: React.FC<DottedLoaderProps> = ({ 
-  size, 
-  variant = 'page',
-  sx = {},
-  ...props 
-}) => {
+export const DottedLoader: React.FC<DottedLoaderProps> = ({ size, variant = 'page', sx = {}, ...props }) => {
   // Default sizes based on variant
   const defaultSize = variant === 'inline' ? 24 : 60;
   const loaderSize = size || defaultSize;
   const innerSize = loaderSize * 0.6;
   const offsetSize = loaderSize / 2;
-  
+
   const styles = loaderStyles[variant];
 
   return (
@@ -50,7 +45,7 @@ export const DottedLoader: React.FC<DottedLoaderProps> = ({
         position: 'relative',
         width: loaderSize,
         height: loaderSize,
-        ...sx
+        ...sx,
       }}
       {...props}
     >

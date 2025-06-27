@@ -60,21 +60,18 @@ export function formatDuration(minutes: number): string {
  * @returns Array of color strings
  */
 export function generateChartColors(count: number): string[] {
-  const baseColors = [
-    '#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#00ff7f',
-    '#ff69b4', '#87ceeb', '#dda0dd', '#98fb98', '#f0e68c'
-  ];
-  
+  const baseColors = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#00ff7f', '#ff69b4', '#87ceeb', '#dda0dd', '#98fb98', '#f0e68c'];
+
   if (count <= baseColors.length) {
     return baseColors.slice(0, count);
   }
-  
+
   // Generate additional colors if needed
   const colors = [...baseColors];
   while (colors.length < count) {
     const hue = (colors.length * 137.5) % 360;
     colors.push(`hsl(${hue}, 70%, 60%)`);
   }
-  
+
   return colors;
 }

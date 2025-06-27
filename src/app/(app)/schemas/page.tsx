@@ -1,7 +1,31 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Box, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, Button, Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress, Chip, Card, CardContent, IconButton, Tooltip, TextField, InputAdornment } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TablePagination,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  CircularProgress,
+  Chip,
+  Card,
+  CardContent,
+  IconButton,
+  Tooltip,
+  TextField,
+  InputAdornment,
+} from '@mui/material';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { useQuery } from '@tanstack/react-query';
 import { getIdentitySchema } from '@/services/kratos';
@@ -41,14 +65,13 @@ export default function SchemasPage() {
   // Use useEffect to parse the schemas when the response changes
   useEffect(() => {
     if (schemasResponse) {
-      
       // Check if the response has a json property
       if ((schemasResponse as any).json && Array.isArray((schemasResponse as any).json)) {
         setParsedSchemas((schemasResponse as any).json);
       } else {
         // If not, try to use the response directly if it's an array
-        const mapped = Array.isArray(schemasResponse) 
-          ? schemasResponse.map(schema => ({
+        const mapped = Array.isArray(schemasResponse)
+          ? schemasResponse.map((schema) => ({
               id: schema.id || '',
               schema: schema.schema || {},
             }))
@@ -57,7 +80,6 @@ export default function SchemasPage() {
       }
     }
   }, [schemasResponse]);
-
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -72,17 +94,17 @@ export default function SchemasPage() {
     setSelectedSchemaId(id);
     setSchemaLoading(true);
     setSchemaDialogOpen(true);
-    
+
     try {
       // First try to find the schema in the already loaded data
-      const existingSchema = parsedSchemas.find(schema => schema.id === id);
-      
+      const existingSchema = parsedSchemas.find((schema) => schema.id === id);
+
       if (existingSchema) {
         setSchemaContent(existingSchema.schema);
         setSchemaLoading(false);
         return;
       }
-      
+
       // If not found, fetch it from the API
       const response = await getIdentitySchema({ id });
       setSchemaContent(response.data);
@@ -112,7 +134,7 @@ export default function SchemasPage() {
   };
 
   // Filter schemas based on search query
-  const filteredSchemas = parsedSchemas.filter(schema => {
+  const filteredSchemas = parsedSchemas.filter((schema) => {
     const title = getSchemaTitle(schema).toLowerCase();
     const id = schema.id.toLowerCase();
     const query = searchQuery.toLowerCase();
@@ -123,14 +145,16 @@ export default function SchemasPage() {
     <ProtectedRoute requiredRole={UserRole.VIEWER}>
       <AdminLayout>
         <Box>
-          <Box sx={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center', 
-            mb: 4,
-            flexDirection: { xs: 'column', sm: 'row' },
-            gap: 2
-          }}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              mb: 4,
+              flexDirection: { xs: 'column', sm: 'row' },
+              gap: 2,
+            }}
+          >
             <Box>
               <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
                 Identity Schemas
@@ -140,32 +164,32 @@ export default function SchemasPage() {
               </Typography>
             </Box>
             <Box sx={{ display: 'flex', gap: 1 }}>
-              <Button 
-                variant="contained" 
+              <Button
+                variant="contained"
                 startIcon={<Add />}
-                sx={{ 
+                sx={{
                   borderRadius: 'var(--radius)',
                   boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
                   background: 'var(--primary)',
                   '&:hover': {
                     background: 'var(--primary)',
                     opacity: 0.9,
-                  }
+                  },
                 }}
               >
                 Add Schema
               </Button>
               <Tooltip title="Refresh">
-                <IconButton 
-                  onClick={() => refetch()} 
-                  sx={{ 
+                <IconButton
+                  onClick={() => refetch()}
+                  sx={{
                     borderRadius: 'var(--radius)',
                     background: 'var(--accent)',
                     color: 'var(--accent-foreground)',
                     '&:hover': {
                       background: 'var(--accent)',
                       opacity: 0.9,
-                    }
+                    },
                   }}
                 >
                   <Refresh />
@@ -174,10 +198,10 @@ export default function SchemasPage() {
             </Box>
           </Box>
 
-          <Card 
-            elevation={0} 
-            sx={{ 
-              mb: 4, 
+          <Card
+            elevation={0}
+            sx={{
+              mb: 4,
               borderRadius: 'var(--radius)',
               background: 'var(--card)',
               color: 'var(--card-foreground)',
@@ -186,7 +210,14 @@ export default function SchemasPage() {
             }}
           >
             <CardContent>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  mb: 2,
+                }}
+              >
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>
                   All Schemas
                 </Typography>
@@ -210,7 +241,7 @@ export default function SchemasPage() {
                     ) : null,
                     sx: {
                       borderRadius: 'var(--radius)',
-                    }
+                    },
                   }}
                   sx={{ width: { xs: '100%', sm: '300px' } }}
                 />
@@ -227,12 +258,15 @@ export default function SchemasPage() {
                 </Box>
               ) : (
                 <>
-                  <TableContainer component={Paper} sx={{ 
-                    boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-                    borderRadius: '8px',
-                    overflow: 'hidden',
-                    border: '1px solid var(--border)'
-                  }}>
+                  <TableContainer
+                    component={Paper}
+                    sx={{
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                      borderRadius: '8px',
+                      overflow: 'hidden',
+                      border: '1px solid var(--border)',
+                    }}
+                  >
                     <Table sx={{ minWidth: 650 }} aria-label="schemas table">
                       <TableHead sx={{ backgroundColor: 'var(--table-header)' }}>
                         <TableRow>
@@ -247,8 +281,21 @@ export default function SchemasPage() {
                         {filteredSchemas.length === 0 ? (
                           <TableRow>
                             <TableCell colSpan={5} align="center" sx={{ py: 4 }}>
-                              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
-                                <Description sx={{ fontSize: 40, color: 'var(--muted-foreground)', opacity: 0.5 }} />
+                              <Box
+                                sx={{
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  alignItems: 'center',
+                                  gap: 1,
+                                }}
+                              >
+                                <Description
+                                  sx={{
+                                    fontSize: 40,
+                                    color: 'var(--muted-foreground)',
+                                    opacity: 0.5,
+                                  }}
+                                />
                                 <Typography variant="h6">No schemas found</Typography>
                                 <Typography variant="body2" color="text.secondary">
                                   {searchQuery ? 'Try a different search term' : 'Add your first schema to get started'}
@@ -257,7 +304,13 @@ export default function SchemasPage() {
                               {schemasResponse && (
                                 <Box sx={{ mt: 2 }}>
                                   <Typography variant="caption">Debug: Raw Response</Typography>
-                                  <pre style={{ fontSize: '0.7rem', maxHeight: '100px', overflow: 'auto' }}>
+                                  <pre
+                                    style={{
+                                      fontSize: '0.7rem',
+                                      maxHeight: '100px',
+                                      overflow: 'auto',
+                                    }}
+                                  >
                                     {JSON.stringify(schemasResponse, null, 2)}
                                   </pre>
                                 </Box>
@@ -265,80 +318,78 @@ export default function SchemasPage() {
                             </TableCell>
                           </TableRow>
                         ) : (
-                          filteredSchemas
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((schema) => (
-                              <TableRow 
-                                key={schema.id}
-                                sx={{ 
-                                  '&:hover': { 
-                                    backgroundColor: 'var(--table-row-hover)' 
-                                  },
-                                  borderBottom: '1px solid var(--table-border)'
+                          filteredSchemas.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((schema) => (
+                            <TableRow
+                              key={schema.id}
+                              sx={{
+                                '&:hover': {
+                                  backgroundColor: 'var(--table-row-hover)',
+                                },
+                                borderBottom: '1px solid var(--table-border)',
+                              }}
+                            >
+                              <TableCell
+                                component="th"
+                                scope="row"
+                                sx={{
+                                  maxWidth: 200,
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                  whiteSpace: 'nowrap',
+                                  fontFamily: 'monospace',
+                                  fontSize: '0.875rem',
                                 }}
                               >
-                                <TableCell 
-                                  component="th" 
-                                  scope="row"
-                                  sx={{ 
-                                    maxWidth: 200, 
-                                    overflow: 'hidden', 
-                                    textOverflow: 'ellipsis',
-                                    whiteSpace: 'nowrap',
-                                    fontFamily: 'monospace',
-                                    fontSize: '0.875rem'
+                                {schema.id}
+                              </TableCell>
+                              <TableCell sx={{ fontWeight: 500 }}>{getSchemaTitle(schema)}</TableCell>
+                              <TableCell>
+                                <Chip
+                                  label={schema.schema.type || 'unknown'}
+                                  size="small"
+                                  color="primary"
+                                  variant="filled"
+                                  sx={{
+                                    borderRadius: 'var(--radius)',
+                                    fontWeight: 500,
+                                    background: 'var(--primary)',
+                                    color: 'var(--primary-foreground)',
+                                  }}
+                                />
+                              </TableCell>
+                              <TableCell>
+                                <Chip
+                                  label={`${getPropertiesCount(schema)} trait(s)`}
+                                  size="small"
+                                  color="secondary"
+                                  variant="outlined"
+                                  sx={{
+                                    borderRadius: 'var(--radius)',
+                                    fontWeight: 500,
+                                  }}
+                                />
+                              </TableCell>
+                              <TableCell>
+                                <Button
+                                  variant="outlined"
+                                  size="small"
+                                  startIcon={<Code />}
+                                  onClick={() => handleViewSchema(schema.id)}
+                                  sx={{
+                                    mr: 1,
+                                    borderRadius: 'var(--radius)',
+                                    textTransform: 'none',
+                                    fontWeight: 500,
                                   }}
                                 >
-                                  {schema.id}
-                                </TableCell>
-                                <TableCell sx={{ fontWeight: 500 }}>{getSchemaTitle(schema)}</TableCell>
-                                <TableCell>
-                                  <Chip 
-                                    label={schema.schema.type || 'unknown'} 
-                                    size="small" 
-                                    color="primary"
-                                    variant="filled"
-                                    sx={{ 
-                                      borderRadius: 'var(--radius)',
-                                      fontWeight: 500,
-                                      background: 'var(--primary)',
-                                      color: 'var(--primary-foreground)'
-                                    }}
-                                  />
-                                </TableCell>
-                                <TableCell>
-                                  <Chip 
-                                    label={`${getPropertiesCount(schema)} trait(s)`}
-                                    size="small"
-                                    color="secondary"
-                                    variant="outlined"
-                                    sx={{ 
-                                      borderRadius: 'var(--radius)',
-                                      fontWeight: 500
-                                    }}
-                                  />
-                                </TableCell>
-                                <TableCell>
-                                  <Button
-                                    variant="outlined"
-                                    size="small"
-                                    startIcon={<Code />}
-                                    onClick={() => handleViewSchema(schema.id)}
-                                    sx={{ 
-                                      mr: 1, 
-                                      borderRadius: 'var(--radius)',
-                                      textTransform: 'none',
-                                      fontWeight: 500
-                                    }}
-                                  >
-                                    View Schema
-                                  </Button>
-                                  <IconButton size="small">
-                                    <MoreVert fontSize="small" />
-                                  </IconButton>
-                                </TableCell>
-                              </TableRow>
-                            ))
+                                  View Schema
+                                </Button>
+                                <IconButton size="small">
+                                  <MoreVert fontSize="small" />
+                                </IconButton>
+                              </TableCell>
+                            </TableRow>
+                          ))
                         )}
                       </TableBody>
                     </Table>
@@ -354,17 +405,17 @@ export default function SchemasPage() {
                     sx={{
                       '.MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows': {
                         margin: 0,
-                      }
+                      },
                     }}
                   />
                 </>
               )}
             </CardContent>
           </Card>
-          
-          <Card 
-            elevation={0} 
-            sx={{ 
+
+          <Card
+            elevation={0}
+            sx={{
               borderRadius: 'var(--radius)',
               background: 'var(--card)',
               color: 'var(--card-foreground)',
@@ -373,13 +424,16 @@ export default function SchemasPage() {
             }}
           >
             <CardContent>
-              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>About Identity Schemas</Typography>
+              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+                About Identity Schemas
+              </Typography>
               <Typography variant="body2" color="text.secondary">
-                Identity schemas define the structure of identity data in Ory Kratos. They determine what fields are available for registration, login, and profile management. Use schemas to customize the user experience and data collection for your application.
+                Identity schemas define the structure of identity data in Ory Kratos. They determine what fields are available for registration,
+                login, and profile management. Use schemas to customize the user experience and data collection for your application.
               </Typography>
             </CardContent>
           </Card>
-          
+
           {/* Schema Dialog */}
           <Dialog
             open={schemaDialogOpen}
@@ -393,19 +447,27 @@ export default function SchemasPage() {
                 background: 'var(--card)',
                 color: 'var(--card-foreground)',
                 boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-              }
+              },
             }}
           >
-            <DialogTitle id="schema-dialog-title" sx={{ 
-              display: 'flex', 
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              borderBottom: '1px solid var(--border)',
-              px: 3,
-              py: 2
-            }}>
+            <DialogTitle
+              id="schema-dialog-title"
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                borderBottom: '1px solid var(--border)',
+                px: 3,
+                py: 2,
+              }}
+            >
               <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                Schema Details {selectedSchemaId && <Typography component="span" sx={{ fontFamily: 'monospace', fontSize: '0.875rem' }}>(ID: {selectedSchemaId})</Typography>}
+                Schema Details{' '}
+                {selectedSchemaId && (
+                  <Typography component="span" sx={{ fontFamily: 'monospace', fontSize: '0.875rem' }}>
+                    (ID: {selectedSchemaId})
+                  </Typography>
+                )}
               </Typography>
               <IconButton onClick={handleCloseSchemaDialog} size="small">
                 <Close />
@@ -417,12 +479,14 @@ export default function SchemasPage() {
                   <CircularProgress />
                 </Box>
               ) : schemaContent ? (
-                <Box sx={{ 
-                  borderRadius: 1, 
-                  overflow: 'auto',
-                  maxHeight: '60vh',
-                  background: theme.palette.background.default,
-                }}>
+                <Box
+                  sx={{
+                    borderRadius: 1,
+                    overflow: 'auto',
+                    maxHeight: '60vh',
+                    background: theme.palette.background.default,
+                  }}
+                >
                   <SyntaxHighlighter
                     language="json"
                     style={theme.palette.mode === 'dark' ? vs2015 : github}
@@ -454,13 +518,13 @@ export default function SchemasPage() {
               )}
             </DialogContent>
             <DialogActions sx={{ p: 2, borderTop: '1px solid var(--border)' }}>
-              <Button 
+              <Button
                 onClick={handleCloseSchemaDialog}
                 variant="outlined"
-                sx={{ 
+                sx={{
                   borderRadius: 'var(--radius)',
                   textTransform: 'none',
-                  fontWeight: 500
+                  fontWeight: 500,
                 }}
               >
                 Close

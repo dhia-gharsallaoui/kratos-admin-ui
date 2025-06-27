@@ -1,5 +1,25 @@
 import React, { ReactNode, useState } from 'react';
-import { Box, CssBaseline, AppBar, Toolbar, Typography, Drawer, List, Divider, ListItem, ListItemButton, ListItemIcon, ListItemText, IconButton, useMediaQuery, useTheme as useMuiTheme, Avatar, Menu, MenuItem, Tooltip } from '@mui/material';
+import {
+  Box,
+  CssBaseline,
+  AppBar,
+  Toolbar,
+  Typography,
+  Drawer,
+  List,
+  Divider,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  IconButton,
+  useMediaQuery,
+  useTheme as useMuiTheme,
+  Avatar,
+  Menu,
+  MenuItem,
+  Tooltip,
+} from '@mui/material';
 import { Dashboard, Person, Schema, Menu as MenuIcon, ChevronLeft, ChevronRight, DarkMode, LightMode, People, Logout } from '@mui/icons-material';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -25,22 +45,27 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   const user = useUser();
   const logout = useLogout();
   const router = useRouter();
-  
+
   const menuItems = [
     { text: 'Dashboard', icon: <Dashboard />, path: '/dashboard' },
-    { text: 'Identities', icon: <People />, path: '/identities', adminOnly: true },
+    {
+      text: 'Identities',
+      icon: <People />,
+      path: '/identities',
+      adminOnly: true,
+    },
     { text: 'Schemas', icon: <Schema />, path: '/schemas' },
     { text: 'Sessions', icon: <Person />, path: '/sessions', adminOnly: true },
   ];
-  
+
   const handleDrawerToggle = () => {
     setOpen(!open);
   };
-  
+
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
-  
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -52,9 +77,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   };
 
   // Filter menu items based on user role
-  const filteredMenuItems = menuItems.filter(item => 
-    !item.adminOnly || (user && user.role === UserRole.ADMIN)
-  );
+  const filteredMenuItems = menuItems.filter((item) => !item.adminOnly || (user && user.role === UserRole.ADMIN));
 
   return (
     <ProtectedRoute>
@@ -70,13 +93,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
           }}
         >
           <Toolbar sx={{ justifyContent: 'space-between' }}>
-            <IconButton
-              color="inherit"
-              aria-label="toggle drawer"
-              onClick={handleDrawerToggle}
-              edge="start"
-              sx={{ mr: 2 }}
-            >
+            <IconButton color="inherit" aria-label="toggle drawer" onClick={handleDrawerToggle} edge="start" sx={{ mr: 2 }}>
               <MenuIcon />
             </IconButton>
             <Box>
@@ -98,9 +115,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                 onClick={handleMenu}
                 color="inherit"
               >
-                <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}>
-                  {user?.displayName?.charAt(0) || <Person />}
-                </Avatar>
+                <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}>{user?.displayName?.charAt(0) || <Person />}</Avatar>
               </IconButton>
               <Menu
                 id="menu-appbar"
@@ -117,12 +132,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem 
-                  onClick={handleClose} 
-                  component={Link} 
-                  href="/profile"
-                  disabled={pathname === '/profile'}
-                >
+                <MenuItem onClick={handleClose} component={Link} href="/profile" disabled={pathname === '/profile'}>
                   <Person fontSize="small" sx={{ mr: 1 }} />
                   Profile
                 </MenuItem>
@@ -141,8 +151,8 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
           sx={{
             width: drawerWidth,
             flexShrink: 0,
-            [`& .MuiDrawer-paper`]: { 
-              width: drawerWidth, 
+            [`& .MuiDrawer-paper`]: {
+              width: drawerWidth,
               boxSizing: 'border-box',
               transition: 'all 0.3s ease',
             },
@@ -159,22 +169,14 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
             <Typography variant="h6" noWrap component="div">
               Kratos Admin
             </Typography>
-            <IconButton onClick={handleDrawerToggle}>
-              {open ? <ChevronLeft /> : <ChevronRight />}
-            </IconButton>
+            <IconButton onClick={handleDrawerToggle}>{open ? <ChevronLeft /> : <ChevronRight />}</IconButton>
           </Toolbar>
           <Divider />
           <List>
             {filteredMenuItems.map((item) => (
               <ListItem key={item.text} disablePadding>
-                <ListItemButton
-                  component={Link}
-                  href={item.path}
-                  selected={pathname === item.path}
-                >
-                  <ListItemIcon>
-                    {item.icon}
-                  </ListItemIcon>
+                <ListItemButton component={Link} href={item.path} selected={pathname === item.path}>
+                  <ListItemIcon>{item.icon}</ListItemIcon>
                   <ListItemText primary={item.text} />
                 </ListItemButton>
               </ListItem>
@@ -205,9 +207,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
           }}
         >
           <Toolbar />
-          <Box sx={{ flexGrow: 1, p: 3 }}>
-            {children}
-          </Box>
+          <Box sx={{ flexGrow: 1, p: 3 }}>{children}</Box>
           <Footer />
         </Box>
       </Box>

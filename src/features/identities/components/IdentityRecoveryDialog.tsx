@@ -24,11 +24,7 @@ interface IdentityRecoveryDialogProps {
   identity: Identity | null;
 }
 
-export const IdentityRecoveryDialog: React.FC<IdentityRecoveryDialogProps> = ({
-  open,
-  onClose,
-  identity,
-}) => {
+export const IdentityRecoveryDialog: React.FC<IdentityRecoveryDialogProps> = ({ open, onClose, identity }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [recoveryLink, setRecoveryLink] = useState<string | null>(null);
@@ -43,14 +39,11 @@ export const IdentityRecoveryDialog: React.FC<IdentityRecoveryDialogProps> = ({
 
     try {
       const response = await createRecoveryLink(identity.id);
-      
+
       setRecoveryLink(response.data.recovery_link);
     } catch (err: any) {
       console.error('Error generating recovery link:', err);
-      setError(
-        err.response?.data?.error?.message || 
-        'Failed to generate recovery link. Please try again.'
-      );
+      setError(err.response?.data?.error?.message || 'Failed to generate recovery link. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -89,20 +82,20 @@ export const IdentityRecoveryDialog: React.FC<IdentityRecoveryDialogProps> = ({
         PaperProps={{
           sx: {
             borderRadius: 'var(--radius)',
-          }
+          },
         }}
       >
-        <DialogTitle sx={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center',
-          borderBottom: '1px solid var(--border)',
-        }}>
+        <DialogTitle
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            borderBottom: '1px solid var(--border)',
+          }}
+        >
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <LinkIcon color="primary" />
-            <Typography variant="h6">
-              Generate Recovery Link
-            </Typography>
+            <Typography variant="h6">Generate Recovery Link</Typography>
           </Box>
           <IconButton onClick={handleClose} size="small">
             <Close />
@@ -115,7 +108,8 @@ export const IdentityRecoveryDialog: React.FC<IdentityRecoveryDialogProps> = ({
               Generate a recovery link for this identity that can be used to reset their password or recover their account.
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              <strong>Identity:</strong> {email} ({identity.id.substring(0, 8)}...)
+              <strong>Identity:</strong> {email} ({identity.id.substring(0, 8)}
+              ...)
             </Typography>
           </Box>
 
@@ -136,7 +130,7 @@ export const IdentityRecoveryDialog: React.FC<IdentityRecoveryDialogProps> = ({
               <Alert severity="success" sx={{ mb: 2 }}>
                 Recovery link generated successfully! The link is valid for a limited time.
               </Alert>
-              
+
               <TextField
                 fullWidth
                 label="Recovery Link"
@@ -147,11 +141,7 @@ export const IdentityRecoveryDialog: React.FC<IdentityRecoveryDialogProps> = ({
                   readOnly: true,
                   endAdornment: (
                     <InputAdornment position="end">
-                      <IconButton
-                        onClick={handleCopyToClipboard}
-                        edge="end"
-                        title="Copy to clipboard"
-                      >
+                      <IconButton onClick={handleCopyToClipboard} edge="end" title="Copy to clipboard">
                         <ContentCopy />
                       </IconButton>
                     </InputAdornment>
@@ -161,10 +151,10 @@ export const IdentityRecoveryDialog: React.FC<IdentityRecoveryDialogProps> = ({
                   '& .MuiInputBase-input': {
                     fontFamily: 'monospace',
                     fontSize: '0.875rem',
-                  }
+                  },
                 }}
               />
-              
+
               <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
                 Send this link to the user via a secure channel. The link will expire after a short period for security.
               </Typography>
@@ -177,12 +167,7 @@ export const IdentityRecoveryDialog: React.FC<IdentityRecoveryDialogProps> = ({
             Close
           </Button>
           {!recoveryLink && (
-            <Button
-              onClick={handleGenerateRecoveryLink}
-              variant="contained"
-              disabled={loading}
-              startIcon={<LinkIcon />}
-            >
+            <Button onClick={handleGenerateRecoveryLink} variant="contained" disabled={loading} startIcon={<LinkIcon />}>
               {loading ? 'Generating...' : 'Generate Recovery Link'}
             </Button>
           )}

@@ -23,12 +23,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
       if (!isAuthenticated && pathname !== '/login') {
         router.push('/login');
       }
-      
+
       // If authenticated and on login page, redirect to dashboard
       if (isAuthenticated && pathname === '/login') {
         router.push('/dashboard');
       }
-      
+
       // Set initializing to false after initial auth check and redirects
       setIsInitializing(false);
     }
@@ -37,12 +37,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Show loading spinner during initialization
   if (isLoading || isInitializing) {
     return (
-      <Box 
-        sx={{ 
-          display: 'flex', 
-          justifyContent: 'center', 
-          alignItems: 'center', 
-          minHeight: '100vh' 
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '100vh',
         }}
       >
         <CircularProgress />

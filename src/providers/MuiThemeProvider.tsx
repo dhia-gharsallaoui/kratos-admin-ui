@@ -7,12 +7,12 @@ import { useTheme } from './ThemeProvider';
 
 export function CustomMuiThemeProvider({ children }: { children: ReactNode }) {
   const { theme } = useTheme();
-  
+
   const muiTheme = useMemo(() => {
     return createTheme({
       palette: {
         mode: theme === 'dark' ? 'dark' : 'light',
-        ...(theme === 'dark' 
+        ...(theme === 'dark'
           ? {
               // Dark mode
               primary: {
@@ -29,7 +29,7 @@ export function CustomMuiThemeProvider({ children }: { children: ReactNode }) {
                 primary: '#e0e0e0',
                 secondary: '#a0a0a0',
               },
-            } 
+            }
           : {
               // Light mode
               primary: {

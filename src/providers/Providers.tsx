@@ -18,9 +18,7 @@ export default function Providers({ children }: ProvidersProps) {
     <QueryProvider>
       <ThemeProvider>
         <CustomMuiThemeProvider>
-          <AuthProvider>
-            {children}
-          </AuthProvider>
+          <AuthProvider>{children}</AuthProvider>
         </CustomMuiThemeProvider>
       </ThemeProvider>
     </QueryProvider>

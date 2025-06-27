@@ -1,14 +1,7 @@
 'use client';
 
 import React from 'react';
-import {
-  Card,
-  CardContent,
-  Typography,
-  Box,
-  Chip,
-  Skeleton,
-} from '@mui/material';
+import { Card, CardContent, Typography, Box, Chip, Skeleton } from '@mui/material';
 import { IdentitySchemaContainer } from '@ory/kratos-client';
 import { formatSchemaForDisplay, extractSchemaFields } from '../utils';
 
@@ -31,9 +24,7 @@ const SchemaViewer: React.FC<SchemaViewerProps> = ({ schema, loading = false }) 
   }
 
   const formattedSchema = formatSchemaForDisplay(schema);
-  const schemaObj = typeof schema.schema === 'string' 
-    ? JSON.parse(schema.schema) 
-    : schema.schema;
+  const schemaObj = typeof schema.schema === 'string' ? JSON.parse(schema.schema) : schema.schema;
   const fields = extractSchemaFields(schemaObj);
 
   return (
@@ -42,7 +33,7 @@ const SchemaViewer: React.FC<SchemaViewerProps> = ({ schema, loading = false }) 
         <Typography variant="h6" gutterBottom>
           {formattedSchema.displayName}
         </Typography>
-        
+
         <Typography variant="body2" color="text.secondary" paragraph>
           {formattedSchema.description}
         </Typography>
@@ -51,9 +42,7 @@ const SchemaViewer: React.FC<SchemaViewerProps> = ({ schema, loading = false }) 
           <Typography variant="subtitle2" gutterBottom>
             Schema ID: {schema.id}
           </Typography>
-          {formattedSchema.isDefault && (
-            <Chip label="Default Schema" color="primary" size="small" />
-          )}
+          {formattedSchema.isDefault && <Chip label="Default Schema" color="primary" size="small" />}
         </Box>
 
         <Box sx={{ mb: 2 }}>
@@ -62,12 +51,7 @@ const SchemaViewer: React.FC<SchemaViewerProps> = ({ schema, loading = false }) 
           </Typography>
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
             {fields.map((field) => (
-              <Chip 
-                key={field} 
-                label={field} 
-                variant="outlined" 
-                size="small" 
-              />
+              <Chip key={field} label={field} variant="outlined" size="small" />
             ))}
           </Box>
         </Box>

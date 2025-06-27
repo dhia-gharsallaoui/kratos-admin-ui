@@ -1,7 +1,4 @@
-import { 
-  IdentityApiGetIdentitySchemaRequest,
-  IdentityApiListIdentitySchemasRequest,
-} from '@ory/kratos-client';
+import { IdentityApiGetIdentitySchemaRequest, IdentityApiListIdentitySchemasRequest } from '@ory/kratos-client';
 import { getAdminApi, getPublicApi } from '../client';
 
 // Schema operations

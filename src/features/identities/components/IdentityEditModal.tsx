@@ -1,17 +1,5 @@
 import React, { useEffect } from 'react';
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  TextField,
-  Grid,
-  Box,
-  Typography,
-  Alert,
-  Chip,
-} from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Grid, Box, Typography, Alert, Chip } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { Identity } from '@ory/kratos-client';
 import { useUpdateIdentity } from '../hooks/useIdentities';
@@ -31,14 +19,9 @@ interface IdentityEditForm {
   lastName: string;
 }
 
-export const IdentityEditModal: React.FC<IdentityEditModalProps> = ({
-  open,
-  onClose,
-  identity,
-  onSuccess,
-}) => {
+export const IdentityEditModal: React.FC<IdentityEditModalProps> = ({ open, onClose, identity, onSuccess }) => {
   const updateIdentityMutation = useUpdateIdentity();
-  
+
   const {
     control,
     handleSubmit,
@@ -113,24 +96,25 @@ export const IdentityEditModal: React.FC<IdentityEditModalProps> = ({
   if (!identity) return null;
 
   return (
-    <Dialog 
-      open={open} 
+    <Dialog
+      open={open}
       onClose={handleClose}
-      maxWidth="md" 
+      maxWidth="md"
       fullWidth
       PaperProps={{
-        sx: { minHeight: '500px' }
+        sx: { minHeight: '500px' },
       }}
     >
       <DialogTitle>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
           <Typography variant="h6">Edit Identity</Typography>
-          <Chip 
-            label={identity.schema_id} 
-            size="small" 
-            variant="outlined" 
-            sx={{ fontFamily: 'monospace' }}
-          />
+          <Chip label={identity.schema_id} size="small" variant="outlined" sx={{ fontFamily: 'monospace' }} />
         </Box>
         <Typography variant="body2" color="text.secondary" sx={{ mt: 1, fontFamily: 'monospace' }}>
           {identity.id}
@@ -242,7 +226,6 @@ export const IdentityEditModal: React.FC<IdentityEditModalProps> = ({
               />
             </Grid>
 
-
             {/* Read-only Information */}
             <Grid size={{ xs: 12 }}>
               <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
@@ -251,33 +234,18 @@ export const IdentityEditModal: React.FC<IdentityEditModalProps> = ({
             </Grid>
 
             <Grid size={{ xs: 12, md: 6 }}>
-              <TextField
-                label="Created At"
-                value={new Date(identity.created_at || '').toLocaleString()}
-                fullWidth
-                disabled
-                variant="filled"
-              />
+              <TextField label="Created At" value={new Date(identity.created_at || '').toLocaleString()} fullWidth disabled variant="filled" />
             </Grid>
 
             <Grid size={{ xs: 12, md: 6 }}>
-              <TextField
-                label="Updated At"
-                value={new Date(identity.updated_at || '').toLocaleString()}
-                fullWidth
-                disabled
-                variant="filled"
-              />
+              <TextField label="Updated At" value={new Date(identity.updated_at || '').toLocaleString()} fullWidth disabled variant="filled" />
             </Grid>
           </Grid>
         </Box>
       </DialogContent>
 
       <DialogActions sx={{ p: 3, pt: 1 }}>
-        <Button 
-          onClick={handleClose}
-          disabled={updateIdentityMutation.isPending}
-        >
+        <Button onClick={handleClose} disabled={updateIdentityMutation.isPending}>
           Cancel
         </Button>
         <Button

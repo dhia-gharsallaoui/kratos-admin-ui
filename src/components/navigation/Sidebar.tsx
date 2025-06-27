@@ -1,12 +1,6 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { 
-  DashboardOutlined, 
-  PeopleOutlined, 
-  SecurityOutlined, 
-  DescriptionOutlined,
-  LogoutOutlined 
-} from '@mui/icons-material';
+import { DashboardOutlined, PeopleOutlined, SecurityOutlined, DescriptionOutlined, LogoutOutlined } from '@mui/icons-material';
 import { Divider, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography, Box } from '@mui/material';
 import { useLogout, useUser } from '@/features/auth';
 import { UserRole } from '@/features/auth';
@@ -45,7 +39,6 @@ const mainNavItems: NavItem[] = [
   },
 ];
 
-
 interface SidebarProps {
   open: boolean;
   onClose: () => void;
@@ -55,7 +48,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
   const pathname = usePathname();
   const logout = useLogout();
   const user = useUser();
-  
+
   const isActive = (path: string) => {
     return pathname === path || pathname?.startsWith(`${path}/`);
   };
@@ -63,15 +56,15 @@ export function Sidebar({ open, onClose }: SidebarProps) {
   const hasRequiredRole = (requiredRole?: UserRole) => {
     if (!requiredRole) return true;
     if (!user) return false;
-    
+
     // Admin can access everything
     if (user.role === UserRole.ADMIN) return true;
-    
+
     // Viewer can only access viewer-level items
     return user.role === requiredRole;
   };
 
-  const filteredMainNavItems = mainNavItems.filter(item => hasRequiredRole(item.requiredRole));
+  const filteredMainNavItems = mainNavItems.filter((item) => hasRequiredRole(item.requiredRole));
 
   return (
     <Drawer
@@ -148,6 +141,6 @@ export function Sidebar({ open, onClose }: SidebarProps) {
       </Box>
     </Drawer>
   );
-};
+}
 
 export default Sidebar;

@@ -14,11 +14,23 @@ import { Gauge } from '@mui/x-charts/Gauge';
 export default function Dashboard() {
   const { identity, session, system, isLoading, isError, refetchAll } = useAnalytics();
 
-  const sessionDays = session.data?.sessionsByDay?.map(item => new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })) || [];
-  const sessionValues = session.data?.sessionsByDay?.map(item => item.count) || [];
-  
-  const identityDays = identity.data?.identitiesByDay?.map(item => new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })) || [];
-  const identityValues = identity.data?.identitiesByDay?.map(item => item.count) || [];
+  const sessionDays =
+    session.data?.sessionsByDay?.map((item) =>
+      new Date(item.date).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+      })
+    ) || [];
+  const sessionValues = session.data?.sessionsByDay?.map((item) => item.count) || [];
+
+  const identityDays =
+    identity.data?.identitiesByDay?.map((item) =>
+      new Date(item.date).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+      })
+    ) || [];
+  const identityValues = identity.data?.identitiesByDay?.map((item) => item.count) || [];
 
   const formatNumber = (num: number) => {
     return new Intl.NumberFormat().format(num);
@@ -64,7 +76,14 @@ export default function Dashboard() {
       <AdminLayout>
         <Box sx={{ p: 3 }}>
           {/* Header */}
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              mb: 4,
+            }}
+          >
             <Box>
               <Typography variant="h4" gutterBottom>
                 Analytics Dashboard
@@ -149,10 +168,14 @@ export default function Dashboard() {
                     </Typography>
                   </Box>
                   <Typography variant="h3" sx={{ mb: 1 }}>
-                    {identity.data ?
-                      Math.round((identity.data.verificationStatus.verified /
-                        (identity.data.verificationStatus.verified + identity.data.verificationStatus.unverified)) * 100)
-                      : 0}%
+                    {identity.data
+                      ? Math.round(
+                          (identity.data.verificationStatus.verified /
+                            (identity.data.verificationStatus.verified + identity.data.verificationStatus.unverified)) *
+                            100
+                        )
+                      : 0}
+                    %
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     Email verified users
@@ -209,13 +232,12 @@ export default function Dashboard() {
                     </Typography>
                   </Box>
                   <Typography variant="h3" sx={{ mb: 1 }}>
-                    {system.data?.lastUpdated ?
-                      new Date(system.data.lastUpdated).toLocaleTimeString('en-US', { 
-                        hour: '2-digit', 
-                        minute: '2-digit' 
-                      }) :
-                      '--:--'
-                    }
+                    {system.data?.lastUpdated
+                      ? new Date(system.data.lastUpdated).toLocaleTimeString('en-US', {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })
+                      : '--:--'}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     Data refresh time
@@ -234,17 +256,21 @@ export default function Dashboard() {
                   New User Registrations (Last 30 Days)
                 </Typography>
                 <LineChart
-                  xAxis={[{ 
-                    data: identityDays, 
-                    scaleType: 'point',
-                    tickSize: 0
-                  }]}
-                  series={[{ 
-                    data: identityValues, 
-                    color: '#0075ff',
-                    area: true,
-                    curve: 'monotoneX'
-                  }]}
+                  xAxis={[
+                    {
+                      data: identityDays,
+                      scaleType: 'point',
+                      tickSize: 0,
+                    },
+                  ]}
+                  series={[
+                    {
+                      data: identityValues,
+                      color: '#0075ff',
+                      area: true,
+                      curve: 'monotoneX',
+                    },
+                  ]}
                   height={350}
                   margin={{ top: 20, right: 30, bottom: 60, left: 60 }}
                   grid={{ horizontal: true, vertical: false }}
@@ -269,11 +295,12 @@ export default function Dashboard() {
                 <PieChart
                   series={[
                     {
-                      data: identity.data?.identitiesBySchema.map((item, index) => ({
-                        id: index,
-                        label: item.schema,
-                        value: item.count,
-                      })) || [],
+                      data:
+                        identity.data?.identitiesBySchema.map((item, index) => ({
+                          id: index,
+                          label: item.schema,
+                          value: item.count,
+                        })) || [],
                       innerRadius: 40,
                       outerRadius: 100,
                       paddingAngle: 3,
@@ -298,19 +325,25 @@ export default function Dashboard() {
                   Session Activity (Last 7 Days)
                 </Typography>
                 <LineChart
-                  xAxis={[{ 
-                    data: sessionDays, 
-                    scaleType: 'point',
-                    tickSize: 0
-                  }]}
-                  yAxis={[{
-                    min: 0
-                  }]}
-                  series={[{ 
-                    data: sessionValues, 
-                    color: '#009688',
-                    curve: 'monotoneX'
-                  }]}
+                  xAxis={[
+                    {
+                      data: sessionDays,
+                      scaleType: 'point',
+                      tickSize: 0,
+                    },
+                  ]}
+                  yAxis={[
+                    {
+                      min: 0,
+                    },
+                  ]}
+                  series={[
+                    {
+                      data: sessionValues,
+                      color: '#009688',
+                      curve: 'monotoneX',
+                    },
+                  ]}
                   height={350}
                   margin={{ top: 20, right: 30, bottom: 60, left: 60 }}
                   grid={{ horizontal: true, vertical: false }}
@@ -329,12 +362,24 @@ export default function Dashboard() {
                 <Typography variant="h6" gutterBottom>
                   Email Verification Rate
                 </Typography>
-                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 300 }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: 300,
+                  }}
+                >
                   <Gauge
-                    value={identity.data ?
-                      Math.round((identity.data.verificationStatus.verified /
-                        (identity.data.verificationStatus.verified + identity.data.verificationStatus.unverified)) * 100)
-                      : 0}
+                    value={
+                      identity.data
+                        ? Math.round(
+                            (identity.data.verificationStatus.verified /
+                              (identity.data.verificationStatus.verified + identity.data.verificationStatus.unverified)) *
+                              100
+                          )
+                        : 0
+                    }
                     startAngle={-90}
                     endAngle={90}
                     innerRadius="70%"
@@ -362,7 +407,6 @@ export default function Dashboard() {
                 </Box>
               </Paper>
             </Grid>
-
           </Grid>
         </Box>
       </AdminLayout>

@@ -1,6 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { DataGrid, GridColDef, GridToolbar } from '@mui/x-data-grid';
-import { Box, Button, Typography, TextField, InputAdornment, IconButton, Tooltip, Paper, Pagination, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import {
+  Box,
+  Button,
+  Typography,
+  TextField,
+  InputAdornment,
+  IconButton,
+  Tooltip,
+  Paper,
+  Pagination,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from '@mui/material';
 import { Add, Search, Refresh, NavigateBefore, NavigateNext, Link as LinkIcon } from '@mui/icons-material';
 import { useIdentities, useIdentitiesSearch } from '@/features/identities/hooks';
 import { Identity } from '@ory/kratos-client';
@@ -21,41 +35,41 @@ const IdentitiesTable: React.FC = () => {
   const [identityToDelete, setIdentityToDelete] = useState<Identity | null>(null);
   const [recoveryDialogOpen, setRecoveryDialogOpen] = useState(false);
   const [identityToRecover, setIdentityToRecover] = useState<Identity | null>(null);
-  
+
   // Debounce search term to avoid API calls on every keystroke
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
     }, 300); // 300ms delay
-    
+
     return () => clearTimeout(timer);
   }, [searchTerm]);
-  
+
   // Use search hook when there's a debounced search term, otherwise use regular pagination
   const isSearching = debouncedSearchTerm.trim().length > 0;
-  
-  const { 
-    data: regularData, 
-    isLoading: regularLoading, 
-    isError: regularError, 
-    error: regularErrorDetails, 
-    refetch: regularRefetch 
+
+  const {
+    data: regularData,
+    isLoading: regularLoading,
+    isError: regularError,
+    error: regularErrorDetails,
+    refetch: regularRefetch,
   } = useIdentities({
     pageSize,
     pageToken,
   });
-  
-  const { 
-    data: searchData, 
-    isLoading: searchLoading, 
-    isError: searchError, 
-    error: searchErrorDetails, 
-    refetch: searchRefetch 
+
+  const {
+    data: searchData,
+    isLoading: searchLoading,
+    isError: searchError,
+    error: searchErrorDetails,
+    refetch: searchRefetch,
   } = useIdentitiesSearch({
     pageSize,
     searchTerm: debouncedSearchTerm,
   });
-  
+
   // Always use regular data for base identities, never show search loading
   const data = regularData;
   const isLoading = regularLoading;
@@ -67,15 +81,15 @@ const IdentitiesTable: React.FC = () => {
   const baseIdentities = React.useMemo(() => data?.identities || [], [data?.identities]);
   const hasMore = data?.hasMore || false;
   const nextPageToken = data?.nextPageToken;
-  
+
   // Get search results if available (for background fetching)
   const searchResults = searchData?.identities || [];
   const searchComplete = !searchLoading && isSearching;
-  
+
   // Apply instant client-side filtering while typing
   const clientFilteredIdentities = React.useMemo(() => {
     if (!searchTerm.trim()) return baseIdentities;
-    
+
     const searchLower = searchTerm.toLowerCase();
     return baseIdentities.filter((identity: Identity) => {
       const traits = identity.traits as any;
@@ -85,7 +99,7 @@ const IdentitiesTable: React.FC = () => {
       const lastName = String(traits?.last_name || traits?.lastName || '');
       const name = String(traits?.name || '');
       const id = String(identity.id || '');
-      
+
       return (
         id.toLowerCase().includes(searchLower) ||
         email.toLowerCase().includes(searchLower) ||
@@ -96,77 +110,78 @@ const IdentitiesTable: React.FC = () => {
       );
     });
   }, [baseIdentities, searchTerm]);
-  
+
   // Use search results if search is complete and we have better results
   const shouldUseSearchResults = searchComplete && searchResults.length > clientFilteredIdentities.length;
   const displayedIdentities = shouldUseSearchResults ? searchResults : clientFilteredIdentities;
   const isUsingSearchResults = shouldUseSearchResults;
 
   const columns: GridColDef[] = [
-    { 
-      field: 'id', 
-      headerName: 'ID', 
+    {
+      field: 'id',
+      headerName: 'ID',
       flex: 1,
       minWidth: 200,
       renderCell: (params) => (
         <Tooltip title={params.value}>
           <span>{params.value.substring(0, 8)}...</span>
         </Tooltip>
-      )
+      ),
     },
-    { 
-      field: 'email', 
-      headerName: 'Email', 
+    {
+      field: 'email',
+      headerName: 'Email',
       flex: 1.5,
       minWidth: 220,
       valueGetter: (value, row) => {
-        const traits = (row.traits as any);
+        const traits = row.traits as any;
         return traits?.email || 'N/A';
-      }
+      },
     },
-    { 
-      field: 'username', 
-      headerName: 'Username', 
+    {
+      field: 'username',
+      headerName: 'Username',
       flex: 1,
       minWidth: 140,
       valueGetter: (value, row) => {
-        const traits = (row.traits as any);
+        const traits = row.traits as any;
         return traits?.username || 'N/A';
-      }
+      },
     },
-    { 
-      field: 'state', 
-      headerName: 'State', 
+    {
+      field: 'state',
+      headerName: 'State',
       flex: 0.5,
       minWidth: 100,
       renderCell: (params) => (
         <Tooltip title={params.value}>
-          <span style={{ 
-            color: params.value === 'active' ? 'green' : 
-                  params.value === 'inactive' ? 'red' : 'orange'
-          }}>
+          <span
+            style={{
+              color: params.value === 'active' ? 'green' : params.value === 'inactive' ? 'red' : 'orange',
+            }}
+          >
             {params.value}
           </span>
         </Tooltip>
-      )
+      ),
     },
-    { 
-      field: 'created_at', 
-      headerName: 'Created', 
+    {
+      field: 'created_at',
+      headerName: 'Created',
       flex: 1,
       minWidth: 160,
       valueFormatter: (value) => {
         return new Date(value as string).toLocaleString();
-      }
+      },
     },
-    { 
-      field: 'updated_at', 
-      headerName: 'Updated', 
+    {
+      field: 'updated_at',
+      headerName: 'Updated',
       flex: 1,
       minWidth: 160,
       valueFormatter: (value) => {
         return new Date(value as string).toLocaleString();
-      }
+      },
     },
     {
       field: 'actions',
@@ -177,28 +192,13 @@ const IdentitiesTable: React.FC = () => {
       filterable: false,
       renderCell: (params) => (
         <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
-          <Button 
-            variant="text" 
-            size="small" 
-            color="primary"
-            onClick={() => handleViewDetails(params.row.id)}
-          >
+          <Button variant="text" size="small" color="primary" onClick={() => handleViewDetails(params.row.id)}>
             View
           </Button>
-          <Button 
-            variant="text" 
-            size="small" 
-            color="info"
-            onClick={() => handleRecover(params.row.id)}
-          >
+          <Button variant="text" size="small" color="info" onClick={() => handleRecover(params.row.id)}>
             Recover
           </Button>
-          <Button 
-            variant="text" 
-            size="small" 
-            color="error"
-            onClick={() => handleDelete(params.row.id)}
-          >
+          <Button variant="text" size="small" color="error" onClick={() => handleDelete(params.row.id)}>
             Delete
           </Button>
         </Box>
@@ -244,9 +244,9 @@ const IdentitiesTable: React.FC = () => {
   const handleNextPage = () => {
     // Disable pagination during search
     if (searchTerm.trim()) return;
-    
+
     if (nextPageToken) {
-      setPageHistory(prev => [...prev, pageToken]);
+      setPageHistory((prev) => [...prev, pageToken]);
       setPageToken(nextPageToken);
     }
   };
@@ -254,7 +254,7 @@ const IdentitiesTable: React.FC = () => {
   const handlePreviousPage = () => {
     // Disable pagination during search
     if (searchTerm.trim()) return;
-    
+
     if (pageHistory.length > 1) {
       const newHistory = [...pageHistory];
       newHistory.pop(); // Remove current page
@@ -284,9 +284,7 @@ const IdentitiesTable: React.FC = () => {
   if (isError) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" height="400px">
-        <Typography color="error">
-          Error loading identities: {(error as any)?.message || 'Unknown error'}
-        </Typography>
+        <Typography color="error">Error loading identities: {(error as any)?.message || 'Unknown error'}</Typography>
       </Box>
     );
   }
@@ -318,8 +316,11 @@ const IdentitiesTable: React.FC = () => {
           }}
           sx={{ width: 350 }}
           helperText={
-            searchTerm && searchLoading ? "Finding more matches in background..." :
-            searchTerm ? `Filtering ${baseIdentities.length} current page identities` : ""
+            searchTerm && searchLoading
+              ? 'Finding more matches in background...'
+              : searchTerm
+                ? `Filtering ${baseIdentities.length} current page identities`
+                : ''
           }
         />
         <Box>
@@ -328,12 +329,7 @@ const IdentitiesTable: React.FC = () => {
               <Refresh />
             </IconButton>
           </Tooltip>
-          <Button 
-            variant="contained" 
-            color="primary" 
-            startIcon={<Add />}
-            onClick={handleCreateNew}
-          >
+          <Button variant="contained" color="primary" startIcon={<Add />} onClick={handleCreateNew}>
             Create New
           </Button>
         </Box>
@@ -360,21 +356,24 @@ const IdentitiesTable: React.FC = () => {
       </Box>
 
       {/* Custom Pagination Controls */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 2, p: 2 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          mt: 2,
+          p: 2,
+        }}
+      >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <Typography variant="body2" color="text.secondary">
             {searchTerm.trim()
               ? `Found ${displayedIdentities.length} matches${isUsingSearchResults ? ' (from multi-page search)' : ' (from current page)'}`
-              : `Showing ${displayedIdentities.length} identities`
-            }
+              : `Showing ${displayedIdentities.length} identities`}
           </Typography>
           <FormControl size="small" sx={{ minWidth: 120 }}>
             <InputLabel>Per page</InputLabel>
-            <Select
-              value={pageSize}
-              label="Per page"
-              onChange={(e) => handlePageSizeChange(Number(e.target.value))}
-            >
+            <Select value={pageSize} label="Per page" onChange={(e) => handlePageSizeChange(Number(e.target.value))}>
               <MenuItem value={10}>10</MenuItem>
               <MenuItem value={25}>25</MenuItem>
               <MenuItem value={50}>50</MenuItem>
@@ -382,24 +381,12 @@ const IdentitiesTable: React.FC = () => {
             </Select>
           </FormControl>
         </Box>
-        
+
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Button
-            variant="outlined"
-            size="small"
-            startIcon={<NavigateBefore />}
-            onClick={handlePreviousPage}
-            disabled={!canGoPrevious || isLoading}
-          >
+          <Button variant="outlined" size="small" startIcon={<NavigateBefore />} onClick={handlePreviousPage} disabled={!canGoPrevious || isLoading}>
             Previous
           </Button>
-          <Button
-            variant="outlined"
-            size="small"
-            endIcon={<NavigateNext />}
-            onClick={handleNextPage}
-            disabled={!canGoNext || isLoading}
-          >
+          <Button variant="outlined" size="small" endIcon={<NavigateNext />} onClick={handleNextPage} disabled={!canGoNext || isLoading}>
             Next
           </Button>
         </Box>

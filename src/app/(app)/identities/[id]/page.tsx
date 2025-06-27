@@ -18,24 +18,21 @@ import { useTheme } from '@mui/material/styles';
 
 // JSON syntax highlighting function
 function syntaxHighlightJson(json: string) {
-  return json.replace(
-    /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
-    function(match) {
-      let cls = 'json-number';
-      if (/^"/.test(match)) {
-        if (/:$/.test(match)) {
-          cls = 'json-key';
-        } else {
-          cls = 'json-string';
-        }
-      } else if (/true|false/.test(match)) {
-        cls = 'json-boolean';
-      } else if (/null/.test(match)) {
-        cls = 'json-null';
+  return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+    let cls = 'json-number';
+    if (/^"/.test(match)) {
+      if (/:$/.test(match)) {
+        cls = 'json-key';
+      } else {
+        cls = 'json-string';
       }
-      return '<span class="' + cls + '">' + match + '</span>';
+    } else if (/true|false/.test(match)) {
+      cls = 'json-boolean';
+    } else if (/null/.test(match)) {
+      cls = 'json-null';
     }
-  );
+    return '<span class="' + cls + '">' + match + '</span>';
+  });
 }
 
 export default function IdentityDetailPage() {
@@ -116,7 +113,14 @@ export default function IdentityDetailPage() {
       <AdminLayout>
         <Box sx={{ p: 3 }}>
           {/* Header */}
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              mb: 3,
+            }}
+          >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <IconButton onClick={handleBack}>
                 <ArrowBack />
@@ -183,18 +187,14 @@ export default function IdentityDetailPage() {
                     <Typography variant="subtitle2" color="text.secondary">
                       Created At
                     </Typography>
-                    <Typography variant="body1">
-                      {formatDate(identity.created_at || '')}
-                    </Typography>
+                    <Typography variant="body1">{formatDate(identity.created_at || '')}</Typography>
                   </Box>
 
                   <Box sx={{ mb: 2 }}>
                     <Typography variant="subtitle2" color="text.secondary">
                       Updated At
                     </Typography>
-                    <Typography variant="body1">
-                      {formatDate(identity.updated_at || '')}
-                    </Typography>
+                    <Typography variant="body1">{formatDate(identity.updated_at || '')}</Typography>
                   </Box>
                 </CardContent>
               </Card>
@@ -237,12 +237,14 @@ export default function IdentityDetailPage() {
                     Raw Data
                   </Typography>
                   <Divider sx={{ mb: 2 }} />
-                  <Box sx={{
-                    borderRadius: 1,
-                    overflow: 'auto',
-                    maxHeight: '60vh',
-                    background: theme.palette.background.default,
-                  }}>
+                  <Box
+                    sx={{
+                      borderRadius: 1,
+                      overflow: 'auto',
+                      maxHeight: '60vh',
+                      background: theme.palette.background.default,
+                    }}
+                  >
                     <SyntaxHighlighter
                       language="json"
                       style={theme.palette.mode === 'dark' ? vs2015 : github}
@@ -266,26 +268,17 @@ export default function IdentityDetailPage() {
                     >
                       {JSON.stringify(identity, null, 2)}
                     </SyntaxHighlighter>
-                </Box>
+                  </Box>
                 </CardContent>
               </Card>
             </Grid>
           </Grid>
 
           {/* Edit Modal */}
-          <IdentityEditModal
-            open={editModalOpen}
-            onClose={() => setEditModalOpen(false)}
-            identity={identity}
-            onSuccess={handleEditSuccess}
-          />
+          <IdentityEditModal open={editModalOpen} onClose={() => setEditModalOpen(false)} identity={identity} onSuccess={handleEditSuccess} />
 
           {/* Recovery Dialog */}
-          <IdentityRecoveryDialog
-            open={recoveryDialogOpen}
-            onClose={() => setRecoveryDialogOpen(false)}
-            identity={identity}
-          />
+          <IdentityRecoveryDialog open={recoveryDialogOpen} onClose={() => setRecoveryDialogOpen(false)} identity={identity} />
 
           {/* Delete Dialog */}
           <IdentityDeleteDialog

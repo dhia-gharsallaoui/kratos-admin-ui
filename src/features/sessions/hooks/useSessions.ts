@@ -27,7 +27,7 @@ export const useIdentitySessions = (identityId: string) => {
 // Session revocation mutation
 export const useRevokeSession = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: async ({ sessionId }: { sessionId: string }) => {
       // Implementation depends on your API
@@ -43,7 +43,7 @@ export const useRevokeSession = () => {
 // Revoke all sessions for an identity
 export const useRevokeAllSessions = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: async ({ identityId }: { identityId: string }) => {
       // Implementation depends on your API
@@ -52,7 +52,9 @@ export const useRevokeAllSessions = () => {
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['sessions'] });
-      queryClient.invalidateQueries({ queryKey: ['identity', variables.identityId, 'sessions'] });
+      queryClient.invalidateQueries({
+        queryKey: ['identity', variables.identityId, 'sessions'],
+      });
     },
   });
 };

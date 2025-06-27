@@ -2,14 +2,14 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { 
-  Box, 
-  Button, 
-  Container, 
-  TextField, 
-  Typography, 
-  Paper, 
-  Alert, 
+import {
+  Box,
+  Button,
+  Container,
+  TextField,
+  Typography,
+  Paper,
+  Alert,
   FormControl,
   InputLabel,
   OutlinedInput,
@@ -20,7 +20,7 @@ import {
   CardContent,
   Grid,
   Chip,
-  CircularProgress
+  CircularProgress,
 } from '@mui/material';
 import { Visibility, VisibilityOff, AdminPanelSettings, RemoveRedEye } from '@mui/icons-material';
 import { useLogin } from '@/features/auth/hooks/useAuth';
@@ -32,24 +32,24 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  
+
   const login = useLogin();
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!username || !password) {
       setError('Please enter both username and password');
       return;
     }
-    
+
     setLoading(true);
     setError('');
-    
+
     try {
       const success = await login(username, password);
-      
+
       if (success) {
         router.push('/dashboard');
       } else {
@@ -132,11 +132,7 @@ export default function LoginPage() {
                 disabled={loading}
                 endAdornment={
                   <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      edge="end"
-                    >
+                    <IconButton aria-label="toggle password visibility" onClick={handleClickShowPassword} edge="end">
                       {showPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>
@@ -144,13 +140,7 @@ export default function LoginPage() {
                 label="Password"
               />
             </FormControl>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2, py: 1.5 }}
-              disabled={loading}
-            >
+            <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2, py: 1.5 }} disabled={loading}>
               {loading ? <CircularProgress size={24} /> : 'Sign In'}
             </Button>
           </Box>
@@ -164,11 +154,11 @@ export default function LoginPage() {
           <Grid container spacing={2}>
             {USERS.map((user) => (
               <Grid size={{ xs: 12, sm: 6 }} key={user.username}>
-                <Card 
-                  variant="outlined" 
-                  sx={{ 
+                <Card
+                  variant="outlined"
+                  sx={{
                     cursor: 'pointer',
-                    '&:hover': { borderColor: 'primary.main' }
+                    '&:hover': { borderColor: 'primary.main' },
                   }}
                   onClick={() => setDemoCredentials(user.username, user.password)}
                 >
@@ -183,12 +173,7 @@ export default function LoginPage() {
                         {user.displayName}
                       </Typography>
                     </Box>
-                    <Chip 
-                      label={user.role} 
-                      size="small" 
-                      color={user.role === UserRole.ADMIN ? "primary" : "secondary"}
-                      sx={{ mb: 1 }}
-                    />
+                    <Chip label={user.role} size="small" color={user.role === UserRole.ADMIN ? 'primary' : 'secondary'} sx={{ mb: 1 }} />
                     <Typography variant="body2" color="text.secondary">
                       Username: <strong>{user.username}</strong>
                     </Typography>

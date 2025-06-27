@@ -1,18 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { 
-  listIdentities,
-  getIdentity,
-  createIdentity,
-  patchIdentity,
-  deleteIdentity,
-  createRecoveryLink,
-} from '@/services/kratos';
+import { listIdentities, getIdentity, createIdentity, patchIdentity, deleteIdentity, createRecoveryLink } from '@/services/kratos';
 
 // Identity list hook with pagination
 export const useIdentities = (params?: { pageSize?: number; pageToken?: string }) => {
   const pageSize = params?.pageSize || 25;
   const pageToken = params?.pageToken;
-  
+
   return useQuery({
     queryKey: ['identities', pageToken, pageSize],
     queryFn: async () => {
@@ -20,20 +13,20 @@ export const useIdentities = (params?: { pageSize?: number; pageToken?: string }
       if (pageToken) {
         requestParams.pageToken = pageToken;
       }
-      
+
       const response = await listIdentities(requestParams);
-      
+
       // Extract next page token from Link header if available
       const linkHeader = response.headers?.link;
       let nextPageToken = null;
-      
+
       if (linkHeader) {
         const nextMatch = linkHeader.match(/<[^>]*[?&]page_token=([^&>]+)[^>]*>;\s*rel="next"/);
         if (nextMatch) {
           nextPageToken = nextMatch[1];
         }
       }
-      
+
       return {
         identities: response.data,
         nextPageToken,
@@ -49,7 +42,7 @@ export const useIdentities = (params?: { pageSize?: number; pageToken?: string }
 export const useIdentitiesSearch = (params?: { pageSize?: number; searchTerm?: string }) => {
   const pageSize = params?.pageSize || 25;
   const searchTerm = params?.searchTerm?.trim();
-  
+
   return useQuery({
     queryKey: ['identities-search', pageSize, searchTerm],
     queryFn: async () => {
@@ -57,17 +50,17 @@ export const useIdentitiesSearch = (params?: { pageSize?: number; searchTerm?: s
       if (!searchTerm) {
         const requestParams: any = { pageSize };
         const response = await listIdentities(requestParams);
-        
+
         const linkHeader = response.headers?.link;
         let nextPageToken = null;
-        
+
         if (linkHeader) {
           const nextMatch = linkHeader.match(/<[^>]*[?&]page_token=([^&>]+)[^>]*>;\s*rel="next"/);
           if (nextMatch) {
             nextPageToken = nextMatch[1];
           }
         }
-        
+
         return {
           identities: response.data,
           nextPageToken,
@@ -76,7 +69,7 @@ export const useIdentitiesSearch = (params?: { pageSize?: number; searchTerm?: s
           totalFetched: response.data.length,
         };
       }
-      
+
       // Multi-page search logic
       let allIdentities: any[] = [];
       let matchedIdentities: any[] = [];
@@ -84,21 +77,21 @@ export const useIdentitiesSearch = (params?: { pageSize?: number; searchTerm?: s
       let hasMore = true;
       let pageCount = 0;
       const maxPages = 20; // Prevent infinite loops
-      
+
       console.log(`Starting search for: "${searchTerm}"`);
-      
+
       while (matchedIdentities.length < pageSize && hasMore && pageCount < maxPages) {
         console.log(`Searching page ${pageCount + 1} (found ${matchedIdentities.length}/${pageSize})`);
-        
+
         try {
           const requestParams: any = { pageSize: 250 }; // Fetch max per page for efficiency
           if (pageToken) {
             requestParams.pageToken = pageToken;
           }
-          
+
           const response = await listIdentities(requestParams);
           const pageIdentities = response.data;
-          
+
           // Filter current page for matches
           const pageMatches = pageIdentities.filter((identity: any) => {
             const traits = identity.traits as any;
@@ -108,7 +101,7 @@ export const useIdentitiesSearch = (params?: { pageSize?: number; searchTerm?: s
             const lastName = String(traits?.last_name || traits?.lastName || '');
             const name = String(traits?.name || '');
             const id = String(identity.id || '');
-            
+
             const searchLower = searchTerm.toLowerCase();
             return (
               id.toLowerCase().includes(searchLower) ||
@@ -119,42 +112,42 @@ export const useIdentitiesSearch = (params?: { pageSize?: number; searchTerm?: s
               name.toLowerCase().includes(searchLower)
             );
           });
-          
+
           matchedIdentities = [...matchedIdentities, ...pageMatches];
           allIdentities = [...allIdentities, ...pageIdentities];
-          
+
           // Extract next page token
           const linkHeader = response.headers?.link;
           let nextPageToken = null;
-          
+
           if (linkHeader) {
             const nextMatch = linkHeader.match(/<[^>]*[?&]page_token=([^&>]+)[^>]*>;\s*rel="next"/);
             if (nextMatch) {
               nextPageToken = nextMatch[1];
             }
           }
-          
+
           hasMore = !!nextPageToken;
           pageToken = nextPageToken;
           pageCount++;
-          
+
           console.log(`Page ${pageCount}: Found ${pageMatches.length} matches (total: ${matchedIdentities.length})`);
-          
+
           // Small delay between requests
           if (hasMore && matchedIdentities.length < pageSize) {
-            await new Promise(resolve => setTimeout(resolve, 100));
+            await new Promise((resolve) => setTimeout(resolve, 100));
           }
         } catch (error) {
           console.error(`Error searching page ${pageCount + 1}:`, error);
           hasMore = false;
         }
       }
-      
+
       // Return up to pageSize results
       const finalResults = matchedIdentities.slice(0, pageSize);
-      
+
       console.log(`Search complete: ${finalResults.length} results from ${pageCount} pages`);
-      
+
       return {
         identities: finalResults,
         nextPageToken: matchedIdentities.length > pageSize ? 'search-has-more' : null,
@@ -184,14 +177,14 @@ export const useIdentity = (id: string) => {
 // Identity creation mutation
 export const useCreateIdentity = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: async ({ schemaId, traits }: { schemaId: string; traits: any }) => {
-      const { data } = await createIdentity({ 
-        createIdentityBody: { 
-          schema_id: schemaId, 
-          traits 
-        } 
+      const { data } = await createIdentity({
+        createIdentityBody: {
+          schema_id: schemaId,
+          traits,
+        },
       });
       return data;
     },
@@ -204,25 +197,15 @@ export const useCreateIdentity = () => {
 // Identity update mutation
 export const useUpdateIdentity = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
-    mutationFn: async ({ 
-      id, 
-      schemaId, 
-      traits
-    }: { 
-      id: string; 
-      schemaId: string; 
-      traits: any;
-    }) => {
-      const jsonPatch = [
-        { op: 'replace', path: '/traits', value: traits }
-      ];
-      
+    mutationFn: async ({ id, schemaId, traits }: { id: string; schemaId: string; traits: any }) => {
+      const jsonPatch = [{ op: 'replace', path: '/traits', value: traits }];
+
       console.log('JSON Patch being sent:', jsonPatch);
-      
-      const { data } = await patchIdentity({ 
-        id, 
+
+      const { data } = await patchIdentity({
+        id,
         jsonPatch: jsonPatch,
       });
       return data;
@@ -237,7 +220,7 @@ export const useUpdateIdentity = () => {
 // General identity patch mutation
 export const usePatchIdentity = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: async ({ id, jsonPatch }: { id: string; jsonPatch: any[] }) => {
       const { data } = await patchIdentity({ id, jsonPatch: jsonPatch });
@@ -253,7 +236,7 @@ export const usePatchIdentity = () => {
 // Identity deletion mutation
 export const useDeleteIdentity = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: async (id: string) => {
       await deleteIdentity({ id });
@@ -261,31 +244,25 @@ export const useDeleteIdentity = () => {
     },
     onSuccess: (deletedId) => {
       // Update all identities queries to remove the deleted identity
-      queryClient.setQueriesData(
-        { queryKey: ['identities'] },
-        (oldData: any) => {
-          if (!oldData) return oldData;
-          
-          return {
-            ...oldData,
-            identities: oldData.identities.filter((identity: any) => identity.id !== deletedId)
-          };
-        }
-      );
-      
+      queryClient.setQueriesData({ queryKey: ['identities'] }, (oldData: any) => {
+        if (!oldData) return oldData;
+
+        return {
+          ...oldData,
+          identities: oldData.identities.filter((identity: any) => identity.id !== deletedId),
+        };
+      });
+
       // Also update search queries
-      queryClient.setQueriesData(
-        { queryKey: ['identities-search'] },
-        (oldData: any) => {
-          if (!oldData) return oldData;
-          
-          return {
-            ...oldData,
-            identities: oldData.identities.filter((identity: any) => identity.id !== deletedId)
-          };
-        }
-      );
-      
+      queryClient.setQueriesData({ queryKey: ['identities-search'] }, (oldData: any) => {
+        if (!oldData) return oldData;
+
+        return {
+          ...oldData,
+          identities: oldData.identities.filter((identity: any) => identity.id !== deletedId),
+        };
+      });
+
       // Invalidate to ensure fresh data on next fetch
       queryClient.invalidateQueries({ queryKey: ['identities'] });
       queryClient.invalidateQueries({ queryKey: ['identities-search'] });

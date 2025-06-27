@@ -1,24 +1,6 @@
 import { useState } from 'react';
-import { 
-  AppBar, 
-  Avatar, 
-  Box, 
-  IconButton, 
-  Menu, 
-  MenuItem, 
-  Toolbar, 
-  Tooltip, 
-  Typography,
-  Chip,
-  Divider
-} from '@mui/material';
-import { 
-  Person as PersonIcon,
-  Logout as LogoutIcon,
-  Menu as MenuIcon,
-  AdminPanelSettings,
-  RemoveRedEye
-} from '@mui/icons-material';
+import { AppBar, Avatar, Box, IconButton, Menu, MenuItem, Toolbar, Tooltip, Typography, Chip, Divider } from '@mui/material';
+import { Person as PersonIcon, Logout as LogoutIcon, Menu as MenuIcon, AdminPanelSettings, RemoveRedEye } from '@mui/icons-material';
 import { useUser, useLogout } from '@/features/auth';
 import { UserRole } from '@/features/auth';
 import Link from 'next/link';
@@ -48,24 +30,18 @@ export function Header({ onSidebarToggle }: HeaderProps) {
   };
 
   return (
-    <AppBar 
-      position="fixed" 
-      sx={{ 
+    <AppBar
+      position="fixed"
+      sx={{
         boxShadow: 'none',
         backgroundColor: 'white',
         color: 'text.primary',
         borderBottom: '1px solid #e6e8f0',
-        zIndex: (theme) => theme.zIndex.drawer + 1 
+        zIndex: (theme) => theme.zIndex.drawer + 1,
       }}
     >
       <Toolbar>
-        <IconButton
-          color="inherit"
-          aria-label="open drawer"
-          edge="start"
-          onClick={onSidebarToggle}
-          sx={{ mr: 2, display: { sm: 'none' } }}
-        >
+        <IconButton color="inherit" aria-label="open drawer" edge="start" onClick={onSidebarToggle} sx={{ mr: 2, display: { sm: 'none' } }}>
           <MenuIcon />
         </IconButton>
         <Typography variant="h6" component="div" sx={{ display: { xs: 'none', sm: 'block' } }}>
@@ -78,7 +54,7 @@ export function Header({ onSidebarToggle }: HeaderProps) {
               icon={user.role === UserRole.ADMIN ? <AdminPanelSettings fontSize="small" /> : <RemoveRedEye fontSize="small" />}
               label={user.displayName}
               variant="outlined"
-              color={user.role === UserRole.ADMIN ? "primary" : "secondary"}
+              color={user.role === UserRole.ADMIN ? 'primary' : 'secondary'}
               size="small"
               sx={{ mr: 2, display: { xs: 'none', sm: 'flex' } }}
             />
@@ -92,11 +68,11 @@ export function Header({ onSidebarToggle }: HeaderProps) {
               aria-haspopup="true"
               color="inherit"
             >
-              <Avatar 
-                sx={{ 
-                  width: 32, 
-                  height: 32, 
-                  bgcolor: user?.role === UserRole.ADMIN ? 'primary.main' : 'secondary.main'
+              <Avatar
+                sx={{
+                  width: 32,
+                  height: 32,
+                  bgcolor: user?.role === UserRole.ADMIN ? 'primary.main' : 'secondary.main',
                 }}
               >
                 {user?.displayName.charAt(0) || <PersonIcon />}
@@ -127,21 +103,11 @@ export function Header({ onSidebarToggle }: HeaderProps) {
                 <Typography variant="body2" color="text.secondary">
                   {user.email}
                 </Typography>
-                <Chip
-                  label={user.role}
-                  size="small"
-                  color={user.role === UserRole.ADMIN ? "primary" : "secondary"}
-                  sx={{ mt: 1 }}
-                />
+                <Chip label={user.role} size="small" color={user.role === UserRole.ADMIN ? 'primary' : 'secondary'} sx={{ mt: 1 }} />
               </Box>
             )}
             <Divider />
-            <MenuItem 
-              onClick={handleCloseUserMenu} 
-              component={Link} 
-              href="/profile"
-              disabled={pathname === '/profile'}
-            >
+            <MenuItem onClick={handleCloseUserMenu} component={Link} href="/profile" disabled={pathname === '/profile'}>
               <PersonIcon fontSize="small" sx={{ mr: 1 }} />
               <Typography textAlign="center">Profile</Typography>
             </MenuItem>
@@ -154,6 +120,6 @@ export function Header({ onSidebarToggle }: HeaderProps) {
       </Toolbar>
     </AppBar>
   );
-};
+}
 
 export default Header;

@@ -1,15 +1,5 @@
 import React from 'react';
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  Typography,
-  Box,
-  Alert,
-  Chip,
-} from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Box, Alert, Chip } from '@mui/material';
 import { Identity } from '@ory/kratos-client';
 import { useDeleteIdentity } from '../hooks/useIdentities';
 import { DottedLoader } from '@/components/ui/DottedLoader';
@@ -21,12 +11,7 @@ interface IdentityDeleteDialogProps {
   onSuccess?: () => void;
 }
 
-export const IdentityDeleteDialog: React.FC<IdentityDeleteDialogProps> = ({
-  open,
-  onClose,
-  identity,
-  onSuccess,
-}) => {
+export const IdentityDeleteDialog: React.FC<IdentityDeleteDialogProps> = ({ open, onClose, identity, onSuccess }) => {
   const deleteIdentityMutation = useDeleteIdentity();
 
   const handleDelete = async () => {
@@ -50,17 +35,11 @@ export const IdentityDeleteDialog: React.FC<IdentityDeleteDialogProps> = ({
   if (!identity) return null;
 
   const traits = identity.traits as any;
-  const displayName = traits?.name?.first && traits?.name?.last 
-    ? `${traits.name.first} ${traits.name.last}`
-    : traits?.username || traits?.email || 'Unknown User';
+  const displayName =
+    traits?.name?.first && traits?.name?.last ? `${traits.name.first} ${traits.name.last}` : traits?.username || traits?.email || 'Unknown User';
 
   return (
-    <Dialog 
-      open={open} 
-      onClose={handleClose}
-      maxWidth="sm" 
-      fullWidth
-    >
+    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
       <DialogTitle>
         <Typography variant="h6" color="error">
           Delete Identity
@@ -82,28 +61,28 @@ export const IdentityDeleteDialog: React.FC<IdentityDeleteDialogProps> = ({
 
         {/* Identity Information */}
         <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 1, mb: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
-            <Typography variant="h6">
-              {displayName}
-            </Typography>
-            <Chip 
-              label={identity.schema_id} 
-              size="small" 
-              variant="outlined" 
-              sx={{ fontFamily: 'monospace' }}
-            />
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              mb: 1,
+            }}
+          >
+            <Typography variant="h6">{displayName}</Typography>
+            <Chip label={identity.schema_id} size="small" variant="outlined" sx={{ fontFamily: 'monospace' }} />
           </Box>
-          
+
           <Typography variant="body2" color="text.secondary" sx={{ fontFamily: 'monospace', mb: 1 }}>
             ID: {identity.id}
           </Typography>
-          
+
           {traits?.email && (
             <Typography variant="body2" color="text.secondary">
               Email: {traits.email}
             </Typography>
           )}
-          
+
           {traits?.username && (
             <Typography variant="body2" color="text.secondary">
               Username: {traits.username}
@@ -125,10 +104,7 @@ export const IdentityDeleteDialog: React.FC<IdentityDeleteDialogProps> = ({
       </DialogContent>
 
       <DialogActions sx={{ p: 3, pt: 1 }}>
-        <Button 
-          onClick={handleClose}
-          disabled={deleteIdentityMutation.isPending}
-        >
+        <Button onClick={handleClose} disabled={deleteIdentityMutation.isPending}>
           Cancel
         </Button>
         <Button

@@ -3,19 +3,19 @@ import { UserCredentials, AuthUser, UserRole } from './types';
 // Mock user database
 export const USERS: UserCredentials[] = [
   {
-    username: "admin",
-    password: "admin123",
+    username: 'admin',
+    password: 'admin123',
     role: UserRole.ADMIN,
-    displayName: "Administrator",
-    email: "admin@example.com"
+    displayName: 'Administrator',
+    email: 'admin@example.com',
   },
   {
-    username: "viewer",
-    password: "viewer123", 
+    username: 'viewer',
+    password: 'viewer123',
     role: UserRole.VIEWER,
-    displayName: "Viewer User",
-    email: "viewer@example.com"
-  }
+    displayName: 'Viewer User',
+    email: 'viewer@example.com',
+  },
 ];
 
 /**
@@ -24,13 +24,8 @@ export const USERS: UserCredentials[] = [
  * @param password The password to verify
  * @returns The user credentials if found, undefined otherwise
  */
-export const findUserByCredentials = (
-  username: string,
-  password: string
-): UserCredentials | undefined => {
-  return USERS.find(
-    (user) => user.username === username && user.password === password
-  );
+export const findUserByCredentials = (username: string, password: string): UserCredentials | undefined => {
+  return USERS.find((user) => user.username === username && user.password === password);
 };
 
 /**
@@ -54,7 +49,7 @@ export const isAdmin = (user: AuthUser | null): boolean => {
 
 /**
  * Check if user has viewer role or higher
- * @param user Auth user  
+ * @param user Auth user
  * @returns True if user can view content
  */
 export const canView = (user: AuthUser | null): boolean => {

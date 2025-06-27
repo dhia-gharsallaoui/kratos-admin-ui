@@ -11,9 +11,9 @@ export const useIdentityAnalytics = () => {
       const result = await getAllIdentities({
         maxPages: 20,
         pageSize: 250,
-        onProgress: (count, page) => console.log(`Analytics: Fetched ${count} identities (page ${page})`)
+        onProgress: (count, page) => console.log(`Analytics: Fetched ${count} identities (page ${page})`),
       });
-      
+
       const allIdentities = result.identities;
 
       // Process the data
@@ -21,7 +21,7 @@ export const useIdentityAnalytics = () => {
       const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
       // Count new identities in last 30 days
-      const newIdentitiesLast30Days = allIdentities.filter(identity => {
+      const newIdentitiesLast30Days = allIdentities.filter((identity) => {
         const createdAt = new Date(identity.created_at);
         return createdAt >= thirtyDaysAgo;
       }).length;
@@ -31,7 +31,7 @@ export const useIdentityAnalytics = () => {
       for (let i = 29; i >= 0; i--) {
         const date = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
         const dateStr = date.toISOString().split('T')[0];
-        const count = allIdentities.filter(identity => {
+        const count = allIdentities.filter((identity) => {
           const createdAt = new Date(identity.created_at);
           return createdAt.toISOString().split('T')[0] === dateStr;
         }).length;
@@ -39,11 +39,14 @@ export const useIdentityAnalytics = () => {
       }
 
       // Group by schema
-      const schemaGroups = allIdentities.reduce((acc, identity) => {
-        const schema = identity.schema_id || 'unknown';
-        acc[schema] = (acc[schema] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>);
+      const schemaGroups = allIdentities.reduce(
+        (acc, identity) => {
+          const schema = identity.schema_id || 'unknown';
+          acc[schema] = (acc[schema] || 0) + 1;
+          return acc;
+        },
+        {} as Record<string, number>
+      );
 
       const identitiesBySchema = Object.entries(schemaGroups).map(([schema, count]) => ({
         schema,
@@ -53,8 +56,8 @@ export const useIdentityAnalytics = () => {
       // Verification status (check if email is verified)
       let verified = 0;
       let unverified = 0;
-      
-      allIdentities.forEach(identity => {
+
+      allIdentities.forEach((identity) => {
         const verifiableAddresses = identity.verifiable_addresses || [];
         const hasVerifiedEmail = verifiableAddresses.some((addr: any) => addr.verified);
         if (hasVerifiedEmail) {
@@ -89,15 +92,15 @@ export const useSessionAnalytics = () => {
         pageSize: 250,
         active: undefined, // Get all sessions (active and inactive)
         untilDate: sevenDaysAgo,
-        onProgress: (count, page) => console.log(`Analytics: Fetched ${count} sessions (page ${page})`)
+        onProgress: (count, page) => console.log(`Analytics: Fetched ${count} sessions (page ${page})`),
       });
-      
+
       const sessions = result.sessions;
-      
+
       const now = new Date();
 
       // Count sessions in last 7 days
-      const sessionsLast7Days = sessions.filter(session => {
+      const sessionsLast7Days = sessions.filter((session) => {
         if (!session.authenticated_at) return false;
         const authenticatedAt = new Date(session.authenticated_at);
         if (isNaN(authenticatedAt.getTime())) return false;
@@ -111,47 +114,45 @@ export const useSessionAnalytics = () => {
         const dateStr = date.toISOString().split('T')[0];
         const dayStart = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0);
         const dayEnd = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999);
-        
-        const count = sessions.filter(session => {
+
+        const count = sessions.filter((session) => {
           if (!session.authenticated_at) return false;
-          
+
           const authenticatedAt = new Date(session.authenticated_at);
           if (isNaN(authenticatedAt.getTime())) return false;
-          
+
           // Session must have started before or on this day
           if (authenticatedAt > dayEnd) return false;
-          
+
           // If session has expiry, it must not have expired before this day started
           if (session.expires_at) {
             const expiresAt = new Date(session.expires_at);
             if (isNaN(expiresAt.getTime())) return true; // If invalid expiry, assume still active
             if (expiresAt < dayStart) return false; // Expired before this day
           }
-          
+
           // Session was active during this day
           return true;
         }).length;
-        
+
         sessionsByDay.push({ date: dateStr, count });
       }
 
       // Calculate average session duration (estimate based on last activity)
       const sessionDurations = sessions
-        .filter(session => session.authenticated_at && session.issued_at)
-        .map(session => {
+        .filter((session) => session.authenticated_at && session.issued_at)
+        .map((session) => {
           const authenticated = new Date(session.authenticated_at || '').getTime();
           const issued = new Date(session.issued_at || '').getTime();
           return Math.abs(authenticated - issued) / (1000 * 60); // minutes
         });
 
-      const averageSessionDuration = sessionDurations.length > 0
-        ? sessionDurations.reduce((sum, duration) => sum + duration, 0) / sessionDurations.length
-        : 0;
+      const averageSessionDuration =
+        sessionDurations.length > 0 ? sessionDurations.reduce((sum, duration) => sum + duration, 0) / sessionDurations.length : 0;
 
       // Get active sessions count using API filter
       const activeSessionsResponse = await listSessions(true);
       const activeSessions = activeSessionsResponse.data.length;
-
 
       return {
         totalSessions: sessions.length,
