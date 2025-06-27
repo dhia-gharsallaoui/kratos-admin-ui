@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { Box, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, Button, Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress, Chip, Card, CardContent, IconButton, Tooltip, TextField, InputAdornment } from '@mui/material';
-import { AdminLayout } from '@/components/templates/Admin/AdminLayout';
+import { AdminLayout } from '@/components/layout/AdminLayout';
 import { useQuery } from '@tanstack/react-query';
-import { listIdentitySchemas, getIdentitySchema } from '@/lib/api/kratos/client';
+import { getIdentitySchema } from '@/lib/api/kratos/client';
+import { useSchemas } from '@/features/schemas/hooks';
 import { Code, Description, Search, Refresh, Add, MoreVert, Close } from '@mui/icons-material';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import { UserRole } from '@/config/users';
@@ -35,13 +36,7 @@ export default function SchemasPage() {
   const [parsedSchemas, setParsedSchemas] = useState<SchemaItem[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const { data: schemasResponse, isLoading, error, refetch } = useQuery({
-    queryKey: ['schemas'],
-    queryFn: async () => {
-      const response = await listIdentitySchemas();
-      return response.data;
-    },
-  });
+  const { data: schemasResponse, isLoading, error, refetch } = useSchemas();
 
   // Use useEffect to parse the schemas when the response changes
   useEffect(() => {

@@ -292,3 +292,5 @@ export const IdentityEditModal: React.FC<IdentityEditModalProps> = ({
     </Dialog>
   );
 };
+
+export default IdentityEditModal;

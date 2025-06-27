@@ -2,10 +2,10 @@
 
 import { Box, Typography, Grid, Paper, Card, CardContent, IconButton, Tooltip, Alert } from '@mui/material';
 import { Refresh, TrendingUp, Group, Security, Schedule, Schema, HealthAndSafety, AccessTime } from '@mui/icons-material';
-import { AdminLayout } from '@/components/templates/Admin/AdminLayout';
+import { AdminLayout } from '@/components/layout/AdminLayout';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import { UserRole } from '@/config/users';
-import { useAnalytics } from '@/hooks/useAnalytics';
+import { useAnalytics } from '@/features/analytics/hooks';
 import { DottedLoader } from '@/components/ui/DottedLoader';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { LineChart } from '@mui/x-charts/LineChart';

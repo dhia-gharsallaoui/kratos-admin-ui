@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DataGrid, GridColDef, GridToolbar } from '@mui/x-data-grid';
 import { Box, Button, Typography, TextField, InputAdornment, IconButton, Tooltip, Paper, Pagination, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { Add, Search, Refresh, NavigateBefore, NavigateNext, Link as LinkIcon } from '@mui/icons-material';
-import { useIdentities, useIdentitiesSearch } from '@/hooks/useKratos';
+import { useIdentities, useIdentitiesSearch } from '@/features/identities/hooks';
 import { Identity } from '@ory/kratos-client';
 import { useRouter } from 'next/navigation';
 import { DottedLoader } from '@/components/ui/DottedLoader';

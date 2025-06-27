@@ -200,3 +200,5 @@ export const IdentityRecoveryDialog: React.FC<IdentityRecoveryDialogProps> = ({
     </>
   );
 };
+
+export default IdentityRecoveryDialog;

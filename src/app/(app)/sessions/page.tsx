@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, Chip, CircularProgress, Card, CardContent, IconButton, Tooltip, TextField, InputAdornment, Paper } from '@mui/material';
-import { AdminLayout } from '@/components/templates/Admin/AdminLayout';
+import { AdminLayout } from '@/components/layout/AdminLayout';
 import { useQuery } from '@tanstack/react-query';
 import { listSessions } from '@/lib/api/kratos/client';
 import { Search, Refresh, Close, Person, AccessTime, Warning } from '@mui/icons-material';

@@ -144,3 +144,5 @@ export const IdentityDeleteDialog: React.FC<IdentityDeleteDialogProps> = ({
     </Dialog>
   );
 };
+
+export default IdentityDeleteDialog;

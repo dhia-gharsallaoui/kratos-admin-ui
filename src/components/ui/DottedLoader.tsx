@@ -105,3 +105,5 @@ export const DottedLoader: React.FC<DottedLoaderProps> = ({
     </Box>
   );
 };
+
+export default DottedLoader;

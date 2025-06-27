@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "knip": "knip"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -35,6 +36,7 @@
     "@types/react-syntax-highlighter": "^15.5.13",
     "eslint": "^8.57.1",
     "eslint-config-next": "14.1.0",
+    "knip": "^5.61.2",
     "typescript": "^5.8.3"
   }
 }

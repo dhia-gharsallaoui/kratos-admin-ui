@@ -3,21 +3,24 @@
 import { useParams, useRouter } from 'next/navigation';
 import { Box, Button, Typography, Paper, Grid, Chip, Card, CardContent, Divider, IconButton, Tooltip } from '@mui/material';
 import { ArrowBack, Edit, Delete, Refresh, Link as LinkIcon } from '@mui/icons-material';
-import { AdminLayout } from '@/components/templates/Admin/AdminLayout';
+import { AdminLayout } from '@/components/layout/AdminLayout';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import { UserRole } from '@/config/users';
-import { useIdentity } from '@/hooks/useKratos';
+import { useIdentity } from '@/features/identities/hooks';
 import { DottedLoader } from '@/components/ui/DottedLoader';
 import { IdentityEditModal } from '@/features/identities/components/IdentityEditModal';
 import { IdentityDeleteDialog } from '@/features/identities/components/IdentityDeleteDialog';
 import { IdentityRecoveryDialog } from '@/features/identities/components/IdentityRecoveryDialog';
 import { useState } from 'react';
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import { github, vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { useTheme } from '@mui/material/styles';
 
 // JSON syntax highlighting function
 function syntaxHighlightJson(json: string) {
   return json.replace(
     /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
-    function (match) {
+    function(match) {
       let cls = 'json-number';
       if (/^"/.test(match)) {
         if (/:$/.test(match)) {
@@ -36,19 +39,20 @@ function syntaxHighlightJson(json: string) {
 }
 
 export default function IdentityDetailPage() {
+  const theme = useTheme();
   const params = useParams();
   const router = useRouter();
   const identityId = params.id as string;
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [recoveryDialogOpen, setRecoveryDialogOpen] = useState(false);
-  
+
   const { data: identity, isLoading, isError, error, refetch } = useIdentity(identityId);
-  
+
   const handleBack = () => {
     router.push('/identities');
   };
-  
+
   const handleEdit = () => {
     setEditModalOpen(true);
   };
@@ -56,7 +60,7 @@ export default function IdentityDetailPage() {
   const handleEditSuccess = () => {
     refetch(); // Refresh identity data after successful edit
   };
-  
+
   const handleDelete = () => {
     setDeleteDialogOpen(true);
   };
@@ -153,13 +157,13 @@ export default function IdentityDetailPage() {
                     Basic Information
                   </Typography>
                   <Divider sx={{ mb: 2 }} />
-                  
+
                   <Box sx={{ mb: 2 }}>
                     <Typography variant="subtitle2" color="text.secondary">
                       Status
                     </Typography>
-                    <Chip 
-                      label={identity.state || 'active'} 
+                    <Chip
+                      label={identity.state || 'active'}
                       color={identity.state === 'active' ? 'success' : 'default'}
                       size="small"
                       sx={{ mt: 0.5 }}
@@ -204,7 +208,7 @@ export default function IdentityDetailPage() {
                     Traits
                   </Typography>
                   <Divider sx={{ mb: 2 }} />
-                  
+
                   {traits && Object.keys(traits).length > 0 ? (
                     Object.entries(traits).map(([key, value]) => (
                       <Box key={key} sx={{ mb: 2 }}>
@@ -233,30 +237,36 @@ export default function IdentityDetailPage() {
                     Raw Data
                   </Typography>
                   <Divider sx={{ mb: 2 }} />
-                  <Paper 
-                    sx={{ 
-                      p: 2, 
-                      backgroundColor: '#1e1e1e', 
-                      color: '#d4d4d4',
-                      fontFamily: 'monospace',
-                      fontSize: '0.875rem',
-                      overflow: 'auto',
-                      maxHeight: 400,
-                      borderRadius: 1,
-                      '& .json-key': { color: '#9cdcfe' },
-                      '& .json-string': { color: '#ce9178' },
-                      '& .json-number': { color: '#b5cea8' },
-                      '& .json-boolean': { color: '#569cd6' },
-                      '& .json-null': { color: '#569cd6' },
-                      '& .json-punctuation': { color: '#d4d4d4' },
-                    }}
-                  >
-                    <pre style={{ margin: 0, whiteSpace: 'pre-wrap' }}>
-                      <code dangerouslySetInnerHTML={{ 
-                        __html: syntaxHighlightJson(JSON.stringify(identity, null, 2))
-                      }} />
-                    </pre>
-                  </Paper>
+                  <Box sx={{
+                    borderRadius: 1,
+                    overflow: 'auto',
+                    maxHeight: '60vh',
+                    background: theme.palette.background.default,
+                  }}>
+                    <SyntaxHighlighter
+                      language="json"
+                      style={theme.palette.mode === 'dark' ? vs2015 : github}
+                      customStyle={{
+                        margin: 0,
+                        padding: '1.5rem',
+                        fontSize: '0.875rem',
+                        background: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f8f9fa',
+                        borderRadius: 'var(--radius)',
+                        lineHeight: 1.5,
+                        border: `1px solid ${theme.palette.divider}`,
+                      }}
+                      showLineNumbers={true}
+                      lineNumberStyle={{
+                        color: theme.palette.text.secondary,
+                        paddingRight: '1rem',
+                        minWidth: '2rem',
+                        userSelect: 'none',
+                      }}
+                      wrapLongLines={true}
+                    >
+                      {JSON.stringify(identity, null, 2)}
+                    </SyntaxHighlighter>
+                </Box>
                 </CardContent>
               </Card>
             </Grid>

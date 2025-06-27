@@ -20,7 +20,7 @@ import {
 import { Edit, Save, Cancel, Person, Email, Badge, Lock } from '@mui/icons-material';
 import { useUser } from '@/features/auth/hooks/useAuth';
 import { UserRole } from '@/config/users';
-import { AdminLayout } from '@/components/templates/Admin/AdminLayout';
+import { AdminLayout } from '@/components/layout/AdminLayout';
 
 export default function ProfilePage() {
   const user = useUser();
