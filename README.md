@@ -156,7 +156,6 @@ src/
 |----------|-------------|---------|
 | `KRATOS_PUBLIC_URL` | Kratos public API URL | `http://localhost:4433` |
 | `KRATOS_ADMIN_URL` | Kratos admin API URL | `http://localhost:4434` |
-| `KRATOS_WEBHOOK_API_KEY` | Webhook API key (optional) | - |
 | `BASE_PATH` | Application base path | `/` |
 | `NODE_ENV` | Environment mode | `development` |
 

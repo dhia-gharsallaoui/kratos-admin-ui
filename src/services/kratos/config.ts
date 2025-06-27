@@ -1,7 +1,6 @@
 export type KratosConfig = {
   kratosPublicUrl: string;
   kratosAdminUrl: string;
-  kratosWebhookApiKey?: string;
   basePath: string;
 };
 
@@ -9,7 +8,6 @@ export type KratosConfig = {
 let serverConfig: KratosConfig = {
   kratosPublicUrl: process.env.KRATOS_PUBLIC_URL || 'http://localhost:4433',
   kratosAdminUrl: process.env.KRATOS_ADMIN_URL || 'http://localhost:4434',
-  kratosWebhookApiKey: process.env.KRATOS_WEBHOOK_API_KEY,
   basePath: process.env.BASE_PATH || '',
 };
 
@@ -17,7 +15,6 @@ let serverConfig: KratosConfig = {
 let clientConfig: KratosConfig = {
   kratosPublicUrl: '/api/kratos',
   kratosAdminUrl: '/api/kratos-admin',
-  kratosWebhookApiKey: undefined,
   basePath: '',
 };
 
