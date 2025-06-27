@@ -25,12 +25,14 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.58.1",
+    "react-syntax-highlighter": "^15.6.1",
     "zustand": "^4.5.7"
   },
   "devDependencies": {
     "@types/node": "^20.19.1",
     "@types/react": "^18.3.23",
     "@types/react-dom": "^18.3.7",
+    "@types/react-syntax-highlighter": "^15.5.13",
     "eslint": "^8.57.1",
     "eslint-config-next": "14.1.0",
     "typescript": "^5.8.3"

@@ -8,6 +8,9 @@ import { listIdentitySchemas, getIdentitySchema } from '@/lib/api/kratos/client'
 import { Code, Description, Search, Refresh, Add, MoreVert, Close } from '@mui/icons-material';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import { UserRole } from '@/config/users';
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import { github, vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { useTheme } from '@mui/material/styles';
 
 // Define the schema interface based on the provided example
 interface SchemaItem {
@@ -22,6 +25,7 @@ interface SchemaItem {
 }
 
 export default function SchemasPage() {
+  const theme = useTheme();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [selectedSchemaId, setSelectedSchemaId] = useState<string | null>(null);
@@ -419,21 +423,34 @@ export default function SchemasPage() {
                 </Box>
               ) : schemaContent ? (
                 <Box sx={{ 
-                  p: 3, 
                   borderRadius: 1, 
                   overflow: 'auto',
                   maxHeight: '60vh',
-                  background: 'var(--accent)',
+                  background: theme.palette.background.default,
                 }}>
-                  <pre style={{ 
-                    whiteSpace: 'pre-wrap', 
-                    wordBreak: 'break-word',
-                    margin: 0,
-                    fontFamily: 'monospace',
-                    fontSize: '0.875rem'
-                  }}>
+                  <SyntaxHighlighter
+                    language="json"
+                    style={theme.palette.mode === 'dark' ? vs2015 : github}
+                    customStyle={{
+                      margin: 0,
+                      padding: '1.5rem',
+                      fontSize: '0.875rem',
+                      background: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f8f9fa',
+                      borderRadius: 'var(--radius)',
+                      lineHeight: 1.5,
+                      border: `1px solid ${theme.palette.divider}`,
+                    }}
+                    showLineNumbers={true}
+                    lineNumberStyle={{
+                      color: theme.palette.text.secondary,
+                      paddingRight: '1rem',
+                      minWidth: '2rem',
+                      userSelect: 'none',
+                    }}
+                    wrapLongLines={true}
+                  >
                     {JSON.stringify(schemaContent, null, 2)}
-                  </pre>
+                  </SyntaxHighlighter>
                 </Box>
               ) : (
                 <Typography color="error" sx={{ p: 3 }}>
