@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Box, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, Button, Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress, Chip, Card, CardContent, IconButton, Tooltip, TextField, InputAdornment } from '@mui/material';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { useQuery } from '@tanstack/react-query';
-import { getIdentitySchema } from '@/lib/api/kratos/client';
+import { getIdentitySchema } from '@/services/kratos';
 import { useSchemas } from '@/features/schemas/hooks';
 import { Code, Description, Search, Refresh, Add, MoreVert, Close } from '@mui/icons-material';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';

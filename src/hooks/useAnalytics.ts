@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getAllIdentities, listSessions, listIdentitySchemas } from '@/lib/api/kratos/client';
+import { getAllIdentities, listSessions, listIdentitySchemas } from '@/services/kratos';
 import { Identity, Session } from '@ory/kratos-client';
 
 // Analytics data interfaces

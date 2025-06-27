@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import { Close, ContentCopy, Link as LinkIcon } from '@mui/icons-material';
 import { Identity } from '@ory/kratos-client';
-import { createRecoveryLink } from '@/lib/api/kratos/client';
+import { createRecoveryLink } from '@/services/kratos';
 import { DottedLoader } from '@/components/ui/DottedLoader';
 
 interface IdentityRecoveryDialogProps {

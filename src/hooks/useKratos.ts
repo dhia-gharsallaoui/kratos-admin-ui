@@ -9,7 +9,7 @@ import {
   getIdentitySchema,
   listIdentitySchemas,
   createRecoveryLinkForIdentity,
-} from '@/lib/api/kratos/client';
+} from '@/services/kratos';
 
 // Identity hooks
 export const useIdentities = (params?: { pageSize?: number; pageToken?: string }) => {
