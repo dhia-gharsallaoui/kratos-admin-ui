@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from 'next/navigation';
 import { Box, Button, Typography, Paper, Grid, Chip, Card, CardContent, Divider, IconButton, Tooltip } from '@mui/material';
-import { ArrowBack, Edit, Delete, Refresh } from '@mui/icons-material';
+import { ArrowBack, Edit, Delete, Refresh, Link as LinkIcon } from '@mui/icons-material';
 import { AdminLayout } from '@/components/templates/Admin/AdminLayout';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import { UserRole } from '@/config/users';
@@ -10,6 +10,7 @@ import { useIdentity } from '@/hooks/useKratos';
 import { DottedLoader } from '@/components/ui/DottedLoader';
 import { IdentityEditModal } from '@/features/identities/components/IdentityEditModal';
 import { IdentityDeleteDialog } from '@/features/identities/components/IdentityDeleteDialog';
+import { IdentityRecoveryDialog } from '@/features/identities/components/IdentityRecoveryDialog';
 import { useState } from 'react';
 
 // JSON syntax highlighting function
@@ -40,6 +41,7 @@ export default function IdentityDetailPage() {
   const identityId = params.id as string;
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [recoveryDialogOpen, setRecoveryDialogOpen] = useState(false);
   
   const { data: identity, isLoading, isError, error, refetch } = useIdentity(identityId);
   
@@ -62,6 +64,10 @@ export default function IdentityDetailPage() {
   const handleDeleteSuccess = () => {
     // Navigate back to identities list after successful delete
     router.push('/identities');
+  };
+
+  const handleRecover = () => {
+    setRecoveryDialogOpen(true);
   };
 
   if (isLoading) {
@@ -128,6 +134,9 @@ export default function IdentityDetailPage() {
               </Tooltip>
               <Button variant="outlined" startIcon={<Edit />} onClick={handleEdit}>
                 Edit
+              </Button>
+              <Button variant="outlined" color="info" startIcon={<LinkIcon />} onClick={handleRecover}>
+                Recover
               </Button>
               <Button variant="outlined" color="error" startIcon={<Delete />} onClick={handleDelete}>
                 Delete
@@ -259,6 +268,13 @@ export default function IdentityDetailPage() {
             onClose={() => setEditModalOpen(false)}
             identity={identity}
             onSuccess={handleEditSuccess}
+          />
+
+          {/* Recovery Dialog */}
+          <IdentityRecoveryDialog
+            open={recoveryDialogOpen}
+            onClose={() => setRecoveryDialogOpen(false)}
+            identity={identity}
           />
 
           {/* Delete Dialog */}

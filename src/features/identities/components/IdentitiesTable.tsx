@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { DataGrid, GridColDef, GridToolbar } from '@mui/x-data-grid';
 import { Box, Button, Typography, TextField, InputAdornment, IconButton, Tooltip, Paper, Pagination, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
-import { Add, Search, Refresh, NavigateBefore, NavigateNext } from '@mui/icons-material';
+import { Add, Search, Refresh, NavigateBefore, NavigateNext, Link as LinkIcon } from '@mui/icons-material';
 import { useIdentities, useIdentitiesSearch } from '@/hooks/useKratos';
 import { Identity } from '@ory/kratos-client';
 import { useRouter } from 'next/navigation';
 import { DottedLoader } from '@/components/ui/DottedLoader';
 import { IdentityDeleteDialog } from './IdentityDeleteDialog';
+import { IdentityRecoveryDialog } from './IdentityRecoveryDialog';
 
 const IdentitiesTable: React.FC = () => {
   const router = useRouter();
@@ -18,6 +19,8 @@ const IdentitiesTable: React.FC = () => {
   const [pageHistory, setPageHistory] = useState<(string | undefined)[]>([undefined]);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [identityToDelete, setIdentityToDelete] = useState<Identity | null>(null);
+  const [recoveryDialogOpen, setRecoveryDialogOpen] = useState(false);
+  const [identityToRecover, setIdentityToRecover] = useState<Identity | null>(null);
   
   // Debounce search term to avoid API calls on every keystroke
   useEffect(() => {
@@ -167,12 +170,12 @@ const IdentitiesTable: React.FC = () => {
     {
       field: 'actions',
       headerName: 'Actions',
-      flex: 0.8,
-      minWidth: 140,
+      flex: 1.2,
+      minWidth: 200,
       sortable: false,
       filterable: false,
       renderCell: (params) => (
-        <Box>
+        <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
           <Button 
             variant="text" 
             size="small" 
@@ -180,6 +183,14 @@ const IdentitiesTable: React.FC = () => {
             onClick={() => handleViewDetails(params.row.id)}
           >
             View
+          </Button>
+          <Button 
+            variant="text" 
+            size="small" 
+            color="info"
+            onClick={() => handleRecover(params.row.id)}
+          >
+            Recover
           </Button>
           <Button 
             variant="text" 
@@ -203,6 +214,14 @@ const IdentitiesTable: React.FC = () => {
     if (identity) {
       setIdentityToDelete(identity);
       setDeleteDialogOpen(true);
+    }
+  };
+
+  const handleRecover = (id: string) => {
+    const identity = displayedIdentities.find((identity: Identity) => identity.id === id);
+    if (identity) {
+      setIdentityToRecover(identity);
+      setRecoveryDialogOpen(true);
     }
   };
 
@@ -323,7 +342,7 @@ const IdentitiesTable: React.FC = () => {
         <DataGrid
           rows={displayedIdentities}
           columns={columns}
-          checkboxSelection
+          //checkboxSelection
           onRowSelectionModelChange={(newSelection) => {
             setSelectedRows(newSelection as unknown as string[]);
           }}
@@ -384,6 +403,16 @@ const IdentitiesTable: React.FC = () => {
           </Button>
         </Box>
       </Box>
+
+      {/* Recovery Dialog */}
+      <IdentityRecoveryDialog
+        open={recoveryDialogOpen}
+        onClose={() => {
+          setRecoveryDialogOpen(false);
+          setIdentityToRecover(null);
+        }}
+        identity={identityToRecover}
+      />
 
       {/* Delete Dialog */}
       <IdentityDeleteDialog

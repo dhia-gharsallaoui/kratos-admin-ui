@@ -83,6 +83,13 @@ export async function createRecoveryLinkForIdentity(params: IdentityApiCreateRec
   return await adminApi.createRecoveryLinkForIdentity(params);
 }
 
+// Simplified wrapper for easier use
+export async function createRecoveryLink(identityId: string) {
+  return await adminApi.createRecoveryLinkForIdentity({
+    createRecoveryLinkForIdentityBody: { identity_id: identityId }
+  });
+}
+
 // Public API methods
 export async function listIdentitySchemas(params: IdentityApiListIdentitySchemasRequest = {}) {
   return await publicApi.listIdentitySchemas(params);
