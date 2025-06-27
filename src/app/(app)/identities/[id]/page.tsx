@@ -95,7 +95,7 @@ export default function IdentityDetailPage() {
               Identity Not Found
             </Typography>
             <Typography variant="body1" sx={{ mb: 3 }}>
-              The identity with ID "{identityId}" could not be found.
+              The identity with ID &quot;{identityId}&quot; could not be found.
             </Typography>
             <Button variant="contained" onClick={handleBack}>
               Back to Identities

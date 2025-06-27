@@ -1,32 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { getAllIdentities, listSessions, listIdentitySchemas } from '@/services/kratos';
 import { Identity, Session } from '@ory/kratos-client';
-
-// Analytics data interfaces
-export interface IdentityAnalytics {
-  totalIdentities: number;
-  newIdentitiesLast30Days: number;
-  identitiesByDay: Array<{ date: string; count: number }>;
-  identitiesBySchema: Array<{ schema: string; count: number }>;
-  verificationStatus: {
-    verified: number;
-    unverified: number;
-  };
-}
-
-export interface SessionAnalytics {
-  totalSessions: number;
-  activeSessions: number;
-  sessionsByDay: Array<{ date: string; count: number }>;
-  averageSessionDuration: number;
-  sessionsLast7Days: number;
-}
-
-export interface SystemAnalytics {
-  totalSchemas: number;
-  systemHealth: 'healthy' | 'warning' | 'error';
-  lastUpdated: Date;
-}
+import { IdentityAnalytics, SessionAnalytics, SystemAnalytics } from '../types';
 
 // Hook to fetch comprehensive identity analytics
 export const useIdentityAnalytics = () => {

@@ -63,7 +63,8 @@ const IdentitiesTable: React.FC = () => {
   const error = regularErrorDetails;
   const refetch = regularRefetch;
 
-  const baseIdentities = data?.identities || [];
+  // Memoize base identities to avoid useMemo dependency issues
+  const baseIdentities = React.useMemo(() => data?.identities || [], [data?.identities]);
   const hasMore = data?.hasMore || false;
   const nextPageToken = data?.nextPageToken;
   
