@@ -7,6 +7,7 @@ import { useTheme } from '@/providers/ThemeProvider';
 import { useUser, useLogout } from '@/features/auth/hooks/useAuth';
 import { UserRole } from '@/features/auth';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
+import Footer from './Footer';
 
 const drawerWidth = 240;
 
@@ -195,7 +196,8 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
           component="main"
           sx={{
             flexGrow: 1,
-            p: 3,
+            display: 'flex',
+            flexDirection: 'column',
             width: open ? { sm: `calc(100% - ${drawerWidth}px)` } : '100%',
             minHeight: '100vh',
             backgroundColor: 'background.default',
@@ -203,7 +205,10 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
           }}
         >
           <Toolbar />
-          {children}
+          <Box sx={{ flexGrow: 1, p: 3 }}>
+            {children}
+          </Box>
+          <Footer />
         </Box>
       </Box>
     </ProtectedRoute>
