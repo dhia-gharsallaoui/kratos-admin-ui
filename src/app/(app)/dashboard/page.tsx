@@ -1,7 +1,7 @@
 'use client';
 
 import { Box, Typography, Grid, Paper, Card, CardContent, IconButton, Tooltip, Alert } from '@mui/material';
-import { Refresh, TrendingUp, Group, Security, Schedule, Schema, HealthAndSafety, AccessTime } from '@mui/icons-material';
+import { Refresh, TrendingUp, Group, Security, Schedule, Schema, HealthAndSafety } from '@mui/icons-material';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import { UserRole } from '@/features/auth';
@@ -101,7 +101,7 @@ export default function Dashboard() {
 
           {/* Key Metrics Cards */}
           <Grid container spacing={3} sx={{ mb: 4 }}>
-            <Grid size={{ xs: 12, sm: 6, lg: 1.7 }}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <Card>
                 <CardContent>
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
@@ -120,7 +120,7 @@ export default function Dashboard() {
               </Card>
             </Grid>
 
-            <Grid size={{ xs: 12, sm: 6, lg: 1.7 }}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <Card>
                 <CardContent>
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
@@ -139,7 +139,7 @@ export default function Dashboard() {
               </Card>
             </Grid>
 
-            <Grid size={{ xs: 12, sm: 6, lg: 1.7 }}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <Card>
                 <CardContent>
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
@@ -158,7 +158,7 @@ export default function Dashboard() {
               </Card>
             </Grid>
 
-            <Grid size={{ xs: 12, sm: 6, lg: 1.7 }}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <Card>
                 <CardContent>
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
@@ -184,7 +184,7 @@ export default function Dashboard() {
               </Card>
             </Grid>
 
-            <Grid size={{ xs: 12, sm: 6, lg: 1.7 }}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <Card>
                 <CardContent>
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
@@ -203,7 +203,7 @@ export default function Dashboard() {
               </Card>
             </Grid>
 
-            <Grid size={{ xs: 12, sm: 6, lg: 1.7 }}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <Card>
                 <CardContent>
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
@@ -217,30 +217,6 @@ export default function Dashboard() {
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     {system.data?.systemHealth || 'Unknown'}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-
-            <Grid size={{ xs: 12, sm: 6, lg: 1.7 }}>
-              <Card>
-                <CardContent>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                    <AccessTime color="info" sx={{ mr: 1 }} />
-                    <Typography variant="h6" color="info.main">
-                      Last Updated
-                    </Typography>
-                  </Box>
-                  <Typography variant="h3" sx={{ mb: 1 }}>
-                    {system.data?.lastUpdated
-                      ? new Date(system.data.lastUpdated).toLocaleTimeString('en-US', {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })
-                      : '--:--'}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Data refresh time
                   </Typography>
                 </CardContent>
               </Card>
