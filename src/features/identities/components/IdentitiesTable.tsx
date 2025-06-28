@@ -233,8 +233,7 @@ const IdentitiesTable: React.FC = () => {
   };
 
   const handleCreateNew = () => {
-    console.log('Create new identity');
-    // Implement navigation to create identity page
+    router.push('/identities/create');
   };
 
   const handleRefresh = () => {
