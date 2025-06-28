@@ -8,6 +8,7 @@ interface SessionsTableProps {
   isLoading: boolean;
   isFetchingNextPage: boolean;
   searchQuery: string;
+  onSessionClick?: (sessionId: string) => void;
 }
 
 // Internal helper functions that don't depend on props
@@ -38,16 +39,18 @@ const getTimeRemainingInternal = (expiresAt: string): string | null => {
 
 // Session row component with its own memoization
 const SessionRow = React.memo(
-  ({ session }: { session: any }) => {
+  ({ session, onSessionClick }: { session: any; onSessionClick?: (sessionId: string) => void }) => {
     const timeRemaining = getTimeRemainingInternal(session.expires_at || '');
     const isExpiringSoon = timeRemaining && timeRemaining.includes('m remaining');
 
     return (
       <TableRow
         key={session.id}
+        onClick={() => onSessionClick?.(session.id)}
         sx={{
           '&:hover': {
             backgroundColor: 'var(--table-row-hover)',
+            cursor: onSessionClick ? 'pointer' : 'default',
           },
           borderBottom: '1px solid var(--table-border)',
         }}
@@ -135,7 +138,7 @@ const SessionRow = React.memo(
 SessionRow.displayName = 'SessionRow';
 
 // Main table component with ultimate stability
-const SessionsTableComponent = ({ sessions, isLoading, isFetchingNextPage, searchQuery }: SessionsTableProps) => {
+const SessionsTableComponent = ({ sessions, isLoading, isFetchingNextPage, searchQuery, onSessionClick }: SessionsTableProps) => {
   // Use refs to maintain stable state
   const stableSessionsRef = useRef<any[]>([]);
   const lastSessionIdsRef = useRef<string>('');
@@ -203,7 +206,7 @@ const SessionsTableComponent = ({ sessions, isLoading, isFetchingNextPage, searc
               </TableCell>
             </TableRow>
           ) : (
-            stableSessions.map((session) => <SessionRow key={session.id} session={session} />)
+            stableSessions.map((session) => <SessionRow key={session.id} session={session} onSessionClick={onSessionClick} />)
           )}
           {isFetchingNextPage && <SessionsLoadingSkeleton rows={5} />}
         </TableBody>
@@ -228,11 +231,12 @@ const arePropsEqual = (prevProps: SessionsTableProps, nextProps: SessionsTablePr
   const loadingChanged = prevProps.isLoading !== nextProps.isLoading;
   const fetchingChanged = prevProps.isFetchingNextPage !== nextProps.isFetchingNextPage;
   const searchChanged = prevProps.searchQuery !== nextProps.searchQuery;
+  const clickHandlerChanged = prevProps.onSessionClick !== nextProps.onSessionClick;
 
   // Simple re-render logic:
-  // - Re-render if sessions, loading, or search changed
+  // - Re-render if sessions, loading, search, or click handler changed
   // - Ignore fetchingChanged when sessions are stable (let CSS handle loading state)
-  const shouldRerender = sessionsChanged || loadingChanged || searchChanged;
+  const shouldRerender = sessionsChanged || loadingChanged || searchChanged || clickHandlerChanged;
 
   // Return true if props are equal (should NOT re-render)
   return !shouldRerender;

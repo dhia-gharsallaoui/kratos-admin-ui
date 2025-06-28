@@ -47,7 +47,7 @@ export const useSessionsWithSearch = (searchQuery?: string) => {
       }
       return await getSessionsPage({
         pageToken: pageParam,
-        pageSize: 50, // Larger page size for search to get more results faster
+        pageSize: 250, // Larger page size for search to get more results faster
         signal,
       });
     },

@@ -9,7 +9,7 @@ interface UseStableSessionsOptions {
 export const useStableSessions = ({ sessions, searchQuery, getIdentityDisplay }: UseStableSessionsOptions) => {
   // Refs to store stable state
   const stableSessionsRef = useRef<any[]>([]);
-  const lastSessionIdsRef = useRef<string>('');
+  const lastSessionFingerprintRef = useRef<string>('');
 
   // Determine if we're searching
   const isSearching = !!searchQuery.trim();
@@ -30,21 +30,21 @@ export const useStableSessions = ({ sessions, searchQuery, getIdentityDisplay }:
       });
     }
 
-    // Create a unique identifier for this set of sessions
-    const sessionIds = filteredSessions
-      .map((s) => s.id)
+    // Create a unique identifier for this set of sessions including key properties
+    const sessionFingerprint = filteredSessions
+      .map((s) => `${s.id}:${s.active}:${s.expires_at}:${s.authenticated_at}`)
       .sort()
       .join(',');
 
-    // Only update our stable reference if the session IDs actually changed
-    if (sessionIds !== lastSessionIdsRef.current) {
+    // Only update our stable reference if the session fingerprint actually changed
+    if (sessionFingerprint !== lastSessionFingerprintRef.current) {
       stableSessionsRef.current = filteredSessions;
-      lastSessionIdsRef.current = sessionIds;
+      lastSessionFingerprintRef.current = sessionFingerprint;
     }
 
     return {
       sessions: stableSessionsRef.current,
-      sessionIds: lastSessionIdsRef.current,
+      sessionIds: lastSessionFingerprintRef.current,
       count: stableSessionsRef.current.length,
     };
   }, [sessions, searchQuery, isSearching, getIdentityDisplay]);

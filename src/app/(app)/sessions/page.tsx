@@ -9,10 +9,12 @@ import { UserRole } from '@/features/auth';
 import { useSessionsPaginated, useSessionsWithSearch } from '@/features/sessions/hooks/useSessions';
 import { useStableSessions } from '@/features/sessions/hooks/useStableSessions';
 import { SessionsTable } from '@/features/sessions/components/SessionsTable';
+import { SessionDetailDialog } from '@/features/sessions/components/SessionDetailDialog';
 
 export default function SessionsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
+  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
 
   // Debounce search query to avoid excessive API calls
   useEffect(() => {
@@ -35,13 +37,10 @@ export default function SessionsPage() {
   const isSearching = !!trimmedSearchQuery;
   const activeQuery = isSearching ? searchQuery_ : paginatedQuery;
 
-  // Get sessions from the appropriate source
-  const sessions = useMemo(() => {
-    if (isSearching) {
-      return searchQuery_.data?.pages.flatMap((page) => page.sessions) || [];
-    }
-    return paginatedQuery.data?.pages.flatMap((page) => page.sessions) || [];
-  }, [isSearching, searchQuery_.data, paginatedQuery.data]);
+  // Get sessions from the appropriate source (removed useMemo for better reactivity)
+  const sessions = isSearching
+    ? searchQuery_.data?.pages.flatMap((page) => page.sessions) || []
+    : paginatedQuery.data?.pages.flatMap((page) => page.sessions) || [];
 
   // Unified loading and error states
   const isLoading = activeQuery.isLoading;
@@ -80,6 +79,14 @@ export default function SessionsPage() {
   });
 
   const stableFilteredSessions = stableSessionsState.sessions;
+
+  const handleSessionClick = (sessionId: string) => {
+    setSelectedSessionId(sessionId);
+  };
+
+  const handleDialogClose = () => {
+    setSelectedSessionId(null);
+  };
 
   return (
     <ProtectedRoute requiredRole={UserRole.ADMIN}>
@@ -179,10 +186,12 @@ export default function SessionsPage() {
               ) : (
                 <>
                   <SessionsTable
+                    key={`${paginatedQuery.dataUpdatedAt}-${searchQuery_.dataUpdatedAt}`} // Force re-render when data updates
                     sessions={stableFilteredSessions}
                     isLoading={isLoading}
                     isFetchingNextPage={false} // Don't cause re-renders for fetching state
                     searchQuery={searchQuery}
+                    onSessionClick={handleSessionClick}
                   />
 
                   {/* Loading/pagination controls for search mode */}
@@ -294,6 +303,23 @@ export default function SessionsPage() {
             </CardContent>
           </Card>
         </Box>
+
+        {/* Session Detail Dialog */}
+        {selectedSessionId && (
+          <SessionDetailDialog
+            open={true}
+            onClose={handleDialogClose}
+            sessionId={selectedSessionId}
+            onSessionUpdated={() => {
+              // Refetch the active query
+              if (isSearching) {
+                searchQuery_.refetch();
+              } else {
+                paginatedQuery.refetch();
+              }
+            }}
+          />
+        )}
       </AdminLayout>
     </ProtectedRoute>
   );

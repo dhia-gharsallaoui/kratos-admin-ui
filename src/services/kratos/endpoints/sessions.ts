@@ -238,3 +238,20 @@ export async function getSessionsUntilDate(options?: {
     stoppedAtDate: shouldStop, // indicates if we stopped due to date cutoff
   };
 }
+
+// Get detailed session information by ID
+export async function getSession(id: string, expand?: ('identity' | 'devices')[]) {
+  const adminApi = getAdminApi();
+  return await adminApi.getSession({ id, expand });
+}
+
+export async function disableSession(id: string) {
+  const adminApi = getAdminApi();
+  return await adminApi.disableSession({ id });
+}
+
+// Extend a session by ID
+export async function extendSession(id: string) {
+  const adminApi = getAdminApi();
+  return await adminApi.extendSession({ id });
+}
