@@ -255,3 +255,9 @@ export async function extendSession(id: string) {
   const adminApi = getAdminApi();
   return await adminApi.extendSession({ id });
 }
+
+// Delete all sessions for a specific identity
+export async function deleteIdentitySessions(identityId: string) {
+  const adminApi = getAdminApi();
+  return await adminApi.deleteIdentitySessions({ id: identityId });
+}

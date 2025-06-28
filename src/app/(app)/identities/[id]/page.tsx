@@ -1,8 +1,24 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { Box, Button, Typography, Grid, Chip, Card, CardContent, Divider, IconButton, Tooltip } from '@mui/material';
-import { ArrowBack, Edit, Delete, Refresh, Link as LinkIcon } from '@mui/icons-material';
+import {
+  Box,
+  Button,
+  Typography,
+  Grid,
+  Chip,
+  Card,
+  CardContent,
+  Divider,
+  IconButton,
+  Tooltip,
+  Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from '@mui/material';
+import { ArrowBack, Edit, Delete, Refresh, Link as LinkIcon, DeleteSweep, Person } from '@mui/icons-material';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import { UserRole } from '@/features/auth';
@@ -11,6 +27,9 @@ import { DottedLoader } from '@/components/ui/DottedLoader';
 import { IdentityEditModal } from '@/features/identities/components/IdentityEditModal';
 import { IdentityDeleteDialog } from '@/features/identities/components/IdentityDeleteDialog';
 import { IdentityRecoveryDialog } from '@/features/identities/components/IdentityRecoveryDialog';
+import { SessionsTable } from '@/features/sessions/components/SessionsTable';
+import { SessionDetailDialog } from '@/features/sessions/components/SessionDetailDialog';
+import { useIdentitySessions, useDeleteIdentitySessions } from '@/features/sessions/hooks';
 import { useState } from 'react';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { github, vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
@@ -24,8 +43,14 @@ export default function IdentityDetailPage() {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [recoveryDialogOpen, setRecoveryDialogOpen] = useState(false);
+  const [deleteSessionsDialogOpen, setDeleteSessionsDialogOpen] = useState(false);
+  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
 
   const { data: identity, isLoading, isError, error: _, refetch } = useIdentity(identityId);
+
+  // Sessions hooks
+  const { data: sessionsData, isLoading: sessionsLoading, error: sessionsError, refetch: refetchSessions } = useIdentitySessions(identityId);
+  const deleteSessionsMutation = useDeleteIdentitySessions();
 
   const handleBack = () => {
     router.push('/identities');
@@ -50,6 +75,30 @@ export default function IdentityDetailPage() {
 
   const handleRecover = () => {
     setRecoveryDialogOpen(true);
+  };
+
+  const handleDeleteAllSessions = () => {
+    setDeleteSessionsDialogOpen(true);
+  };
+
+  const handleDeleteAllSessionsConfirm = () => {
+    deleteSessionsMutation.mutate(identityId, {
+      onSuccess: () => {
+        setDeleteSessionsDialogOpen(false);
+      },
+    });
+  };
+
+  const handleSessionClick = (sessionId: string) => {
+    setSelectedSessionId(sessionId);
+  };
+
+  const handleSessionDialogClose = () => {
+    setSelectedSessionId(null);
+  };
+
+  const handleSessionUpdated = () => {
+    refetchSessions();
   };
 
   if (isLoading) {
@@ -210,6 +259,70 @@ export default function IdentityDetailPage() {
               </Card>
             </Grid>
 
+            {/* Sessions Section */}
+            <Grid size={{ xs: 12 }}>
+              <Card>
+                <CardContent>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Person color="primary" />
+                      <Typography variant="h6">Sessions</Typography>
+                    </Box>
+                    <Box sx={{ display: 'flex', gap: 1 }}>
+                      <Tooltip title="Refresh Sessions">
+                        <IconButton onClick={() => refetchSessions()} size="small">
+                          <Refresh />
+                        </IconButton>
+                      </Tooltip>
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        size="small"
+                        startIcon={<DeleteSweep />}
+                        onClick={handleDeleteAllSessions}
+                        disabled={deleteSessionsMutation.isPending || sessionsLoading || !sessionsData?.data?.length}
+                      >
+                        Delete All Sessions
+                      </Button>
+                    </Box>
+                  </Box>
+                  <Divider sx={{ mb: 2 }} />
+
+                  {sessionsError ? (
+                    <Alert severity="error" sx={{ mb: 2 }}>
+                      Failed to load sessions: {sessionsError.message}
+                    </Alert>
+                  ) : sessionsLoading ? (
+                    <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+                      <DottedLoader />
+                    </Box>
+                  ) : !sessionsData?.data?.length ? (
+                    <Box sx={{ textAlign: 'center', py: 4 }}>
+                      <Typography variant="body2" color="text.secondary">
+                        No active sessions found for this identity
+                      </Typography>
+                    </Box>
+                  ) : (
+                    <>
+                      <SessionsTable
+                        key={sessionsData.headers?.etag || 'identity-sessions'} // Force re-render when data updates
+                        sessions={sessionsData.data}
+                        isLoading={false}
+                        isFetchingNextPage={false}
+                        searchQuery=""
+                        onSessionClick={handleSessionClick}
+                      />
+                      <Box sx={{ mt: 2, textAlign: 'center' }}>
+                        <Typography variant="body2" color="text.secondary">
+                          Showing {sessionsData.data.length} session(s) for this identity
+                        </Typography>
+                      </Box>
+                    </>
+                  )}
+                </CardContent>
+              </Card>
+            </Grid>
+
             {/* Raw JSON */}
             <Grid size={{ xs: 12 }}>
               <Card>
@@ -268,6 +381,38 @@ export default function IdentityDetailPage() {
             identity={identity}
             onSuccess={handleDeleteSuccess}
           />
+
+          {/* Delete All Sessions Dialog */}
+          <Dialog open={deleteSessionsDialogOpen} onClose={() => setDeleteSessionsDialogOpen(false)} maxWidth="sm" fullWidth>
+            <DialogTitle>Delete All Sessions</DialogTitle>
+            <DialogContent>
+              <Alert severity="warning" sx={{ mb: 2 }}>
+                This action will revoke all active sessions for this identity. The user will be logged out from all devices.
+              </Alert>
+              <Typography variant="body2">Are you sure you want to delete all sessions for this identity? This action cannot be undone.</Typography>
+              {deleteSessionsMutation.error && (
+                <Alert severity="error" sx={{ mt: 2 }}>
+                  Failed to delete sessions: {deleteSessionsMutation.error.message}
+                </Alert>
+              )}
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setDeleteSessionsDialogOpen(false)}>Cancel</Button>
+              <Button onClick={handleDeleteAllSessionsConfirm} color="error" variant="contained" disabled={deleteSessionsMutation.isPending}>
+                {deleteSessionsMutation.isPending ? 'Deleting...' : 'Delete All Sessions'}
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+          {/* Session Detail Dialog */}
+          {selectedSessionId && (
+            <SessionDetailDialog
+              open={true}
+              onClose={handleSessionDialogClose}
+              sessionId={selectedSessionId}
+              onSessionUpdated={handleSessionUpdated}
+            />
+          )}
         </Box>
       </AdminLayout>
     </ProtectedRoute>
