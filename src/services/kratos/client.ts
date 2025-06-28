@@ -1,4 +1,4 @@
-import { Configuration, ConfigurationParameters, IdentityApi, MetadataApi } from '@ory/kratos-client';
+import { Configuration, ConfigurationParameters, CourierApi, IdentityApi, MetadataApi } from '@ory/kratos-client';
 import { getAdminUrl, getPublicUrl } from './config';
 
 // Create configurations for API clients
@@ -27,3 +27,4 @@ const getPublicConfiguration = (): Configuration => {
 export const getAdminApi = () => new IdentityApi(getAdminConfiguration());
 export const getPublicApi = () => new IdentityApi(getPublicConfiguration());
 export const getMetadataApi = () => new MetadataApi(getPublicConfiguration());
+export const getCourierApi = () => new CourierApi(getAdminConfiguration());

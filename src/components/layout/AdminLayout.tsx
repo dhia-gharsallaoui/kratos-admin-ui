@@ -32,6 +32,7 @@ import {
   People,
   Logout,
   GitHub,
+  Message,
 } from '@mui/icons-material';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -67,6 +68,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
     },
     { text: 'Schemas', icon: <Schema />, path: '/schemas' },
     { text: 'Sessions', icon: <Person />, path: '/sessions', adminOnly: true },
+    { text: 'Messages', icon: <Message />, path: '/messages', adminOnly: true },
   ];
 
   const handleDrawerToggle = () => {

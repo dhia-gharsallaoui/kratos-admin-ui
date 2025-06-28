@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { DashboardOutlined, PeopleOutlined, SecurityOutlined, DescriptionOutlined, LogoutOutlined } from '@mui/icons-material';
+import { DashboardOutlined, PeopleOutlined, SecurityOutlined, DescriptionOutlined, LogoutOutlined, MailOutlined } from '@mui/icons-material';
 import { Divider, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography, Box } from '@mui/material';
 import { useLogout, useUser } from '@/features/auth';
 import { UserRole } from '@/features/auth';
@@ -29,6 +29,12 @@ const mainNavItems: NavItem[] = [
     title: 'Sessions',
     path: '/sessions',
     icon: <SecurityOutlined />,
+    requiredRole: UserRole.ADMIN,
+  },
+  {
+    title: 'Messages',
+    path: '/messages',
+    icon: <MailOutlined />,
     requiredRole: UserRole.ADMIN,
   },
   {
