@@ -60,35 +60,17 @@
         "department": {
           "title": "Department",
           "type": "string",
-          "enum": [
-            "Engineering",
-            "Product",
-            "Marketing",
-            "Sales",
-            "Operations",
-            "Finance",
-            "HR"
-          ]
+          "enum": ["Engineering", "Product", "Marketing", "Sales", "Operations", "Finance", "HR"]
         },
         "role": {
           "title": "Role",
           "type": "string",
-          "enum": [
-            "admin",
-            "manager",
-            "senior",
-            "junior",
-            "intern"
-          ]
+          "enum": ["admin", "manager", "senior", "junior", "intern"]
         },
         "status": {
           "title": "Status",
           "type": "string",
-          "enum": [
-            "active",
-            "inactive",
-            "on_leave"
-          ]
+          "enum": ["active", "inactive", "on_leave"]
         }
       },
       "required": ["email", "employee_id", "first_name", "last_name", "department", "role"],

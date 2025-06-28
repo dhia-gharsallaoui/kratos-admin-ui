@@ -20,26 +20,22 @@ A modern, responsive admin interface for [Ory Kratos](https://www.ory.sh/kratos/
   - Email verification rates
   - Identity schema distribution
   - System health monitoring
-  
 - **👥 Identity Management**: Complete user identity lifecycle management:
   - **Create Identities**: Dynamic form generation based on Kratos schemas with validation
   - **View Identities**: Searchable table with pagination and advanced filtering
   - **Edit Identities**: Full identity trait editing with real-time validation
   - **Delete Identities**: Safe deletion with confirmation dialogs
   - **Recovery Links**: Generate secure recovery links for password reset
-  
 - **🔐 Session Management**: Real-time session monitoring and control:
   - Active session tracking with detailed information
   - Session duration and activity analytics
   - Session termination capabilities
   - User device and location tracking
-  
 - **📋 Schema Management**: Identity schema inspection and management:
   - View all configured identity schemas
   - Schema structure visualization with syntax highlighting
   - Schema properties and validation rules display
   - Read-only schema browsing (creation via API not supported)
-  
 - **👤 User Profile**: User account management:
   - Profile information display
   - Role-based access control (Admin/Viewer)
@@ -67,7 +63,7 @@ A modern, responsive admin interface for [Ory Kratos](https://www.ory.sh/kratos/
 ## 🛠️ Technology Stack
 
 - **Framework**: Next.js 14 (App Router)
-- **UI Library**: Material-UI v7 + MUI X Charts/DataGrid  
+- **UI Library**: Material-UI v7 + MUI X Charts/DataGrid
 - **Forms**: React JSON Schema Form (RJSF) with custom Material-UI widgets
 - **Validation**: libphonenumber-js for international phone numbers
 - **State Management**: Zustand + TanStack Query
@@ -163,6 +159,7 @@ services:
 
 **Development Setup:**
 For a complete development environment with Kratos, check the [`dev/`](./dev) folder which includes:
+
 - Docker Compose with Kratos, self-service UI, and MailSlurper
 - Multiple identity schemas (organizational, customer)
 - Automated test data generation
@@ -299,11 +296,11 @@ spec:
               value: 'http://kratos:4434'
           resources:
             requests:
-              memory: "128Mi"
-              cpu: "100m"
+              memory: '128Mi'
+              cpu: '100m'
             limits:
-              memory: "256Mi"
-              cpu: "200m"
+              memory: '256Mi'
+              cpu: '200m'
 ```
 
 **Runtime Configuration:**
@@ -343,7 +340,6 @@ The Docker image supports runtime configuration through environment variables, m
    - Run `npm ci` to clean install dependencies
    - Check Node.js version (18+ required)
    - Verify TypeScript errors with `npm run lint`
-
 
 ## 📄 License
 

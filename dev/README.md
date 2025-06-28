@@ -27,16 +27,18 @@ The setup includes three identity schemas:
 ## Quick Start
 
 1. Start all services:
+
    ```bash
    cd dev
    docker-compose up -d
    ```
 
 2. Create test identities (first time only):
+
    ```bash
    docker-compose --profile init up init-identities
    ```
-   
+
    This creates 37 test identities:
    - 15 person identities (default schema)
    - 10 organizational identities (employees)
@@ -57,6 +59,7 @@ The setup includes three identity schemas:
 ## Re-creating Test Data
 
 To recreate test identities:
+
 ```bash
 # Remove existing data
 docker-compose down -v
@@ -81,6 +84,7 @@ The admin UI container mounts the source code as a volume, so changes are reflec
 ## Environment Variables
 
 The admin UI is configured with:
+
 - `NEXT_PUBLIC_KRATOS_ADMIN_URL=http://localhost:4434`
 - `NEXT_PUBLIC_KRATOS_PUBLIC_URL=http://localhost:4433`
 

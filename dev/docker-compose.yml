@@ -104,7 +104,7 @@ services:
     networks:
       - intranet
     command: sh /init-identities.sh
-    restart: "no"
+    restart: 'no'
     profiles:
       - init
 

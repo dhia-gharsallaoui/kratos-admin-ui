@@ -125,22 +125,12 @@
         "loyalty_tier": {
           "title": "Loyalty Tier",
           "type": "string",
-          "enum": [
-            "bronze",
-            "silver",
-            "gold",
-            "platinum",
-            "diamond"
-          ]
+          "enum": ["bronze", "silver", "gold", "platinum", "diamond"]
         },
         "account_status": {
           "title": "Account Status",
           "type": "string",
-          "enum": [
-            "active",
-            "suspended",
-            "closed"
-          ]
+          "enum": ["active", "suspended", "closed"]
         }
       },
       "required": ["email", "customer_id", "first_name", "last_name"],
