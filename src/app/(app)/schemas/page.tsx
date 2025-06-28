@@ -30,7 +30,7 @@ import { AdminLayout } from '@/components/layout/AdminLayout';
 import { useQuery } from '@tanstack/react-query';
 import { getIdentitySchema } from '@/services/kratos';
 import { useSchemas } from '@/features/schemas/hooks';
-import { Code, Description, Search, Refresh, Add, MoreVert, Close } from '@mui/icons-material';
+import { Code, Description, Search, Refresh, MoreVert, Close } from '@mui/icons-material';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import { UserRole } from '@/features/auth';
 import SyntaxHighlighter from 'react-syntax-highlighter';
@@ -160,42 +160,25 @@ export default function SchemasPage() {
                 Identity Schemas
               </Typography>
               <Typography variant="body1" color="text.secondary">
-                Manage your identity schemas and their properties
+                View and inspect your identity schemas and their properties
               </Typography>
             </Box>
-            <Box sx={{ display: 'flex', gap: 1 }}>
-              <Button
-                variant="contained"
-                startIcon={<Add />}
+            <Tooltip title="Refresh">
+              <IconButton
+                onClick={() => refetch()}
                 sx={{
                   borderRadius: 'var(--radius)',
-                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-                  background: 'var(--primary)',
+                  background: 'var(--accent)',
+                  color: 'var(--accent-foreground)',
                   '&:hover': {
-                    background: 'var(--primary)',
+                    background: 'var(--accent)',
                     opacity: 0.9,
                   },
                 }}
               >
-                Add Schema
-              </Button>
-              <Tooltip title="Refresh">
-                <IconButton
-                  onClick={() => refetch()}
-                  sx={{
-                    borderRadius: 'var(--radius)',
-                    background: 'var(--accent)',
-                    color: 'var(--accent-foreground)',
-                    '&:hover': {
-                      background: 'var(--accent)',
-                      opacity: 0.9,
-                    },
-                  }}
-                >
-                  <Refresh />
-                </IconButton>
-              </Tooltip>
-            </Box>
+                <Refresh />
+              </IconButton>
+            </Tooltip>
           </Box>
 
           <Card
@@ -298,7 +281,7 @@ export default function SchemasPage() {
                                 />
                                 <Typography variant="h6">No schemas found</Typography>
                                 <Typography variant="body2" color="text.secondary">
-                                  {searchQuery ? 'Try a different search term' : 'Add your first schema to get started'}
+                                  {searchQuery ? 'Try a different search term' : 'No schemas are currently configured'}
                                 </Typography>
                               </Box>
                               {schemasResponse && (
