@@ -1,104 +1,85 @@
 'use client';
 
-import { useState } from 'react';
-import {
-  Box,
-  Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TablePagination,
-  Chip,
-  CircularProgress,
-  Card,
-  CardContent,
-  IconButton,
-  Tooltip,
-  TextField,
-  InputAdornment,
-  Paper,
-} from '@mui/material';
+import { useState, useMemo, useEffect, useCallback } from 'react';
+import { Box, Typography, CircularProgress, Card, CardContent, IconButton, Tooltip, TextField, InputAdornment, Button } from '@mui/material';
 import { AdminLayout } from '@/components/layout/AdminLayout';
-import { useQuery } from '@tanstack/react-query';
-import { getAllSessions } from '@/services/kratos';
-import { Search, Refresh, Close, Person, AccessTime, Warning } from '@mui/icons-material';
+import { Search, Refresh, Close, ExpandMore } from '@mui/icons-material';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import { UserRole } from '@/features/auth';
+import { useSessionsPaginated, useSessionsWithSearch } from '@/features/sessions/hooks/useSessions';
+import { useStableSessions } from '@/features/sessions/hooks/useStableSessions';
+import { SessionsTable } from '@/features/sessions/components/SessionsTable';
 
 export default function SessionsPage() {
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
 
-  // Fetch all sessions directly using the listSessions method
-  const {
-    data: sessionsData,
-    isLoading,
-    error,
-    refetch,
-  } = useQuery({
-    queryKey: ['sessions'],
-    queryFn: async () => {
-      try {
-        const response = await getAllSessions();
-        return response.sessions;
-      } catch (err) {
-        console.error('Error fetching sessions:', err);
-        throw err;
-      }
-    },
-  });
+  // Debounce search query to avoid excessive API calls
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery.trim());
+    }, 300);
 
-  const sessions = sessionsData || [];
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
-  const handleChangePage = (_: unknown, newPage: number) => {
-    setPage(newPage);
+  const trimmedSearchQuery = debouncedSearchQuery;
+
+  // Use infinite pagination when not searching
+  const paginatedQuery = useSessionsPaginated({ pageSize: 250 });
+
+  // Use search query when there's a search term
+  const searchQuery_ = useSessionsWithSearch(trimmedSearchQuery);
+
+  // Choose which query to use based on search state
+  const isSearching = !!trimmedSearchQuery;
+  const activeQuery = isSearching ? searchQuery_ : paginatedQuery;
+
+  // Get sessions from the appropriate source
+  const sessions = useMemo(() => {
+    if (isSearching) {
+      return searchQuery_.data?.pages.flatMap((page) => page.sessions) || [];
+    }
+    return paginatedQuery.data?.pages.flatMap((page) => page.sessions) || [];
+  }, [isSearching, searchQuery_.data, paginatedQuery.data]);
+
+  // Unified loading and error states
+  const isLoading = activeQuery.isLoading;
+  const isError = activeQuery.isError;
+  const error = activeQuery.error;
+
+  // Pagination-specific states - works for both modes now
+  const fetchNextPage = isSearching ? searchQuery_.fetchNextPage : paginatedQuery.fetchNextPage;
+  const hasNextPage = isSearching ? searchQuery_.hasNextPage : paginatedQuery.hasNextPage;
+  const isFetchingNextPage = isSearching ? searchQuery_.isFetchingNextPage : paginatedQuery.isFetchingNextPage;
+
+  // Refetch function that works for both modes
+  const refetch = () => {
+    if (isSearching) {
+      searchQuery_.refetch();
+    } else {
+      paginatedQuery.refetch();
+    }
   };
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  // Helper to get identity display name
-  const getIdentityDisplay = (session: any) => {
+  // Helper to get identity display name - memoized for stability
+  const getIdentityDisplay = useCallback((session: any) => {
     if (!session.identity) return 'Unknown';
 
     const traits = session.identity.traits;
     if (!traits) return session.identity.id;
 
     return traits.email || traits.username || session.identity.id;
-  };
+  }, []);
 
-  // Filter sessions based on search query
-  const filteredSessions = sessions.filter((session) => {
-    const identityDisplay = getIdentityDisplay(session).toLowerCase();
-    const id = session.id.toLowerCase();
-    const query = searchQuery.toLowerCase();
-    return identityDisplay.includes(query) || id.includes(query);
+  // Use the stable sessions hook for truly stable references
+  const stableSessionsState = useStableSessions({
+    sessions,
+    searchQuery: trimmedSearchQuery,
+    getIdentityDisplay,
   });
 
-  // Calculate time remaining for session
-  const getTimeRemaining = (expiresAt: string) => {
-    if (!expiresAt) return null;
-
-    const now = new Date();
-    const expiry = new Date(expiresAt);
-    const diff = expiry.getTime() - now.getTime();
-
-    if (diff <= 0) return 'Expired';
-
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
-    if (days > 0) return `${days}d ${hours}h remaining`;
-    if (hours > 0) return `${hours}h ${minutes}m remaining`;
-    return `${minutes}m remaining`;
-  };
+  const stableFilteredSessions = stableSessionsState.sessions;
 
   return (
     <ProtectedRoute requiredRole={UserRole.ADMIN}>
@@ -172,7 +153,7 @@ export default function SessionsPage() {
                     input: {
                       startAdornment: (
                         <InputAdornment position="start">
-                          <Search fontSize="small" />
+                          {isSearching && searchQuery_.isLoading ? <CircularProgress size={16} /> : <Search fontSize="small" />}
                         </InputAdornment>
                       ),
                       endAdornment: searchQuery ? (
@@ -191,172 +172,102 @@ export default function SessionsPage() {
                 />
               </Box>
 
-              {isLoading ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
-                  <CircularProgress />
-                </Box>
-              ) : error ? (
+              {isError ? (
                 <Box sx={{ p: 3 }}>
-                  <Typography color="error">Error loading sessions. Please try again later.</Typography>
+                  <Typography color="error">Error loading sessions: {error?.message || 'Please try again later.'}</Typography>
                 </Box>
               ) : (
                 <>
-                  <TableContainer
-                    component={Paper}
-                    sx={{
-                      boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-                      borderRadius: '8px',
-                      overflow: 'hidden',
-                      border: '1px solid var(--border)',
-                    }}
-                  >
-                    <Table sx={{ minWidth: 650 }} aria-label="sessions table">
-                      <TableHead sx={{ backgroundColor: 'var(--table-header)' }}>
-                        <TableRow>
-                          <TableCell sx={{ fontWeight: 600 }}>Session ID</TableCell>
-                          <TableCell sx={{ fontWeight: 600 }}>Identity</TableCell>
-                          <TableCell sx={{ fontWeight: 600 }}>Status</TableCell>
-                          <TableCell sx={{ fontWeight: 600 }}>Authenticated At</TableCell>
-                          <TableCell sx={{ fontWeight: 600 }}>Expires</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {filteredSessions.length === 0 ? (
-                          <TableRow>
-                            <TableCell colSpan={5} align="center" sx={{ py: 4 }}>
-                              <Box
-                                sx={{
-                                  display: 'flex',
-                                  flexDirection: 'column',
-                                  alignItems: 'center',
-                                  gap: 1,
-                                }}
-                              >
-                                <Person
-                                  sx={{
-                                    fontSize: 40,
-                                    color: 'var(--muted-foreground)',
-                                    opacity: 0.5,
-                                  }}
-                                />
-                                <Typography variant="h6">No active sessions found</Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                  {searchQuery ? 'Try a different search term' : 'Sessions will appear here when users log in'}
-                                </Typography>
-                              </Box>
-                            </TableCell>
-                          </TableRow>
-                        ) : (
-                          filteredSessions.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((session) => {
-                            const timeRemaining = getTimeRemaining(session.expires_at || '');
-                            const isExpiringSoon = timeRemaining && timeRemaining.includes('m remaining');
-
-                            return (
-                              <TableRow
-                                key={session.id}
-                                sx={{
-                                  '&:hover': {
-                                    backgroundColor: 'var(--table-row-hover)',
-                                  },
-                                  borderBottom: '1px solid var(--table-border)',
-                                }}
-                              >
-                                <TableCell
-                                  component="th"
-                                  scope="row"
-                                  sx={{
-                                    maxWidth: 200,
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis',
-                                    whiteSpace: 'nowrap',
-                                    fontFamily: 'monospace',
-                                    fontSize: '0.875rem',
-                                  }}
-                                >
-                                  {session.id}
-                                </TableCell>
-                                <TableCell
-                                  sx={{
-                                    maxWidth: 200,
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis',
-                                    fontWeight: 500,
-                                  }}
-                                >
-                                  {getIdentityDisplay(session)}
-                                </TableCell>
-                                <TableCell>
-                                  <Chip
-                                    label={session.active ? 'Active' : 'Inactive'}
-                                    color={session.active ? 'success' : 'default'}
-                                    size="small"
-                                    sx={{
-                                      borderRadius: 'var(--radius)',
-                                      fontWeight: 500,
-                                      background: session.active ? '#10b981' : 'var(--muted)',
-                                      color: session.active ? 'white' : 'var(--muted-foreground)',
-                                    }}
-                                  />
-                                </TableCell>
-                                <TableCell>
-                                  {session.authenticated_at ? (
-                                    <Box
-                                      sx={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: 0.5,
-                                      }}
-                                    >
-                                      <AccessTime fontSize="small" color="action" />
-                                      <Typography variant="body2">{new Date(session.authenticated_at).toLocaleString()}</Typography>
-                                    </Box>
-                                  ) : (
-                                    'N/A'
-                                  )}
-                                </TableCell>
-                                <TableCell>
-                                  {session.expires_at ? (
-                                    <Box
-                                      sx={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: 0.5,
-                                      }}
-                                    >
-                                      {isExpiringSoon && <Warning fontSize="small" color="warning" />}
-                                      <Typography
-                                        variant="body2"
-                                        color={isExpiringSoon ? 'warning.main' : 'text.primary'}
-                                        fontWeight={isExpiringSoon ? 500 : 400}
-                                      >
-                                        {timeRemaining}
-                                      </Typography>
-                                    </Box>
-                                  ) : (
-                                    'N/A'
-                                  )}
-                                </TableCell>
-                              </TableRow>
-                            );
-                          })
-                        )}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                  <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    component="div"
-                    count={filteredSessions.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                    sx={{
-                      '.MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows': {
-                        margin: 0,
-                      },
-                    }}
+                  <SessionsTable
+                    sessions={stableFilteredSessions}
+                    isLoading={isLoading}
+                    isFetchingNextPage={false} // Don't cause re-renders for fetching state
+                    searchQuery={searchQuery}
                   />
+
+                  {/* Loading/pagination controls for search mode */}
+                  {isSearching && hasNextPage && (
+                    <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
+                      {searchQuery_.isAutoSearching ? (
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          <CircularProgress size={16} />
+                          <Typography variant="body2" color="text.secondary">
+                            Searching for more sessions...
+                          </Typography>
+                        </Box>
+                      ) : (
+                        <Button
+                          onClick={() => searchQuery_.loadMoreMatches()}
+                          variant="outlined"
+                          startIcon={<ExpandMore />}
+                          sx={{
+                            borderRadius: 'var(--radius)',
+                            borderColor: 'var(--border)',
+                            color: 'var(--foreground)',
+                            '&:hover': {
+                              backgroundColor: 'var(--accent)',
+                              borderColor: 'var(--accent)',
+                            },
+                          }}
+                        >
+                          Load More Matches
+                        </Button>
+                      )}
+                    </Box>
+                  )}
+
+                  {/* Manual load more for browsing mode */}
+                  {!isSearching && hasNextPage && (
+                    <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
+                      <Button
+                        onClick={() => fetchNextPage()}
+                        disabled={isFetchingNextPage}
+                        variant="outlined"
+                        startIcon={isFetchingNextPage ? <CircularProgress size={16} /> : <ExpandMore />}
+                        sx={{
+                          borderRadius: 'var(--radius)',
+                          borderColor: 'var(--border)',
+                          color: 'var(--foreground)',
+                          '&:hover': {
+                            backgroundColor: 'var(--accent)',
+                            borderColor: 'var(--accent)',
+                          },
+                        }}
+                      >
+                        {isFetchingNextPage ? 'Loading...' : 'Load More Sessions'}
+                      </Button>
+                    </Box>
+                  )}
+
+                  {/* Sessions count info */}
+                  <Box sx={{ p: 2, textAlign: 'center' }}>
+                    <Typography variant="body2" color="text.secondary">
+                      {isSearching ? (
+                        <>
+                          Found {stableFilteredSessions.length} sessions matching &ldquo;{trimmedSearchQuery}&rdquo;
+                          {(() => {
+                            // Use the isAutoSearching state from the hook
+                            if (searchQuery_.isAutoSearching) {
+                              return ' (auto-searching...)';
+                            }
+                            // Regular search behavior
+                            if (searchQuery_.isFetchingNextPage) {
+                              return ' (searching...)';
+                            }
+                            if (hasNextPage) {
+                              return ' (more available)';
+                            }
+                            return '';
+                          })()}
+                        </>
+                      ) : (
+                        <>
+                          Showing {stableFilteredSessions.length} sessions
+                          {hasNextPage && ' (more available)'}
+                        </>
+                      )}
+                    </Typography>
+                  </Box>
                 </>
               )}
             </CardContent>

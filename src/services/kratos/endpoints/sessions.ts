@@ -12,6 +12,41 @@ export async function listSessions(active?: boolean) {
   return await adminApi.listSessions({ expand: ['identity'], active });
 }
 
+// Get sessions with pagination for UI display
+export async function getSessionsPage(options?: { pageToken?: string; pageSize?: number; active?: boolean; signal?: AbortSignal }) {
+  const { pageToken, pageSize = 25, active, signal } = options || {};
+
+  const requestParams: any = {
+    pageSize,
+    expand: ['identity'],
+    active,
+  };
+
+  if (pageToken) {
+    requestParams.pageToken = pageToken;
+  }
+
+  const adminApi = getAdminApi();
+  const response = await adminApi.listSessions(requestParams, { signal });
+
+  // Extract next page token from Link header
+  const linkHeader = response.headers?.link;
+  let nextPageToken = null;
+
+  if (linkHeader) {
+    const nextMatch = linkHeader.match(/page_token=([^&>]+)[^>]*>;\s*rel="next"/);
+    if (nextMatch) {
+      nextPageToken = nextMatch[1];
+    }
+  }
+
+  return {
+    sessions: response.data,
+    nextPageToken,
+    hasMore: !!nextPageToken,
+  };
+}
+
 // Get all sessions with automatic pagination handling
 export async function getAllSessions(options?: {
   maxPages?: number;

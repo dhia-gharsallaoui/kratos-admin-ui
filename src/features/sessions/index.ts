@@ -1,5 +1,6 @@
 // Export components
-export { default as SessionsTable } from './components/SessionsTable';
+export { SessionsLoadingSkeleton } from './components/SessionsLoadingSkeleton';
+export { SessionsTable } from './components/SessionsTable';
 
 // Export hooks
 export * from './hooks';
