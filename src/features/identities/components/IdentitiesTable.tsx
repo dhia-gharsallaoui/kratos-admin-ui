@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { DataGrid, GridColDef, GridToolbar } from '@mui/x-data-grid';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import {
   Box,
   Button,
@@ -9,13 +9,12 @@ import {
   IconButton,
   Tooltip,
   Paper,
-  Pagination,
   FormControl,
   InputLabel,
   Select,
   MenuItem,
 } from '@mui/material';
-import { Add, Search, Refresh, NavigateBefore, NavigateNext, Link as LinkIcon } from '@mui/icons-material';
+import { Add, Search, Refresh, NavigateBefore, NavigateNext } from '@mui/icons-material';
 import { useIdentities, useIdentitiesSearch } from '@/features/identities/hooks';
 import { Identity } from '@ory/kratos-client';
 import { useRouter } from 'next/navigation';
@@ -25,7 +24,6 @@ import { IdentityRecoveryDialog } from './IdentityRecoveryDialog';
 
 const IdentitiesTable: React.FC = () => {
   const router = useRouter();
-  const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
   const [pageSize, setPageSize] = useState(25);
@@ -59,13 +57,7 @@ const IdentitiesTable: React.FC = () => {
     pageToken,
   });
 
-  const {
-    data: searchData,
-    isLoading: searchLoading,
-    isError: searchError,
-    error: searchErrorDetails,
-    refetch: searchRefetch,
-  } = useIdentitiesSearch({
+  const { data: searchData, isLoading: searchLoading } = useIdentitiesSearch({
     pageSize,
     searchTerm: debouncedSearchTerm,
   });
@@ -133,7 +125,7 @@ const IdentitiesTable: React.FC = () => {
       headerName: 'Email',
       flex: 1.5,
       minWidth: 220,
-      valueGetter: (value, row) => {
+      valueGetter: (_, row) => {
         const traits = row.traits as any;
         return traits?.email || 'N/A';
       },
@@ -143,7 +135,7 @@ const IdentitiesTable: React.FC = () => {
       headerName: 'Username',
       flex: 1,
       minWidth: 140,
-      valueGetter: (value, row) => {
+      valueGetter: (_, row) => {
         const traits = row.traits as any;
         return traits?.username || 'N/A';
       },
@@ -294,7 +286,7 @@ const IdentitiesTable: React.FC = () => {
         <Typography variant="h4" component="h1" gutterBottom>
           Identities
         </Typography>
-        <Typography variant="body1" color="text.secondary" paragraph>
+        <Typography variant="body1" color="text.secondary" component="p" sx={{ mb: 2 }}>
           Manage user identities in your Kratos instance.
         </Typography>
       </Box>
@@ -306,12 +298,14 @@ const IdentitiesTable: React.FC = () => {
           size="small"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Search />
-              </InputAdornment>
-            ),
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search />
+                </InputAdornment>
+              ),
+            },
           }}
           sx={{ width: 350 }}
           helperText={
@@ -339,18 +333,11 @@ const IdentitiesTable: React.FC = () => {
           rows={displayedIdentities}
           columns={columns}
           //checkboxSelection
-          onRowSelectionModelChange={(newSelection) => {
-            setSelectedRows(newSelection as unknown as string[]);
+          onRowSelectionModelChange={() => {
+            // No row selection logic needed
           }}
           hideFooterPagination
-          slots={{
-            toolbar: GridToolbar,
-          }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: false,
-            },
-          }}
+          showToolbar
         />
       </Box>
 

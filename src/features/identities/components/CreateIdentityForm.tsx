@@ -17,7 +17,16 @@ import { Save, Cancel } from '@mui/icons-material';
 import Form from '@rjsf/core';
 import { RJSFSchema, UiSchema, WidgetProps, FieldTemplateProps, ObjectFieldTemplateProps, SubmitButtonProps } from '@rjsf/utils';
 import validator from '@rjsf/validator-ajv8';
-import { parsePhoneNumber, isValidPhoneNumber, getCountries, getCountryCallingCode, CountryCode } from 'libphonenumber-js';
+
+// Add custom format for tel to avoid validation warnings
+validator.ajv.addFormat('tel', {
+  type: 'string',
+  validate: (data: string) => {
+    // Basic phone number validation - allow any string that could be a phone number
+    return typeof data === 'string' && data.length > 0;
+  },
+});
+import parsePhoneNumber, { isValidPhoneNumber, getCountries, getCountryCallingCode, CountryCode } from 'libphonenumber-js';
 import { useCreateIdentity } from '../hooks/useIdentities';
 import { useSchemas } from '@/features/schemas/hooks/useSchemas';
 import { useRouter } from 'next/navigation';
@@ -30,34 +39,26 @@ interface CreateIdentityFormProps {
 
 // Get country options for autocomplete
 const getCountryOptions = () => {
-  return getCountries().map((countryCode) => {
-    const callingCode = getCountryCallingCode(countryCode);
-    return {
-      code: countryCode,
-      name: new Intl.DisplayNames(['en'], { type: 'region' }).of(countryCode) || countryCode,
-      callingCode: `+${callingCode}`,
-      label: `${new Intl.DisplayNames(['en'], { type: 'region' }).of(countryCode)} (+${callingCode})`,
-    };
-  }).sort((a, b) => a.name.localeCompare(b.name));
+  return getCountries()
+    .map((countryCode) => {
+      const callingCode = getCountryCallingCode(countryCode);
+      return {
+        code: countryCode,
+        name: new Intl.DisplayNames(['en'], { type: 'region' }).of(countryCode) || countryCode,
+        callingCode: `+${callingCode}`,
+        label: `${new Intl.DisplayNames(['en'], { type: 'region' }).of(countryCode)} (+${callingCode})`,
+      };
+    })
+    .sort((a, b) => a.name.localeCompare(b.name));
 };
 
 // Custom tel widget component with libphonenumber-js integration
-const TelWidget: React.FC<WidgetProps> = ({ 
-  id, 
-  value, 
-  onChange, 
-  onBlur, 
-  onFocus, 
-  placeholder, 
-  disabled, 
-  readonly,
-  schema,
-  formContext 
-}) => {
+const TelWidget: React.FC<WidgetProps> = ({ id, value, onChange, onBlur, onFocus, placeholder, disabled, readonly, required, label }) => {
   const [selectedCountry, setSelectedCountry] = useState<CountryCode>('US');
   const [phoneInput, setPhoneInput] = useState('');
   const [error, setError] = useState<string>('');
-  
+  const [isValid, setIsValid] = useState<boolean | null>(null);
+
   const countryOptions = getCountryOptions();
 
   // Initialize state from value
@@ -80,7 +81,7 @@ const TelWidget: React.FC<WidgetProps> = ({
   const handlePhoneChange = (newPhoneInput: string) => {
     setPhoneInput(newPhoneInput);
     setError('');
-    
+
     if (!newPhoneInput.trim()) {
       onChange('');
       return;
@@ -89,30 +90,42 @@ const TelWidget: React.FC<WidgetProps> = ({
     try {
       // Try to parse with selected country
       const phoneNumber = parsePhoneNumber(newPhoneInput, selectedCountry);
-      
+
       if (phoneNumber && phoneNumber.isValid()) {
         // Format as international number
         const formatted = phoneNumber.formatInternational();
         onChange(formatted);
         setError('');
+        setIsValid(true);
       } else {
-        // Still update the value even if invalid for progressive validation
+        // Also check with isValidPhoneNumber for additional validation
+        const valid = isValidPhoneNumber(newPhoneInput, selectedCountry);
         onChange(newPhoneInput);
-        if (newPhoneInput.length > 3) {
+
+        if (newPhoneInput.length > 3 && !valid) {
           setError('Invalid phone number format');
+          setIsValid(false);
+        } else if (newPhoneInput.length <= 3) {
+          setIsValid(null);
         }
       }
     } catch (err) {
+      // Final validation check for any parsing errors
+      const valid = isValidPhoneNumber(newPhoneInput, selectedCountry);
       onChange(newPhoneInput);
-      if (newPhoneInput.length > 3) {
+
+      if (newPhoneInput.length > 3 && !valid) {
         setError('Invalid phone number format');
+        setIsValid(false);
+      } else if (newPhoneInput.length <= 3) {
+        setIsValid(null);
       }
     }
   };
 
   const handleCountryChange = (newCountry: CountryCode) => {
     setSelectedCountry(newCountry);
-    
+
     if (phoneInput) {
       try {
         const phoneNumber = parsePhoneNumber(phoneInput, newCountry);
@@ -120,23 +133,40 @@ const TelWidget: React.FC<WidgetProps> = ({
           const formatted = phoneNumber.formatInternational();
           onChange(formatted);
           setError('');
+        } else {
+          // Validate with the new country
+          const isValid = isValidPhoneNumber(phoneInput, newCountry);
+          if (!isValid && phoneInput.length > 3) {
+            setError('Invalid phone number format for selected country');
+          } else {
+            setError('');
+          }
         }
       } catch {
-        // Keep existing input if parsing fails
+        // Validate even if parsing fails
+        const isValid = isValidPhoneNumber(phoneInput, newCountry);
+        if (!isValid && phoneInput.length > 3) {
+          setError('Invalid phone number format for selected country');
+        } else {
+          setError('');
+        }
       }
     }
   };
 
-  const validatePhoneNumber = (phone: string): boolean => {
-    if (!phone) return true; // Allow empty values
-    try {
-      return isValidPhoneNumber(phone);
-    } catch {
-      return false;
-    }
+  const currentCountry = countryOptions.find((c) => c.code === selectedCountry);
+
+  const getBorderColor = () => {
+    if (isValid === true) return '#4caf50'; // Green for valid
+    if (isValid === false) return '#f44336'; // Red for invalid
+    return 'rgba(0, 0, 0, 0.23)'; // Default gray
   };
 
-  const currentCountry = countryOptions.find(c => c.code === selectedCountry);
+  const getHoverBorderColor = () => {
+    if (isValid === true) return '#66bb6a'; // Lighter green on hover
+    if (isValid === false) return '#ef5350'; // Lighter red on hover
+    return 'rgba(0, 0, 0, 0.87)'; // Default dark gray
+  };
 
   return (
     <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
@@ -154,7 +184,7 @@ const TelWidget: React.FC<WidgetProps> = ({
             {...params}
             label="Country"
             variant="outlined"
-            sx={{ 
+            sx={{
               minWidth: 200,
               '& .MuiOutlinedInput-root': {
                 '& fieldset': {
@@ -176,39 +206,45 @@ const TelWidget: React.FC<WidgetProps> = ({
         disabled={disabled || readonly}
         size="small"
       />
-      
+
       <TextField
         id={id}
         type="tel"
-        label="Phone Number"
+        label={required ? `${label || 'Phone Number'} *` : label || 'Phone Number'}
         value={phoneInput}
         onChange={(e) => handlePhoneChange(e.target.value)}
         onBlur={onBlur && (() => onBlur(id, value))}
         onFocus={onFocus && (() => onFocus(id, value))}
         placeholder={placeholder || `Enter phone number (${currentCountry?.callingCode})`}
         disabled={disabled}
-        InputProps={{ readOnly: readonly }}
+        slotProps={{ input: { readOnly: readonly } }}
         error={!!error}
         helperText={error || (currentCountry ? `Format: ${currentCountry.callingCode} XXX XXX XXXX` : '')}
         fullWidth
         variant="outlined"
         size="small"
         sx={{
+          '& .MuiInputLabel-root': {
+            '& .MuiInputLabel-asterisk': {
+              color: '#f44336',
+            },
+          },
           '& .MuiOutlinedInput-root': {
             '& fieldset': {
-              borderColor: 'rgba(0, 0, 0, 0.23)',
+              borderColor: getBorderColor(),
               borderWidth: '1px',
+              transition: 'border-color 0.2s ease-in-out',
             },
             '&:hover fieldset': {
-              borderColor: 'rgba(0, 0, 0, 0.87)',
+              borderColor: getHoverBorderColor(),
               borderWidth: '1px',
             },
             '&.Mui-focused fieldset': {
-              borderColor: 'primary.main',
+              borderColor: isValid === false ? '#f44336' : 'primary.main',
               borderWidth: '2px',
             },
             '&.Mui-error fieldset': {
-              borderColor: 'error.main',
+              borderColor: '#f44336',
             },
           },
         }}
@@ -218,54 +254,106 @@ const TelWidget: React.FC<WidgetProps> = ({
 };
 
 // Custom TextWidget with Material-UI styling
-const TextWidget: React.FC<WidgetProps> = ({
-  id,
-  value,
-  onChange,
-  onBlur,
-  onFocus,
-  placeholder,
-  disabled,
-  readonly,
-  required,
-  schema,
-  label,
-}) => {
+const TextWidget: React.FC<WidgetProps> = ({ id, value, onChange, onBlur, onFocus, placeholder, disabled, readonly, required, schema, label }) => {
   const isEmail = schema.format === 'email';
-  
+  const [isValid, setIsValid] = React.useState<boolean | null>(null);
+
+  const validateField = React.useCallback(
+    (fieldValue: string) => {
+      if (!fieldValue) {
+        if (required) {
+          setIsValid(false);
+          return false;
+        } else {
+          setIsValid(null);
+          return true;
+        }
+      }
+
+      // Email validation
+      if (isEmail) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const valid = emailRegex.test(fieldValue);
+        setIsValid(valid);
+        return valid;
+      }
+
+      // Basic validation for non-empty required fields
+      if (fieldValue.trim().length > 0) {
+        setIsValid(true);
+        return true;
+      }
+
+      setIsValid(false);
+      return false;
+    },
+    [required, isEmail]
+  );
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    validateField(newValue);
+    onChange(newValue);
+  };
+
+  const handleBlurEvent = () => {
+    validateField(value || '');
+    if (onBlur) onBlur(id, value);
+  };
+
+  React.useEffect(() => {
+    if (value) {
+      validateField(value);
+    }
+  }, [value, required, validateField]);
+
+  const getBorderColor = () => {
+    if (isValid === true) return '#4caf50'; // Green for valid
+    if (isValid === false) return '#f44336'; // Red for invalid
+    return 'rgba(0, 0, 0, 0.23)'; // Default gray
+  };
+
+  const getHoverBorderColor = () => {
+    if (isValid === true) return '#66bb6a'; // Lighter green on hover
+    if (isValid === false) return '#ef5350'; // Lighter red on hover
+    return 'rgba(0, 0, 0, 0.87)'; // Default dark gray
+  };
+
   return (
     <TextField
       id={id}
-      label={label}
+      label={required ? `${label} *` : label}
       type={isEmail ? 'email' : 'text'}
       value={value || ''}
-      onChange={(e) => onChange(e.target.value)}
-      onBlur={onBlur && (() => onBlur(id, value))}
+      onChange={handleChange}
+      onBlur={handleBlurEvent}
       onFocus={onFocus && (() => onFocus(id, value))}
       placeholder={placeholder}
       disabled={disabled}
-      InputProps={{ readOnly: readonly }}
-      required={required}
+      slotProps={{ input: { readOnly: readonly } }}
       fullWidth
       variant="outlined"
       size="small"
-      sx={{ 
+      sx={{
         mb: 2,
+        '& .MuiInputLabel-root': {
+          '& .MuiInputLabel-asterisk': {
+            color: '#f44336',
+          },
+        },
         '& .MuiOutlinedInput-root': {
           '& fieldset': {
-            borderColor: 'rgba(0, 0, 0, 0.23)',
+            borderColor: getBorderColor(),
             borderWidth: '1px',
+            transition: 'border-color 0.2s ease-in-out',
           },
           '&:hover fieldset': {
-            borderColor: 'rgba(0, 0, 0, 0.87)',
+            borderColor: getHoverBorderColor(),
             borderWidth: '1px',
           },
           '&.Mui-focused fieldset': {
-            borderColor: 'primary.main',
+            borderColor: isValid === false ? '#f44336' : 'primary.main',
             borderWidth: '2px',
-          },
-          '&.Mui-error fieldset': {
-            borderColor: 'error.main',
           },
         },
       }}
@@ -274,17 +362,7 @@ const TextWidget: React.FC<WidgetProps> = ({
 };
 
 // Custom Field Template
-const FieldTemplate: React.FC<FieldTemplateProps> = ({
-  id,
-  children,
-  displayLabel,
-  label,
-  required,
-  description,
-  errors,
-  help,
-  hidden,
-}) => {
+const FieldTemplate: React.FC<FieldTemplateProps> = ({ children, description, errors, help, hidden }) => {
   if (hidden) {
     return <div style={{ display: 'none' }}>{children}</div>;
   }
@@ -312,14 +390,7 @@ const FieldTemplate: React.FC<FieldTemplateProps> = ({
 };
 
 // Custom Object Field Template for nested objects
-const ObjectFieldTemplate: React.FC<ObjectFieldTemplateProps> = ({
-  title,
-  description,
-  properties,
-  required,
-  uiSchema,
-  idSchema,
-}) => {
+const ObjectFieldTemplate: React.FC<ObjectFieldTemplateProps> = ({ title, description, properties }) => {
   return (
     <Box sx={{ mb: 3 }}>
       {title && (
@@ -333,7 +404,7 @@ const ObjectFieldTemplate: React.FC<ObjectFieldTemplateProps> = ({
         </Typography>
       )}
       <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 2 }}>
-        {properties.map(prop => (
+        {properties.map((prop) => (
           <div key={prop.name}>{prop.content}</div>
         ))}
       </Box>
@@ -350,7 +421,7 @@ const CreateIdentityForm: React.FC<CreateIdentityFormProps> = ({ onSuccess, onCa
   const router = useRouter();
   const createIdentityMutation = useCreateIdentity();
   const { data: schemas, isLoading: schemasLoading } = useSchemas();
-  
+
   const [selectedSchemaId, setSelectedSchemaId] = useState<string>('');
   const [formData, setFormData] = useState<any>({});
   const [formSchema, setFormSchema] = useState<RJSFSchema | null>(null);
@@ -373,7 +444,7 @@ const CreateIdentityForm: React.FC<CreateIdentityFormProps> = ({ onSuccess, onCa
   // Convert Kratos schema to RJSF schema
   const convertKratosSchemaToRJSF = (kratosSchema: any): RJSFSchema => {
     const schemaObj = kratosSchema as any;
-    
+
     if (schemaObj?.properties?.traits) {
       return {
         title: 'Identity Traits',
@@ -382,7 +453,7 @@ const CreateIdentityForm: React.FC<CreateIdentityFormProps> = ({ onSuccess, onCa
         required: schemaObj.properties.traits.required || [],
       };
     }
-    
+
     return {
       title: 'Identity Traits',
       type: 'object',
@@ -393,11 +464,11 @@ const CreateIdentityForm: React.FC<CreateIdentityFormProps> = ({ onSuccess, onCa
   // Create UI Schema for better form layout
   const createUISchema = (schema: RJSFSchema): UiSchema => {
     const uiSchema: UiSchema = {};
-    
+
     // Customize specific field types
-    Object.keys(schema.properties || {}).forEach(key => {
+    Object.keys(schema.properties || {}).forEach((key) => {
       const property = (schema.properties as any)[key];
-      
+
       if (property.format === 'email') {
         uiSchema[key] = {
           'ui:widget': 'email',
@@ -408,7 +479,7 @@ const CreateIdentityForm: React.FC<CreateIdentityFormProps> = ({ onSuccess, onCa
           'ui:widget': 'tel',
         };
       }
-      
+
       // Handle nested objects (like name.first, name.last)
       if (property.type === 'object' && property.properties) {
         uiSchema[key] = {
@@ -416,14 +487,14 @@ const CreateIdentityForm: React.FC<CreateIdentityFormProps> = ({ onSuccess, onCa
         };
       }
     });
-    
+
     return uiSchema;
   };
 
   const handleSchemaChange = (schemaId: string) => {
     setSelectedSchemaId(schemaId);
     setFormData({});
-    
+
     if (schemaId && schemas) {
       const selectedSchema = schemas.find((s: IdentitySchemaContainer) => s.id === schemaId);
       if (selectedSchema?.schema) {
@@ -437,13 +508,13 @@ const CreateIdentityForm: React.FC<CreateIdentityFormProps> = ({ onSuccess, onCa
 
   const handleSubmit = async (data: any) => {
     const { formData: submitData } = data;
-    
+
     try {
       await createIdentityMutation.mutateAsync({
         schemaId: selectedSchemaId,
         traits: submitData,
       });
-      
+
       onSuccess?.();
       router.push('/identities');
     } catch (error) {
@@ -469,7 +540,7 @@ const CreateIdentityForm: React.FC<CreateIdentityFormProps> = ({ onSuccess, onCa
       <Typography variant="h5" component="h1" gutterBottom>
         Create New Identity
       </Typography>
-      
+
       <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
         Create a new user identity in your Kratos instance. Select a schema to see the required fields.
       </Typography>
@@ -498,16 +569,18 @@ const CreateIdentityForm: React.FC<CreateIdentityFormProps> = ({ onSuccess, onCa
         </FormControl>
 
         {selectedSchemaId && formSchema && (
-          <Box sx={{ 
-            '& .rjsf': { 
-              '& .field-string': { mb: 0 },
-              '& .field-object': { mb: 0 },
-              '& .form-group': { mb: 0 },
-              '& .control-label': { display: 'none' },
-              '& .field-description': { display: 'none' },
-              '& .help-block': { display: 'none' },
-            }
-          }}>
+          <Box
+            sx={{
+              '& .rjsf': {
+                '& .field-string': { mb: 0 },
+                '& .field-object': { mb: 0 },
+                '& .form-group': { mb: 0 },
+                '& .control-label': { display: 'none' },
+                '& .field-description': { display: 'none' },
+                '& .help-block': { display: 'none' },
+              },
+            }}
+          >
             <Form
               schema={formSchema}
               uiSchema={createUISchema(formSchema)}
@@ -515,21 +588,22 @@ const CreateIdentityForm: React.FC<CreateIdentityFormProps> = ({ onSuccess, onCa
               onChange={({ formData }) => setFormData(formData)}
               onSubmit={handleSubmit}
               validator={validator}
+              customValidate={(_, errors) => {
+                // Allow submission even with empty optional fields
+                return errors;
+              }}
               widgets={widgets}
               templates={templates}
               disabled={createIdentityMutation.isPending}
               showErrorList={false}
               noHtml5Validate
               className="rjsf"
+              onError={(errors) => {
+                console.error('Form validation errors:', errors);
+              }}
             >
               <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', mt: 3 }}>
-                <Button
-                  variant="outlined"
-                  startIcon={<Cancel />}
-                  onClick={handleCancel}
-                  disabled={createIdentityMutation.isPending}
-                  type="button"
-                >
+                <Button variant="outlined" startIcon={<Cancel />} onClick={handleCancel} disabled={createIdentityMutation.isPending} type="button">
                   Cancel
                 </Button>
                 <Button
@@ -547,18 +621,10 @@ const CreateIdentityForm: React.FC<CreateIdentityFormProps> = ({ onSuccess, onCa
 
         {selectedSchemaId && !formSchema && (
           <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', mt: 3 }}>
-            <Button
-              variant="outlined"
-              startIcon={<Cancel />}
-              onClick={handleCancel}
-              disabled={createIdentityMutation.isPending}
-            >
+            <Button variant="outlined" startIcon={<Cancel />} onClick={handleCancel} disabled={createIdentityMutation.isPending}>
               Cancel
             </Button>
-            <Button
-              variant="contained"
-              disabled
-            >
+            <Button variant="contained" disabled>
               No form fields available
             </Button>
           </Box>

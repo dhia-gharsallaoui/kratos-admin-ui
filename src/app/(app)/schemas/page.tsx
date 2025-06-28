@@ -27,7 +27,6 @@ import {
   InputAdornment,
 } from '@mui/material';
 import { AdminLayout } from '@/components/layout/AdminLayout';
-import { useQuery } from '@tanstack/react-query';
 import { getIdentitySchema } from '@/services/kratos';
 import { useSchemas } from '@/features/schemas/hooks';
 import { Code, Description, Search, Refresh, MoreVert, Close } from '@mui/icons-material';
@@ -81,7 +80,7 @@ export default function SchemasPage() {
     }
   }, [schemasResponse]);
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage);
   };
 
@@ -209,21 +208,23 @@ export default function SchemasPage() {
                   size="small"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Search fontSize="small" />
-                      </InputAdornment>
-                    ),
-                    endAdornment: searchQuery ? (
-                      <InputAdornment position="end">
-                        <IconButton size="small" onClick={() => setSearchQuery('')}>
-                          <Close fontSize="small" />
-                        </IconButton>
-                      </InputAdornment>
-                    ) : null,
-                    sx: {
-                      borderRadius: 'var(--radius)',
+                  slotProps={{
+                    input: {
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Search fontSize="small" />
+                        </InputAdornment>
+                      ),
+                      endAdornment: searchQuery ? (
+                        <InputAdornment position="end">
+                          <IconButton size="small" onClick={() => setSearchQuery('')}>
+                            <Close fontSize="small" />
+                          </IconButton>
+                        </InputAdornment>
+                      ) : null,
+                      sx: {
+                        borderRadius: 'var(--radius)',
+                      },
                     },
                   }}
                   sx={{ width: { xs: '100%', sm: '300px' } }}
@@ -424,12 +425,14 @@ export default function SchemasPage() {
             aria-labelledby="schema-dialog-title"
             maxWidth="md"
             fullWidth
-            PaperProps={{
-              sx: {
-                borderRadius: 'var(--radius)',
-                background: 'var(--card)',
-                color: 'var(--card-foreground)',
-                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+            slotProps={{
+              paper: {
+                sx: {
+                  borderRadius: 'var(--radius)',
+                  background: 'var(--card)',
+                  color: 'var(--card-foreground)',
+                  boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+                },
               },
             }}
           >

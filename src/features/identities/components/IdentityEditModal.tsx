@@ -101,8 +101,10 @@ export const IdentityEditModal: React.FC<IdentityEditModalProps> = ({ open, onCl
       onClose={handleClose}
       maxWidth="md"
       fullWidth
-      PaperProps={{
-        sx: { minHeight: '500px' },
+      slotProps={{
+        paper: {
+          sx: { minHeight: '500px' },
+        },
       }}
     >
       <DialogTitle>

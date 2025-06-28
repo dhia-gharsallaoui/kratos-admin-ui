@@ -23,27 +23,10 @@ import {
 } from '@mui/material';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { useQuery } from '@tanstack/react-query';
-import { getAllSessions, listSessions } from '@/services/kratos';
+import { getAllSessions } from '@/services/kratos';
 import { Search, Refresh, Close, Person, AccessTime, Warning } from '@mui/icons-material';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import { UserRole } from '@/features/auth';
-
-// Define interfaces for type safety
-interface Session {
-  id: string;
-  active: boolean;
-  authenticated_at: string;
-  expires_at: string;
-  identity: {
-    id: string;
-    traits?: {
-      email?: string;
-      username?: string;
-      [key: string]: any;
-    };
-  };
-  issued_at: string;
-}
 
 export default function SessionsPage() {
   const [page, setPage] = useState(0);
@@ -71,7 +54,7 @@ export default function SessionsPage() {
 
   const sessions = sessionsData || [];
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage);
   };
 
@@ -185,21 +168,23 @@ export default function SessionsPage() {
                   size="small"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Search fontSize="small" />
-                      </InputAdornment>
-                    ),
-                    endAdornment: searchQuery ? (
-                      <InputAdornment position="end">
-                        <IconButton size="small" onClick={() => setSearchQuery('')}>
-                          <Close fontSize="small" />
-                        </IconButton>
-                      </InputAdornment>
-                    ) : null,
-                    sx: {
-                      borderRadius: 'var(--radius)',
+                  slotProps={{
+                    input: {
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Search fontSize="small" />
+                        </InputAdornment>
+                      ),
+                      endAdornment: searchQuery ? (
+                        <InputAdornment position="end">
+                          <IconButton size="small" onClick={() => setSearchQuery('')}>
+                            <Close fontSize="small" />
+                          </IconButton>
+                        </InputAdornment>
+                      ) : null,
+                      sx: {
+                        borderRadius: 'var(--radius)',
+                      },
                     },
                   }}
                   sx={{ width: { xs: '100%', sm: '300px' } }}

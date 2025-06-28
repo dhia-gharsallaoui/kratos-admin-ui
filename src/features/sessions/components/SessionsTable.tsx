@@ -27,7 +27,7 @@ const SessionsTable: React.FC<SessionsTableProps> = ({ sessions, loading }) => {
       field: 'identityEmail',
       headerName: 'Identity',
       width: 200,
-      valueGetter: (value, row) => {
+      valueGetter: (_, row) => {
         const formatted = formatSessionForDisplay(row);
         return formatted.identityEmail;
       },
@@ -60,7 +60,7 @@ const SessionsTable: React.FC<SessionsTableProps> = ({ sessions, loading }) => {
       field: 'durationMinutes',
       headerName: 'Duration',
       width: 120,
-      valueGetter: (value, row) => {
+      valueGetter: (_, row) => {
         const formatted = formatSessionForDisplay(row);
         return `${formatted.durationMinutes} min`;
       },

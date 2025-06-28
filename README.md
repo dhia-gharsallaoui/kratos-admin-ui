@@ -15,6 +15,7 @@ A modern, responsive admin interface for [Ory Kratos](https://www.ory.sh/kratos/
 ## ✨ Features
 
 ### 🎯 Core Functionality
+
 - **Identity Management**: Create, edit, delete, and recover user identities
 - **Session Monitoring**: Real-time session tracking with advanced analytics
 - **Schema Management**: View and manage identity schemas
@@ -22,6 +23,7 @@ A modern, responsive admin interface for [Ory Kratos](https://www.ory.sh/kratos/
 - **User Authentication**: Role-based access control (Admin/Viewer)
 
 ### 🚀 Technical Excellence
+
 - **Clean Architecture**: Feature-based organization with proper separation of concerns
 - **Smart Pagination**: Efficient data loading with date-based pagination stopping
 - **Real-time Updates**: TanStack Query for optimal data synchronization
@@ -30,6 +32,7 @@ A modern, responsive admin interface for [Ory Kratos](https://www.ory.sh/kratos/
 - **Performance Optimized**: Smart caching and efficient API calls
 
 ### 🎨 User Experience
+
 - **Modern UI**: Clean, professional interface with dark/light theme support
 - **Interactive Charts**: MUI X Charts for analytics visualization
 - **Search & Filtering**: Advanced filtering capabilities across all data views
@@ -55,27 +58,31 @@ A modern, responsive admin interface for [Ory Kratos](https://www.ory.sh/kratos/
 ### Local Development
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/dhia-gharsallaoui/kratos-admin-ui.git
    cd kratos-admin-ui
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Configure environment**
+
    ```bash
    # Create environment file
    cp .env.example .env.local
-   
+
    # Edit with your Kratos URLs
    KRATOS_PUBLIC_URL=http://localhost:4433
    KRATOS_ADMIN_URL=http://localhost:4434
    ```
 
 4. **Start development server**
+
    ```bash
    npm run dev
    ```
@@ -89,6 +96,7 @@ A modern, responsive admin interface for [Ory Kratos](https://www.ory.sh/kratos/
 ### Docker Deployment
 
 1. **Build the Docker image**
+
    ```bash
    docker build -t kratos-admin-ui .
    ```
@@ -109,7 +117,7 @@ services:
   kratos-admin-ui:
     build: .
     ports:
-      - "3000:3000"
+      - '3000:3000'
     environment:
       - KRATOS_PUBLIC_URL=http://kratos:4433
       - KRATOS_ADMIN_URL=http://kratos:4434
@@ -155,12 +163,12 @@ src/
 
 ### Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
+| Variable            | Description           | Default                 |
+| ------------------- | --------------------- | ----------------------- |
 | `KRATOS_PUBLIC_URL` | Kratos public API URL | `http://localhost:4433` |
-| `KRATOS_ADMIN_URL` | Kratos admin API URL | `http://localhost:4434` |
-| `BASE_PATH` | Application base path | `/` |
-| `NODE_ENV` | Environment mode | `development` |
+| `KRATOS_ADMIN_URL`  | Kratos admin API URL  | `http://localhost:4434` |
+| `BASE_PATH`         | Application base path | `/`                     |
+| `NODE_ENV`          | Environment mode      | `development`           |
 
 ### Authentication
 
@@ -169,7 +177,6 @@ The application uses a mock authentication system with predefined users:
 - **Admin User**: Full access to all features
   - Username: `admin`
   - Password: `admin123`
-  
 - **Viewer User**: Read-only access
   - Username: `viewer`
   - Password: `viewer123`
@@ -177,6 +184,7 @@ The application uses a mock authentication system with predefined users:
 ### Kratos Integration
 
 The application integrates with Kratos through:
+
 - **Identity API**: CRUD operations on user identities
 - **Session API**: Session management and monitoring
 - **Schema API**: Identity schema management
@@ -212,6 +220,7 @@ npm run format       # Format code with Prettier
 ## 📊 Analytics Features
 
 ### Dashboard Metrics
+
 - **Identity Analytics**: Growth trends, schema distribution, verification status
 - **Session Analytics**: Active sessions, usage patterns, duration metrics
 - **System Health**: Real-time status monitoring
@@ -219,6 +228,7 @@ npm run format       # Format code with Prettier
 ## 🐳 Production Deployment
 
 ### Docker Best Practices
+
 - Multi-stage build for minimal image size
 - Non-root user for security
 - Health checks included
@@ -242,21 +252,21 @@ spec:
         app: kratos-admin-ui
     spec:
       containers:
-      - name: kratos-admin-ui
-        image: kratos-admin-ui:latest
-        ports:
-        - containerPort: 3000
-        env:
-        - name: KRATOS_PUBLIC_URL
-          value: "http://kratos:4433"
-        - name: KRATOS_ADMIN_URL
-          value: "http://kratos:4434"
-        livenessProbe:
-          httpGet:
-            path: /api/health
-            port: 3000
-          initialDelaySeconds: 30
-          periodSeconds: 10
+        - name: kratos-admin-ui
+          image: kratos-admin-ui:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: KRATOS_PUBLIC_URL
+              value: 'http://kratos:4433'
+            - name: KRATOS_ADMIN_URL
+              value: 'http://kratos:4434'
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 10
 ```
 
 ## 🤝 Contributing
@@ -268,6 +278,7 @@ spec:
 5. Open a Pull Request
 
 ### Development Guidelines
+
 - Follow the existing code style
 - Add TypeScript types for all new code
 - Write tests for new features

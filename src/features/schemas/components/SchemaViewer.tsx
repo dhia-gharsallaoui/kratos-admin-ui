@@ -34,7 +34,7 @@ const SchemaViewer: React.FC<SchemaViewerProps> = ({ schema, loading = false }) 
           {formattedSchema.displayName}
         </Typography>
 
-        <Typography variant="body2" color="text.secondary" paragraph>
+        <Typography variant="body2" color="text.secondary" component="p" sx={{ mb: 2 }}>
           {formattedSchema.description}
         </Typography>
 

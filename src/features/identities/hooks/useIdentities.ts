@@ -199,7 +199,7 @@ export const useUpdateIdentity = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, schemaId, traits }: { id: string; schemaId: string; traits: any }) => {
+    mutationFn: async ({ id, traits }: { id: string; schemaId: string; traits: any }) => {
       const jsonPatch = [{ op: 'replace', path: '/traits', value: traits }];
 
       console.log('JSON Patch being sent:', jsonPatch);

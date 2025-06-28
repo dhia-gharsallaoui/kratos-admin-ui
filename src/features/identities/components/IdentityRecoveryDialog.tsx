@@ -79,9 +79,11 @@ export const IdentityRecoveryDialog: React.FC<IdentityRecoveryDialogProps> = ({ 
         onClose={handleClose}
         maxWidth="md"
         fullWidth
-        PaperProps={{
-          sx: {
-            borderRadius: 'var(--radius)',
+        slotProps={{
+          paper: {
+            sx: {
+              borderRadius: 'var(--radius)',
+            },
           },
         }}
       >
@@ -137,15 +139,17 @@ export const IdentityRecoveryDialog: React.FC<IdentityRecoveryDialogProps> = ({ 
                 value={recoveryLink}
                 multiline
                 rows={3}
-                InputProps={{
-                  readOnly: true,
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton onClick={handleCopyToClipboard} edge="end" title="Copy to clipboard">
-                        <ContentCopy />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
+                slotProps={{
+                  input: {
+                    readOnly: true,
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton onClick={handleCopyToClipboard} edge="end" title="Copy to clipboard">
+                          <ContentCopy />
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  },
                 }}
                 sx={{
                   '& .MuiInputBase-input': {

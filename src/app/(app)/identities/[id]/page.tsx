@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { Box, Button, Typography, Paper, Grid, Chip, Card, CardContent, Divider, IconButton, Tooltip } from '@mui/material';
+import { Box, Button, Typography, Grid, Chip, Card, CardContent, Divider, IconButton, Tooltip } from '@mui/material';
 import { ArrowBack, Edit, Delete, Refresh, Link as LinkIcon } from '@mui/icons-material';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
@@ -16,25 +16,6 @@ import SyntaxHighlighter from 'react-syntax-highlighter';
 import { github, vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { useTheme } from '@mui/material/styles';
 
-// JSON syntax highlighting function
-function syntaxHighlightJson(json: string) {
-  return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
-    let cls = 'json-number';
-    if (/^"/.test(match)) {
-      if (/:$/.test(match)) {
-        cls = 'json-key';
-      } else {
-        cls = 'json-string';
-      }
-    } else if (/true|false/.test(match)) {
-      cls = 'json-boolean';
-    } else if (/null/.test(match)) {
-      cls = 'json-null';
-    }
-    return '<span class="' + cls + '">' + match + '</span>';
-  });
-}
-
 export default function IdentityDetailPage() {
   const theme = useTheme();
   const params = useParams();
@@ -44,7 +25,7 @@ export default function IdentityDetailPage() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [recoveryDialogOpen, setRecoveryDialogOpen] = useState(false);
 
-  const { data: identity, isLoading, isError, error, refetch } = useIdentity(identityId);
+  const { data: identity, isLoading, isError, error: _, refetch } = useIdentity(identityId);
 
   const handleBack = () => {
     router.push('/identities');
