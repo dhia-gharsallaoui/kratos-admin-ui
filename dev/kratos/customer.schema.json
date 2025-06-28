@@ -1,0 +1,150 @@
+{
+  "$id": "https://example.com/schemas/customer.schema.json",
+  "title": "Customer",
+  "type": "object",
+  "properties": {
+    "traits": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email",
+          "title": "Email Address",
+          "ory.sh/kratos": {
+            "credentials": {
+              "password": {
+                "identifier": true
+              },
+              "webauthn": {
+                "identifier": true
+              },
+              "totp": {
+                "account_name": true
+              }
+            },
+            "recovery": {
+              "via": "email"
+            },
+            "verification": {
+              "via": "email"
+            }
+          },
+          "maxLength": 320
+        },
+        "customer_id": {
+          "title": "Customer ID",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50,
+          "pattern": "^CUST-[0-9]+$",
+          "ory.sh/kratos": {
+            "credentials": {
+              "password": {
+                "identifier": true
+              }
+            }
+          }
+        },
+        "first_name": {
+          "title": "First Name",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "last_name": {
+          "title": "Last Name",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "phone": {
+          "title": "Phone Number",
+          "type": "string",
+          "pattern": "^(\\+?\\d{1,3})?[-.\\s]?(\\(?\\d{1,4}\\)?)?[-.\\s]?\\d{1,4}[-.\\s]?\\d{1,4}[-.\\s]?\\d{1,9}$"
+        },
+        "date_of_birth": {
+          "title": "Date of Birth",
+          "type": "string",
+          "format": "date"
+        },
+        "shipping_address": {
+          "title": "Shipping Address",
+          "type": "object",
+          "properties": {
+            "street": {
+              "title": "Street Address",
+              "type": "string",
+              "maxLength": 200
+            },
+            "city": {
+              "title": "City",
+              "type": "string",
+              "maxLength": 100
+            },
+            "state": {
+              "title": "State/Province",
+              "type": "string",
+              "maxLength": 100
+            },
+            "postal_code": {
+              "title": "Postal Code",
+              "type": "string",
+              "maxLength": 20
+            },
+            "country": {
+              "title": "Country",
+              "type": "string",
+              "maxLength": 100
+            }
+          }
+        },
+        "preferences": {
+          "title": "Preferences",
+          "type": "object",
+          "properties": {
+            "newsletter": {
+              "title": "Newsletter Subscription",
+              "type": "boolean"
+            },
+            "marketing_emails": {
+              "title": "Marketing Emails",
+              "type": "boolean"
+            },
+            "preferred_language": {
+              "title": "Preferred Language",
+              "type": "string",
+              "enum": ["en", "fr", "es", "de", "it"]
+            },
+            "currency": {
+              "title": "Preferred Currency",
+              "type": "string",
+              "enum": ["USD", "EUR", "GBP", "CAD", "AUD"]
+            }
+          }
+        },
+        "loyalty_tier": {
+          "title": "Loyalty Tier",
+          "type": "string",
+          "enum": [
+            "bronze",
+            "silver",
+            "gold",
+            "platinum",
+            "diamond"
+          ]
+        },
+        "account_status": {
+          "title": "Account Status",
+          "type": "string",
+          "enum": [
+            "active",
+            "suspended",
+            "closed"
+          ]
+        }
+      },
+      "required": ["email", "customer_id", "first_name", "last_name"],
+      "additionalProperties": false
+    }
+  }
+}

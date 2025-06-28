@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  kratos-migrate:
+    volumes:
+      - type: volume
+        source: kratos-sqlite
+        target: /var/lib/sqlite
+        read_only: false
+      - type: bind
+        source: ./kratos
+        target: /etc/config/kratos
+        bind:
+          selinux: z
+
+  kratos:
+    volumes:
+      - type: volume
+        source: kratos-sqlite
+        target: /var/lib/sqlite
+        read_only: false
+      - type: bind
+        source: ./kratos
+        target: /etc/config/kratos
+        bind:
+          selinux: z
+
+  kratos-admin-ui:
+    volumes:
+      - type: bind
+        source: ../
+        target: /app
+        bind:
+          selinux: z
+      - /app/node_modules

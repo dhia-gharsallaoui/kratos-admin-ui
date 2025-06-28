@@ -1,0 +1,98 @@
+{
+  "$id": "https://example.com/schemas/organizational-user.schema.json",
+  "title": "Organizational User",
+  "type": "object",
+  "properties": {
+    "traits": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email",
+          "title": "Email Address",
+          "ory.sh/kratos": {
+            "credentials": {
+              "password": {
+                "identifier": true
+              },
+              "webauthn": {
+                "identifier": true
+              },
+              "totp": {
+                "account_name": true
+              }
+            },
+            "recovery": {
+              "via": "email"
+            },
+            "verification": {
+              "via": "email"
+            }
+          },
+          "maxLength": 320
+        },
+        "employee_id": {
+          "title": "Employee ID",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50,
+          "pattern": "^[A-Z0-9-]+$",
+          "ory.sh/kratos": {
+            "credentials": {
+              "password": {
+                "identifier": true
+              }
+            }
+          }
+        },
+        "first_name": {
+          "title": "First Name",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "last_name": {
+          "title": "Last Name",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "department": {
+          "title": "Department",
+          "type": "string",
+          "enum": [
+            "Engineering",
+            "Product",
+            "Marketing",
+            "Sales",
+            "Operations",
+            "Finance",
+            "HR"
+          ]
+        },
+        "role": {
+          "title": "Role",
+          "type": "string",
+          "enum": [
+            "admin",
+            "manager",
+            "senior",
+            "junior",
+            "intern"
+          ]
+        },
+        "status": {
+          "title": "Status",
+          "type": "string",
+          "enum": [
+            "active",
+            "inactive",
+            "on_leave"
+          ]
+        }
+      },
+      "required": ["email", "employee_id", "first_name", "last_name", "department", "role"],
+      "additionalProperties": false
+    }
+  }
+}
