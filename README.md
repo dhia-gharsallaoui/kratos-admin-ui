@@ -122,13 +122,30 @@ A modern, responsive admin interface for [Ory Kratos](https://www.ory.sh/kratos/
      - **Admin**: `admin` / `admin123`
      - **Viewer**: `viewer` / `viewer123`
 
+### Docker
+
+The pre-built Docker image is available on Docker Hub:
+
+```bash
+docker pull dhiagharsallaoui/kratos-admin-ui:latest
+```
+
+**Quick Start with Docker:**
+
+```bash
+docker run -p 3000:3000 \
+  -e KRATOS_PUBLIC_URL=http://localhost:4433 \
+  -e KRATOS_ADMIN_URL=http://localhost:4434 \
+  dhiagharsallaoui/kratos-admin-ui:latest
+```
+
 ### Docker Compose
 
 ```yaml
 version: '3.8'
 services:
   kratos-admin-ui:
-    build: .
+    image: dhiagharsallaoui/kratos-admin-ui:latest
     ports:
       - '3000:3000'
     environment:
@@ -143,6 +160,12 @@ services:
     image: oryd/kratos:v1.0.0
     # ... your Kratos configuration
 ```
+
+**Development Setup:**
+For a complete development environment with Kratos, check the [`dev/`](./dev) folder which includes:
+- Docker Compose with Kratos, self-service UI, and MailSlurper
+- Multiple identity schemas (organizational, customer)
+- Automated test data generation
 
 ## 📁 Project Structure
 
@@ -266,7 +289,7 @@ spec:
     spec:
       containers:
         - name: kratos-admin-ui
-          image: kratos-admin-ui:latest
+          image: dhiagharsallaoui/kratos-admin-ui:latest
           ports:
             - containerPort: 3000
           env:
@@ -274,13 +297,17 @@ spec:
               value: 'http://kratos:4433'
             - name: KRATOS_ADMIN_URL
               value: 'http://kratos:4434'
-          livenessProbe:
-            httpGet:
-              path: /api/health
-              port: 3000
-            initialDelaySeconds: 30
-            periodSeconds: 10
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
 ```
+
+**Runtime Configuration:**
+The Docker image supports runtime configuration through environment variables, making it easy to deploy across different environments without rebuilding.
 
 ## 🤝 Contributing
 
