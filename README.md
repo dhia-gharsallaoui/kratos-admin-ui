@@ -2,25 +2,48 @@
 
 A modern, responsive admin interface for [Ory Kratos](https://www.ory.sh/kratos/) identity management system. Built with Next.js 14, Material-UI v7, and TypeScript.
 
-![Kratos Admin UI](https://img.shields.io/badge/Next.js-14-black?style=flat-square&logo=next.js)
-![Material-UI](https://img.shields.io/badge/Material--UI-7-blue?style=flat-square&logo=mui)
-![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript)
-![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
-![Development Status](https://img.shields.io/badge/Status-Development-yellow?style=flat-square)
+> **🚨 SECURITY WARNING**: This interface should **NOT** be exposed to the public internet. It uses mock authentication for development purposes and is **NOT secure for production use**. Always deploy behind proper authentication and access controls.
 
 > **⚠️ Development Phase**: This project is currently in active development. Features may change and breaking updates can occur. We encourage testing and feedback, but recommend caution for production use.
+
+> **🔐 Authentication Module**: A secure authentication module is planned for future releases. Contributions are welcome! Until then, please ensure this interface is only accessible in secure, private environments.
 
 > **🐛 Found an Issue?** Please [open an issue](https://github.com/dhia-gharsallaoui/kratos-admin-ui/issues) on GitHub. Your feedback helps improve the project!
 
 ## ✨ Features
 
-### 🎯 Core Functionality
+### 🎯 Core Pages & Functionality
 
-- **Identity Management**: Create, edit, delete, and recover user identities
-- **Session Monitoring**: Real-time session tracking with advanced analytics
-- **Schema Management**: View and manage identity schemas
-- **Analytics Dashboard**: Comprehensive metrics with interactive charts
-- **User Authentication**: Role-based access control (Admin/Viewer)
+- **📊 Analytics Dashboard**: Comprehensive metrics dashboard with interactive charts displaying:
+  - Total users and growth trends
+  - Active sessions and session analytics
+  - Email verification rates
+  - Identity schema distribution
+  - System health monitoring
+  
+- **👥 Identity Management**: Complete user identity lifecycle management:
+  - **Create Identities**: Dynamic form generation based on Kratos schemas with validation
+  - **View Identities**: Searchable table with pagination and advanced filtering
+  - **Edit Identities**: Full identity trait editing with real-time validation
+  - **Delete Identities**: Safe deletion with confirmation dialogs
+  - **Recovery Links**: Generate secure recovery links for password reset
+  
+- **🔐 Session Management**: Real-time session monitoring and control:
+  - Active session tracking with detailed information
+  - Session duration and activity analytics
+  - Session termination capabilities
+  - User device and location tracking
+  
+- **📋 Schema Management**: Identity schema inspection and management:
+  - View all configured identity schemas
+  - Schema structure visualization with syntax highlighting
+  - Schema properties and validation rules display
+  - Read-only schema browsing (creation via API not supported)
+  
+- **👤 User Profile**: User account management:
+  - Profile information display
+  - Role-based access control (Admin/Viewer)
+  - Account settings and preferences
 
 ### 🚀 Technical Excellence
 
@@ -30,17 +53,23 @@ A modern, responsive admin interface for [Ory Kratos](https://www.ory.sh/kratos/
 - **Responsive Design**: Mobile-first approach with Material-UI components
 - **Type Safety**: Full TypeScript coverage with strict type checking
 - **Performance Optimized**: Smart caching and efficient API calls
+- **Form Validation**: Advanced form validation with real-time feedback using React JSON Schema Form
+- **Phone Number Support**: International phone number validation with libphonenumber-js
 
 ### 🎨 User Experience
 
-- **Modern UI**: Clean, professional interface with dark/light theme support
-- **Interactive Charts**: MUI X Charts for analytics visualization
-- **Search & Filtering**: Advanced filtering capabilities across all data views
+- **Modern UI**: Clean, professional interface with Material-UI v7 design system
+- **Interactive Charts**: MUI X Charts for analytics visualization with real-time data
+- **Advanced Search**: Client-side and server-side search with instant filtering
+- **Visual Feedback**: Color-coded validation states and loading indicators
+- **Accessibility**: WCAG compliant components with keyboard navigation support
 
 ## 🛠️ Technology Stack
 
 - **Framework**: Next.js 14 (App Router)
-- **UI Library**: Material-UI v7 + MUI X Charts/DataGrid
+- **UI Library**: Material-UI v7 + MUI X Charts/DataGrid  
+- **Forms**: React JSON Schema Form (RJSF) with custom Material-UI widgets
+- **Validation**: libphonenumber-js for international phone numbers
 - **State Management**: Zustand + TanStack Query
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS + Emotion
@@ -92,22 +121,6 @@ A modern, responsive admin interface for [Ory Kratos](https://www.ory.sh/kratos/
    - Login with default credentials:
      - **Admin**: `admin` / `admin123`
      - **Viewer**: `viewer` / `viewer123`
-
-### Docker Deployment
-
-1. **Build the Docker image**
-
-   ```bash
-   docker build -t kratos-admin-ui .
-   ```
-
-2. **Run the container**
-   ```bash
-   docker run -p 3000:3000 \
-     -e KRATOS_PUBLIC_URL=http://your-kratos:4433 \
-     -e KRATOS_ADMIN_URL=http://your-kratos:4434 \
-     kratos-admin-ui
-   ```
 
 ### Docker Compose
 
@@ -304,12 +317,6 @@ spec:
    - Check Node.js version (18+ required)
    - Verify TypeScript errors with `npm run lint`
 
-### Performance Optimization
-
-- Enable compression in your reverse proxy
-- Configure CDN for static assets
-- Use database connection pooling for Kratos
-- Monitor memory usage in production
 
 ## 📄 License
 
@@ -318,6 +325,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🙏 Acknowledgments
 
 - [Ory Kratos](https://www.ory.sh/kratos/) for the excellent identity management system
+- [dfoxg/kratos-admin-ui](https://github.com/dfoxg/kratos-admin-ui) for the original inspiration and foundational concepts
 - [Next.js](https://nextjs.org/) team for the amazing React framework
 - [Material-UI](https://mui.com/) for the beautiful component library
 - [TanStack Query](https://tanstack.com/query) for state management
