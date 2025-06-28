@@ -20,14 +20,25 @@ import {
   MenuItem,
   Tooltip,
 } from '@mui/material';
-import { Dashboard, Person, Schema, Menu as MenuIcon, ChevronLeft, ChevronRight, DarkMode, LightMode, People, Logout } from '@mui/icons-material';
+import {
+  Dashboard,
+  Person,
+  Schema,
+  Menu as MenuIcon,
+  ChevronLeft,
+  ChevronRight,
+  DarkMode,
+  LightMode,
+  People,
+  Logout,
+  GitHub,
+} from '@mui/icons-material';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useTheme } from '@/providers/ThemeProvider';
 import { useUser, useLogout } from '@/features/auth/hooks/useAuth';
 import { UserRole } from '@/features/auth';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
-import Footer from './Footer';
 
 const drawerWidth = 240;
 
@@ -102,6 +113,15 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
               </Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Tooltip title="GitHub Repository">
+                <IconButton
+                  color="inherit"
+                  sx={{ mr: 1 }}
+                  onClick={() => window.open('https://github.com/dhia-gharsallaoui/kratos-admin-ui', '_blank')}
+                >
+                  <GitHub />
+                </IconButton>
+              </Tooltip>
               <Tooltip title="Toggle theme">
                 <IconButton color="inherit" sx={{ mr: 2 }} onClick={toggleTheme}>
                   {currentTheme === 'dark' ? <LightMode /> : <DarkMode />}
@@ -208,7 +228,6 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         >
           <Toolbar />
           <Box sx={{ flexGrow: 1, p: 3 }}>{children}</Box>
-          <Footer />
         </Box>
       </Box>
     </ProtectedRoute>
