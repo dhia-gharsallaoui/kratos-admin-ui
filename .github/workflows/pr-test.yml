@@ -1,0 +1,42 @@
+name: PR Tests
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'package*.json'
+      - 'next.config.js'
+      - 'next.config.ts'
+      - 'tailwind.config.js'
+      - 'tsconfig.json'
+      - 'eslint.config.mjs'
+      - 'postcss.config.mjs'
+
+jobs:
+  test:
+    name: Test PR Changes
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Check TypeScript types
+        run: npx tsc --noEmit
+
+      - name: Build project
+        run: npm run build
