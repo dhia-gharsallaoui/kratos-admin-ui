@@ -80,6 +80,30 @@ export default function SchemasPage() {
     }
   }, [schemasResponse]);
 
+  // Use inert attribute to properly hide background content when dialog is open
+  useEffect(() => {
+    // Target the main layout container, not the dialog
+    const layoutContainer = document.querySelector('main');
+    const appBar = document.querySelector('header');
+    const drawer = document.querySelector('.MuiDrawer-root');
+    
+    if (schemaDialogOpen) {
+      if (layoutContainer) layoutContainer.setAttribute('inert', '');
+      if (appBar) appBar.setAttribute('inert', '');
+      if (drawer) drawer.setAttribute('inert', '');
+    } else {
+      if (layoutContainer) layoutContainer.removeAttribute('inert');
+      if (appBar) appBar.removeAttribute('inert');
+      if (drawer) drawer.removeAttribute('inert');
+    }
+    
+    return () => {
+      if (layoutContainer) layoutContainer.removeAttribute('inert');
+      if (appBar) appBar.removeAttribute('inert');
+      if (drawer) drawer.removeAttribute('inert');
+    };
+  }, [schemaDialogOpen]);
+
   const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage);
   };
@@ -447,7 +471,7 @@ export default function SchemasPage() {
                 py: 2,
               }}
             >
-              <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              <Typography component="span" variant="h6" sx={{ fontWeight: 600 }}>
                 Schema Details{' '}
                 {selectedSchemaId && (
                   <Typography component="span" sx={{ fontFamily: 'monospace', fontSize: '0.875rem' }}>
