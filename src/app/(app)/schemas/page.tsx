@@ -447,7 +447,7 @@ export default function SchemasPage() {
                 py: 2,
               }}
             >
-              <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              <Typography component="span" variant="h6" sx={{ fontWeight: 600 }}>
                 Schema Details{' '}
                 {selectedSchemaId && (
                   <Typography component="span" sx={{ fontFamily: 'monospace', fontSize: '0.875rem' }}>
