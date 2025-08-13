@@ -75,6 +75,17 @@ body {
   transition: all 0.2s ease;
 }
 
+/* Exclude tooltips and chart tooltips from transitions to prevent weird animations */
+.MuiTooltip-tooltip,
+.MuiTooltip-popper,
+.MuiPopper-root,
+[role="tooltip"],
+[class*="ChartsTooltip"],
+[class*="chartTooltip"],
+[class*="tooltip"]:not([class*="button"]):not([class*="icon"]) {
+  transition: none !important;
+}
+
 /* 
   Note: MUI X Charts v8.6.0 has a known issue with invalid DOM property 'transform-origin'
   This is a library bug where they use 'transform-origin' instead of 'transformOrigin'
