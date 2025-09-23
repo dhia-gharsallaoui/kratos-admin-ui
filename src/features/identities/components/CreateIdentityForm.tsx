@@ -37,7 +37,7 @@ interface CreateIdentityFormProps {
   onCancel?: () => void;
 }
 
-// Get country options for autocomplete
+// Memoize country options for autocomplete to avoid recalculation
 const getCountryOptions = () => {
   return getCountries()
     .map((countryCode) => {
@@ -426,20 +426,23 @@ const CreateIdentityForm: React.FC<CreateIdentityFormProps> = ({ onSuccess, onCa
   const [formData, setFormData] = useState<any>({});
   const [formSchema, setFormSchema] = useState<RJSFSchema | null>(null);
 
+  // Memoize country options to avoid recalculation
+  const countryOptions = React.useMemo(() => getCountryOptions(), []);
+
   // Custom widgets for better form experience
-  const widgets = {
+  const widgets = React.useMemo(() => ({
     tel: TelWidget,
     TextWidget: TextWidget,
     text: TextWidget,
     email: TextWidget,
-  };
+  }), []);
 
   // Custom templates for Material-UI styling
-  const templates = {
+  const templates = React.useMemo(() => ({
     FieldTemplate: FieldTemplate,
     ObjectFieldTemplate: ObjectFieldTemplate,
     SubmitButton: SubmitButton,
-  };
+  }), []);
 
   // Convert Kratos schema to RJSF schema
   const convertKratosSchemaToRJSF = (kratosSchema: any): RJSFSchema => {
@@ -634,4 +637,4 @@ const CreateIdentityForm: React.FC<CreateIdentityFormProps> = ({ onSuccess, onCa
   );
 };
 
-export default CreateIdentityForm;
+export default React.memo(CreateIdentityForm);

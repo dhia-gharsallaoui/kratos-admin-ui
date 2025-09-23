@@ -21,8 +21,9 @@ import { useSchemas } from '@/features/schemas/hooks';
 import { Identity } from '@ory/kratos-client';
 import { useRouter } from 'next/navigation';
 import { DottedLoader } from '@/components/ui/DottedLoader';
+import { formatDate } from '@/lib/date-utils';
 
-const IdentitiesTable: React.FC = () => {
+const IdentitiesTable: React.FC = React.memo(() => {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
@@ -231,7 +232,7 @@ const IdentitiesTable: React.FC = () => {
       flex: 1,
       minWidth: 160,
       valueFormatter: (value) => {
-        return new Date(value as string).toLocaleString();
+        return formatDate(value as string);
       },
     },
     {
@@ -240,7 +241,7 @@ const IdentitiesTable: React.FC = () => {
       flex: 1,
       minWidth: 160,
       valueFormatter: (value) => {
-        return new Date(value as string).toLocaleString();
+        return formatDate(value as string);
       },
     },
   ];
@@ -409,6 +410,8 @@ const IdentitiesTable: React.FC = () => {
       </Box>
     </Paper>
   );
-};
+});
+
+IdentitiesTable.displayName = 'IdentitiesTable';
 
 export default IdentitiesTable;
