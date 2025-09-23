@@ -23,8 +23,45 @@ const getPublicConfiguration = (): Configuration => {
   });
 };
 
-// API client getters
-export const getAdminApi = () => new IdentityApi(getAdminConfiguration());
-export const getPublicApi = () => new IdentityApi(getPublicConfiguration());
-export const getMetadataApi = () => new MetadataApi(getPublicConfiguration());
-export const getCourierApi = () => new CourierApi(getAdminConfiguration());
+// Singleton API clients for performance optimization
+let adminApiInstance: IdentityApi | null = null;
+let publicApiInstance: IdentityApi | null = null;
+let metadataApiInstance: MetadataApi | null = null;
+let courierApiInstance: CourierApi | null = null;
+
+// API client getters with singleton pattern
+export const getAdminApi = (): IdentityApi => {
+  if (!adminApiInstance) {
+    adminApiInstance = new IdentityApi(getAdminConfiguration());
+  }
+  return adminApiInstance;
+};
+
+export const getPublicApi = (): IdentityApi => {
+  if (!publicApiInstance) {
+    publicApiInstance = new IdentityApi(getPublicConfiguration());
+  }
+  return publicApiInstance;
+};
+
+export const getMetadataApi = (): MetadataApi => {
+  if (!metadataApiInstance) {
+    metadataApiInstance = new MetadataApi(getPublicConfiguration());
+  }
+  return metadataApiInstance;
+};
+
+export const getCourierApi = (): CourierApi => {
+  if (!courierApiInstance) {
+    courierApiInstance = new CourierApi(getAdminConfiguration());
+  }
+  return courierApiInstance;
+};
+
+// Reset function for testing or configuration changes
+export const resetApiClients = (): void => {
+  adminApiInstance = null;
+  publicApiInstance = null;
+  metadataApiInstance = null;
+  courierApiInstance = null;
+};
