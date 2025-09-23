@@ -30,7 +30,7 @@ interface SessionDetailDialogProps {
   onSessionUpdated?: () => void;
 }
 
-export const SessionDetailDialog: React.FC<SessionDetailDialogProps> = ({ open, onClose, sessionId, onSessionUpdated }) => {
+export const SessionDetailDialog: React.FC<SessionDetailDialogProps> = React.memo(({ open, onClose, sessionId, onSessionUpdated }) => {
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const queryClient = useQueryClient();
@@ -401,4 +401,6 @@ export const SessionDetailDialog: React.FC<SessionDetailDialogProps> = ({ open, 
       </DialogActions>
     </Dialog>
   );
-};
+});
+
+SessionDetailDialog.displayName = 'SessionDetailDialog';
