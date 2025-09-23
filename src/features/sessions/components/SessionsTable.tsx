@@ -1,7 +1,7 @@
-import React, { useRef } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box, Typography, Chip } from '@mui/material';
+import React, { useMemo } from 'react';
+import { Box, Typography, Chip, Tooltip } from '@mui/material';
 import { Person, AccessTime, Warning } from '@mui/icons-material';
-import { SessionsLoadingSkeleton } from './SessionsLoadingSkeleton';
+import { DataTable, DataTableColumn } from '@/components/ui/DataTable';
 import { formatDate } from '@/lib/date-utils';
 
 interface SessionsTableProps {
@@ -12,15 +12,15 @@ interface SessionsTableProps {
   onSessionClick?: (sessionId: string) => void;
 }
 
-// Internal helper functions that don't depend on props
-const getIdentityDisplayInternal = (session: any): string => {
+// Helper functions for session data processing
+const getIdentityDisplay = (session: any): string => {
   if (!session.identity) return 'Unknown';
   const traits = session.identity.traits;
   if (!traits) return session.identity.id;
   return traits.email || traits.username || session.identity.id;
 };
 
-const getTimeRemainingInternal = (expiresAt: string): string | null => {
+const getTimeRemaining = (expiresAt: string): string | null => {
   if (!expiresAt) return null;
 
   const now = new Date();
@@ -38,211 +38,128 @@ const getTimeRemainingInternal = (expiresAt: string): string | null => {
   return `${minutes}m remaining`;
 };
 
-// Session row component with its own memoization
-const SessionRow = React.memo(
-  ({ session, onSessionClick }: { session: any; onSessionClick?: (sessionId: string) => void }) => {
-    const timeRemaining = getTimeRemainingInternal(session.expires_at || '');
-    const isExpiringSoon = timeRemaining && timeRemaining.includes('m remaining');
-
-    return (
-      <TableRow
-        key={session.id}
-        onClick={() => onSessionClick?.(session.id)}
-        sx={{
-          '&:hover': {
-            backgroundColor: 'var(--table-row-hover)',
-            cursor: onSessionClick ? 'pointer' : 'default',
-          },
-          borderBottom: '1px solid var(--table-border)',
-        }}
-      >
-        <TableCell
-          component="th"
-          scope="row"
-          sx={{
-            maxWidth: 200,
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-            fontFamily: 'monospace',
-            fontSize: '0.875rem',
-          }}
-        >
-          {session.id}
-        </TableCell>
-        <TableCell
-          sx={{
-            maxWidth: 200,
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            fontWeight: 500,
-          }}
-        >
-          {getIdentityDisplayInternal(session)}
-        </TableCell>
-        <TableCell>
-          <Chip
-            label={session.active ? 'Active' : 'Inactive'}
-            color={session.active ? 'success' : 'default'}
-            size="small"
+export const SessionsTable: React.FC<SessionsTableProps> = React.memo(({
+  sessions,
+  isLoading,
+  isFetchingNextPage,
+  searchQuery,
+  onSessionClick
+}) => {
+  // Define columns for the DataTable
+  const columns: DataTableColumn[] = useMemo(() => [
+    {
+      field: 'id',
+      headerName: 'Session ID',
+      minWidth: 200,
+      maxWidth: 250,
+      renderCell: (value: string) => (
+        <Tooltip title={value}>
+          <Typography
+            variant="body2"
             sx={{
-              borderRadius: 'var(--radius)',
-              fontWeight: 500,
-              background: session.active ? '#10b981' : 'var(--muted)',
-              color: session.active ? 'white' : 'var(--muted-foreground)',
+              fontFamily: 'monospace',
+              fontSize: '0.875rem',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
             }}
-          />
-        </TableCell>
-        <TableCell>
-          {session.authenticated_at ? (
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 0.5,
-              }}
+          >
+            {value.substring(0, 8)}...
+          </Typography>
+        </Tooltip>
+      ),
+    },
+    {
+      field: 'identity',
+      headerName: 'Identity',
+      minWidth: 200,
+      maxWidth: 250,
+      renderCell: (_: any, session: any) => (
+        <Typography
+          variant="body2"
+          sx={{
+            fontWeight: 500,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+          }}
+        >
+          {getIdentityDisplay(session)}
+        </Typography>
+      ),
+    },
+    {
+      field: 'active',
+      headerName: 'Status',
+      minWidth: 120,
+      renderCell: (value: boolean) => (
+        <Chip
+          label={value ? 'Active' : 'Inactive'}
+          color={value ? 'success' : 'default'}
+          size="small"
+          sx={{
+            borderRadius: 'var(--radius)',
+            fontWeight: 500,
+            background: value ? '#10b981' : 'var(--muted)',
+            color: value ? 'white' : 'var(--muted-foreground)',
+          }}
+        />
+      ),
+    },
+    {
+      field: 'authenticated_at',
+      headerName: 'Authenticated At',
+      minWidth: 180,
+      renderCell: (value: string) => value ? (
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+          <AccessTime fontSize="small" color="action" />
+          <Typography variant="body2">{formatDate(value)}</Typography>
+        </Box>
+      ) : 'N/A',
+    },
+    {
+      field: 'expires_at',
+      headerName: 'Expires',
+      minWidth: 160,
+      renderCell: (value: string) => {
+        if (!value) return 'N/A';
+
+        const timeRemaining = getTimeRemaining(value);
+        const isExpiringSoon = timeRemaining && timeRemaining.includes('m remaining');
+
+        return (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            {isExpiringSoon && <Warning fontSize="small" color="warning" />}
+            <Typography
+              variant="body2"
+              color={isExpiringSoon ? 'warning.main' : 'text.primary'}
+              fontWeight={isExpiringSoon ? 500 : 400}
             >
-              <AccessTime fontSize="small" color="action" />
-              <Typography variant="body2">{formatDate(session.authenticated_at)}</Typography>
-            </Box>
-          ) : (
-            'N/A'
-          )}
-        </TableCell>
-        <TableCell>
-          {session.expires_at ? (
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 0.5,
-              }}
-            >
-              {isExpiringSoon && <Warning fontSize="small" color="warning" />}
-              <Typography variant="body2" color={isExpiringSoon ? 'warning.main' : 'text.primary'} fontWeight={isExpiringSoon ? 500 : 400}>
-                {timeRemaining}
-              </Typography>
-            </Box>
-          ) : (
-            'N/A'
-          )}
-        </TableCell>
-      </TableRow>
-    );
-  },
-  (prevProps, nextProps) => {
-    // Only re-render if the session ID changed
-    return prevProps.session.id === nextProps.session.id;
-  }
-);
+              {timeRemaining}
+            </Typography>
+          </Box>
+        );
+      },
+    },
+  ], []);
 
-SessionRow.displayName = 'SessionRow';
+  const handleRowClick = (session: any) => {
+    onSessionClick?.(session.id);
+  };
 
-// Main table component with ultimate stability
-const SessionsTableComponent = ({ sessions, isLoading, isFetchingNextPage, searchQuery, onSessionClick }: SessionsTableProps) => {
-  // Use refs to maintain stable state
-  const stableSessionsRef = useRef<any[]>([]);
-  const lastSessionIdsRef = useRef<string>('');
-
-  // Get current session IDs
-  const currentSessionIds = sessions
-    .map((s) => s.id)
-    .sort()
-    .join(',');
-
-  // Only update stable sessions when IDs actually change
-  if (currentSessionIds !== lastSessionIdsRef.current) {
-    stableSessionsRef.current = sessions;
-    lastSessionIdsRef.current = currentSessionIds;
-  }
-
-  const stableSessions = stableSessionsRef.current;
+  const emptyStateMessage = searchQuery
+    ? 'Try a different search term'
+    : 'Sessions will appear here when users log in';
 
   return (
-    <TableContainer
-      component={Paper}
-      sx={{
-        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-        borderRadius: '8px',
-        overflow: 'hidden',
-        border: '1px solid var(--border)',
-      }}
-    >
-      <Table sx={{ minWidth: 650 }} aria-label="sessions table">
-        <TableHead sx={{ backgroundColor: 'var(--table-header)' }}>
-          <TableRow>
-            <TableCell sx={{ fontWeight: 600 }}>Session ID</TableCell>
-            <TableCell sx={{ fontWeight: 600 }}>Identity</TableCell>
-            <TableCell sx={{ fontWeight: 600 }}>Status</TableCell>
-            <TableCell sx={{ fontWeight: 600 }}>Authenticated At</TableCell>
-            <TableCell sx={{ fontWeight: 600 }}>Expires</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {isLoading ? (
-            <SessionsLoadingSkeleton rows={10} />
-          ) : stableSessions.length === 0 ? (
-            <TableRow>
-              <TableCell colSpan={5} align="center" sx={{ py: 4 }}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: 1,
-                  }}
-                >
-                  <Person
-                    sx={{
-                      fontSize: 40,
-                      color: 'var(--muted-foreground)',
-                      opacity: 0.5,
-                    }}
-                  />
-                  <Typography variant="h6">No active sessions found</Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {searchQuery ? 'Try a different search term' : 'Sessions will appear here when users log in'}
-                  </Typography>
-                </Box>
-              </TableCell>
-            </TableRow>
-          ) : (
-            stableSessions.map((session) => <SessionRow key={session.id} session={session} onSessionClick={onSessionClick} />)
-          )}
-          {isFetchingNextPage && <SessionsLoadingSkeleton rows={5} />}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <DataTable
+      data={sessions}
+      columns={columns}
+      keyField="id"
+      loading={isLoading}
+      searchable={false} // Search is handled externally
+      onRowClick={handleRowClick}
+      emptyMessage={emptyStateMessage}
+    />
   );
-};
-
-// Custom comparison function
-const arePropsEqual = (prevProps: SessionsTableProps, nextProps: SessionsTableProps) => {
-  // Compare session IDs only
-  const prevIds = prevProps.sessions
-    .map((s) => s.id)
-    .sort()
-    .join(',');
-  const nextIds = nextProps.sessions
-    .map((s) => s.id)
-    .sort()
-    .join(',');
-
-  const sessionsChanged = prevIds !== nextIds;
-  const loadingChanged = prevProps.isLoading !== nextProps.isLoading;
-  const fetchingChanged = prevProps.isFetchingNextPage !== nextProps.isFetchingNextPage;
-  const searchChanged = prevProps.searchQuery !== nextProps.searchQuery;
-  const clickHandlerChanged = prevProps.onSessionClick !== nextProps.onSessionClick;
-
-  // Simple re-render logic:
-  // - Re-render if sessions, loading, search, or click handler changed
-  // - Ignore fetchingChanged when sessions are stable (let CSS handle loading state)
-  const shouldRerender = sessionsChanged || loadingChanged || searchChanged || clickHandlerChanged;
-
-  // Return true if props are equal (should NOT re-render)
-  return !shouldRerender;
-};
-
-export const SessionsTable = React.memo(SessionsTableComponent, arePropsEqual);
+});
 
 SessionsTable.displayName = 'SessionsTable';
