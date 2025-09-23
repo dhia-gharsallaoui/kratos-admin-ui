@@ -4,6 +4,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { Identity } from '@ory/kratos-client';
 import { useUpdateIdentity } from '../hooks/useIdentities';
 import { DottedLoader } from '@/components/ui/DottedLoader';
+import { formatDate } from '@/lib/date-utils';
 
 interface IdentityEditModalProps {
   open: boolean;
@@ -236,11 +237,11 @@ export const IdentityEditModal: React.FC<IdentityEditModalProps> = ({ open, onCl
             </Grid>
 
             <Grid size={{ xs: 12, md: 6 }}>
-              <TextField label="Created At" value={new Date(identity.created_at || '').toLocaleString()} fullWidth disabled variant="filled" />
+              <TextField label="Created At" value={formatDate(identity.created_at)} fullWidth disabled variant="filled" />
             </Grid>
 
             <Grid size={{ xs: 12, md: 6 }}>
-              <TextField label="Updated At" value={new Date(identity.updated_at || '').toLocaleString()} fullWidth disabled variant="filled" />
+              <TextField label="Updated At" value={formatDate(identity.updated_at)} fullWidth disabled variant="filled" />
             </Grid>
           </Grid>
         </Box>

@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box, Typography, Chip } from '@mui/material';
 import { Person, AccessTime, Warning } from '@mui/icons-material';
 import { SessionsLoadingSkeleton } from './SessionsLoadingSkeleton';
+import { formatDate } from '@/lib/date-utils';
 
 interface SessionsTableProps {
   sessions: any[];
@@ -102,7 +103,7 @@ const SessionRow = React.memo(
               }}
             >
               <AccessTime fontSize="small" color="action" />
-              <Typography variant="body2">{new Date(session.authenticated_at).toLocaleString()}</Typography>
+              <Typography variant="body2">{formatDate(session.authenticated_at)}</Typography>
             </Box>
           ) : (
             'N/A'

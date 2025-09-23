@@ -21,6 +21,7 @@ import {
 import { Close, Person, Security, Devices, ExpandMore, Delete, Update, Info } from '@mui/icons-material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getSession, disableSession, extendSession } from '../../../services/kratos/endpoints/sessions';
+import { formatDate } from '@/lib/date-utils';
 
 interface SessionDetailDialogProps {
   open: boolean;
@@ -92,9 +93,6 @@ export const SessionDetailDialog: React.FC<SessionDetailDialogProps> = ({ open, 
     extendMutation.mutate();
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString();
-  };
 
   const getTimeRemaining = (expiresAt: string) => {
     if (!expiresAt) return null;

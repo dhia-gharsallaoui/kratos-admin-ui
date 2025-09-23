@@ -34,6 +34,7 @@ import { useState } from 'react';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { github, vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { useTheme } from '@mui/material/styles';
+import { formatDate } from '@/lib/date-utils';
 
 export default function IdentityDetailPage() {
   const theme = useTheme();
@@ -134,9 +135,6 @@ export default function IdentityDetailPage() {
   }
 
   const traits = identity.traits as any;
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString();
-  };
 
   return (
     <ProtectedRoute requiredRole={UserRole.ADMIN}>

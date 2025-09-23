@@ -34,6 +34,7 @@ import { useMessagesPaginated, useMessagesWithSearch } from '@/features/messages
 import { CourierMessageStatus } from '@/services/kratos/endpoints/courier';
 import { DottedLoader } from '@/components/ui/DottedLoader';
 import { MessageDetailDialog } from '@/features/messages/components';
+import { formatDate } from '@/lib/date-utils';
 
 export default function MessagesPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -148,9 +149,6 @@ export default function MessagesPage() {
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString();
-  };
 
   const handleMessageClick = (messageId: string) => {
     setSelectedMessageId(messageId);

@@ -19,6 +19,7 @@ import {
 import { Close, Mail, Sms, Person, Schedule, Info, ExpandMore, CheckCircle, Cancel, Error } from '@mui/icons-material';
 import { useMessage } from '../hooks';
 import { CourierMessageStatus } from '@/services/kratos/endpoints/courier';
+import { formatDate } from '@/lib/date-utils';
 
 interface MessageDetailDialogProps {
   open: boolean;
@@ -72,9 +73,6 @@ export const MessageDetailDialog: React.FC<MessageDetailDialogProps> = ({ open, 
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString();
-  };
 
   if (isLoading) {
     return (
