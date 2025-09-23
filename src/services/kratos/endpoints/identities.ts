@@ -7,6 +7,8 @@ import {
   IdentityApiCreateRecoveryLinkForIdentityRequest,
 } from '@ory/kratos-client';
 import { getAdminApi } from '../client';
+import { fetchAllPages, processPaginatedResponse } from '@/lib/pagination-utils';
+import { apiLogger } from '@/lib/logger';
 
 // Identity CRUD operations
 export async function listIdentities(params: IdentityApiListIdentitiesRequest = {}) {
@@ -56,65 +58,34 @@ export async function getAllIdentities(options?: {
 }) {
   const { maxPages = 20, pageSize = 250, onProgress } = options || {};
 
-  let allIdentities: any[] = [];
-  let pageToken: string | undefined = undefined;
-  let hasMore = true;
-  let pageCount = 0;
-
-  console.log('Starting getAllIdentities fetch...');
-
-  while (hasMore && pageCount < maxPages) {
-    console.log(`Fetching page ${pageCount + 1} with token: ${pageToken}`);
-
-    try {
-      const requestParams: any = { pageSize };
-
-      // Only add pageToken if it's not the first page
-      if (pageToken) {
-        requestParams.pageToken = pageToken;
-      }
-
-      const response = await listIdentities(requestParams);
-
-      console.log(`Page ${pageCount + 1}: Got ${response.data.length} identities`);
-      allIdentities = [...allIdentities, ...response.data];
-
-      // Call progress callback if provided
-      onProgress?.(allIdentities.length, pageCount + 1);
-
-      // Extract next page token from Link header
-      const linkHeader = response.headers?.link;
-      let nextPageToken = null;
-
-      if (linkHeader) {
-        const nextMatch = linkHeader.match(/page_token=([^&>]+)[^>]*>;\s*rel="next"/);
-        if (nextMatch) {
-          nextPageToken = nextMatch[1];
+  try {
+    const allIdentities = await fetchAllPages(
+      async (pageToken) => {
+        const requestParams: any = { pageSize };
+        if (pageToken) {
+          requestParams.pageToken = pageToken;
         }
+        const response = await listIdentities(requestParams);
+        return {
+          data: response.data,
+          headers: response.headers || {},
+        };
+      },
+      {
+        maxPages,
+        onProgress: onProgress ? (current: number) => onProgress(current, Math.ceil(current / pageSize)) : undefined,
+        stopOnError: false,
       }
+    );
 
-      hasMore = !!nextPageToken;
-      pageToken = nextPageToken || '';
-      pageCount++;
-
-      console.log(`Next token: ${nextPageToken}, Has more: ${hasMore}`);
-
-      // Small delay to avoid overwhelming the API
-      if (hasMore) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-      }
-    } catch (error) {
-      console.error(`Error fetching page ${pageCount + 1}:`, error);
-      hasMore = false; // Stop on error
-    }
+    return {
+      identities: allIdentities,
+      totalCount: allIdentities.length,
+      isComplete: true,
+      pagesFetched: Math.ceil(allIdentities.length / pageSize),
+    };
+  } catch (error) {
+    apiLogger.logError(error, 'Error fetching all identities');
+    throw error;
   }
-
-  console.log(`Total identities fetched: ${allIdentities.length}`);
-
-  return {
-    identities: allIdentities,
-    totalCount: allIdentities.length,
-    isComplete: !hasMore, // true if we got all identities, false if limited by maxPages
-    pagesFetched: pageCount,
-  };
 }
