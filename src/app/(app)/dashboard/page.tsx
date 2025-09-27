@@ -1,7 +1,7 @@
 'use client';
 
 import { Box, Typography, Grid, Paper, Card, CardContent, IconButton, Tooltip, Alert } from '@mui/material';
-import { Refresh, TrendingUp, Group, Security, Schedule, Schema, HealthAndSafety } from '@mui/icons-material';
+import { Refresh, TrendingUp, Group, Security, Schedule, Schema, HealthAndSafety, VpnKey, Cloud, Apps } from '@mui/icons-material';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import { UserRole } from '@/features/auth';
@@ -12,7 +12,7 @@ import { LineChart } from '@mui/x-charts/LineChart';
 import { Gauge } from '@mui/x-charts/Gauge';
 
 export default function Dashboard() {
-  const { identity, session, system, isLoading, isError, refetchAll } = useAnalytics();
+  const { identity, session, system, hydra, isLoading, isError, refetchAll } = useAnalytics();
 
   const sessionDays =
     session.data?.sessionsByDay?.map((item) =>
@@ -89,7 +89,7 @@ export default function Dashboard() {
                 Analytics Dashboard
               </Typography>
               <Typography variant="body1" color="text.secondary">
-                Insights and metrics for your Kratos identity management system
+                Insights and metrics for your Ory Kratos and Hydra systems
               </Typography>
             </Box>
             <Tooltip title="Refresh Data">
@@ -209,7 +209,7 @@ export default function Dashboard() {
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                     <HealthAndSafety color="success" sx={{ mr: 1 }} />
                     <Typography variant="h6" color="success.main">
-                      System Health
+                      Kratos Health
                     </Typography>
                   </Box>
                   <Typography variant="h3" sx={{ mb: 1 }}>
@@ -217,6 +217,64 @@ export default function Dashboard() {
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     {system.data?.systemHealth || 'Unknown'}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+
+            {/* Hydra Metrics */}
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+              <Card>
+                <CardContent>
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                    <Apps color="primary" sx={{ mr: 1 }} />
+                    <Typography variant="h6" color="primary">
+                      OAuth2 Clients
+                    </Typography>
+                  </Box>
+                  <Typography variant="h3" sx={{ mb: 1 }}>
+                    {formatNumber(hydra.data?.totalClients || 0)}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {hydra.data?.publicClients || 0} public, {hydra.data?.confidentialClients || 0} confidential
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+              <Card>
+                <CardContent>
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                    <VpnKey color="secondary" sx={{ mr: 1 }} />
+                    <Typography variant="h6" color="secondary.main">
+                      Grant Types
+                    </Typography>
+                  </Box>
+                  <Typography variant="h3" sx={{ mb: 1 }}>
+                    {hydra.data?.clientsByGrantType.length || 0}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Different grant types in use
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+              <Card>
+                <CardContent>
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                    <Cloud color="info" sx={{ mr: 1 }} />
+                    <Typography variant="h6" color="info.main">
+                      Hydra Health
+                    </Typography>
+                  </Box>
+                  <Typography variant="h3" sx={{ mb: 1 }}>
+                    {hydra.data?.systemHealth === 'healthy' ? '✓' : hydra.data?.systemHealth === 'error' ? '✗' : '?'}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {hydra.data?.systemHealth || 'Unknown'}
                   </Typography>
                 </CardContent>
               </Card>
@@ -381,6 +439,77 @@ export default function Dashboard() {
                     {(identity.data?.verificationStatus.verified || 0) + (identity.data?.verificationStatus.unverified || 0)} total users
                   </Typography>
                 </Box>
+              </Paper>
+            </Grid>
+
+            {/* OAuth2 Client Types Distribution */}
+            <Grid size={{ xs: 12, lg: 4 }}>
+              <Paper sx={{ p: 3, height: 450 }}>
+                <Typography variant="h6" gutterBottom>
+                  OAuth2 Client Types
+                </Typography>
+                <PieChart
+                  series={[
+                    {
+                      data: [
+                        {
+                          id: 0,
+                          label: 'Public',
+                          value: hydra.data?.publicClients || 0,
+                          color: '#2196f3',
+                        },
+                        {
+                          id: 1,
+                          label: 'Confidential',
+                          value: hydra.data?.confidentialClients || 0,
+                          color: '#ff9800',
+                        },
+                      ],
+                      innerRadius: 40,
+                      outerRadius: 100,
+                      paddingAngle: 3,
+                      cornerRadius: 4,
+                      highlightScope: { fade: 'global', highlight: 'item' },
+                    },
+                  ]}
+                  height={350}
+                  slotProps={{
+                    legend: {
+                      position: { vertical: 'bottom', horizontal: 'center' },
+                    },
+                  }}
+                />
+              </Paper>
+            </Grid>
+
+            {/* Grant Types Distribution */}
+            <Grid size={{ xs: 12, lg: 8 }}>
+              <Paper sx={{ p: 3, height: 450 }}>
+                <Typography variant="h6" gutterBottom>
+                  OAuth2 Grant Types Usage
+                </Typography>
+                <PieChart
+                  series={[
+                    {
+                      data: hydra.data?.clientsByGrantType.map((item, index) => ({
+                        id: index,
+                        label: item.grantType,
+                        value: item.count,
+                      })) || [],
+                      innerRadius: 60,
+                      outerRadius: 120,
+                      paddingAngle: 2,
+                      cornerRadius: 4,
+                      highlightScope: { fade: 'global', highlight: 'item' },
+                    },
+                  ]}
+                  height={350}
+                  slotProps={{
+                    legend: {
+                      position: { vertical: 'bottom', horizontal: 'center' },
+                    },
+                  }}
+                />
               </Paper>
             </Grid>
           </Grid>

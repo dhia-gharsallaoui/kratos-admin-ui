@@ -37,14 +37,19 @@ import {
 } from '@mui/icons-material';
 import { useForm, Controller } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-import { useKratosEndpoints, useSetKratosEndpoints, useResetSettings, useIsValidUrl } from '@/features/settings/hooks/useSettings';
+import { useKratosEndpoints, useHydraEndpoints, useSetKratosEndpoints, useSetHydraEndpoints, useResetSettings, useIsValidUrl } from '@/features/settings/hooks/useSettings';
 import { useTheme } from '@/providers/ThemeProvider';
 
 const DRAWER_WIDTH = 280;
 
-type SettingsSection = 'general' | 'kratos';
+type SettingsSection = 'general' | 'kratos' | 'hydra';
 
 interface KratosSettingsForm {
+  publicUrl: string;
+  adminUrl: string;
+}
+
+interface HydraSettingsForm {
   publicUrl: string;
   adminUrl: string;
 }
@@ -58,27 +63,44 @@ export default function SettingsPage() {
   // Kratos settings
   const kratosEndpoints = useKratosEndpoints();
   const setKratosEndpoints = useSetKratosEndpoints();
+
+  // Hydra settings
+  const hydraEndpoints = useHydraEndpoints();
+  const setHydraEndpoints = useSetHydraEndpoints();
+
   const resetSettings = useResetSettings();
   const isValidUrl = useIsValidUrl();
 
-  const {
-    control,
-    handleSubmit,
-    reset,
-    formState: { errors, isDirty },
-  } = useForm<KratosSettingsForm>({
+  const kratosForm = useForm<KratosSettingsForm>({
     defaultValues: {
       publicUrl: kratosEndpoints.publicUrl,
       adminUrl: kratosEndpoints.adminUrl,
     },
   });
 
+  const hydraForm = useForm<HydraSettingsForm>({
+    defaultValues: {
+      publicUrl: hydraEndpoints.publicUrl,
+      adminUrl: hydraEndpoints.adminUrl,
+    },
+  });
+
+  const { handleSubmit: handleKratosSubmit, control: kratosControl, formState: { errors: kratosErrors, isDirty: kratosIsDirty } } = kratosForm;
+  const { handleSubmit: handleHydraSubmit, control: hydraControl, formState: { errors: hydraErrors, isDirty: hydraIsDirty } } = hydraForm;
+
   useEffect(() => {
-    reset({
+    kratosForm.reset({
       publicUrl: kratosEndpoints.publicUrl,
       adminUrl: kratosEndpoints.adminUrl,
     });
-  }, [kratosEndpoints, reset]);
+  }, [kratosEndpoints, kratosForm]);
+
+  useEffect(() => {
+    hydraForm.reset({
+      publicUrl: hydraEndpoints.publicUrl,
+      adminUrl: hydraEndpoints.adminUrl,
+    });
+  }, [hydraEndpoints, hydraForm]);
 
   const handleKratosSave = async (data: KratosSettingsForm) => {
     try {
@@ -88,11 +110,33 @@ export default function SettingsPage() {
       });
       setShowSuccessMessage(true);
     } catch (error) {
-      console.error('Failed to save settings:', error);
+      console.error('Failed to save Kratos settings:', error);
     }
   };
 
+  const handleHydraSave = async (data: HydraSettingsForm) => {
+    try {
+      setHydraEndpoints({
+        publicUrl: data.publicUrl.trim(),
+        adminUrl: data.adminUrl.trim(),
+      });
+      setShowSuccessMessage(true);
+    } catch (error) {
+      console.error('Failed to save Hydra settings:', error);
+    }
+  };
+
+  const handleResetSettings = async () => {
+    await resetSettings();
+    setShowSuccessMessage(true);
+  };
+
   const handleKratosReset = async () => {
+    await resetSettings();
+    setShowSuccessMessage(true);
+  };
+
+  const handleHydraReset = async () => {
     await resetSettings();
     setShowSuccessMessage(true);
   };
@@ -120,6 +164,12 @@ export default function SettingsPage() {
       label: 'Kratos',
       icon: <CloudIcon />,
       description: 'Ory Kratos configuration',
+    },
+    {
+      id: 'hydra' as SettingsSection,
+      label: 'Hydra',
+      icon: <CloudIcon />,
+      description: 'Ory Hydra configuration',
     },
   ];
 
@@ -159,7 +209,7 @@ export default function SettingsPage() {
         </Typography>
       </Alert>
 
-      <Box component="form" onSubmit={handleSubmit(handleKratosSave)}>
+      <Box component="form" onSubmit={handleKratosSubmit(handleKratosSave)}>
         <Typography variant="h6" gutterBottom>
           Endpoint Configuration
         </Typography>
@@ -169,7 +219,7 @@ export default function SettingsPage() {
           <Grid size={{ xs: 12 }}>
             <Controller
               name="publicUrl"
-              control={control}
+              control={kratosControl}
               rules={{
                 validate: validateUrl,
               }}
@@ -179,8 +229,8 @@ export default function SettingsPage() {
                   label="Kratos Public URL"
                   placeholder="http://localhost:4433"
                   fullWidth
-                  error={!!errors.publicUrl}
-                  helperText={errors.publicUrl?.message || 'Used for public API calls (registration, login, etc.)'}
+                  error={!!kratosErrors.publicUrl}
+                  helperText={kratosErrors.publicUrl?.message || 'Used for public API calls (registration, login, etc.)'}
                 />
               )}
             />
@@ -189,7 +239,7 @@ export default function SettingsPage() {
           <Grid size={{ xs: 12 }}>
             <Controller
               name="adminUrl"
-              control={control}
+              control={kratosControl}
               rules={{
                 validate: validateUrl,
               }}
@@ -199,8 +249,8 @@ export default function SettingsPage() {
                   label="Kratos Admin URL"
                   placeholder="http://localhost:4434"
                   fullWidth
-                  error={!!errors.adminUrl}
-                  helperText={errors.adminUrl?.message || 'Used for admin API calls (identity management, etc.)'}
+                  error={!!kratosErrors.adminUrl}
+                  helperText={kratosErrors.adminUrl?.message || 'Used for admin API calls (identity management, etc.)'}
                 />
               )}
             />
@@ -234,10 +284,107 @@ export default function SettingsPage() {
           <Button onClick={handleKratosReset} startIcon={<ResetIcon />} color="secondary" variant="outlined">
             Reset to Defaults
           </Button>
-          <Button 
+          <Button
             type="submit"
-            variant="contained" 
-            disabled={!isDirty}
+            variant="contained"
+            disabled={!kratosIsDirty}
+            startIcon={<SaveIcon />}
+          >
+            Save Changes
+          </Button>
+        </Box>
+      </Box>
+    </Paper>
+  );
+
+  const renderHydraSettings = () => (
+    <Paper sx={{ p: 4 }}>
+      <Alert severity="info" sx={{ mb: 3 }}>
+        <Typography variant="body2">
+          <strong>Note:</strong> These are the real Hydra endpoint URLs that the application will proxy to. Settings are stored in your
+          browser&apos;s local storage and take effect immediately.
+        </Typography>
+      </Alert>
+
+      <Box component="form" onSubmit={handleHydraSubmit(handleHydraSave)}>
+        <Typography variant="h6" gutterBottom>
+          Endpoint Configuration
+        </Typography>
+        <Divider sx={{ mb: 3 }} />
+
+        <Grid container spacing={3}>
+          <Grid size={{ xs: 12 }}>
+            <Controller
+              name="publicUrl"
+              control={hydraControl}
+              rules={{
+                validate: validateUrl,
+              }}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="Hydra Public URL"
+                  placeholder="http://localhost:4444"
+                  fullWidth
+                  error={!!hydraErrors.publicUrl}
+                  helperText={hydraErrors.publicUrl?.message || 'Used for OAuth2/OIDC public endpoints'}
+                />
+              )}
+            />
+          </Grid>
+
+          <Grid size={{ xs: 12 }}>
+            <Controller
+              name="adminUrl"
+              control={hydraControl}
+              rules={{
+                validate: validateUrl,
+              }}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="Hydra Admin URL"
+                  placeholder="http://localhost:4445"
+                  fullWidth
+                  error={!!hydraErrors.adminUrl}
+                  helperText={hydraErrors.adminUrl?.message || 'Used for OAuth2 client and flow management'}
+                />
+              )}
+            />
+          </Grid>
+
+          <Grid size={{ xs: 12 }}>
+            <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
+              Current Configuration
+            </Typography>
+            <Divider sx={{ mb: 2 }} />
+            <Box
+              sx={{
+                bgcolor: 'grey.50',
+                p: 2,
+                borderRadius: 1,
+                fontFamily: 'monospace',
+                fontSize: '0.875rem',
+              }}
+            >
+              <Typography variant="body2" sx={{ mb: 1 }}>
+                <strong>Public URL:</strong> {hydraEndpoints.publicUrl}
+              </Typography>
+              <Typography variant="body2">
+                <strong>Admin URL:</strong> {hydraEndpoints.adminUrl}
+              </Typography>
+            </Box>
+          </Grid>
+        </Grid>
+
+        <Box sx={{ display: 'flex', gap: 2, mt: 4, justifyContent: 'flex-end' }}>
+          <Button onClick={handleHydraReset} startIcon={<ResetIcon />} color="secondary" variant="outlined">
+            Reset to Defaults
+          </Button>
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={!hydraIsDirty}
             startIcon={<SaveIcon />}
           >
             Save Changes
@@ -330,6 +477,7 @@ export default function SettingsPage() {
 
           {activeSection === 'general' && renderGeneralSettings()}
           {activeSection === 'kratos' && renderKratosSettings()}
+          {activeSection === 'hydra' && renderHydraSettings()}
         </Box>
       </Box>
 
