@@ -34,6 +34,9 @@ import {
   GitHub,
   Message,
   Settings,
+  Apps,
+  VpnKey,
+  Token,
 } from '@mui/icons-material';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -70,6 +73,8 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
     { text: 'Schemas', icon: <Schema />, path: '/schemas' },
     { text: 'Sessions', icon: <Person />, path: '/sessions', adminOnly: true },
     { text: 'Messages', icon: <Message />, path: '/messages', adminOnly: true },
+    { text: 'OAuth2 Clients', icon: <Apps />, path: '/oauth2-clients', adminOnly: true },
+    { text: 'OAuth2 Tokens', icon: <Token />, path: '/oauth2-tokens', adminOnly: true },
     { text: 'Settings', icon: <Settings />, path: '/settings' },
   ];
 
@@ -113,7 +118,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
             </IconButton>
             <Box>
               <Typography variant="h6" noWrap component="div" sx={{ display: { xs: 'none', sm: 'block' } }}>
-                Kratos Admin
+                Ory Admin
               </Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -196,7 +201,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
             }}
           >
             <Typography variant="h6" noWrap component="div">
-              Kratos Admin
+              Ory Admin
             </Typography>
             <IconButton onClick={handleDrawerToggle}>{open ? <ChevronLeft /> : <ChevronRight />}</IconButton>
           </Toolbar>

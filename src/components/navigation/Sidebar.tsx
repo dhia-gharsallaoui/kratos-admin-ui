@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { DashboardOutlined, PeopleOutlined, SecurityOutlined, DescriptionOutlined, LogoutOutlined, MailOutlined } from '@mui/icons-material';
+import { DashboardOutlined, PeopleOutlined, SecurityOutlined, DescriptionOutlined, LogoutOutlined, MailOutlined, Apps, VpnKey, Token } from '@mui/icons-material';
 import { Divider, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography, Box } from '@mui/material';
 import { useLogout, useUser } from '@/features/auth';
 import { UserRole } from '@/features/auth';
@@ -45,6 +45,21 @@ const mainNavItems: NavItem[] = [
   },
 ];
 
+const hydraNavItems: NavItem[] = [
+  {
+    title: 'OAuth2 Clients',
+    path: '/oauth2-clients',
+    icon: <Apps />,
+    // requiredRole: UserRole.ADMIN, // Temporarily removed for testing
+  },
+  {
+    title: 'OAuth2 Tokens',
+    path: '/oauth2-tokens',
+    icon: <Token />,
+    // requiredRole: UserRole.ADMIN, // Temporarily removed for testing
+  },
+];
+
 interface SidebarProps {
   open: boolean;
   onClose: () => void;
@@ -71,6 +86,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
   };
 
   const filteredMainNavItems = mainNavItems.filter((item) => hasRequiredRole(item.requiredRole));
+  const filteredHydraNavItems = hydraNavItems.filter((item) => hasRequiredRole(item.requiredRole));
 
   return (
     <Drawer
@@ -90,40 +106,84 @@ export function Sidebar({ open, onClose }: SidebarProps) {
     >
       <Box sx={{ px: 2, py: 3 }}>
         <Typography variant="h5" component="div" sx={{ fontWeight: 'bold', ml: 1 }}>
-          Kratos Admin
+          Ory Admin
         </Typography>
       </Box>
       <Divider />
       <Box sx={{ flexGrow: 1, py: 2 }}>
-        <List>
-          {filteredMainNavItems.map((item) => (
-            <ListItem key={item.title} disablePadding>
-              <ListItemButton
-                component={Link}
-                href={item.path}
-                selected={isActive(item.path)}
-                sx={{
-                  py: 1.5,
-                  borderRadius: 1,
-                  mx: 1,
-                  '&.Mui-selected': {
-                    backgroundColor: 'primary.50',
-                    color: 'primary.main',
-                    '&:hover': {
-                      backgroundColor: 'primary.100',
-                    },
-                    '& .MuiListItemIcon-root': {
+        {/* Kratos Section */}
+        <Box sx={{ mb: 2 }}>
+          <Typography variant="overline" sx={{ px: 2, color: 'text.secondary', fontWeight: 'bold' }}>
+            Kratos (Identity)
+          </Typography>
+          <List>
+            {filteredMainNavItems.map((item) => (
+              <ListItem key={item.title} disablePadding>
+                <ListItemButton
+                  component={Link}
+                  href={item.path}
+                  selected={isActive(item.path)}
+                  sx={{
+                    py: 1.5,
+                    borderRadius: 1,
+                    mx: 1,
+                    '&.Mui-selected': {
+                      backgroundColor: 'primary.50',
                       color: 'primary.main',
+                      '&:hover': {
+                        backgroundColor: 'primary.100',
+                      },
+                      '& .MuiListItemIcon-root': {
+                        color: 'primary.main',
+                      },
                     },
-                  },
-                }}
-              >
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.title} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
+                  }}
+                >
+                  <ListItemIcon>{item.icon}</ListItemIcon>
+                  <ListItemText primary={item.title} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        </Box>
+
+        {/* Hydra Section */}
+        {filteredHydraNavItems.length > 0 && (
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="overline" sx={{ px: 2, color: 'text.secondary', fontWeight: 'bold' }}>
+              Hydra (OAuth2)
+            </Typography>
+            <List>
+              {filteredHydraNavItems.map((item) => (
+                <ListItem key={item.title} disablePadding>
+                  <ListItemButton
+                    component={Link}
+                    href={item.path}
+                    selected={isActive(item.path)}
+                    sx={{
+                      py: 1.5,
+                      borderRadius: 1,
+                      mx: 1,
+                      '&.Mui-selected': {
+                        backgroundColor: 'primary.50',
+                        color: 'primary.main',
+                        '&:hover': {
+                          backgroundColor: 'primary.100',
+                        },
+                        '& .MuiListItemIcon-root': {
+                          color: 'primary.main',
+                        },
+                      },
+                    }}
+                  >
+                    <ListItemIcon>{item.icon}</ListItemIcon>
+                    <ListItemText primary={item.title} />
+                  </ListItemButton>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        )}
       </Box>
       <Box sx={{ mb: 2 }}>
         <List>

@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { getAllIdentities, getSessionsUntilDate, listIdentitySchemas, listSessions } from '@/services/kratos';
-import { IdentityAnalytics, SessionAnalytics, SystemAnalytics } from '../types';
+import { listOAuth2Clients, listOAuth2ConsentSessions } from '@/services/hydra';
+import { IdentityAnalytics, SessionAnalytics, SystemAnalytics, HydraAnalytics } from '../types';
 
 // Hook to fetch comprehensive identity analytics
 export const useIdentityAnalytics = () => {
@@ -186,22 +187,84 @@ export const useSystemAnalytics = () => {
   });
 };
 
+// Hook to fetch Hydra analytics
+export const useHydraAnalytics = () => {
+  return useQuery({
+    queryKey: ['analytics', 'hydra'],
+    queryFn: async (): Promise<HydraAnalytics> => {
+      try {
+        // Fetch OAuth2 clients
+        const clientsResponse = await listOAuth2Clients({ page_size: 500 });
+        const clients = clientsResponse.data || [];
+
+        // Count public vs confidential clients
+        const publicClients = clients.filter(client => client.token_endpoint_auth_method === 'none').length;
+        const confidentialClients = clients.length - publicClients;
+
+        // Group by grant types
+        const grantTypeGroups: Record<string, number> = {};
+        clients.forEach(client => {
+          client.grant_types?.forEach(grantType => {
+            grantTypeGroups[grantType] = (grantTypeGroups[grantType] || 0) + 1;
+          });
+        });
+
+        const clientsByGrantType = Object.entries(grantTypeGroups).map(([grantType, count]) => ({
+          grantType,
+          count: count as number,
+        }));
+
+        // Note: Consent sessions require a specific subject parameter
+        // so we can't get a global count easily. Set to 0 for now.
+        const consentSessions = 0;
+
+        return {
+          totalClients: clients.length,
+          publicClients,
+          confidentialClients,
+          clientsByGrantType,
+          consentSessions,
+          tokensIssued: 0, // This would require additional API calls to get token statistics
+          systemHealth: 'healthy',
+        };
+      } catch (error) {
+        console.error('Failed to fetch Hydra analytics:', error);
+        // Return empty/zero data on error
+        return {
+          totalClients: 0,
+          publicClients: 0,
+          confidentialClients: 0,
+          clientsByGrantType: [],
+          consentSessions: 0,
+          tokensIssued: 0,
+          systemHealth: 'error',
+        };
+      }
+    },
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+    refetchInterval: 10 * 60 * 1000, // Refetch every 10 minutes
+  });
+};
+
 // Combined analytics hook
 export const useAnalytics = () => {
   const identityAnalytics = useIdentityAnalytics();
   const sessionAnalytics = useSessionAnalytics();
   const systemAnalytics = useSystemAnalytics();
+  const hydraAnalytics = useHydraAnalytics();
 
   return {
     identity: identityAnalytics,
     session: sessionAnalytics,
     system: systemAnalytics,
-    isLoading: identityAnalytics.isLoading || sessionAnalytics.isLoading || systemAnalytics.isLoading,
-    isError: identityAnalytics.isError || sessionAnalytics.isError || systemAnalytics.isError,
+    hydra: hydraAnalytics,
+    isLoading: identityAnalytics.isLoading || sessionAnalytics.isLoading || systemAnalytics.isLoading || hydraAnalytics.isLoading,
+    isError: identityAnalytics.isError || sessionAnalytics.isError || systemAnalytics.isError || hydraAnalytics.isError,
     refetchAll: () => {
       identityAnalytics.refetch();
       sessionAnalytics.refetch();
       systemAnalytics.refetch();
+      hydraAnalytics.refetch();
     },
   };
 };
