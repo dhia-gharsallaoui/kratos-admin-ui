@@ -4,6 +4,8 @@ import { useForm, Controller } from 'react-hook-form';
 import { Identity } from '@ory/kratos-client';
 import { useUpdateIdentity } from '../hooks/useIdentities';
 import { DottedLoader } from '@/components/ui/DottedLoader';
+import { formatDate } from '@/lib/date-utils';
+import { uiLogger } from '@/lib/logger';
 
 interface IdentityEditModalProps {
   open: boolean;
@@ -40,7 +42,7 @@ export const IdentityEditModal: React.FC<IdentityEditModalProps> = ({ open, onCl
   useEffect(() => {
     if (identity) {
       const traits = identity.traits as any;
-      console.log('Current identity traits structure:', traits);
+      uiLogger.debug('Current identity traits structure:', traits);
       reset({
         email: traits?.email || '',
         username: traits?.username || '',
@@ -54,7 +56,7 @@ export const IdentityEditModal: React.FC<IdentityEditModalProps> = ({ open, onCl
     if (!identity) return;
 
     try {
-      console.log('Submitting identity update:', {
+      uiLogger.debug('Submitting identity update:', {
         originalIdentity: identity,
         formData: data,
       });
@@ -69,7 +71,7 @@ export const IdentityEditModal: React.FC<IdentityEditModalProps> = ({ open, onCl
         },
       };
 
-      console.log('Transformed traits:', traits);
+      uiLogger.debug('Transformed traits:', traits);
 
       // Only update traits, not state
       await updateIdentityMutation.mutateAsync({
@@ -81,8 +83,7 @@ export const IdentityEditModal: React.FC<IdentityEditModalProps> = ({ open, onCl
       onSuccess?.();
       onClose();
     } catch (error) {
-      console.error('Failed to update identity:', error);
-      console.error('Error details:', error);
+      uiLogger.logError(error, 'Failed to update identity');
     }
   };
 
@@ -236,11 +237,11 @@ export const IdentityEditModal: React.FC<IdentityEditModalProps> = ({ open, onCl
             </Grid>
 
             <Grid size={{ xs: 12, md: 6 }}>
-              <TextField label="Created At" value={new Date(identity.created_at || '').toLocaleString()} fullWidth disabled variant="filled" />
+              <TextField label="Created At" value={formatDate(identity.created_at)} fullWidth disabled variant="filled" />
             </Grid>
 
             <Grid size={{ xs: 12, md: 6 }}>
-              <TextField label="Updated At" value={new Date(identity.updated_at || '').toLocaleString()} fullWidth disabled variant="filled" />
+              <TextField label="Updated At" value={formatDate(identity.updated_at)} fullWidth disabled variant="filled" />
             </Grid>
           </Grid>
         </Box>

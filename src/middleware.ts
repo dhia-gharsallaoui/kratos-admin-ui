@@ -18,6 +18,21 @@ async function proxyToKratos(request: NextRequest, baseUrl: string, pathPrefix: 
       body: request.method !== 'GET' && request.method !== 'HEAD' ? await request.arrayBuffer() : undefined,
     });
 
+    // Handle 204 No Content responses
+    if (response.status === 204) {
+      const headers = new Headers();
+      response.headers.forEach((value, key) => {
+        if (key.toLowerCase() !== 'content-encoding' && key.toLowerCase() !== 'transfer-encoding') {
+          headers.set(key, value);
+        }
+      });
+
+      return new NextResponse(null, {
+        status: 204,
+        headers,
+      });
+    }
+
     // Create response with original content
     const responseBody = await response.arrayBuffer();
     const headers = new Headers();

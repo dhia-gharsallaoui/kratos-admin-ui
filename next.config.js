@@ -5,6 +5,14 @@ const nextConfig = {
   images: {
     domains: ['localhost', 'kratos.local'],
   },
+  experimental: {
+    optimizePackageImports: [
+      '@mui/material',
+      '@mui/icons-material',
+      '@mui/x-data-grid',
+      '@mui/x-charts',
+    ],
+  },
 };
 
 module.exports = nextConfig;
