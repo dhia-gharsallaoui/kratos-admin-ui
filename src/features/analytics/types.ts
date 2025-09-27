@@ -24,6 +24,16 @@ export interface SystemAnalytics {
   lastUpdated: Date;
 }
 
+export interface HydraAnalytics {
+  totalClients: number;
+  publicClients: number;
+  confidentialClients: number;
+  clientsByGrantType: Array<{ grantType: string; count: number }>;
+  consentSessions: number;
+  tokensIssued: number;
+  systemHealth: 'healthy' | 'warning' | 'error';
+}
+
 export interface CombinedAnalytics {
   identity: {
     data: IdentityAnalytics | undefined;
@@ -39,6 +49,12 @@ export interface CombinedAnalytics {
   };
   system: {
     data: SystemAnalytics | undefined;
+    isLoading: boolean;
+    isError: boolean;
+    refetch: () => void;
+  };
+  hydra: {
+    data: HydraAnalytics | undefined;
     isLoading: boolean;
     isError: boolean;
     refetch: () => void;

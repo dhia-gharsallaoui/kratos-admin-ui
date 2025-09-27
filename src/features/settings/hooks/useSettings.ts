@@ -6,18 +6,25 @@ export interface KratosEndpoints {
   adminUrl: string;
 }
 
+export interface HydraEndpoints {
+  publicUrl: string;
+  adminUrl: string;
+}
+
 export interface SettingsStoreState {
   kratosEndpoints: KratosEndpoints;
+  hydraEndpoints: HydraEndpoints;
   setKratosEndpoints: (endpoints: KratosEndpoints) => void;
+  setHydraEndpoints: (endpoints: HydraEndpoints) => void;
   resetToDefaults: () => void;
   isValidUrl: (url: string) => boolean;
   isLoaded: boolean;
   loadDefaults: () => Promise<void>;
 }
 
-let serverDefaults: KratosEndpoints | null = null;
+let serverDefaults: { kratos: KratosEndpoints; hydra: HydraEndpoints } | null = null;
 
-async function fetchServerDefaults(): Promise<KratosEndpoints> {
+async function fetchServerDefaults(): Promise<{ kratos: KratosEndpoints; hydra: HydraEndpoints }> {
   if (serverDefaults) {
     return serverDefaults;
   }
@@ -27,8 +34,14 @@ async function fetchServerDefaults(): Promise<KratosEndpoints> {
     if (response.ok) {
       const config = await response.json();
       serverDefaults = {
-        publicUrl: config.kratosPublicUrl,
-        adminUrl: config.kratosAdminUrl,
+        kratos: {
+          publicUrl: config.kratosPublicUrl,
+          adminUrl: config.kratosAdminUrl,
+        },
+        hydra: {
+          publicUrl: config.hydraPublicUrl || 'http://localhost:4444',
+          adminUrl: config.hydraAdminUrl || 'http://localhost:4445',
+        },
       };
       return serverDefaults;
     }
@@ -38,15 +51,26 @@ async function fetchServerDefaults(): Promise<KratosEndpoints> {
 
   // Fallback to localhost
   const fallback = {
-    publicUrl: 'http://localhost:4433',
-    adminUrl: 'http://localhost:4434',
+    kratos: {
+      publicUrl: 'http://localhost:4433',
+      adminUrl: 'http://localhost:4434',
+    },
+    hydra: {
+      publicUrl: 'http://localhost:4444',
+      adminUrl: 'http://localhost:4445',
+    },
   };
   serverDefaults = fallback;
   return fallback;
 }
 
 // Initial endpoints - will be replaced by server defaults on load
-const INITIAL_ENDPOINTS: KratosEndpoints = {
+const INITIAL_KRATOS_ENDPOINTS: KratosEndpoints = {
+  publicUrl: '',
+  adminUrl: '',
+};
+
+const INITIAL_HYDRA_ENDPOINTS: HydraEndpoints = {
   publicUrl: '',
   adminUrl: '',
 };
@@ -54,20 +78,24 @@ const INITIAL_ENDPOINTS: KratosEndpoints = {
 export const useSettingsStore = create<SettingsStoreState>()(
   persist(
     (set, get) => ({
-      kratosEndpoints: INITIAL_ENDPOINTS,
+      kratosEndpoints: INITIAL_KRATOS_ENDPOINTS,
+      hydraEndpoints: INITIAL_HYDRA_ENDPOINTS,
       isLoaded: false,
 
       loadDefaults: async () => {
         const defaults = await fetchServerDefaults();
         set({
-          kratosEndpoints: defaults,
+          kratosEndpoints: defaults.kratos,
+          hydraEndpoints: defaults.hydra,
           isLoaded: true,
         });
 
         // Set cookies for middleware to read
         if (typeof document !== 'undefined') {
-          document.cookie = `kratos-public-url=${encodeURIComponent(defaults.publicUrl)}; path=/; SameSite=Strict`;
-          document.cookie = `kratos-admin-url=${encodeURIComponent(defaults.adminUrl)}; path=/; SameSite=Strict`;
+          document.cookie = `kratos-public-url=${encodeURIComponent(defaults.kratos.publicUrl)}; path=/; SameSite=Strict`;
+          document.cookie = `kratos-admin-url=${encodeURIComponent(defaults.kratos.adminUrl)}; path=/; SameSite=Strict`;
+          document.cookie = `hydra-public-url=${encodeURIComponent(defaults.hydra.publicUrl)}; path=/; SameSite=Strict`;
+          document.cookie = `hydra-admin-url=${encodeURIComponent(defaults.hydra.adminUrl)}; path=/; SameSite=Strict`;
         }
       },
 
@@ -81,14 +109,29 @@ export const useSettingsStore = create<SettingsStoreState>()(
         }
       },
 
-      resetToDefaults: async () => {
-        const defaultEndpoints = await fetchServerDefaults();
-        set({ kratosEndpoints: defaultEndpoints });
+      setHydraEndpoints: (endpoints: HydraEndpoints) => {
+        set({ hydraEndpoints: endpoints });
 
         // Set cookies for middleware to read
         if (typeof document !== 'undefined') {
-          document.cookie = `kratos-public-url=${encodeURIComponent(defaultEndpoints.publicUrl)}; path=/; SameSite=Strict`;
-          document.cookie = `kratos-admin-url=${encodeURIComponent(defaultEndpoints.adminUrl)}; path=/; SameSite=Strict`;
+          document.cookie = `hydra-public-url=${encodeURIComponent(endpoints.publicUrl)}; path=/; SameSite=Strict`;
+          document.cookie = `hydra-admin-url=${encodeURIComponent(endpoints.adminUrl)}; path=/; SameSite=Strict`;
+        }
+      },
+
+      resetToDefaults: async () => {
+        const defaultEndpoints = await fetchServerDefaults();
+        set({
+          kratosEndpoints: defaultEndpoints.kratos,
+          hydraEndpoints: defaultEndpoints.hydra
+        });
+
+        // Set cookies for middleware to read
+        if (typeof document !== 'undefined') {
+          document.cookie = `kratos-public-url=${encodeURIComponent(defaultEndpoints.kratos.publicUrl)}; path=/; SameSite=Strict`;
+          document.cookie = `kratos-admin-url=${encodeURIComponent(defaultEndpoints.kratos.adminUrl)}; path=/; SameSite=Strict`;
+          document.cookie = `hydra-public-url=${encodeURIComponent(defaultEndpoints.hydra.publicUrl)}; path=/; SameSite=Strict`;
+          document.cookie = `hydra-admin-url=${encodeURIComponent(defaultEndpoints.hydra.adminUrl)}; path=/; SameSite=Strict`;
         }
       },
 
@@ -102,17 +145,20 @@ export const useSettingsStore = create<SettingsStoreState>()(
       },
     }),
     {
-      name: 'kratos-admin-settings',
+      name: 'ory-admin-settings',
       partialize: (state) => ({
         kratosEndpoints: state.kratosEndpoints,
+        hydraEndpoints: state.hydraEndpoints,
       }),
       onRehydrateStorage: () => (state) => {
         // When storage is rehydrated, check if we have stored endpoints
-        if (state?.kratosEndpoints) {
+        if (state?.kratosEndpoints && state?.hydraEndpoints) {
           // Set cookies for middleware to read
           if (typeof document !== 'undefined') {
             document.cookie = `kratos-public-url=${encodeURIComponent(state.kratosEndpoints.publicUrl)}; path=/; SameSite=Strict`;
             document.cookie = `kratos-admin-url=${encodeURIComponent(state.kratosEndpoints.adminUrl)}; path=/; SameSite=Strict`;
+            document.cookie = `hydra-public-url=${encodeURIComponent(state.hydraEndpoints.publicUrl)}; path=/; SameSite=Strict`;
+            document.cookie = `hydra-admin-url=${encodeURIComponent(state.hydraEndpoints.adminUrl)}; path=/; SameSite=Strict`;
           }
         } else {
           // If no stored endpoints, load defaults from server
@@ -125,7 +171,9 @@ export const useSettingsStore = create<SettingsStoreState>()(
 
 // Convenience hooks
 export const useKratosEndpoints = () => useSettingsStore((state) => state.kratosEndpoints);
+export const useHydraEndpoints = () => useSettingsStore((state) => state.hydraEndpoints);
 export const useSetKratosEndpoints = () => useSettingsStore((state) => state.setKratosEndpoints);
+export const useSetHydraEndpoints = () => useSettingsStore((state) => state.setHydraEndpoints);
 export const useResetSettings = () => useSettingsStore((state) => state.resetToDefaults);
 export const useIsValidUrl = () => useSettingsStore((state) => state.isValidUrl);
 export const useLoadDefaults = () => useSettingsStore((state) => state.loadDefaults);

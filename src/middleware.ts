@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { kratosHttpClient, HttpError, NetworkError, TimeoutError } from '@/lib/http-client';
 
-async function proxyToKratos(request: NextRequest, baseUrl: string, pathPrefix: string): Promise<NextResponse> {
+async function proxyToService(request: NextRequest, baseUrl: string, pathPrefix: string, serviceName: string): Promise<NextResponse> {
   try {
     const targetPath = request.nextUrl.pathname.replace(pathPrefix, '');
     const targetUrl = `${baseUrl}${targetPath}${request.nextUrl.search}`;
@@ -55,10 +55,10 @@ async function proxyToKratos(request: NextRequest, baseUrl: string, pathPrefix: 
     if (error instanceof HttpError) {
       return NextResponse.json(
         {
-          error: 'Kratos API Error',
+          error: `${serviceName} API Error`,
           message: error.message,
           status: error.status,
-          details: `Failed to connect to Kratos at ${baseUrl}`,
+          details: `Failed to connect to ${serviceName} at ${baseUrl}`,
         },
         { status: error.status || 502 }
       );
@@ -69,7 +69,7 @@ async function proxyToKratos(request: NextRequest, baseUrl: string, pathPrefix: 
         {
           error: 'Network Error',
           message: error.message,
-          details: `Unable to reach Kratos at ${baseUrl}. Please check your Kratos configuration.`,
+          details: `Unable to reach ${serviceName} at ${baseUrl}. Please check your ${serviceName} configuration.`,
         },
         { status: 502 }
       );
@@ -79,7 +79,7 @@ async function proxyToKratos(request: NextRequest, baseUrl: string, pathPrefix: 
       {
         error: 'Proxy Error',
         message: error instanceof Error ? error.message : 'Unknown error',
-        details: `Failed to proxy request to ${baseUrl}`,
+        details: `Failed to proxy request to ${serviceName} at ${baseUrl}`,
       },
       { status: 502 }
     );
@@ -97,7 +97,7 @@ export async function middleware(request: NextRequest) {
       process.env.KRATOS_PUBLIC_URL ||
       'http://localhost:4433';
 
-    return proxyToKratos(request, kratosPublicUrl, '/api/kratos');
+    return proxyToService(request, kratosPublicUrl, '/api/kratos', 'Kratos');
   }
 
   // Handle Kratos admin API proxying
@@ -108,12 +108,34 @@ export async function middleware(request: NextRequest) {
       process.env.KRATOS_ADMIN_URL ||
       'http://localhost:4434';
 
-    return proxyToKratos(request, kratosAdminUrl, '/api/kratos-admin');
+    return proxyToService(request, kratosAdminUrl, '/api/kratos-admin', 'Kratos');
+  }
+
+  // Handle Hydra public API proxying
+  if (pathname.startsWith('/api/hydra/')) {
+    const hydraPublicUrl =
+      request.cookies.get('hydra-public-url')?.value ||
+      request.headers.get('x-hydra-public-url') ||
+      process.env.HYDRA_PUBLIC_URL ||
+      'http://localhost:4444';
+
+    return proxyToService(request, hydraPublicUrl, '/api/hydra', 'Hydra');
+  }
+
+  // Handle Hydra admin API proxying
+  if (pathname.startsWith('/api/hydra-admin/')) {
+    const hydraAdminUrl =
+      request.cookies.get('hydra-admin-url')?.value ||
+      request.headers.get('x-hydra-admin-url') ||
+      process.env.HYDRA_ADMIN_URL ||
+      'http://localhost:4445';
+
+    return proxyToService(request, hydraAdminUrl, '/api/hydra-admin', 'Hydra');
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/api/kratos/:path*', '/api/kratos-admin/:path*'],
+  matcher: ['/api/kratos/:path*', '/api/kratos-admin/:path*', '/api/hydra/:path*', '/api/hydra-admin/:path*'],
 };
