@@ -8,6 +8,7 @@ import { UserRole } from '@/features/auth';
 import { useAnalytics } from '@/features/analytics/hooks';
 import { Spinner } from '@/components/ui/Spinner';
 import { MetricCard } from '@/components/ui/MetricCard';
+import { ChartCard } from '@/components/ui/ChartCard';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { LineChart } from '@mui/x-charts/LineChart';
 import { Gauge } from '@mui/x-charts/Gauge';
@@ -206,29 +207,7 @@ export default function Dashboard() {
           <Grid container spacing={3}>
             {/* User Growth Chart */}
             <Grid size={{ xs: 12, lg: 8 }}>
-              <Paper 
-                elevation={0}
-                sx={{ 
-                  p: 3, 
-                  height: 450,
-                  border: '1px solid',
-                  borderColor: 'divider',
-                  transition: 'all 0.2s ease',
-                  '&:hover': {
-                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
-                  },
-                }}
-              >
-                <Typography 
-                  variant="h6" 
-                  gutterBottom
-                  sx={{
-                    fontWeight: 600,
-                    color: 'text.primary',
-                  }}
-                >
-                  New User Registrations (Last 30 Days)
-                </Typography>
+              <ChartCard title="New User Registrations (Last 30 Days)">
                 <LineChart
                   xAxis={[
                     {
@@ -257,41 +236,12 @@ export default function Dashboard() {
                     },
                   }}
                 />
-              </Paper>
+              </ChartCard>
             </Grid>
 
             {/* Identity Schema Distribution */}
             <Grid size={{ xs: 12, lg: 4 }}>
-              <Paper 
-                elevation={0}
-                sx={{ 
-                  p: 3, 
-                  height: 450,
-                  background: 'rgba(255, 255, 255, 0.9)',
-                  backdropFilter: 'blur(10px)',
-                  border: '1px solid rgba(102, 126, 234, 0.1)',
-                  borderRadius: 3,
-                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    boxShadow: '0 8px 30px rgba(102, 126, 234, 0.15)',
-                    transform: 'translateY(-2px)',
-                  },
-                }}
-              >
-                <Typography 
-                  variant="h6" 
-                  gutterBottom
-                  sx={{
-                    fontWeight: 700,
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    backgroundClip: 'text',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                  }}
-                >
-                  Users by Schema
-                </Typography>
+              <ChartCard title="Users by Schema">
                 <PieChart
                   series={[
                     {
@@ -315,41 +265,12 @@ export default function Dashboard() {
                     },
                   }}
                 />
-              </Paper>
+              </ChartCard>
             </Grid>
 
             {/* Session Activity Chart */}
             <Grid size={{ xs: 12, lg: 8 }}>
-              <Paper 
-                elevation={0}
-                sx={{ 
-                  p: 3, 
-                  height: 450,
-                  background: 'rgba(255, 255, 255, 0.9)',
-                  backdropFilter: 'blur(10px)',
-                  border: '1px solid rgba(102, 126, 234, 0.1)',
-                  borderRadius: 3,
-                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    boxShadow: '0 8px 30px rgba(102, 126, 234, 0.15)',
-                    transform: 'translateY(-2px)',
-                  },
-                }}
-              >
-                <Typography 
-                  variant="h6" 
-                  gutterBottom
-                  sx={{
-                    fontWeight: 700,
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    backgroundClip: 'text',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                  }}
-                >
-                  Session Activity (Last 7 Days)
-                </Typography>
+              <ChartCard title="Session Activity (Last 7 Days)">
                 <LineChart
                   xAxis={[
                     {
@@ -379,41 +300,12 @@ export default function Dashboard() {
                     },
                   }}
                 />
-              </Paper>
+              </ChartCard>
             </Grid>
 
             {/* Verification Status */}
             <Grid size={{ xs: 12, lg: 4 }}>
-              <Paper 
-                elevation={0}
-                sx={{ 
-                  p: 3, 
-                  height: 450,
-                  background: 'rgba(255, 255, 255, 0.9)',
-                  backdropFilter: 'blur(10px)',
-                  border: '1px solid rgba(102, 126, 234, 0.1)',
-                  borderRadius: 3,
-                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    boxShadow: '0 8px 30px rgba(102, 126, 234, 0.15)',
-                    transform: 'translateY(-2px)',
-                  },
-                }}
-              >
-                <Typography 
-                  variant="h6" 
-                  gutterBottom
-                  sx={{
-                    fontWeight: 700,
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    backgroundClip: 'text',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                  }}
-                >
-                  Email Verification Rate
-                </Typography>
+              <ChartCard title="Email Verification Rate">
                 <Box
                   sx={{
                     display: 'flex',
@@ -457,41 +349,12 @@ export default function Dashboard() {
                     {(identity.data?.verificationStatus.verified || 0) + (identity.data?.verificationStatus.unverified || 0)} total users
                   </Typography>
                 </Box>
-              </Paper>
+              </ChartCard>
             </Grid>
 
             {/* OAuth2 Client Types Distribution */}
             <Grid size={{ xs: 12, lg: 4 }}>
-              <Paper 
-                elevation={0}
-                sx={{ 
-                  p: 3, 
-                  height: 450,
-                  background: 'rgba(255, 255, 255, 0.9)',
-                  backdropFilter: 'blur(10px)',
-                  border: '1px solid rgba(102, 126, 234, 0.1)',
-                  borderRadius: 3,
-                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    boxShadow: '0 8px 30px rgba(102, 126, 234, 0.15)',
-                    transform: 'translateY(-2px)',
-                  },
-                }}
-              >
-                <Typography 
-                  variant="h6" 
-                  gutterBottom
-                  sx={{
-                    fontWeight: 700,
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    backgroundClip: 'text',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                  }}
-                >
-                  OAuth2 Client Types
-                </Typography>
+              <ChartCard title="OAuth2 Client Types">
                 <PieChart
                   series={[
                     {
@@ -523,41 +386,12 @@ export default function Dashboard() {
                     },
                   }}
                 />
-              </Paper>
+              </ChartCard>
             </Grid>
 
             {/* Grant Types Distribution */}
             <Grid size={{ xs: 12, lg: 8 }}>
-              <Paper 
-                elevation={0}
-                sx={{ 
-                  p: 3, 
-                  height: 450,
-                  background: 'rgba(255, 255, 255, 0.9)',
-                  backdropFilter: 'blur(10px)',
-                  border: '1px solid rgba(102, 126, 234, 0.1)',
-                  borderRadius: 3,
-                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    boxShadow: '0 8px 30px rgba(102, 126, 234, 0.15)',
-                    transform: 'translateY(-2px)',
-                  },
-                }}
-              >
-                <Typography 
-                  variant="h6" 
-                  gutterBottom
-                  sx={{
-                    fontWeight: 700,
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    backgroundClip: 'text',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                  }}
-                >
-                  OAuth2 Grant Types Usage
-                </Typography>
+              <ChartCard title="OAuth2 Grant Types Usage">
                 <PieChart
                   series={[
                     {
@@ -580,7 +414,7 @@ export default function Dashboard() {
                     },
                   }}
                 />
-              </Paper>
+              </ChartCard>
             </Grid>
           </Grid>
         </Box>
