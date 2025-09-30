@@ -62,6 +62,19 @@ export const useAuthStore = create<AuthStoreState>()(
       onRehydrateStorage: () => (state) => {
         // When storage is rehydrated, set loading to false
         if (state) {
+          // Check if login should be disabled (for testing/screenshots)
+          const disableLogin = process.env.NEXT_PUBLIC_DISABLE_LOGIN === 'true';
+          
+          if (disableLogin && !state.isAuthenticated) {
+            // Auto-login as admin user
+            const adminUser = findUserByCredentials('admin', 'admin123');
+            if (adminUser) {
+              const user = toAuthUser(adminUser);
+              state.user = user;
+              state.isAuthenticated = true;
+            }
+          }
+          
           state.setLoading(false);
         }
       },
