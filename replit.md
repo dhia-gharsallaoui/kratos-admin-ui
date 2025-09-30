@@ -44,6 +44,14 @@ Preferred communication style: Simple, everyday language.
 - **Reusable UI Components**: Modern, theme-aware components (DataTable, Form components, MetricCard, ChartCard, Spinner)
 
 **Reusable Component Library**:
+- **Button**: Modern, theme-aware button component with 5 variants
+  - primary: Dark button with white text (main actions)
+  - secondary: Light button with subtle border (secondary actions)
+  - outlined: Transparent button with border (tertiary actions)
+  - text: Borderless text button (minimal actions)
+  - danger: Red button for destructive actions
+  - Clean styling with no shadows, consistent padding, smooth transitions
+  - Used throughout app for consistent button appearance
 - **DataTable**: Feature-rich table component with search, filters, pagination, sorting support
   - Clean design with `elevation={0}` and theme-aware borders
   - Sticky headers, customizable columns, row click handlers
