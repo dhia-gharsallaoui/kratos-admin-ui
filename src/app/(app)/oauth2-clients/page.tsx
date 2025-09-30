@@ -33,6 +33,13 @@ import { AdminLayout } from '@/components/layout/AdminLayout';
 import { useAllOAuth2Clients, useDeleteOAuth2Client } from '@/features/oauth2-clients';
 import { transformOAuth2ClientForTable, formatClientId, getClientType } from '@/features/oauth2-clients';
 import { OAuth2Client } from '@/services/hydra';
+import { MetricCard } from '@/components/ui/MetricCard';
+import { 
+  Group,
+  Public as PublicIcon,
+  Lock as LockIcon,
+  VpnKey as VpnKeyIcon
+} from '@mui/icons-material';
 
 export default function OAuth2ClientsPage() {
   const router = useRouter();
@@ -273,96 +280,36 @@ export default function OAuth2ClientsPage() {
       {/* Stats Cards */}
       <Grid container spacing={3} sx={{ mb: 3 }}>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <Card
-            elevation={0}
-            sx={{
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              color: 'white',
-              transition: 'all 0.3s ease',
-              '&:hover': {
-                transform: 'translateY(-4px)',
-                boxShadow: '0 8px 24px rgba(102, 126, 234, 0.3)',
-              },
-            }}
-          >
-            <CardContent>
-              <Typography variant="h4" fontWeight="bold" sx={{ mb: 1 }}>
-                {clientsData?.totalCount || 0}
-              </Typography>
-              <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                Total Clients
-              </Typography>
-            </CardContent>
-          </Card>
+          <MetricCard
+            title="Total Clients"
+            value={clientsData?.totalCount || 0}
+            icon={Group}
+            color="#667eea"
+          />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <Card
-            elevation={0}
-            sx={{
-              background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-              color: 'white',
-              transition: 'all 0.3s ease',
-              '&:hover': {
-                transform: 'translateY(-4px)',
-                boxShadow: '0 8px 24px rgba(79, 172, 254, 0.3)',
-              },
-            }}
-          >
-            <CardContent>
-              <Typography variant="h4" fontWeight="bold" sx={{ mb: 1 }}>
-                {clients.filter(c => !c.client_secret).length}
-              </Typography>
-              <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                Public Clients
-              </Typography>
-            </CardContent>
-          </Card>
+          <MetricCard
+            title="Public Clients"
+            value={clients.filter(c => !c.client_secret).length}
+            icon={PublicIcon}
+            color="#74b9ff"
+          />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <Card
-            elevation={0}
-            sx={{
-              background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-              color: 'white',
-              transition: 'all 0.3s ease',
-              '&:hover': {
-                transform: 'translateY(-4px)',
-                boxShadow: '0 8px 24px rgba(240, 147, 251, 0.3)',
-              },
-            }}
-          >
-            <CardContent>
-              <Typography variant="h4" fontWeight="bold" sx={{ mb: 1 }}>
-                {clients.filter(c => !!c.client_secret).length}
-              </Typography>
-              <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                Confidential Clients
-              </Typography>
-            </CardContent>
-          </Card>
+          <MetricCard
+            title="Confidential Clients"
+            value={clients.filter(c => !!c.client_secret).length}
+            icon={LockIcon}
+            color="#a29bfe"
+          />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <Card
-            elevation={0}
-            sx={{
-              background: 'linear-gradient(135deg, #3eecac 0%, #1dd1a1 100%)',
-              color: 'white',
-              transition: 'all 0.3s ease',
-              '&:hover': {
-                transform: 'translateY(-4px)',
-                boxShadow: '0 8px 24px rgba(62, 236, 172, 0.3)',
-              },
-            }}
-          >
-            <CardContent>
-              <Typography variant="h4" fontWeight="bold" sx={{ mb: 1 }}>
-                {clients.filter(c => c.grant_types?.includes('authorization_code')).length}
-              </Typography>
-              <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                Auth Code Flow
-              </Typography>
-            </CardContent>
-          </Card>
+          <MetricCard
+            title="Auth Code Flow"
+            value={clients.filter(c => c.grant_types?.includes('authorization_code')).length}
+            icon={VpnKeyIcon}
+            color="#00b894"
+          />
         </Grid>
       </Grid>
 
@@ -371,11 +318,8 @@ export default function OAuth2ClientsPage() {
         elevation={0}
         sx={{ 
           mb: 3,
-          background: 'rgba(255, 255, 255, 0.9)',
-          backdropFilter: 'blur(10px)',
-          border: '1px solid rgba(102, 126, 234, 0.1)',
-          borderRadius: 3,
-          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+          border: '1px solid',
+          borderColor: 'divider',
         }}
       >
         <CardContent>
@@ -410,11 +354,8 @@ export default function OAuth2ClientsPage() {
       <Card
         elevation={0}
         sx={{
-          background: 'rgba(255, 255, 255, 0.9)',
-          backdropFilter: 'blur(10px)',
-          border: '1px solid rgba(102, 126, 234, 0.1)',
-          borderRadius: 3,
-          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+          border: '1px solid',
+          borderColor: 'divider',
         }}
       >
         <DataGrid

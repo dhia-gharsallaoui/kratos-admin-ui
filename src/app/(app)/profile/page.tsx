@@ -43,10 +43,8 @@ export default function ProfilePage() {
           sx={{ 
             p: 4, 
             borderRadius: 3,
-            background: 'rgba(255, 255, 255, 0.9)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(102, 126, 234, 0.1)',
-            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+            border: '1px solid',
+            borderColor: 'divider',
           }}
         >
           <Box
@@ -62,10 +60,7 @@ export default function ProfilePage() {
               component="h1" 
               gutterBottom
               sx={{
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                backgroundClip: 'text',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
+                color: 'text.primary',
                 fontWeight: 700,
               }}
             >

@@ -217,11 +217,8 @@ export default function SchemasPage() {
             elevation={0}
             sx={{
               mb: 4,
-              borderRadius: 3,
-              background: 'rgba(255, 255, 255, 0.9)',
-              backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(102, 126, 234, 0.1)',
-              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+              border: '1px solid',
+              borderColor: 'divider',
             }}
           >
             <CardContent>
