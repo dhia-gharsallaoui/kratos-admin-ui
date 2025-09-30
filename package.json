@@ -9,7 +9,9 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
-    "docker:dev": "docker compose -f dev/docker-compose.yml -f dev/docker-compose.override.dev.yml up"
+    "docker:dev": "docker compose -f dev/docker-compose.yml -f dev/docker-compose.override.dev.yml up",
+    "mock:server": "node dev/mock-server.js",
+    "local:dev": "bash dev/start-local-dev.sh"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
