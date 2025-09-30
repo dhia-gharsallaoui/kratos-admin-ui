@@ -53,6 +53,13 @@ import {
   parseJWTClaims,
 } from '@/features/oauth2-tokens';
 import type { IntrospectTokenFormData, TokenFormErrors } from '@/features/oauth2-tokens';
+import { MetricCard } from '@/components/ui/MetricCard';
+import { 
+  CheckCircle, 
+  Error as ErrorIcon, 
+  Schedule as ScheduleIcon,
+  Receipt as ReceiptIcon 
+} from '@mui/icons-material';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -302,52 +309,36 @@ export default function OAuth2TokensPage() {
       {/* Stats Cards */}
       <Grid container spacing={3} sx={{ mb: 3 }}>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6" fontWeight="bold">
-                {tokenStats?.totalTokens || 0}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Introspected Tokens
-              </Typography>
-            </CardContent>
-          </Card>
+          <MetricCard
+            title="Introspected Tokens"
+            value={tokenStats?.totalTokens || 0}
+            icon={ReceiptIcon}
+            color="#667eea"
+          />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6" fontWeight="bold" color="success.main">
-                {tokenStats?.activeTokens || 0}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Active Tokens
-              </Typography>
-            </CardContent>
-          </Card>
+          <MetricCard
+            title="Active Tokens"
+            value={tokenStats?.activeTokens || 0}
+            icon={CheckCircle}
+            color="#00b894"
+          />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6" fontWeight="bold" color="error.main">
-                {tokenStats?.expiredTokens || 0}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Expired Tokens
-              </Typography>
-            </CardContent>
-          </Card>
+          <MetricCard
+            title="Expired Tokens"
+            value={tokenStats?.expiredTokens || 0}
+            icon={ErrorIcon}
+            color="#e17055"
+          />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6" fontWeight="bold" color="warning.main">
-                {tokenStats?.tokensExpiringIn24h || 0}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Expiring in 24h
-              </Typography>
-            </CardContent>
-          </Card>
+          <MetricCard
+            title="Expiring in 24h"
+            value={tokenStats?.tokensExpiringIn24h || 0}
+            icon={ScheduleIcon}
+            color="#fdcb6e"
+          />
         </Grid>
       </Grid>
 
