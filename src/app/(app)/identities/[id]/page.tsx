@@ -183,7 +183,7 @@ export default function IdentityDetailPage() {
           <Grid container spacing={3}>
             {/* Basic Information */}
             <Grid size={{ xs: 12, md: 6 }}>
-              <Card>
+              <Card elevation={0} sx={{ border: 1, borderColor: 'divider' }}>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
                     Basic Information
@@ -230,7 +230,7 @@ export default function IdentityDetailPage() {
 
             {/* Traits */}
             <Grid size={{ xs: 12, md: 6 }}>
-              <Card>
+              <Card elevation={0} sx={{ border: 1, borderColor: 'divider' }}>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
                     Traits
@@ -259,7 +259,7 @@ export default function IdentityDetailPage() {
 
             {/* Public Metadata */}
             <Grid size={{ xs: 12, md: 6 }}>
-              <Card>
+              <Card elevation={0} sx={{ border: 1, borderColor: 'divider' }}>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
                     Public Metadata
@@ -304,7 +304,7 @@ export default function IdentityDetailPage() {
 
             {/* Admin Metadata */}
             <Grid size={{ xs: 12, md: 6 }}>
-              <Card>
+              <Card elevation={0} sx={{ border: 1, borderColor: 'divider' }}>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
                     Admin Metadata
@@ -349,7 +349,7 @@ export default function IdentityDetailPage() {
 
             {/* Sessions Section */}
             <Grid size={{ xs: 12 }}>
-              <Card>
+              <Card elevation={0} sx={{ border: 1, borderColor: 'divider' }}>
                 <CardContent>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -413,7 +413,7 @@ export default function IdentityDetailPage() {
 
             {/* Raw JSON */}
             <Grid size={{ xs: 12 }}>
-              <Card>
+              <Card elevation={0} sx={{ border: 1, borderColor: 'divider' }}>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
                     Raw Data
