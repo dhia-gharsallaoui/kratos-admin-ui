@@ -6,6 +6,7 @@ import {
   Tooltip,
 } from '@mui/material';
 import { DataTable, DataTableColumn } from '@/components/ui/DataTable';
+import { ErrorDisplay } from '@/components/ui/ErrorDisplay';
 import { useIdentities, useIdentitiesSearch } from '@/features/identities/hooks';
 import { useSchemas } from '@/features/schemas/hooks';
 import { Identity } from '@ory/kratos-client';
@@ -253,9 +254,12 @@ const IdentitiesTable: React.FC = React.memo(() => {
 
   if (isError) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="400px">
-        <Typography color="error">Error loading identities: {(error as any)?.message || 'Unknown error'}</Typography>
-      </Box>
+      <ErrorDisplay
+        variant="centered"
+        title="Failed to Load Identities"
+        message={(error as any)?.message || 'Unable to fetch identities. Please check your connection and try again.'}
+        onRetry={refetch}
+      />
     );
   }
 

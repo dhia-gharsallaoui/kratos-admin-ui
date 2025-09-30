@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect, useCallback } from 'react';
 import { Box, Typography, CircularProgress, Card, CardContent, IconButton, Tooltip, TextField, InputAdornment, Button } from '@mui/material';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { Search, Refresh, Close, ExpandMore } from '@mui/icons-material';
+import { ErrorDisplay } from '@/components/ui/ErrorDisplay';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import { UserRole } from '@/features/auth';
 import { useSessionsPaginated, useSessionsWithSearch } from '@/features/sessions/hooks/useSessions';
@@ -174,9 +175,12 @@ export default function SessionsPage() {
               </Box>
 
               {isError ? (
-                <Box sx={{ p: 3 }}>
-                  <Typography color="error">Error loading sessions: {error?.message || 'Please try again later.'}</Typography>
-                </Box>
+                <ErrorDisplay
+                  variant="card"
+                  title="Failed to Load Sessions"
+                  message={error?.message || 'Unable to fetch sessions. Please check your connection and try again.'}
+                  onRetry={refetch}
+                />
               ) : (
                 <>
                   <SessionsTable

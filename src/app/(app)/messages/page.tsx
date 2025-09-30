@@ -19,6 +19,7 @@ import {
   CircularProgress,
 } from '@mui/material';
 import { Search, Refresh, Close, ExpandMore } from '@mui/icons-material';
+import { ErrorDisplay } from '@/components/ui/ErrorDisplay';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import { UserRole } from '@/features/auth';
@@ -186,9 +187,12 @@ export default function MessagesPage() {
 
               {/* Messages Table */}
               {isError ? (
-                <Alert severity="error" sx={{ mb: 2 }}>
-                  Error loading messages: {error?.message || 'Please try again later.'}
-                </Alert>
+                <ErrorDisplay
+                  variant="card"
+                  title="Failed to Load Messages"
+                  message={error?.message || 'Unable to fetch messages. Please check your connection and try again.'}
+                  onRetry={refetch}
+                />
               ) : isLoading ? (
                 <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
                   <DottedLoader />
