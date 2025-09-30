@@ -8,3 +8,5 @@ export { default as Sidebar } from './navigation/Sidebar';
 
 // UI components
 export { default as DottedLoader } from './ui/DottedLoader';
+export { Spinner } from './ui/Spinner';
+export { MetricCard } from './ui/MetricCard';
