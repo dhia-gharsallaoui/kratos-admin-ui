@@ -29,6 +29,7 @@ import {
   Delete as DeleteIcon,
   Apps as AppsIcon,
 } from '@mui/icons-material';
+import { AdminLayout } from '@/components/layout/AdminLayout';
 import { useCreateOAuth2Client } from '@/features/oauth2-clients';
 import {
   getDefaultOAuth2ClientFormData,
@@ -130,7 +131,8 @@ export default function CreateOAuth2ClientPage() {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
+    <AdminLayout>
+      <Box sx={{ p: 3 }}>
       {/* Header */}
       <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
         <IconButton onClick={() => router.back()}>
@@ -484,6 +486,7 @@ export default function CreateOAuth2ClientPage() {
           Failed to create client: {createClientMutation.error.message}
         </Alert>
       )}
-    </Box>
+      </Box>
+    </AdminLayout>
   );
 }

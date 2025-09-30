@@ -140,11 +140,16 @@ export async function rejectOAuth2LogoutRequest(challenge: string) {
 
 // Consent Session operations
 export async function listOAuth2ConsentSessions(params: ListConsentSessionsParams = {}) {
+  // Subject is required by Hydra API
+  if (!params.subject) {
+    throw new Error('Subject parameter is required for listing consent sessions');
+  }
+
   try {
     const response = await getAdminOAuth2Api().listOAuth2ConsentSessions({
       pageSize: params.page_size,
       pageToken: params.page_token,
-      subject: params.subject || '',
+      subject: params.subject,
       loginSessionId: params.login_session_id
     });
 

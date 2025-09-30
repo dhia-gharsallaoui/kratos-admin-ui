@@ -53,12 +53,6 @@ const hydraNavItems: NavItem[] = [
     // requiredRole: UserRole.ADMIN, // Temporarily removed for testing
   },
   {
-    title: 'OAuth2 Auth Flows',
-    path: '/oauth2-auth',
-    icon: <VpnKey />,
-    // requiredRole: UserRole.ADMIN, // Temporarily removed for testing
-  },
-  {
     title: 'OAuth2 Tokens',
     path: '/oauth2-tokens',
     icon: <Token />,

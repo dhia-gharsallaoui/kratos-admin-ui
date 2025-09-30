@@ -74,7 +74,6 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
     { text: 'Sessions', icon: <Person />, path: '/sessions', adminOnly: true },
     { text: 'Messages', icon: <Message />, path: '/messages', adminOnly: true },
     { text: 'OAuth2 Clients', icon: <Apps />, path: '/oauth2-clients', adminOnly: true },
-    { text: 'OAuth2 Auth Flows', icon: <VpnKey />, path: '/oauth2-auth', adminOnly: true },
     { text: 'OAuth2 Tokens', icon: <Token />, path: '/oauth2-tokens', adminOnly: true },
     { text: 'Settings', icon: <Settings />, path: '/settings' },
   ];

@@ -29,6 +29,7 @@ import {
   Apps as AppsIcon,
 } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
+import { AdminLayout } from '@/components/layout/AdminLayout';
 import { useAllOAuth2Clients, useDeleteOAuth2Client } from '@/features/oauth2-clients';
 import { transformOAuth2ClientForTable, formatClientId, getClientType } from '@/features/oauth2-clients';
 import { OAuth2Client } from '@/services/hydra';
@@ -215,7 +216,8 @@ export default function OAuth2ClientsPage() {
   ];
 
   return (
-    <Box sx={{ p: 3 }}>
+    <AdminLayout>
+      <Box sx={{ p: 3 }}>
       {/* Header */}
       <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -374,6 +376,7 @@ export default function OAuth2ClientsPage() {
           </Button>
         </DialogActions>
       </Dialog>
-    </Box>
+      </Box>
+    </AdminLayout>
   );
 }

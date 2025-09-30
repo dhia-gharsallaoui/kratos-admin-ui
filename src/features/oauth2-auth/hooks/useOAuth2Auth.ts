@@ -164,6 +164,7 @@ export function useOAuth2ConsentSessions(params: ListConsentSessionsParams = {})
   return useQuery({
     queryKey: oauth2AuthKeys.consentSessionsList(params),
     queryFn: () => listOAuth2ConsentSessions(params),
+    enabled: !!params.subject, // Only fetch if subject is provided (required by Hydra API)
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 }

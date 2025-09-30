@@ -37,6 +37,7 @@ import {
   Public as PublicIcon,
   Lock as LockIcon,
 } from '@mui/icons-material';
+import { AdminLayout } from '@/components/layout/AdminLayout';
 import { useOAuth2Client, useDeleteOAuth2Client } from '@/features/oauth2-clients';
 import { getClientType, getGrantTypeDisplayName, getResponseTypeDisplayName } from '@/features/oauth2-clients';
 
@@ -105,16 +106,19 @@ export default function OAuth2ClientDetailPage({ params }: Props) {
 
   if (error) {
     return (
-      <Box sx={{ p: 3 }}>
-        <Alert severity="error">
-          Failed to load client: {error.message}
-        </Alert>
-      </Box>
+      <AdminLayout>
+        <Box sx={{ p: 3 }}>
+          <Alert severity="error">
+            Failed to load client: {error.message}
+          </Alert>
+        </Box>
+      </AdminLayout>
     );
   }
 
   return (
-    <Box sx={{ p: 3 }}>
+    <AdminLayout>
+      <Box sx={{ p: 3 }}>
       {/* Header */}
       <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -523,6 +527,7 @@ export default function OAuth2ClientDetailPage({ params }: Props) {
           Failed to delete client: {deleteClientMutation.error.message}
         </Alert>
       )}
-    </Box>
+      </Box>
+    </AdminLayout>
   );
 }
