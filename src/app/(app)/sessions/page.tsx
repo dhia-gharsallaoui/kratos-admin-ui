@@ -105,14 +105,8 @@ export default function SessionsPage() {
             <Box>
               <Typography 
                 variant="h4" 
-                sx={{ 
-                  fontWeight: 700, 
-                  mb: 1,
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                  backgroundClip: 'text',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                }}
+                fontWeight={600}
+                sx={{ mb: 1 }}
               >
                 Active Sessions
               </Typography>
@@ -121,18 +115,8 @@ export default function SessionsPage() {
               </Typography>
             </Box>
             <Tooltip title="Refresh">
-              <IconButton
-                onClick={() => refetch()}
-                sx={{
-                  background: 'rgba(102, 126, 234, 0.1)',
-                  '&:hover': {
-                    background: 'rgba(102, 126, 234, 0.2)',
-                    transform: 'scale(1.05)',
-                  },
-                  transition: 'all 0.3s ease',
-                }}
-              >
-                <Refresh sx={{ color: '#667eea' }} />
+              <IconButton onClick={() => refetch()}>
+                <Refresh />
               </IconButton>
             </Tooltip>
           </Box>
@@ -141,11 +125,9 @@ export default function SessionsPage() {
             elevation={0}
             sx={{
               mb: 4,
-              borderRadius: 3,
-              background: 'rgba(255, 255, 255, 0.9)',
-              backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(102, 126, 234, 0.1)',
-              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+              border: 1,
+              borderColor: 'divider',
+              borderRadius: 2,
             }}
           >
             <CardContent>
@@ -159,13 +141,7 @@ export default function SessionsPage() {
               >
                 <Typography 
                   variant="h6" 
-                  sx={{ 
-                    fontWeight: 700,
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    backgroundClip: 'text',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                  }}
+                  fontWeight={600}
                 >
                   All Sessions
                 </Typography>
@@ -227,17 +203,6 @@ export default function SessionsPage() {
                           onClick={() => searchQuery_.loadMoreMatches()}
                           variant="outlined"
                           startIcon={<ExpandMore />}
-                          sx={{
-                            borderRadius: 2,
-                            borderColor: '#667eea',
-                            color: '#667eea',
-                            transition: 'all 0.3s ease',
-                            '&:hover': {
-                              borderColor: '#764ba2',
-                              background: 'rgba(102, 126, 234, 0.1)',
-                              transform: 'translateY(-2px)',
-                            },
-                          }}
                         >
                           Load More Matches
                         </Button>
@@ -253,21 +218,6 @@ export default function SessionsPage() {
                         disabled={isFetchingNextPage}
                         variant="outlined"
                         startIcon={isFetchingNextPage ? <CircularProgress size={16} /> : <ExpandMore />}
-                        sx={{
-                          borderRadius: 2,
-                          borderColor: '#667eea',
-                          color: '#667eea',
-                          transition: 'all 0.3s ease',
-                          '&:hover': {
-                            borderColor: '#764ba2',
-                            background: 'rgba(102, 126, 234, 0.1)',
-                            transform: 'translateY(-2px)',
-                          },
-                          '&:disabled': {
-                            borderColor: 'rgba(0, 0, 0, 0.12)',
-                            color: 'rgba(0, 0, 0, 0.26)',
-                          },
-                        }}
                       >
                         {isFetchingNextPage ? 'Loading...' : 'Load More Sessions'}
                       </Button>
@@ -311,24 +261,16 @@ export default function SessionsPage() {
           <Card
             elevation={0}
             sx={{
-              borderRadius: 3,
-              background: 'rgba(255, 255, 255, 0.9)',
-              backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(102, 126, 234, 0.1)',
-              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+              border: 1,
+              borderColor: 'divider',
+              borderRadius: 2,
             }}
           >
             <CardContent>
               <Typography 
                 variant="h6" 
-                sx={{ 
-                  fontWeight: 700, 
-                  mb: 2,
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                  backgroundClip: 'text',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                }}
+                fontWeight={600}
+                sx={{ mb: 2 }}
               >
                 About Sessions
               </Typography>
