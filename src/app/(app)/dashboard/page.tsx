@@ -506,8 +506,34 @@ export default function Dashboard() {
           <Grid container spacing={3}>
             {/* User Growth Chart */}
             <Grid size={{ xs: 12, lg: 8 }}>
-              <Paper sx={{ p: 3, height: 450 }}>
-                <Typography variant="h6" gutterBottom>
+              <Paper 
+                elevation={0}
+                sx={{ 
+                  p: 3, 
+                  height: 450,
+                  background: 'rgba(255, 255, 255, 0.9)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(102, 126, 234, 0.1)',
+                  borderRadius: 3,
+                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    boxShadow: '0 8px 30px rgba(102, 126, 234, 0.15)',
+                    transform: 'translateY(-2px)',
+                  },
+                }}
+              >
+                <Typography 
+                  variant="h6" 
+                  gutterBottom
+                  sx={{
+                    fontWeight: 700,
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    backgroundClip: 'text',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }}
+                >
                   New User Registrations (Last 30 Days)
                 </Typography>
                 <LineChart
@@ -543,8 +569,34 @@ export default function Dashboard() {
 
             {/* Identity Schema Distribution */}
             <Grid size={{ xs: 12, lg: 4 }}>
-              <Paper sx={{ p: 3, height: 450 }}>
-                <Typography variant="h6" gutterBottom>
+              <Paper 
+                elevation={0}
+                sx={{ 
+                  p: 3, 
+                  height: 450,
+                  background: 'rgba(255, 255, 255, 0.9)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(102, 126, 234, 0.1)',
+                  borderRadius: 3,
+                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    boxShadow: '0 8px 30px rgba(102, 126, 234, 0.15)',
+                    transform: 'translateY(-2px)',
+                  },
+                }}
+              >
+                <Typography 
+                  variant="h6" 
+                  gutterBottom
+                  sx={{
+                    fontWeight: 700,
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    backgroundClip: 'text',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }}
+                >
                   Users by Schema
                 </Typography>
                 <PieChart
@@ -575,8 +627,34 @@ export default function Dashboard() {
 
             {/* Session Activity Chart */}
             <Grid size={{ xs: 12, lg: 8 }}>
-              <Paper sx={{ p: 3, height: 450 }}>
-                <Typography variant="h6" gutterBottom>
+              <Paper 
+                elevation={0}
+                sx={{ 
+                  p: 3, 
+                  height: 450,
+                  background: 'rgba(255, 255, 255, 0.9)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(102, 126, 234, 0.1)',
+                  borderRadius: 3,
+                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    boxShadow: '0 8px 30px rgba(102, 126, 234, 0.15)',
+                    transform: 'translateY(-2px)',
+                  },
+                }}
+              >
+                <Typography 
+                  variant="h6" 
+                  gutterBottom
+                  sx={{
+                    fontWeight: 700,
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    backgroundClip: 'text',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }}
+                >
                   Session Activity (Last 7 Days)
                 </Typography>
                 <LineChart
@@ -613,8 +691,34 @@ export default function Dashboard() {
 
             {/* Verification Status */}
             <Grid size={{ xs: 12, lg: 4 }}>
-              <Paper sx={{ p: 3, height: 450 }}>
-                <Typography variant="h6" gutterBottom>
+              <Paper 
+                elevation={0}
+                sx={{ 
+                  p: 3, 
+                  height: 450,
+                  background: 'rgba(255, 255, 255, 0.9)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(102, 126, 234, 0.1)',
+                  borderRadius: 3,
+                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    boxShadow: '0 8px 30px rgba(102, 126, 234, 0.15)',
+                    transform: 'translateY(-2px)',
+                  },
+                }}
+              >
+                <Typography 
+                  variant="h6" 
+                  gutterBottom
+                  sx={{
+                    fontWeight: 700,
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    backgroundClip: 'text',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }}
+                >
                   Email Verification Rate
                 </Typography>
                 <Box
@@ -665,8 +769,34 @@ export default function Dashboard() {
 
             {/* OAuth2 Client Types Distribution */}
             <Grid size={{ xs: 12, lg: 4 }}>
-              <Paper sx={{ p: 3, height: 450 }}>
-                <Typography variant="h6" gutterBottom>
+              <Paper 
+                elevation={0}
+                sx={{ 
+                  p: 3, 
+                  height: 450,
+                  background: 'rgba(255, 255, 255, 0.9)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(102, 126, 234, 0.1)',
+                  borderRadius: 3,
+                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    boxShadow: '0 8px 30px rgba(102, 126, 234, 0.15)',
+                    transform: 'translateY(-2px)',
+                  },
+                }}
+              >
+                <Typography 
+                  variant="h6" 
+                  gutterBottom
+                  sx={{
+                    fontWeight: 700,
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    backgroundClip: 'text',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }}
+                >
                   OAuth2 Client Types
                 </Typography>
                 <PieChart
@@ -705,8 +835,34 @@ export default function Dashboard() {
 
             {/* Grant Types Distribution */}
             <Grid size={{ xs: 12, lg: 8 }}>
-              <Paper sx={{ p: 3, height: 450 }}>
-                <Typography variant="h6" gutterBottom>
+              <Paper 
+                elevation={0}
+                sx={{ 
+                  p: 3, 
+                  height: 450,
+                  background: 'rgba(255, 255, 255, 0.9)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(102, 126, 234, 0.1)',
+                  borderRadius: 3,
+                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    boxShadow: '0 8px 30px rgba(102, 126, 234, 0.15)',
+                    transform: 'translateY(-2px)',
+                  },
+                }}
+              >
+                <Typography 
+                  variant="h6" 
+                  gutterBottom
+                  sx={{
+                    fontWeight: 700,
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    backgroundClip: 'text',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }}
+                >
                   OAuth2 Grant Types Usage
                 </Typography>
                 <PieChart
