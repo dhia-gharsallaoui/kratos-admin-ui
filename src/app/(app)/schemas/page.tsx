@@ -27,6 +27,7 @@ import {
   InputAdornment,
 } from '@mui/material';
 import { AdminLayout } from '@/components/layout/AdminLayout';
+import { ErrorDisplay } from '@/components/ui/ErrorDisplay';
 import { getIdentitySchema } from '@/services/kratos';
 import { useSchemas } from '@/features/schemas/hooks';
 import { Code, Description, Search, Refresh, MoreVert, Close } from '@mui/icons-material';
@@ -266,10 +267,12 @@ export default function SchemasPage() {
                   <CircularProgress />
                 </Box>
               ) : error ? (
-                <Box sx={{ p: 3 }}>
-                  <Typography color="error">Error loading schemas. Please try again later.</Typography>
-                  <pre>{JSON.stringify(error, null, 2)}</pre>
-                </Box>
+                <ErrorDisplay
+                  variant="card"
+                  title="Failed to Load Schemas"
+                  message="Unable to fetch identity schemas. Please check your connection and try again."
+                  onRetry={refetch}
+                />
               ) : (
                 <>
                   <TableContainer
