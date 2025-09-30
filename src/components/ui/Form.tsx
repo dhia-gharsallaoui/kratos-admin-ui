@@ -5,7 +5,6 @@ import {
   CardContent,
   Typography,
   TextField,
-  Button,
   FormControl,
   InputLabel,
   Select,
@@ -17,6 +16,7 @@ import {
   type SelectProps,
 } from '@mui/material';
 import { Save, Cancel } from '@mui/icons-material';
+import { Button } from './Button';
 
 interface FormSectionProps {
   title?: string;
@@ -172,7 +172,7 @@ export const FormActions: React.FC<FormActionsProps> = ({
       {onSubmit && (
         <Button
           type="submit"
-          variant="contained"
+          variant="primary"
           startIcon={submitIcon}
           onClick={onSubmit}
           disabled={disabled || isLoading}
