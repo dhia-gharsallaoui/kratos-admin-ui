@@ -6,7 +6,8 @@ import { AdminLayout } from '@/components/layout/AdminLayout';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import { UserRole } from '@/features/auth';
 import { useAnalytics } from '@/features/analytics/hooks';
-import { DottedLoader } from '@/components/ui/DottedLoader';
+import { Spinner } from '@/components/ui/Spinner';
+import { MetricCard } from '@/components/ui/MetricCard';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { LineChart } from '@mui/x-charts/LineChart';
 import { Gauge } from '@mui/x-charts/Gauge';
@@ -50,7 +51,7 @@ export default function Dashboard() {
       <ProtectedRoute requiredRole={UserRole.VIEWER}>
         <AdminLayout>
           <Box display="flex" justifyContent="center" alignItems="center" height="400px">
-            <DottedLoader variant="page" />
+            <Spinner variant="ring" size="large" />
           </Box>
         </AdminLayout>
       </ProtectedRoute>
@@ -102,403 +103,102 @@ export default function Dashboard() {
           {/* Key Metrics Cards */}
           <Grid container spacing={3} sx={{ mb: 4 }}>
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <Card
-                elevation={0}
-                sx={{
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                  color: 'white',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    transform: 'translateY(-8px)',
-                    boxShadow: '0 12px 28px rgba(102, 126, 234, 0.4)',
-                  },
-                  '&::before': {
-                    content: '""',
-                    position: 'absolute',
-                    top: '-50%',
-                    right: '-50%',
-                    width: '200%',
-                    height: '200%',
-                    background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
-                    animation: 'pulse 4s ease-in-out infinite',
-                  },
-                  '@keyframes pulse': {
-                    '0%, 100%': { opacity: 0.5 },
-                    '50%': { opacity: 1 },
-                  },
-                }}
-              >
-                <CardContent sx={{ position: 'relative', zIndex: 1 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <Box
-                      sx={{
-                        background: 'rgba(255,255,255,0.2)',
-                        borderRadius: 2,
-                        p: 1,
-                        display: 'flex',
-                        mr: 2,
-                      }}
-                    >
-                      <Group sx={{ fontSize: 32 }} />
-                    </Box>
-                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                      Total Users
-                    </Typography>
-                  </Box>
-                  <Typography variant="h3" sx={{ mb: 1, fontWeight: 700 }}>
-                    {formatNumber(identity.data?.totalIdentities || 0)}
-                  </Typography>
-                  <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                    +{identity.data?.newIdentitiesLast30Days || 0} in last 30 days
-                  </Typography>
-                </CardContent>
-              </Card>
+              <MetricCard
+                title="Total Users"
+                value={formatNumber(identity.data?.totalIdentities || 0)}
+                subtitle={`+${identity.data?.newIdentitiesLast30Days || 0} in last 30 days`}
+                icon={Group}
+                color="#667eea"
+              />
             </Grid>
 
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <Card
-                elevation={0}
-                sx={{
-                  background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-                  color: 'white',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    transform: 'translateY(-8px)',
-                    boxShadow: '0 12px 28px rgba(240, 147, 251, 0.4)',
-                  },
-                }}
-              >
-                <CardContent sx={{ position: 'relative', zIndex: 1 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <Box
-                      sx={{
-                        background: 'rgba(255,255,255,0.2)',
-                        borderRadius: 2,
-                        p: 1,
-                        display: 'flex',
-                        mr: 2,
-                      }}
-                    >
-                      <Security sx={{ fontSize: 32 }} />
-                    </Box>
-                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                      Active Sessions
-                    </Typography>
-                  </Box>
-                  <Typography variant="h3" sx={{ mb: 1, fontWeight: 700 }}>
-                    {formatNumber(session.data?.activeSessions || 0)}
-                  </Typography>
-                  <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                    {session.data?.sessionsLast7Days || 0} in last 7 days
-                  </Typography>
-                </CardContent>
-              </Card>
+              <MetricCard
+                title="Active Sessions"
+                value={formatNumber(session.data?.activeSessions || 0)}
+                subtitle={`${session.data?.sessionsLast7Days || 0} in last 7 days`}
+                icon={Security}
+                color="#764ba2"
+              />
             </Grid>
 
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <Card
-                elevation={0}
-                sx={{
-                  background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-                  color: 'white',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    transform: 'translateY(-8px)',
-                    boxShadow: '0 12px 28px rgba(79, 172, 254, 0.4)',
-                  },
-                }}
-              >
-                <CardContent sx={{ position: 'relative', zIndex: 1 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <Box
-                      sx={{
-                        background: 'rgba(255,255,255,0.2)',
-                        borderRadius: 2,
-                        p: 1,
-                        display: 'flex',
-                        mr: 2,
-                      }}
-                    >
-                      <Schedule sx={{ fontSize: 32 }} />
-                    </Box>
-                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                      Avg Session
-                    </Typography>
-                  </Box>
-                  <Typography variant="h3" sx={{ mb: 1, fontWeight: 700 }}>
-                    {formatDuration(session.data?.averageSessionDuration || 0)}
-                  </Typography>
-                  <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                    Average duration
-                  </Typography>
-                </CardContent>
-              </Card>
+              <MetricCard
+                title="Avg Session"
+                value={formatDuration(session.data?.averageSessionDuration || 0)}
+                subtitle="Average duration"
+                icon={Schedule}
+                color="#00b894"
+              />
             </Grid>
 
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <Card
-                elevation={0}
-                sx={{
-                  background: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
-                  color: 'white',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    transform: 'translateY(-8px)',
-                    boxShadow: '0 12px 28px rgba(250, 112, 154, 0.4)',
-                  },
-                }}
-              >
-                <CardContent sx={{ position: 'relative', zIndex: 1 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <Box
-                      sx={{
-                        background: 'rgba(255,255,255,0.2)',
-                        borderRadius: 2,
-                        p: 1,
-                        display: 'flex',
-                        mr: 2,
-                      }}
-                    >
-                      <TrendingUp sx={{ fontSize: 32 }} />
-                    </Box>
-                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                      Verification Rate
-                    </Typography>
-                  </Box>
-                  <Typography variant="h3" sx={{ mb: 1, fontWeight: 700 }}>
-                    {identity.data
-                      ? Math.round(
-                          (identity.data.verificationStatus.verified /
-                            (identity.data.verificationStatus.verified + identity.data.verificationStatus.unverified)) *
-                            100
-                        )
-                      : 0}
-                    %
-                  </Typography>
-                  <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                    Email verified users
-                  </Typography>
-                </CardContent>
-              </Card>
+              <MetricCard
+                title="Verification Rate"
+                value={`${
+                  identity.data
+                    ? Math.round(
+                        (identity.data.verificationStatus.verified /
+                          (identity.data.verificationStatus.verified + identity.data.verificationStatus.unverified)) *
+                          100
+                      )
+                    : 0
+                }%`}
+                subtitle="Email verified users"
+                icon={TrendingUp}
+                color="#e17055"
+              />
             </Grid>
 
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <Card
-                elevation={0}
-                sx={{
-                  background: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
-                  color: '#333',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    transform: 'translateY(-8px)',
-                    boxShadow: '0 12px 28px rgba(168, 237, 234, 0.4)',
-                  },
-                }}
-              >
-                <CardContent sx={{ position: 'relative', zIndex: 1 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <Box
-                      sx={{
-                        background: 'rgba(255,255,255,0.5)',
-                        borderRadius: 2,
-                        p: 1,
-                        display: 'flex',
-                        mr: 2,
-                      }}
-                    >
-                      <Schema sx={{ fontSize: 32, color: '#667eea' }} />
-                    </Box>
-                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                      Identity Schemas
-                    </Typography>
-                  </Box>
-                  <Typography variant="h3" sx={{ mb: 1, fontWeight: 700 }}>
-                    {formatNumber(system.data?.totalSchemas || 0)}
-                  </Typography>
-                  <Typography variant="body2" sx={{ opacity: 0.8 }}>
-                    Total schemas configured
-                  </Typography>
-                </CardContent>
-              </Card>
+              <MetricCard
+                title="Identity Schemas"
+                value={formatNumber(system.data?.totalSchemas || 0)}
+                subtitle="Total schemas configured"
+                icon={Schema}
+                color="#0984e3"
+              />
             </Grid>
 
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <Card
-                elevation={0}
-                sx={{
-                  background: 'linear-gradient(135deg, #3eecac 0%, #1dd1a1 100%)',
-                  color: 'white',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    transform: 'translateY(-8px)',
-                    boxShadow: '0 12px 28px rgba(62, 236, 172, 0.4)',
-                  },
-                }}
-              >
-                <CardContent sx={{ position: 'relative', zIndex: 1 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <Box
-                      sx={{
-                        background: 'rgba(255,255,255,0.2)',
-                        borderRadius: 2,
-                        p: 1,
-                        display: 'flex',
-                        mr: 2,
-                      }}
-                    >
-                      <HealthAndSafety sx={{ fontSize: 32 }} />
-                    </Box>
-                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                      Kratos Health
-                    </Typography>
-                  </Box>
-                  <Typography variant="h3" sx={{ mb: 1, fontWeight: 700 }}>
-                    {system.data?.systemHealth === 'healthy' ? '✓' : system.data?.systemHealth || '?'}
-                  </Typography>
-                  <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                    {system.data?.systemHealth || 'Unknown'}
-                  </Typography>
-                </CardContent>
-              </Card>
+              <MetricCard
+                title="Kratos Health"
+                value={system.data?.systemHealth === 'healthy' ? '✓' : system.data?.systemHealth || '?'}
+                subtitle={system.data?.systemHealth || 'Unknown'}
+                icon={HealthAndSafety}
+                color="#00b894"
+              />
             </Grid>
 
             {/* Hydra Metrics */}
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <Card
-                elevation={0}
-                sx={{
-                  background: 'linear-gradient(135deg, #ffa751 0%, #ffe259 100%)',
-                  color: 'white',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    transform: 'translateY(-8px)',
-                    boxShadow: '0 12px 28px rgba(255, 167, 81, 0.4)',
-                  },
-                }}
-              >
-                <CardContent sx={{ position: 'relative', zIndex: 1 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <Box
-                      sx={{
-                        background: 'rgba(255,255,255,0.2)',
-                        borderRadius: 2,
-                        p: 1,
-                        display: 'flex',
-                        mr: 2,
-                      }}
-                    >
-                      <Apps sx={{ fontSize: 32 }} />
-                    </Box>
-                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                      OAuth2 Clients
-                    </Typography>
-                  </Box>
-                  <Typography variant="h3" sx={{ mb: 1, fontWeight: 700 }}>
-                    {formatNumber(hydra.data?.totalClients || 0)}
-                  </Typography>
-                  <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                    {hydra.data?.publicClients || 0} public, {hydra.data?.confidentialClients || 0} confidential
-                  </Typography>
-                </CardContent>
-              </Card>
+              <MetricCard
+                title="OAuth2 Clients"
+                value={formatNumber(hydra.data?.totalClients || 0)}
+                subtitle={`${hydra.data?.publicClients || 0} public, ${hydra.data?.confidentialClients || 0} confidential`}
+                icon={Apps}
+                color="#fdcb6e"
+              />
             </Grid>
 
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <Card
-                elevation={0}
-                sx={{
-                  background: 'linear-gradient(135deg, #c471f5 0%, #fa71cd 100%)',
-                  color: 'white',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    transform: 'translateY(-8px)',
-                    boxShadow: '0 12px 28px rgba(196, 113, 245, 0.4)',
-                  },
-                }}
-              >
-                <CardContent sx={{ position: 'relative', zIndex: 1 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <Box
-                      sx={{
-                        background: 'rgba(255,255,255,0.2)',
-                        borderRadius: 2,
-                        p: 1,
-                        display: 'flex',
-                        mr: 2,
-                      }}
-                    >
-                      <VpnKey sx={{ fontSize: 32 }} />
-                    </Box>
-                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                      Grant Types
-                    </Typography>
-                  </Box>
-                  <Typography variant="h3" sx={{ mb: 1, fontWeight: 700 }}>
-                    {hydra.data?.clientsByGrantType.length || 0}
-                  </Typography>
-                  <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                    Different grant types in use
-                  </Typography>
-                </CardContent>
-              </Card>
+              <MetricCard
+                title="Grant Types"
+                value={hydra.data?.clientsByGrantType.length || 0}
+                subtitle="Different grant types in use"
+                icon={VpnKey}
+                color="#a29bfe"
+              />
             </Grid>
 
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <Card
-                elevation={0}
-                sx={{
-                  background: 'linear-gradient(135deg, #30cfd0 0%, #330867 100%)',
-                  color: 'white',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    transform: 'translateY(-8px)',
-                    boxShadow: '0 12px 28px rgba(48, 207, 208, 0.4)',
-                  },
-                }}
-              >
-                <CardContent sx={{ position: 'relative', zIndex: 1 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <Box
-                      sx={{
-                        background: 'rgba(255,255,255,0.2)',
-                        borderRadius: 2,
-                        p: 1,
-                        display: 'flex',
-                        mr: 2,
-                      }}
-                    >
-                      <Cloud sx={{ fontSize: 32 }} />
-                    </Box>
-                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                      Hydra Health
-                    </Typography>
-                  </Box>
-                  <Typography variant="h3" sx={{ mb: 1, fontWeight: 700 }}>
-                    {hydra.data?.systemHealth === 'healthy' ? '✓' : hydra.data?.systemHealth === 'error' ? '✗' : '?'}
-                  </Typography>
-                  <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                    {hydra.data?.systemHealth || 'Unknown'}
-                  </Typography>
-                </CardContent>
-              </Card>
+              <MetricCard
+                title="Hydra Health"
+                value={hydra.data?.systemHealth === 'healthy' ? '✓' : hydra.data?.systemHealth === 'error' ? '✗' : '?'}
+                subtitle={hydra.data?.systemHealth || 'Unknown'}
+                icon={Cloud}
+                color="#74b9ff"
+              />
             </Grid>
           </Grid>
 

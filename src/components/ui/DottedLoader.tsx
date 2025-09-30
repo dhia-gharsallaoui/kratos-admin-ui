@@ -8,25 +8,25 @@ interface DottedLoaderProps extends BoxProps {
   variant?: LoaderVariant;
 }
 
-// CSS classes for different variants - easy to modify later
+// CSS classes for different variants - clean purple theme
 const loaderStyles = {
   inline: {
     // Small loader for inline use (metrics, counts, etc.)
-    outerBorderColor: '#0075ff',
-    innerBorderColor: '#009688',
+    outerBorderColor: '#667eea',
+    innerBorderColor: '#764ba2',
     outerBorderWidth: '2px',
     innerBorderWidth: '2px',
-    animationDuration: '1.5s',
-    innerAnimationDuration: '0.8s',
+    animationDuration: '1.2s',
+    innerAnimationDuration: '0.9s',
   },
   page: {
     // Larger loader for page-level loading
-    outerBorderColor: '#0075ff',
-    innerBorderColor: '#009688',
-    outerBorderWidth: '4px',
-    innerBorderWidth: '4px',
-    animationDuration: '2s',
-    innerAnimationDuration: '1s',
+    outerBorderColor: '#667eea',
+    innerBorderColor: '#764ba2',
+    outerBorderWidth: '3px',
+    innerBorderWidth: '3px',
+    animationDuration: '1.5s',
+    innerAnimationDuration: '1.1s',
   },
 };
 
