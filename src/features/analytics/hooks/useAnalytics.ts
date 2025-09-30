@@ -195,7 +195,7 @@ export const useHydraAnalytics = () => {
       try {
         // Fetch OAuth2 clients
         const clientsResponse = await listOAuth2Clients({ page_size: 500 });
-        const clients = clientsResponse.data || [];
+        const clients = Array.isArray(clientsResponse.data) ? clientsResponse.data : [];
 
         // Count public vs confidential clients
         const publicClients = clients.filter(client => client.token_endpoint_auth_method === 'none').length;
