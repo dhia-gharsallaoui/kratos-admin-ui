@@ -15,26 +15,17 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Chip,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
   Alert,
   CircularProgress,
 } from '@mui/material';
-import { Search, Refresh, Close, ExpandMore, Mail, Sms, Error, CheckCircle, Schedule, Cancel } from '@mui/icons-material';
+import { Search, Refresh, Close, ExpandMore } from '@mui/icons-material';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import { UserRole } from '@/features/auth';
 import { useMessagesPaginated, useMessagesWithSearch } from '@/features/messages/hooks';
 import { CourierMessageStatus } from '@/services/kratos/endpoints/courier';
 import { DottedLoader } from '@/components/ui/DottedLoader';
-import { MessageDetailDialog } from '@/features/messages/components';
-import { formatDate } from '@/lib/date-utils';
+import { MessageDetailDialog, MessagesTable } from '@/features/messages/components';
 
 export default function MessagesPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -107,48 +98,6 @@ export default function MessagesPage() {
       paginatedQuery.refetch();
     }
   };
-
-  const getStatusIcon = (status: CourierMessageStatus) => {
-    switch (status) {
-      case 'sent':
-        return <CheckCircle color="success" fontSize="small" />;
-      case 'queued':
-        return <Schedule color="info" fontSize="small" />;
-      case 'processing':
-        return <CircularProgress size={16} />;
-      case 'abandoned':
-        return <Cancel color="error" fontSize="small" />;
-      default:
-        return <Error color="warning" fontSize="small" />;
-    }
-  };
-
-  const getStatusColor = (status: CourierMessageStatus) => {
-    switch (status) {
-      case 'sent':
-        return 'success';
-      case 'queued':
-        return 'info';
-      case 'processing':
-        return 'warning';
-      case 'abandoned':
-        return 'error';
-      default:
-        return 'default';
-    }
-  };
-
-  const getMessageTypeIcon = (type: string) => {
-    switch (type) {
-      case 'email':
-        return <Mail fontSize="small" />;
-      case 'sms':
-        return <Sms fontSize="small" />;
-      default:
-        return <Mail fontSize="small" />;
-    }
-  };
-
 
   const handleMessageClick = (messageId: string) => {
     setSelectedMessageId(messageId);
@@ -246,112 +195,11 @@ export default function MessagesPage() {
                 </Box>
               ) : (
                 <>
-                  <TableContainer component={Paper} elevation={0} sx={{ border: '1px solid var(--border)' }}>
-                    <Table>
-                      <TableHead sx={{ backgroundColor: 'var(--table-header)' }}>
-                        <TableRow>
-                          <TableCell sx={{ fontWeight: 600 }}>Type</TableCell>
-                          <TableCell sx={{ fontWeight: 600 }}>Recipient</TableCell>
-                          <TableCell sx={{ fontWeight: 600 }}>Subject</TableCell>
-                          <TableCell sx={{ fontWeight: 600 }}>Status</TableCell>
-                          <TableCell sx={{ fontWeight: 600 }}>Template</TableCell>
-                          <TableCell sx={{ fontWeight: 600 }}>Created</TableCell>
-                          <TableCell sx={{ fontWeight: 600 }}>Send Count</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {messages.length === 0 ? (
-                          <TableRow>
-                            <TableCell colSpan={7} align="center" sx={{ py: 4 }}>
-                              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
-                                <Mail sx={{ fontSize: 40, color: 'var(--muted-foreground)', opacity: 0.5 }} />
-                                <Typography variant="h6">No messages found</Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                  {debouncedSearchQuery ? (
-                                    <>No messages match &ldquo;{debouncedSearchQuery}&rdquo;. Try a different search term.</>
-                                  ) : statusFilter ? (
-                                    <>No messages with &ldquo;{statusFilter}&rdquo; status found.</>
-                                  ) : (
-                                    'Messages will appear here when sent through Kratos'
-                                  )}
-                                </Typography>
-                              </Box>
-                            </TableCell>
-                          </TableRow>
-                        ) : (
-                          messages.map((message: any) => (
-                            <TableRow
-                              key={message.id}
-                              onClick={() => handleMessageClick(message.id)}
-                              sx={{
-                                cursor: 'pointer',
-                                '&:hover': {
-                                  backgroundColor: 'var(--table-row-hover)',
-                                },
-                              }}
-                            >
-                              <TableCell>
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                  {getMessageTypeIcon(message.type)}
-                                  <Typography variant="body2" sx={{ textTransform: 'capitalize' }}>
-                                    {message.type}
-                                  </Typography>
-                                </Box>
-                              </TableCell>
-                              <TableCell>
-                                <Typography
-                                  variant="body2"
-                                  sx={{
-                                    maxWidth: 200,
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis',
-                                    whiteSpace: 'nowrap',
-                                  }}
-                                >
-                                  {message.recipient}
-                                </Typography>
-                              </TableCell>
-                              <TableCell>
-                                <Typography
-                                  variant="body2"
-                                  sx={{
-                                    maxWidth: 250,
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis',
-                                    whiteSpace: 'nowrap',
-                                  }}
-                                >
-                                  {message.subject || 'No subject'}
-                                </Typography>
-                              </TableCell>
-                              <TableCell>
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                  {getStatusIcon(message.status)}
-                                  <Chip
-                                    label={message.status}
-                                    color={getStatusColor(message.status) as any}
-                                    size="small"
-                                    sx={{ textTransform: 'capitalize' }}
-                                  />
-                                </Box>
-                              </TableCell>
-                              <TableCell>
-                                <Typography variant="body2" sx={{ fontFamily: 'monospace', fontSize: '0.75rem' }}>
-                                  {message.template_type || 'Unknown'}
-                                </Typography>
-                              </TableCell>
-                              <TableCell>
-                                <Typography variant="body2">{formatDate(message.created_at)}</Typography>
-                              </TableCell>
-                              <TableCell>
-                                <Typography variant="body2">{message.send_count || 0}</Typography>
-                              </TableCell>
-                            </TableRow>
-                          ))
-                        )}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
+                  <MessagesTable
+                    messages={messages}
+                    isLoading={isLoading}
+                    onMessageClick={handleMessageClick}
+                  />
 
                   {/* Loading/pagination controls for search mode */}
                   {isSearching && hasNextPage && (
