@@ -113,7 +113,8 @@ export async function middleware(request: NextRequest) {
       'http://localhost:4434';
 
     const kratosAdminUrl = decodeURIComponent(kratosAdminUrlRaw);
-    return proxyToService(request, kratosAdminUrl, '/api/kratos-admin', 'Kratos');
+    // Strip /admin from the path since Ory SDK already includes it in the basePath
+    return proxyToService(request, kratosAdminUrl, '/api/kratos-admin/admin', 'Kratos');
   }
 
   // Handle Hydra public API proxying
@@ -137,8 +138,8 @@ export async function middleware(request: NextRequest) {
       'http://localhost:4445';
 
     const hydraAdminUrl = decodeURIComponent(hydraAdminUrlRaw);
-
-    return proxyToService(request, hydraAdminUrl, '/api/hydra-admin', 'Hydra');
+    // Strip /admin from the path since Ory SDK already includes it in the basePath
+    return proxyToService(request, hydraAdminUrl, '/api/hydra-admin/admin', 'Hydra');
   }
 
   return NextResponse.next();
