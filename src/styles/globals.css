@@ -18,6 +18,31 @@
   --table-header: #f9fafb;
   --table-row-hover: #f5f5f5;
   --table-border: #e5e5e5;
+  
+  /* Text colors */
+  --text-primary: #171717;
+  --text-secondary: #525252;
+  --text-tertiary: #a3a3a3;
+  
+  /* Background colors */
+  --background-primary: #ffffff;
+  --background-secondary: #f5f5f5;
+  --background-tertiary: #e5e5e5;
+  
+  /* Error colors */
+  --error-bg: #fef2f2;
+  --error-border: #fecaca;
+  --error-text: #dc2626;
+  
+  /* Warning colors */
+  --warning-bg: #fffbeb;
+  --warning-border: #fed7aa;
+  --warning-text: #ea580c;
+  
+  /* Info colors */
+  --info-bg: #eff6ff;
+  --info-border: #bfdbfe;
+  --info-text: #2563eb;
 }
 
 body {
@@ -48,6 +73,31 @@ body {
   --table-header: #1a1a1a;
   --table-row-hover: #2a2a2a;
   --table-border: #333333;
+  
+  /* Text colors */
+  --text-primary: #e0e0e0;
+  --text-secondary: #a3a3a3;
+  --text-tertiary: #737373;
+  
+  /* Background colors */
+  --background-primary: #1e1e1e;
+  --background-secondary: #2a2a2a;
+  --background-tertiary: #333333;
+  
+  /* Error colors */
+  --error-bg: #2a1515;
+  --error-border: #7f1d1d;
+  --error-text: #fca5a5;
+  
+  /* Warning colors */
+  --warning-bg: #2a2010;
+  --warning-border: #92400e;
+  --warning-text: #fdba74;
+  
+  /* Info colors */
+  --info-bg: #1e2a3a;
+  --info-border: #1e3a8a;
+  --info-text: #93c5fd;
 }
 
 /* Modern scrollbar styling */

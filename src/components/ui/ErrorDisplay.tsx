@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Alert, AlertTitle, Paper } from '@mui/material';
+import { Box, Typography, Paper } from '@mui/material';
 import { Error as ErrorIcon, Warning, Info, Refresh } from '@mui/icons-material';
 import { Button } from './Button';
 
@@ -35,33 +35,30 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
     }
   };
 
-  const getColor = () => {
+  const getColorVars = () => {
     switch (severity) {
       case 'warning':
         return {
-          bg: 'rgba(237, 108, 2, 0.08)',
-          border: 'rgba(237, 108, 2, 0.3)',
-          text: '#ea580c',
-          icon: '#ea580c',
+          bg: 'var(--warning-bg)',
+          border: 'var(--warning-border)',
+          text: 'var(--warning-text)',
         };
       case 'info':
         return {
-          bg: 'rgba(59, 130, 246, 0.08)',
-          border: 'rgba(59, 130, 246, 0.3)',
-          text: '#3b82f6',
-          icon: '#3b82f6',
+          bg: 'var(--info-bg)',
+          border: 'var(--info-border)',
+          text: 'var(--info-text)',
         };
       default:
         return {
-          bg: 'rgba(239, 68, 68, 0.08)',
-          border: 'rgba(239, 68, 68, 0.3)',
-          text: '#ef4444',
-          icon: '#ef4444',
+          bg: 'var(--error-bg)',
+          border: 'var(--error-border)',
+          text: 'var(--error-text)',
         };
     }
   };
 
-  const colors = getColor();
+  const colors = getColorVars();
 
   if (variant === 'centered') {
     return (
@@ -94,7 +91,7 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
                 display: 'flex',
                 justifyContent: 'center',
                 mb: 2,
-                color: colors.icon,
+                color: colors.text,
               }}
             >
               {getIcon()}
@@ -145,7 +142,7 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
       >
         <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
           {showIcon && (
-            <Box sx={{ color: colors.icon, mt: 0.5 }}>{getIcon()}</Box>
+            <Box sx={{ color: colors.text, mt: 0.5 }}>{getIcon()}</Box>
           )}
 
           <Box sx={{ flex: 1 }}>
@@ -160,7 +157,7 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
               </Typography>
             )}
 
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{ color: 'var(--text-secondary)' }}>
               {message}
             </Typography>
 
@@ -196,7 +193,7 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
         gap: 2,
       }}
     >
-      {showIcon && <Box sx={{ color: colors.icon }}>{getIcon()}</Box>}
+      {showIcon && <Box sx={{ color: colors.text }}>{getIcon()}</Box>}
 
       <Box sx={{ flex: 1 }}>
         {title && (
@@ -208,7 +205,7 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
             {title}
           </Typography>
         )}
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" sx={{ color: 'var(--text-secondary)' }}>
           {message}
         </Typography>
       </Box>
