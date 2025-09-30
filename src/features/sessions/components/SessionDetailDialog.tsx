@@ -4,7 +4,6 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Button,
   Typography,
   Box,
   Chip,
@@ -19,6 +18,7 @@ import {
   AccordionDetails,
 } from '@mui/material';
 import { Close, Person, Security, Devices, ExpandMore, Delete, Update, Info } from '@mui/icons-material';
+import { Button } from '@/components/ui/Button';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getSession, disableSession, extendSession } from '../../../services/kratos/endpoints/sessions';
 import { formatDate } from '@/lib/date-utils';
@@ -393,8 +393,7 @@ export const SessionDetailDialog: React.FC<SessionDetailDialogProps> = React.mem
           onClick={handleRevokeSession}
           disabled={actionLoading === 'delete'}
           startIcon={actionLoading === 'delete' ? <CircularProgress size={16} /> : <Delete />}
-          color="error"
-          variant="contained"
+          variant="danger"
         >
           Revoke Session
         </Button>

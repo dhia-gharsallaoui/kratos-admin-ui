@@ -4,7 +4,6 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Button,
   Typography,
   Alert,
   Box,
@@ -14,6 +13,7 @@ import {
   Snackbar,
 } from '@mui/material';
 import { Close, ContentCopy, Link as LinkIcon } from '@mui/icons-material';
+import { Button } from '@/components/ui/Button';
 import { Identity } from '@ory/kratos-client';
 import { createRecoveryLink } from '@/services/kratos';
 import { DottedLoader } from '@/components/ui/DottedLoader';
@@ -171,7 +171,7 @@ export const IdentityRecoveryDialog: React.FC<IdentityRecoveryDialogProps> = ({ 
             Close
           </Button>
           {!recoveryLink && (
-            <Button onClick={handleGenerateRecoveryLink} variant="contained" disabled={loading} startIcon={<LinkIcon />}>
+            <Button onClick={handleGenerateRecoveryLink} variant="primary" disabled={loading} startIcon={<LinkIcon />}>
               {loading ? 'Generating...' : 'Generate Recovery Link'}
             </Button>
           )}

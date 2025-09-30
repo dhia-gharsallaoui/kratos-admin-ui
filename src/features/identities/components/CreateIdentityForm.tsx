@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
   Box,
-  Button,
   Typography,
   Paper,
   FormControl,
@@ -15,6 +14,7 @@ import {
   useTheme,
 } from '@mui/material';
 import { Save, Cancel } from '@mui/icons-material';
+import { Button } from '@/components/ui/Button';
 import { Spinner } from '@/components/ui/Spinner';
 import Form from '@rjsf/mui';
 import { RJSFSchema, UiSchema, WidgetProps, FieldTemplateProps, ObjectFieldTemplateProps, SubmitButtonProps } from '@rjsf/utils';
@@ -625,7 +625,7 @@ const CreateIdentityForm: React.FC<CreateIdentityFormProps> = ({ onSuccess, onCa
                 </Button>
                 <Button
                   type="submit"
-                  variant="contained"
+                  variant="primary"
                   startIcon={createIdentityMutation.isPending ? <CircularProgress size={20} /> : <Save />}
                   disabled={createIdentityMutation.isPending || !selectedSchemaId}
                 >
@@ -641,7 +641,7 @@ const CreateIdentityForm: React.FC<CreateIdentityFormProps> = ({ onSuccess, onCa
             <Button variant="outlined" startIcon={<Cancel />} onClick={handleCancel} disabled={createIdentityMutation.isPending}>
               Cancel
             </Button>
-            <Button variant="contained" disabled>
+            <Button variant="primary" disabled>
               No form fields available
             </Button>
           </Box>
