@@ -103,7 +103,17 @@ export default function SessionsPage() {
             }}
           >
             <Box>
-              <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
+              <Typography 
+                variant="h4" 
+                sx={{ 
+                  fontWeight: 700, 
+                  mb: 1,
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  backgroundClip: 'text',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
                 Active Sessions
               </Typography>
               <Typography variant="body1" color="text.secondary">
@@ -114,16 +124,15 @@ export default function SessionsPage() {
               <IconButton
                 onClick={() => refetch()}
                 sx={{
-                  borderRadius: 'var(--radius)',
-                  background: 'var(--accent)',
-                  color: 'var(--accent-foreground)',
+                  background: 'rgba(102, 126, 234, 0.1)',
                   '&:hover': {
-                    background: 'var(--accent)',
-                    opacity: 0.9,
+                    background: 'rgba(102, 126, 234, 0.2)',
+                    transform: 'scale(1.05)',
                   },
+                  transition: 'all 0.3s ease',
                 }}
               >
-                <Refresh />
+                <Refresh sx={{ color: '#667eea' }} />
               </IconButton>
             </Tooltip>
           </Box>
@@ -132,11 +141,11 @@ export default function SessionsPage() {
             elevation={0}
             sx={{
               mb: 4,
-              borderRadius: 'var(--radius)',
-              background: 'var(--card)',
-              color: 'var(--card-foreground)',
-              border: '1px solid var(--border)',
-              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1)',
+              borderRadius: 3,
+              background: 'rgba(255, 255, 255, 0.9)',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(102, 126, 234, 0.1)',
+              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
             }}
           >
             <CardContent>
@@ -148,7 +157,16 @@ export default function SessionsPage() {
                   mb: 2,
                 }}
               >
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                <Typography 
+                  variant="h6" 
+                  sx={{ 
+                    fontWeight: 700,
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    backgroundClip: 'text',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }}
+                >
                   All Sessions
                 </Typography>
                 <TextField
@@ -210,12 +228,14 @@ export default function SessionsPage() {
                           variant="outlined"
                           startIcon={<ExpandMore />}
                           sx={{
-                            borderRadius: 'var(--radius)',
-                            borderColor: 'var(--border)',
-                            color: 'var(--foreground)',
+                            borderRadius: 2,
+                            borderColor: '#667eea',
+                            color: '#667eea',
+                            transition: 'all 0.3s ease',
                             '&:hover': {
-                              backgroundColor: 'var(--accent)',
-                              borderColor: 'var(--accent)',
+                              borderColor: '#764ba2',
+                              background: 'rgba(102, 126, 234, 0.1)',
+                              transform: 'translateY(-2px)',
                             },
                           }}
                         >
@@ -234,12 +254,18 @@ export default function SessionsPage() {
                         variant="outlined"
                         startIcon={isFetchingNextPage ? <CircularProgress size={16} /> : <ExpandMore />}
                         sx={{
-                          borderRadius: 'var(--radius)',
-                          borderColor: 'var(--border)',
-                          color: 'var(--foreground)',
+                          borderRadius: 2,
+                          borderColor: '#667eea',
+                          color: '#667eea',
+                          transition: 'all 0.3s ease',
                           '&:hover': {
-                            backgroundColor: 'var(--accent)',
-                            borderColor: 'var(--accent)',
+                            borderColor: '#764ba2',
+                            background: 'rgba(102, 126, 234, 0.1)',
+                            transform: 'translateY(-2px)',
+                          },
+                          '&:disabled': {
+                            borderColor: 'rgba(0, 0, 0, 0.12)',
+                            color: 'rgba(0, 0, 0, 0.26)',
                           },
                         }}
                       >
@@ -285,15 +311,25 @@ export default function SessionsPage() {
           <Card
             elevation={0}
             sx={{
-              borderRadius: 'var(--radius)',
-              background: 'var(--card)',
-              color: 'var(--card-foreground)',
-              border: '1px solid var(--border)',
-              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1)',
+              borderRadius: 3,
+              background: 'rgba(255, 255, 255, 0.9)',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(102, 126, 234, 0.1)',
+              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
             }}
           >
             <CardContent>
-              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+              <Typography 
+                variant="h6" 
+                sx={{ 
+                  fontWeight: 700, 
+                  mb: 2,
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  backgroundClip: 'text',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
                 About Sessions
               </Typography>
               <Typography variant="body2" color="text.secondary">
