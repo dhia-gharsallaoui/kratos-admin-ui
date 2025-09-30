@@ -211,15 +211,11 @@ export default function Dashboard() {
                 sx={{ 
                   p: 3, 
                   height: 450,
-                  background: 'rgba(255, 255, 255, 0.9)',
-                  backdropFilter: 'blur(10px)',
-                  border: '1px solid rgba(102, 126, 234, 0.1)',
-                  borderRadius: 3,
-                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
-                  transition: 'all 0.3s ease',
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  transition: 'all 0.2s ease',
                   '&:hover': {
-                    boxShadow: '0 8px 30px rgba(102, 126, 234, 0.15)',
-                    transform: 'translateY(-2px)',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
                   },
                 }}
               >
@@ -227,11 +223,8 @@ export default function Dashboard() {
                   variant="h6" 
                   gutterBottom
                   sx={{
-                    fontWeight: 700,
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    backgroundClip: 'text',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
+                    fontWeight: 600,
+                    color: 'text.primary',
                   }}
                 >
                   New User Registrations (Last 30 Days)
