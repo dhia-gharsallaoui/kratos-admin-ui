@@ -102,18 +102,55 @@ export default function Dashboard() {
           {/* Key Metrics Cards */}
           <Grid container spacing={3} sx={{ mb: 4 }}>
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <Card>
-                <CardContent>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                    <Group color="primary" sx={{ mr: 1 }} />
-                    <Typography variant="h6" color="primary">
+              <Card
+                elevation={0}
+                sx={{
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  color: 'white',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    transform: 'translateY(-8px)',
+                    boxShadow: '0 12px 28px rgba(102, 126, 234, 0.4)',
+                  },
+                  '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    top: '-50%',
+                    right: '-50%',
+                    width: '200%',
+                    height: '200%',
+                    background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
+                    animation: 'pulse 4s ease-in-out infinite',
+                  },
+                  '@keyframes pulse': {
+                    '0%, 100%': { opacity: 0.5 },
+                    '50%': { opacity: 1 },
+                  },
+                }}
+              >
+                <CardContent sx={{ position: 'relative', zIndex: 1 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                    <Box
+                      sx={{
+                        background: 'rgba(255,255,255,0.2)',
+                        borderRadius: 2,
+                        p: 1,
+                        display: 'flex',
+                        mr: 2,
+                      }}
+                    >
+                      <Group sx={{ fontSize: 32 }} />
+                    </Box>
+                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
                       Total Users
                     </Typography>
                   </Box>
-                  <Typography variant="h3" sx={{ mb: 1 }}>
+                  <Typography variant="h3" sx={{ mb: 1, fontWeight: 700 }}>
                     {formatNumber(identity.data?.totalIdentities || 0)}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="body2" sx={{ opacity: 0.9 }}>
                     +{identity.data?.newIdentitiesLast30Days || 0} in last 30 days
                   </Typography>
                 </CardContent>
@@ -121,18 +158,41 @@ export default function Dashboard() {
             </Grid>
 
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <Card>
-                <CardContent>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                    <Security color="success" sx={{ mr: 1 }} />
-                    <Typography variant="h6" color="success.main">
+              <Card
+                elevation={0}
+                sx={{
+                  background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                  color: 'white',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    transform: 'translateY(-8px)',
+                    boxShadow: '0 12px 28px rgba(240, 147, 251, 0.4)',
+                  },
+                }}
+              >
+                <CardContent sx={{ position: 'relative', zIndex: 1 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                    <Box
+                      sx={{
+                        background: 'rgba(255,255,255,0.2)',
+                        borderRadius: 2,
+                        p: 1,
+                        display: 'flex',
+                        mr: 2,
+                      }}
+                    >
+                      <Security sx={{ fontSize: 32 }} />
+                    </Box>
+                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
                       Active Sessions
                     </Typography>
                   </Box>
-                  <Typography variant="h3" sx={{ mb: 1 }}>
+                  <Typography variant="h3" sx={{ mb: 1, fontWeight: 700 }}>
                     {formatNumber(session.data?.activeSessions || 0)}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="body2" sx={{ opacity: 0.9 }}>
                     {session.data?.sessionsLast7Days || 0} in last 7 days
                   </Typography>
                 </CardContent>
@@ -140,18 +200,41 @@ export default function Dashboard() {
             </Grid>
 
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <Card>
-                <CardContent>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                    <Schedule color="warning" sx={{ mr: 1 }} />
-                    <Typography variant="h6" color="warning.main">
+              <Card
+                elevation={0}
+                sx={{
+                  background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                  color: 'white',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    transform: 'translateY(-8px)',
+                    boxShadow: '0 12px 28px rgba(79, 172, 254, 0.4)',
+                  },
+                }}
+              >
+                <CardContent sx={{ position: 'relative', zIndex: 1 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                    <Box
+                      sx={{
+                        background: 'rgba(255,255,255,0.2)',
+                        borderRadius: 2,
+                        p: 1,
+                        display: 'flex',
+                        mr: 2,
+                      }}
+                    >
+                      <Schedule sx={{ fontSize: 32 }} />
+                    </Box>
+                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
                       Avg Session
                     </Typography>
                   </Box>
-                  <Typography variant="h3" sx={{ mb: 1 }}>
+                  <Typography variant="h3" sx={{ mb: 1, fontWeight: 700 }}>
                     {formatDuration(session.data?.averageSessionDuration || 0)}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="body2" sx={{ opacity: 0.9 }}>
                     Average duration
                   </Typography>
                 </CardContent>
@@ -159,15 +242,38 @@ export default function Dashboard() {
             </Grid>
 
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <Card>
-                <CardContent>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                    <TrendingUp color="info" sx={{ mr: 1 }} />
-                    <Typography variant="h6" color="info.main">
+              <Card
+                elevation={0}
+                sx={{
+                  background: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+                  color: 'white',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    transform: 'translateY(-8px)',
+                    boxShadow: '0 12px 28px rgba(250, 112, 154, 0.4)',
+                  },
+                }}
+              >
+                <CardContent sx={{ position: 'relative', zIndex: 1 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                    <Box
+                      sx={{
+                        background: 'rgba(255,255,255,0.2)',
+                        borderRadius: 2,
+                        p: 1,
+                        display: 'flex',
+                        mr: 2,
+                      }}
+                    >
+                      <TrendingUp sx={{ fontSize: 32 }} />
+                    </Box>
+                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
                       Verification Rate
                     </Typography>
                   </Box>
-                  <Typography variant="h3" sx={{ mb: 1 }}>
+                  <Typography variant="h3" sx={{ mb: 1, fontWeight: 700 }}>
                     {identity.data
                       ? Math.round(
                           (identity.data.verificationStatus.verified /
@@ -177,7 +283,7 @@ export default function Dashboard() {
                       : 0}
                     %
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="body2" sx={{ opacity: 0.9 }}>
                     Email verified users
                   </Typography>
                 </CardContent>
@@ -185,18 +291,41 @@ export default function Dashboard() {
             </Grid>
 
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <Card>
-                <CardContent>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                    <Schema color="secondary" sx={{ mr: 1 }} />
-                    <Typography variant="h6" color="secondary.main">
+              <Card
+                elevation={0}
+                sx={{
+                  background: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
+                  color: '#333',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    transform: 'translateY(-8px)',
+                    boxShadow: '0 12px 28px rgba(168, 237, 234, 0.4)',
+                  },
+                }}
+              >
+                <CardContent sx={{ position: 'relative', zIndex: 1 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                    <Box
+                      sx={{
+                        background: 'rgba(255,255,255,0.5)',
+                        borderRadius: 2,
+                        p: 1,
+                        display: 'flex',
+                        mr: 2,
+                      }}
+                    >
+                      <Schema sx={{ fontSize: 32, color: '#667eea' }} />
+                    </Box>
+                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
                       Identity Schemas
                     </Typography>
                   </Box>
-                  <Typography variant="h3" sx={{ mb: 1 }}>
+                  <Typography variant="h3" sx={{ mb: 1, fontWeight: 700 }}>
                     {formatNumber(system.data?.totalSchemas || 0)}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="body2" sx={{ opacity: 0.8 }}>
                     Total schemas configured
                   </Typography>
                 </CardContent>
@@ -204,18 +333,41 @@ export default function Dashboard() {
             </Grid>
 
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <Card>
-                <CardContent>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                    <HealthAndSafety color="success" sx={{ mr: 1 }} />
-                    <Typography variant="h6" color="success.main">
+              <Card
+                elevation={0}
+                sx={{
+                  background: 'linear-gradient(135deg, #3eecac 0%, #1dd1a1 100%)',
+                  color: 'white',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    transform: 'translateY(-8px)',
+                    boxShadow: '0 12px 28px rgba(62, 236, 172, 0.4)',
+                  },
+                }}
+              >
+                <CardContent sx={{ position: 'relative', zIndex: 1 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                    <Box
+                      sx={{
+                        background: 'rgba(255,255,255,0.2)',
+                        borderRadius: 2,
+                        p: 1,
+                        display: 'flex',
+                        mr: 2,
+                      }}
+                    >
+                      <HealthAndSafety sx={{ fontSize: 32 }} />
+                    </Box>
+                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
                       Kratos Health
                     </Typography>
                   </Box>
-                  <Typography variant="h3" sx={{ mb: 1 }}>
+                  <Typography variant="h3" sx={{ mb: 1, fontWeight: 700 }}>
                     {system.data?.systemHealth === 'healthy' ? '✓' : system.data?.systemHealth || '?'}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="body2" sx={{ opacity: 0.9 }}>
                     {system.data?.systemHealth || 'Unknown'}
                   </Typography>
                 </CardContent>
@@ -224,18 +376,41 @@ export default function Dashboard() {
 
             {/* Hydra Metrics */}
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <Card>
-                <CardContent>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                    <Apps color="primary" sx={{ mr: 1 }} />
-                    <Typography variant="h6" color="primary">
+              <Card
+                elevation={0}
+                sx={{
+                  background: 'linear-gradient(135deg, #ffa751 0%, #ffe259 100%)',
+                  color: 'white',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    transform: 'translateY(-8px)',
+                    boxShadow: '0 12px 28px rgba(255, 167, 81, 0.4)',
+                  },
+                }}
+              >
+                <CardContent sx={{ position: 'relative', zIndex: 1 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                    <Box
+                      sx={{
+                        background: 'rgba(255,255,255,0.2)',
+                        borderRadius: 2,
+                        p: 1,
+                        display: 'flex',
+                        mr: 2,
+                      }}
+                    >
+                      <Apps sx={{ fontSize: 32 }} />
+                    </Box>
+                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
                       OAuth2 Clients
                     </Typography>
                   </Box>
-                  <Typography variant="h3" sx={{ mb: 1 }}>
+                  <Typography variant="h3" sx={{ mb: 1, fontWeight: 700 }}>
                     {formatNumber(hydra.data?.totalClients || 0)}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="body2" sx={{ opacity: 0.9 }}>
                     {hydra.data?.publicClients || 0} public, {hydra.data?.confidentialClients || 0} confidential
                   </Typography>
                 </CardContent>
@@ -243,18 +418,41 @@ export default function Dashboard() {
             </Grid>
 
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <Card>
-                <CardContent>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                    <VpnKey color="secondary" sx={{ mr: 1 }} />
-                    <Typography variant="h6" color="secondary.main">
+              <Card
+                elevation={0}
+                sx={{
+                  background: 'linear-gradient(135deg, #c471f5 0%, #fa71cd 100%)',
+                  color: 'white',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    transform: 'translateY(-8px)',
+                    boxShadow: '0 12px 28px rgba(196, 113, 245, 0.4)',
+                  },
+                }}
+              >
+                <CardContent sx={{ position: 'relative', zIndex: 1 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                    <Box
+                      sx={{
+                        background: 'rgba(255,255,255,0.2)',
+                        borderRadius: 2,
+                        p: 1,
+                        display: 'flex',
+                        mr: 2,
+                      }}
+                    >
+                      <VpnKey sx={{ fontSize: 32 }} />
+                    </Box>
+                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
                       Grant Types
                     </Typography>
                   </Box>
-                  <Typography variant="h3" sx={{ mb: 1 }}>
+                  <Typography variant="h3" sx={{ mb: 1, fontWeight: 700 }}>
                     {hydra.data?.clientsByGrantType.length || 0}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="body2" sx={{ opacity: 0.9 }}>
                     Different grant types in use
                   </Typography>
                 </CardContent>
@@ -262,18 +460,41 @@ export default function Dashboard() {
             </Grid>
 
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <Card>
-                <CardContent>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                    <Cloud color="info" sx={{ mr: 1 }} />
-                    <Typography variant="h6" color="info.main">
+              <Card
+                elevation={0}
+                sx={{
+                  background: 'linear-gradient(135deg, #30cfd0 0%, #330867 100%)',
+                  color: 'white',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    transform: 'translateY(-8px)',
+                    boxShadow: '0 12px 28px rgba(48, 207, 208, 0.4)',
+                  },
+                }}
+              >
+                <CardContent sx={{ position: 'relative', zIndex: 1 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                    <Box
+                      sx={{
+                        background: 'rgba(255,255,255,0.2)',
+                        borderRadius: 2,
+                        p: 1,
+                        display: 'flex',
+                        mr: 2,
+                      }}
+                    >
+                      <Cloud sx={{ fontSize: 32 }} />
+                    </Box>
+                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
                       Hydra Health
                     </Typography>
                   </Box>
-                  <Typography variant="h3" sx={{ mb: 1 }}>
+                  <Typography variant="h3" sx={{ mb: 1, fontWeight: 700 }}>
                     {hydra.data?.systemHealth === 'healthy' ? '✓' : hydra.data?.systemHealth === 'error' ? '✗' : '?'}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="body2" sx={{ opacity: 0.9 }}>
                     {hydra.data?.systemHealth || 'Unknown'}
                   </Typography>
                 </CardContent>
