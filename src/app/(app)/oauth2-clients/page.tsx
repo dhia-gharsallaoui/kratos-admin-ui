@@ -221,9 +221,30 @@ export default function OAuth2ClientsPage() {
       {/* Header */}
       <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <AppsIcon sx={{ fontSize: 32, color: 'primary.main' }} />
+          <Box
+            sx={{
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              borderRadius: 2,
+              p: 1.5,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <AppsIcon sx={{ fontSize: 32, color: 'white' }} />
+          </Box>
           <Box>
-            <Typography variant="h4" component="h1" fontWeight="bold">
+            <Typography 
+              variant="h4" 
+              component="h1" 
+              fontWeight="bold"
+              sx={{
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}
+            >
               OAuth2 Clients
             </Typography>
             <Typography variant="body2" color="text.secondary">
@@ -235,6 +256,15 @@ export default function OAuth2ClientsPage() {
           variant="contained"
           startIcon={<AddIcon />}
           onClick={() => router.push('/oauth2-clients/create')}
+          sx={{
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)',
+            transition: 'all 0.3s ease',
+            '&:hover': {
+              boxShadow: '0 6px 20px rgba(102, 126, 234, 0.4)',
+              transform: 'translateY(-2px)',
+            },
+          }}
         >
           Create Client
         </Button>
@@ -243,48 +273,92 @@ export default function OAuth2ClientsPage() {
       {/* Stats Cards */}
       <Grid container spacing={3} sx={{ mb: 3 }}>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <Card>
+          <Card
+            elevation={0}
+            sx={{
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              color: 'white',
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                transform: 'translateY(-4px)',
+                boxShadow: '0 8px 24px rgba(102, 126, 234, 0.3)',
+              },
+            }}
+          >
             <CardContent>
-              <Typography variant="h6" fontWeight="bold">
+              <Typography variant="h4" fontWeight="bold" sx={{ mb: 1 }}>
                 {clientsData?.totalCount || 0}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{ opacity: 0.9 }}>
                 Total Clients
               </Typography>
             </CardContent>
           </Card>
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <Card>
+          <Card
+            elevation={0}
+            sx={{
+              background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+              color: 'white',
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                transform: 'translateY(-4px)',
+                boxShadow: '0 8px 24px rgba(79, 172, 254, 0.3)',
+              },
+            }}
+          >
             <CardContent>
-              <Typography variant="h6" fontWeight="bold">
+              <Typography variant="h4" fontWeight="bold" sx={{ mb: 1 }}>
                 {clients.filter(c => !c.client_secret).length}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{ opacity: 0.9 }}>
                 Public Clients
               </Typography>
             </CardContent>
           </Card>
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <Card>
+          <Card
+            elevation={0}
+            sx={{
+              background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+              color: 'white',
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                transform: 'translateY(-4px)',
+                boxShadow: '0 8px 24px rgba(240, 147, 251, 0.3)',
+              },
+            }}
+          >
             <CardContent>
-              <Typography variant="h6" fontWeight="bold">
+              <Typography variant="h4" fontWeight="bold" sx={{ mb: 1 }}>
                 {clients.filter(c => !!c.client_secret).length}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{ opacity: 0.9 }}>
                 Confidential Clients
               </Typography>
             </CardContent>
           </Card>
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <Card>
+          <Card
+            elevation={0}
+            sx={{
+              background: 'linear-gradient(135deg, #3eecac 0%, #1dd1a1 100%)',
+              color: 'white',
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                transform: 'translateY(-4px)',
+                boxShadow: '0 8px 24px rgba(62, 236, 172, 0.3)',
+              },
+            }}
+          >
             <CardContent>
-              <Typography variant="h6" fontWeight="bold">
+              <Typography variant="h4" fontWeight="bold" sx={{ mb: 1 }}>
                 {clients.filter(c => c.grant_types?.includes('authorization_code')).length}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{ opacity: 0.9 }}>
                 Auth Code Flow
               </Typography>
             </CardContent>
@@ -293,7 +367,17 @@ export default function OAuth2ClientsPage() {
       </Grid>
 
       {/* Search */}
-      <Card sx={{ mb: 3 }}>
+      <Card 
+        elevation={0}
+        sx={{ 
+          mb: 3,
+          background: 'rgba(255, 255, 255, 0.9)',
+          backdropFilter: 'blur(10px)',
+          border: '1px solid rgba(102, 126, 234, 0.1)',
+          borderRadius: 3,
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+        }}
+      >
         <CardContent>
           <TextField
             fullWidth
@@ -301,6 +385,16 @@ export default function OAuth2ClientsPage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             variant="outlined"
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                '&:hover fieldset': {
+                  borderColor: '#667eea',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: '#764ba2',
+                },
+              },
+            }}
           />
         </CardContent>
       </Card>
@@ -313,7 +407,16 @@ export default function OAuth2ClientsPage() {
       )}
 
       {/* Data Grid */}
-      <Card>
+      <Card
+        elevation={0}
+        sx={{
+          background: 'rgba(255, 255, 255, 0.9)',
+          backdropFilter: 'blur(10px)',
+          border: '1px solid rgba(102, 126, 234, 0.1)',
+          borderRadius: 3,
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+        }}
+      >
         <DataGrid
           rows={filteredRows}
           columns={columns}
@@ -323,9 +426,21 @@ export default function OAuth2ClientsPage() {
           onRowClick={(params) => router.push(`/oauth2-clients/${params.row.id}`)}
           sx={{
             border: 'none',
-            '& .MuiDataGrid-row:hover': {
-              backgroundColor: 'action.hover',
-              cursor: 'pointer',
+            '& .MuiDataGrid-columnHeaders': {
+              background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
+              borderBottom: '2px solid rgba(102, 126, 234, 0.2)',
+              fontWeight: 700,
+            },
+            '& .MuiDataGrid-row': {
+              transition: 'all 0.2s ease',
+              '&:hover': {
+                backgroundColor: 'rgba(102, 126, 234, 0.08)',
+                cursor: 'pointer',
+                transform: 'scale(1.001)',
+              },
+            },
+            '& .MuiDataGrid-cell': {
+              borderColor: 'rgba(102, 126, 234, 0.08)',
             },
           }}
           initialState={{

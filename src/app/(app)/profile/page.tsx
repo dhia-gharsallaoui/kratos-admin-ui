@@ -38,7 +38,17 @@ export default function ProfilePage() {
   return (
     <AdminLayout>
       <Container maxWidth="md">
-        <Paper elevation={3} sx={{ p: 4, borderRadius: 2 }}>
+        <Paper 
+          elevation={0} 
+          sx={{ 
+            p: 4, 
+            borderRadius: 3,
+            background: 'rgba(255, 255, 255, 0.9)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(102, 126, 234, 0.1)',
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+          }}
+        >
           <Box
             sx={{
               mb: 4,
@@ -47,19 +57,67 @@ export default function ProfilePage() {
               justifyContent: 'space-between',
             }}
           >
-            <Typography variant="h4" component="h1" gutterBottom>
+            <Typography 
+              variant="h4" 
+              component="h1" 
+              gutterBottom
+              sx={{
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                fontWeight: 700,
+              }}
+            >
               User Profile
             </Typography>
             {!isEditing ? (
-              <Button variant="contained" startIcon={<Edit />} onClick={handleEdit}>
+              <Button 
+                variant="contained" 
+                startIcon={<Edit />} 
+                onClick={handleEdit}
+                sx={{
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    boxShadow: '0 6px 20px rgba(102, 126, 234, 0.4)',
+                    transform: 'translateY(-2px)',
+                  },
+                }}
+              >
                 Edit Profile
               </Button>
             ) : (
               <Box>
-                <Button variant="outlined" startIcon={<Cancel />} onClick={handleCancel} sx={{ mr: 1 }}>
+                <Button 
+                  variant="outlined" 
+                  startIcon={<Cancel />} 
+                  onClick={handleCancel} 
+                  sx={{ 
+                    mr: 1,
+                    borderColor: '#667eea',
+                    color: '#667eea',
+                    '&:hover': {
+                      borderColor: '#764ba2',
+                      background: 'rgba(102, 126, 234, 0.1)',
+                    },
+                  }}
+                >
                   Cancel
                 </Button>
-                <Button variant="contained" startIcon={<Save />} onClick={handleSave} color="primary">
+                <Button 
+                  variant="contained" 
+                  startIcon={<Save />} 
+                  onClick={handleSave}
+                  sx={{
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)',
+                    '&:hover': {
+                      boxShadow: '0 6px 20px rgba(102, 126, 234, 0.4)',
+                    },
+                  }}
+                >
                   Save
                 </Button>
               </Box>
