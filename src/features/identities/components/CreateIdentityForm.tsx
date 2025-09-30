@@ -12,8 +12,10 @@ import {
   CircularProgress,
   TextField,
   Autocomplete,
+  useTheme,
 } from '@mui/material';
 import { Save, Cancel } from '@mui/icons-material';
+import { Spinner } from '@/components/ui/Spinner';
 import Form from '@rjsf/mui';
 import { RJSFSchema, UiSchema, WidgetProps, FieldTemplateProps, ObjectFieldTemplateProps, SubmitButtonProps } from '@rjsf/utils';
 import validator from '@rjsf/validator-ajv8';
@@ -54,6 +56,7 @@ const getCountryOptions = () => {
 
 // Custom tel widget component with libphonenumber-js integration
 const TelWidget: React.FC<WidgetProps> = ({ id, value, onChange, onBlur, onFocus, placeholder, disabled, readonly, required, label }) => {
+  const theme = useTheme();
   const [selectedCountry, setSelectedCountry] = useState<CountryCode>('US');
   const [phoneInput, setPhoneInput] = useState('');
   const [error, setError] = useState<string>('');
