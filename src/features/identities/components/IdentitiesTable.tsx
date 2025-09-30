@@ -1,22 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Box,
-  Button,
   Typography,
-  TextField,
-  InputAdornment,
-  IconButton,
-  Tooltip,
-  Paper,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Chip,
-  useTheme,
+  Tooltip,
 } from '@mui/material';
-import { Add, Search, Refresh, NavigateBefore, NavigateNext } from '@mui/icons-material';
+import { DataTable, DataTableColumn } from '@/components/ui/DataTable';
 import { useIdentities, useIdentitiesSearch } from '@/features/identities/hooks';
 import { useSchemas } from '@/features/schemas/hooks';
 import { Identity } from '@ory/kratos-client';
@@ -26,23 +15,20 @@ import { formatDate } from '@/lib/date-utils';
 
 const IdentitiesTable: React.FC = React.memo(() => {
   const router = useRouter();
-  const theme = useTheme();
   const [searchTerm, setSearchTerm] = useState('');
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
   const [pageSize, setPageSize] = useState(25);
   const [pageToken, setPageToken] = useState<string | undefined>(undefined);
   const [pageHistory, setPageHistory] = useState<(string | undefined)[]>([undefined]);
 
-  // Debounce search term to avoid API calls on every keystroke
+  // Debounce search term
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
-    }, 300); // 300ms delay
-
+    }, 300);
     return () => clearTimeout(timer);
   }, [searchTerm]);
 
-  // Use search hook when there's a debounced search term, otherwise use regular pagination
   const isSearching = debouncedSearchTerm.trim().length > 0;
 
   const {
@@ -63,23 +49,19 @@ const IdentitiesTable: React.FC = React.memo(() => {
 
   const { data: schemas } = useSchemas();
 
-  // Always use regular data for base identities, never show search loading
   const data = regularData;
   const isLoading = regularLoading;
   const isError = regularError;
   const error = regularErrorDetails;
   const refetch = regularRefetch;
 
-  // Memoize base identities to avoid useMemo dependency issues
-  const baseIdentities = React.useMemo(() => data?.identities || [], [data?.identities]);
+  const baseIdentities = useMemo(() => data?.identities || [], [data?.identities]);
   const hasMore = data?.hasMore || false;
   const nextPageToken = data?.nextPageToken;
-
-  // Get search results if available (for background fetching)
   const searchResults = searchData?.identities || [];
   const searchComplete = !searchLoading && isSearching;
 
-  // Helper function to get schema name
+  // Helper functions
   const getSchemaName = React.useCallback(
     (identity: Identity) => {
       const schema = schemas?.find((s) => s.id === identity.schema_id);
@@ -89,7 +71,6 @@ const IdentitiesTable: React.FC = React.memo(() => {
     [schemas]
   );
 
-  // Helper function to get identifier from identity based on schema
   const getIdentifier = React.useCallback(
     (identity: Identity) => {
       const traits = identity.traits as any;
@@ -97,20 +78,17 @@ const IdentitiesTable: React.FC = React.memo(() => {
       const schemaObj = schema?.schema as any;
 
       if (!schemaObj?.properties?.traits?.properties) {
-        // Fallback if schema not available
         return traits?.email || traits?.username || traits?.phone || 'N/A';
       }
 
       const traitProperties = schemaObj.properties.traits.properties;
       const identifierFields: string[] = [];
 
-      // Extract fields that are marked as identifiers in the schema
       Object.keys(traitProperties).forEach((fieldName) => {
         const field = traitProperties[fieldName];
         const kratosConfig = field?.['ory.sh/kratos'];
 
         if (kratosConfig?.credentials) {
-          // Check if any credential type has identifier: true
           const credentialTypes = Object.keys(kratosConfig.credentials);
           const hasIdentifier = credentialTypes.some((credType) => kratosConfig.credentials[credType]?.identifier === true);
 
@@ -120,7 +98,6 @@ const IdentitiesTable: React.FC = React.memo(() => {
         }
       });
 
-      // Get the first non-null identifier value from the identity traits
       for (const fieldName of identifierFields) {
         const value = traits?.[fieldName];
         if (value) {
@@ -128,14 +105,13 @@ const IdentitiesTable: React.FC = React.memo(() => {
         }
       }
 
-      // Fallback if no schema-defined identifiers found
       return traits?.email || traits?.username || traits?.phone || 'N/A';
     },
     [schemas]
   );
 
-  // Apply instant client-side filtering while typing
-  const clientFilteredIdentities = React.useMemo(() => {
+  // Apply client-side filtering
+  const clientFilteredIdentities = useMemo(() => {
     if (!searchTerm.trim()) return baseIdentities;
 
     const searchLower = searchTerm.toLowerCase();
@@ -161,92 +137,98 @@ const IdentitiesTable: React.FC = React.memo(() => {
     });
   }, [baseIdentities, searchTerm, getSchemaName, getIdentifier]);
 
-  // Use search results if search is complete and we have better results
   const shouldUseSearchResults = searchComplete && searchResults.length > clientFilteredIdentities.length;
   const displayedIdentities = shouldUseSearchResults ? searchResults : clientFilteredIdentities;
-  const isUsingSearchResults = shouldUseSearchResults;
 
-  const columns: GridColDef[] = [
+  // Define columns
+  const columns: DataTableColumn[] = useMemo(() => [
     {
       field: 'id',
       headerName: 'ID',
-      flex: 1,
-      minWidth: 200,
-      renderCell: (params) => (
-        <Tooltip title={params.value}>
-          <span>{params.value.substring(0, 8)}...</span>
+      minWidth: 180,
+      maxWidth: 200,
+      renderCell: (value: string) => (
+        <Tooltip title={value}>
+          <Typography
+            variant="body2"
+            sx={{
+              fontFamily: 'monospace',
+              fontSize: '0.875rem',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            {value.substring(0, 8)}...
+          </Typography>
         </Tooltip>
       ),
     },
     {
       field: 'identifier',
       headerName: 'Identifier',
-      flex: 1.5,
       minWidth: 220,
-      valueGetter: (_, row) => {
-        return getIdentifier(row);
-      },
+      renderCell: (_: any, identity: Identity) => (
+        <Typography
+          variant="body2"
+          fontWeight={500}
+          sx={{
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+          }}
+        >
+          {getIdentifier(identity)}
+        </Typography>
+      ),
     },
     {
-      field: 'schema_name',
+      field: 'schema_id',
       headerName: 'Schema',
-      flex: 1,
       minWidth: 140,
-      renderCell: (params) => {
-        const schemaName = getSchemaName(params.row);
-        return (
-          <Chip
-            label={schemaName}
-            size="small"
-            sx={{
-              borderRadius: 'var(--radius)',
-              fontWeight: 500,
-              background: 'var(--primary)',
-              color: 'var(--primary-foreground)',
-              fontSize: '0.75rem',
-            }}
-          />
-        );
-      },
+      renderCell: (_: any, identity: Identity) => (
+        <Chip
+          label={getSchemaName(identity)}
+          size="small"
+          color="primary"
+          sx={{
+            fontWeight: 500,
+            fontSize: '0.75rem',
+          }}
+        />
+      ),
     },
     {
       field: 'state',
       headerName: 'State',
-      flex: 0.5,
       minWidth: 100,
-      renderCell: (params) => (
+      renderCell: (value: string) => (
         <Chip
-          label={params.value === 'active' ? 'Active' : 'Inactive'}
-          color={params.value === 'active' ? 'success' : 'default'}
+          label={value === 'active' ? 'Active' : 'Inactive'}
+          color={value === 'active' ? 'success' : 'default'}
           size="small"
-          sx={{
-            fontWeight: 500,
-          }}
+          sx={{ fontWeight: 500 }}
         />
       ),
     },
     {
       field: 'created_at',
       headerName: 'Created',
-      flex: 1,
-      minWidth: 160,
-      valueFormatter: (value) => {
-        return formatDate(value as string);
-      },
+      minWidth: 180,
+      renderCell: (value: string) => (
+        <Typography variant="body2">{formatDate(value)}</Typography>
+      ),
     },
     {
       field: 'updated_at',
       headerName: 'Updated',
-      flex: 1,
-      minWidth: 160,
-      valueFormatter: (value) => {
-        return formatDate(value as string);
-      },
+      minWidth: 180,
+      renderCell: (value: string) => (
+        <Typography variant="body2">{formatDate(value)}</Typography>
+      ),
     },
-  ];
+  ], [getSchemaName, getIdentifier]);
 
-  const handleRowClick = (params: any) => {
-    router.push(`/identities/${params.row.id}`);
+  const handleRowClick = (identity: Identity) => {
+    router.push(`/identities/${identity.id}`);
   };
 
   const handleCreateNew = () => {
@@ -257,39 +239,11 @@ const IdentitiesTable: React.FC = React.memo(() => {
     refetch();
   };
 
-  const handleNextPage = () => {
-    // Disable pagination during search
-    if (searchTerm.trim()) return;
-
-    if (nextPageToken) {
-      setPageHistory((prev) => [...prev, pageToken]);
-      setPageToken(nextPageToken);
-    }
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
   };
 
-  const handlePreviousPage = () => {
-    // Disable pagination during search
-    if (searchTerm.trim()) return;
-
-    if (pageHistory.length > 1) {
-      const newHistory = [...pageHistory];
-      newHistory.pop(); // Remove current page
-      const previousToken = newHistory[newHistory.length - 1];
-      setPageHistory(newHistory);
-      setPageToken(previousToken);
-    }
-  };
-
-  const handlePageSizeChange = (newPageSize: number) => {
-    setPageSize(newPageSize);
-    setPageToken(undefined);
-    setPageHistory([undefined]);
-  };
-
-  const canGoPrevious = !searchTerm.trim() && pageHistory.length > 1;
-  const canGoNext = !searchTerm.trim() && hasMore;
-
-  if (isLoading) {
+  if (isLoading && !baseIdentities.length) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" height="400px">
         <DottedLoader variant="page" />
@@ -306,15 +260,7 @@ const IdentitiesTable: React.FC = React.memo(() => {
   }
 
   return (
-    <Paper 
-      elevation={0} 
-      sx={{ 
-        p: 3,
-        border: 1,
-        borderColor: 'divider',
-        borderRadius: 2,
-      }}
-    >
+    <Box>
       <Box mb={3}>
         <Typography 
           variant="h4" 
@@ -324,134 +270,37 @@ const IdentitiesTable: React.FC = React.memo(() => {
         >
           Identities
         </Typography>
-        <Typography variant="body1" color="text.secondary" component="p" sx={{ mb: 2 }}>
+        <Typography variant="body1" color="text.secondary">
           Manage user identities in your Kratos instance.
         </Typography>
       </Box>
 
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-        <TextField
-          placeholder="Search identities (ID, identifier, schema, name)..."
-          variant="outlined"
-          size="small"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Search />
-                </InputAdornment>
-              ),
-            },
-          }}
-          sx={{ width: 350 }}
-          helperText={
-            searchTerm && searchLoading
-              ? 'Finding more matches in background...'
-              : searchTerm
-                ? `Filtering ${baseIdentities.length} current page identities`
-                : ''
-          }
-        />
-        <Box>
-          <Tooltip title="Refresh">
-            <IconButton 
-              onClick={handleRefresh} 
-              sx={{ mr: 1 }}
-            >
-              <Refresh />
-            </IconButton>
-          </Tooltip>
-          <Button 
-            variant="contained" 
-            startIcon={<Add />} 
-            onClick={handleCreateNew}
-          >
-            Create New
-          </Button>
-        </Box>
-      </Box>
+      <DataTable
+        data={displayedIdentities}
+        columns={columns}
+        keyField="id"
+        loading={isLoading}
+        searchable={true}
+        searchValue={searchTerm}
+        onSearchChange={handleSearchChange}
+        searchPlaceholder="Search identities (ID, identifier, schema, name)..."
+        onRowClick={handleRowClick}
+        onRefresh={handleRefresh}
+        onAdd={handleCreateNew}
+        addButtonText="Create New"
+        emptyMessage="No identities found"
+        maxHeight={600}
+      />
 
-      <Box height={600} width="100%">
-        <DataGrid
-          rows={displayedIdentities}
-          columns={columns}
-          onRowClick={handleRowClick}
-          hideFooterPagination
-          showToolbar
-          sx={{
-            border: 1,
-            borderColor: 'divider',
-            borderRadius: 2,
-            '& .MuiDataGrid-columnHeaders': {
-              bgcolor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.02)',
-              borderBottom: 1,
-              borderColor: 'divider',
-              fontWeight: 600,
-            },
-            '& .MuiDataGrid-row': {
-              cursor: 'pointer',
-              '&:hover': {
-                bgcolor: theme.palette.action.hover,
-              },
-            },
-            '& .MuiDataGrid-cell': {
-              borderColor: 'divider',
-            },
-          }}
-        />
+      {/* Pagination info */}
+      <Box sx={{ mt: 2, textAlign: 'center' }}>
+        <Typography variant="body2" color="text.secondary">
+          {searchTerm.trim()
+            ? `Found ${displayedIdentities.length} matches${shouldUseSearchResults ? ' (from multi-page search)' : ' (from current page)'}`
+            : `Showing ${displayedIdentities.length} identities${hasMore ? ' (more available)' : ''}`}
+        </Typography>
       </Box>
-
-      {/* Custom Pagination Controls */}
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          mt: 2,
-          p: 2,
-        }}
-      >
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Typography variant="body2" color="text.secondary">
-            {searchTerm.trim()
-              ? `Found ${displayedIdentities.length} matches${isUsingSearchResults ? ' (from multi-page search)' : ' (from current page)'}`
-              : `Showing ${displayedIdentities.length} identities`}
-          </Typography>
-          <FormControl size="small" sx={{ minWidth: 120 }}>
-            <InputLabel>Per page</InputLabel>
-            <Select value={pageSize} label="Per page" onChange={(e) => handlePageSizeChange(Number(e.target.value))}>
-              <MenuItem value={10}>10</MenuItem>
-              <MenuItem value={25}>25</MenuItem>
-              <MenuItem value={50}>50</MenuItem>
-              <MenuItem value={100}>100</MenuItem>
-            </Select>
-          </FormControl>
-        </Box>
-
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Button 
-            variant="outlined" 
-            size="small" 
-            startIcon={<NavigateBefore />} 
-            onClick={handlePreviousPage} 
-            disabled={!canGoPrevious || isLoading}
-          >
-            Previous
-          </Button>
-          <Button 
-            variant="outlined" 
-            size="small" 
-            endIcon={<NavigateNext />} 
-            onClick={handleNextPage} 
-            disabled={!canGoNext || isLoading}
-          >
-            Next
-          </Button>
-        </Box>
-      </Box>
-    </Paper>
+    </Box>
   );
 });
 
