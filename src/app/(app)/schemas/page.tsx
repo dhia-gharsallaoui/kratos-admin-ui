@@ -179,7 +179,17 @@ export default function SchemasPage() {
             }}
           >
             <Box>
-              <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
+              <Typography 
+                variant="h4" 
+                sx={{ 
+                  fontWeight: 700, 
+                  mb: 1,
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  backgroundClip: 'text',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
                 Identity Schemas
               </Typography>
               <Typography variant="body1" color="text.secondary">
@@ -190,16 +200,15 @@ export default function SchemasPage() {
               <IconButton
                 onClick={() => refetch()}
                 sx={{
-                  borderRadius: 'var(--radius)',
-                  background: 'var(--accent)',
-                  color: 'var(--accent-foreground)',
+                  background: 'rgba(102, 126, 234, 0.1)',
                   '&:hover': {
-                    background: 'var(--accent)',
-                    opacity: 0.9,
+                    background: 'rgba(102, 126, 234, 0.2)',
+                    transform: 'scale(1.05)',
                   },
+                  transition: 'all 0.3s ease',
                 }}
               >
-                <Refresh />
+                <Refresh sx={{ color: '#667eea' }} />
               </IconButton>
             </Tooltip>
           </Box>
@@ -208,11 +217,11 @@ export default function SchemasPage() {
             elevation={0}
             sx={{
               mb: 4,
-              borderRadius: 'var(--radius)',
-              background: 'var(--card)',
-              color: 'var(--card-foreground)',
-              border: '1px solid var(--border)',
-              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1)',
+              borderRadius: 3,
+              background: 'rgba(255, 255, 255, 0.9)',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(102, 126, 234, 0.1)',
+              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
             }}
           >
             <CardContent>
