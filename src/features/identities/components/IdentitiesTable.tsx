@@ -307,9 +307,30 @@ const IdentitiesTable: React.FC = React.memo(() => {
   }
 
   return (
-    <Paper elevation={2} sx={{ p: 3 }}>
+    <Paper 
+      elevation={0} 
+      sx={{ 
+        p: 3,
+        background: 'rgba(255, 255, 255, 0.9)',
+        backdropFilter: 'blur(10px)',
+        border: '1px solid rgba(102, 126, 234, 0.1)',
+        borderRadius: 3,
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+      }}
+    >
       <Box mb={3}>
-        <Typography variant="h4" component="h1" gutterBottom>
+        <Typography 
+          variant="h4" 
+          component="h1" 
+          gutterBottom
+          sx={{
+            fontWeight: 700,
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            backgroundClip: 'text',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}
+        >
           Identities
         </Typography>
         <Typography variant="body1" color="text.secondary" component="p" sx={{ mb: 2 }}>
@@ -344,11 +365,35 @@ const IdentitiesTable: React.FC = React.memo(() => {
         />
         <Box>
           <Tooltip title="Refresh">
-            <IconButton onClick={handleRefresh} sx={{ mr: 1 }}>
-              <Refresh />
+            <IconButton 
+              onClick={handleRefresh} 
+              sx={{ 
+                mr: 1,
+                background: 'rgba(102, 126, 234, 0.1)',
+                '&:hover': {
+                  background: 'rgba(102, 126, 234, 0.2)',
+                  transform: 'scale(1.05)',
+                },
+                transition: 'all 0.3s ease',
+              }}
+            >
+              <Refresh sx={{ color: '#667eea' }} />
             </IconButton>
           </Tooltip>
-          <Button variant="contained" color="primary" startIcon={<Add />} onClick={handleCreateNew}>
+          <Button 
+            variant="contained" 
+            startIcon={<Add />} 
+            onClick={handleCreateNew}
+            sx={{
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)',
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                boxShadow: '0 6px 20px rgba(102, 126, 234, 0.4)',
+                transform: 'translateY(-2px)',
+              },
+            }}
+          >
             Create New
           </Button>
         </Box>
@@ -362,11 +407,23 @@ const IdentitiesTable: React.FC = React.memo(() => {
           hideFooterPagination
           showToolbar
           sx={{
+            border: '1px solid rgba(102, 126, 234, 0.1)',
+            borderRadius: 2,
+            '& .MuiDataGrid-columnHeaders': {
+              background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
+              borderBottom: '2px solid rgba(102, 126, 234, 0.2)',
+              fontWeight: 700,
+            },
             '& .MuiDataGrid-row': {
               cursor: 'pointer',
+              transition: 'all 0.2s ease',
               '&:hover': {
-                backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                backgroundColor: 'rgba(102, 126, 234, 0.08)',
+                transform: 'scale(1.001)',
               },
+            },
+            '& .MuiDataGrid-cell': {
+              borderColor: 'rgba(102, 126, 234, 0.08)',
             },
           }}
         />
@@ -400,10 +457,50 @@ const IdentitiesTable: React.FC = React.memo(() => {
         </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Button variant="outlined" size="small" startIcon={<NavigateBefore />} onClick={handlePreviousPage} disabled={!canGoPrevious || isLoading}>
+          <Button 
+            variant="outlined" 
+            size="small" 
+            startIcon={<NavigateBefore />} 
+            onClick={handlePreviousPage} 
+            disabled={!canGoPrevious || isLoading}
+            sx={{
+              borderColor: '#667eea',
+              color: '#667eea',
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                borderColor: '#764ba2',
+                background: 'rgba(102, 126, 234, 0.1)',
+                transform: 'translateX(-2px)',
+              },
+              '&:disabled': {
+                borderColor: 'rgba(0, 0, 0, 0.12)',
+                color: 'rgba(0, 0, 0, 0.26)',
+              },
+            }}
+          >
             Previous
           </Button>
-          <Button variant="outlined" size="small" endIcon={<NavigateNext />} onClick={handleNextPage} disabled={!canGoNext || isLoading}>
+          <Button 
+            variant="outlined" 
+            size="small" 
+            endIcon={<NavigateNext />} 
+            onClick={handleNextPage} 
+            disabled={!canGoNext || isLoading}
+            sx={{
+              borderColor: '#667eea',
+              color: '#667eea',
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                borderColor: '#764ba2',
+                background: 'rgba(102, 126, 234, 0.1)',
+                transform: 'translateX(2px)',
+              },
+              '&:disabled': {
+                borderColor: 'rgba(0, 0, 0, 0.12)',
+                color: 'rgba(0, 0, 0, 0.26)',
+              },
+            }}
+          >
             Next
           </Button>
         </Box>
