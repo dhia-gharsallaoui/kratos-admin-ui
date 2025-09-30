@@ -3,7 +3,6 @@
 import { useParams, useRouter } from 'next/navigation';
 import {
   Box,
-  Button,
   Typography,
   Grid,
   Chip,
@@ -19,6 +18,7 @@ import {
   DialogActions,
 } from '@mui/material';
 import { ArrowBack, Edit, Delete, Refresh, Link as LinkIcon, DeleteSweep, Person } from '@mui/icons-material';
+import { Button } from '@/components/ui/Button';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import { UserRole } from '@/features/auth';
@@ -125,7 +125,7 @@ export default function IdentityDetailPage() {
             <Typography variant="body1" sx={{ mb: 3 }}>
               The identity with ID &quot;{identityId}&quot; could not be found.
             </Typography>
-            <Button variant="contained" onClick={handleBack}>
+            <Button variant="primary" onClick={handleBack}>
               Back to Identities
             </Button>
           </Box>
@@ -171,10 +171,10 @@ export default function IdentityDetailPage() {
               <Button variant="outlined" startIcon={<Edit />} onClick={handleEdit}>
                 Edit
               </Button>
-              <Button variant="outlined" color="info" startIcon={<LinkIcon />} onClick={handleRecover}>
+              <Button variant="outlined" startIcon={<LinkIcon />} onClick={handleRecover}>
                 Recover
               </Button>
-              <Button variant="outlined" color="error" startIcon={<Delete />} onClick={handleDelete}>
+              <Button variant="danger" startIcon={<Delete />} onClick={handleDelete}>
                 Delete
               </Button>
             </Box>
@@ -363,8 +363,7 @@ export default function IdentityDetailPage() {
                         </IconButton>
                       </Tooltip>
                       <Button
-                        variant="outlined"
-                        color="error"
+                        variant="danger"
                         size="small"
                         startIcon={<DeleteSweep />}
                         onClick={handleDeleteAllSessions}
@@ -485,8 +484,8 @@ export default function IdentityDetailPage() {
               )}
             </DialogContent>
             <DialogActions>
-              <Button onClick={() => setDeleteSessionsDialogOpen(false)}>Cancel</Button>
-              <Button onClick={handleDeleteAllSessionsConfirm} color="error" variant="contained" disabled={deleteSessionsMutation.isPending}>
+              <Button variant="text" onClick={() => setDeleteSessionsDialogOpen(false)}>Cancel</Button>
+              <Button variant="danger" onClick={handleDeleteAllSessionsConfirm} disabled={deleteSessionsMutation.isPending}>
                 {deleteSessionsMutation.isPending ? 'Deleting...' : 'Delete All Sessions'}
               </Button>
             </DialogActions>
