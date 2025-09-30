@@ -1,0 +1,171 @@
+import React, { useMemo } from 'react';
+import { Box, Typography, Chip } from '@mui/material';
+import { Mail, Sms, CheckCircle, Schedule, Cancel, Error as ErrorIcon } from '@mui/icons-material';
+import { DataTable, DataTableColumn } from '@/components/ui/DataTable';
+import { CourierMessageStatus } from '@/services/kratos/endpoints/courier';
+import { formatDate } from '@/lib/date-utils';
+
+interface MessagesTableProps {
+  messages: any[];
+  isLoading: boolean;
+  onMessageClick?: (messageId: string) => void;
+}
+
+const getStatusIcon = (status: CourierMessageStatus) => {
+  switch (status) {
+    case 'sent':
+      return <CheckCircle color="success" fontSize="small" />;
+    case 'queued':
+      return <Schedule color="info" fontSize="small" />;
+    case 'processing':
+      return <Schedule color="warning" fontSize="small" />;
+    case 'abandoned':
+      return <Cancel color="error" fontSize="small" />;
+    default:
+      return <ErrorIcon color="warning" fontSize="small" />;
+  }
+};
+
+const getStatusColor = (status: CourierMessageStatus) => {
+  switch (status) {
+    case 'sent':
+      return 'success';
+    case 'queued':
+      return 'info';
+    case 'processing':
+      return 'warning';
+    case 'abandoned':
+      return 'error';
+    default:
+      return 'default';
+  }
+};
+
+const getMessageTypeIcon = (type: string) => {
+  switch (type) {
+    case 'email':
+      return <Mail fontSize="small" />;
+    case 'sms':
+      return <Sms fontSize="small" />;
+    default:
+      return <Mail fontSize="small" />;
+  }
+};
+
+export const MessagesTable: React.FC<MessagesTableProps> = React.memo(({
+  messages,
+  isLoading,
+  onMessageClick
+}) => {
+  const columns: DataTableColumn[] = useMemo(() => [
+    {
+      field: 'type',
+      headerName: 'Type',
+      minWidth: 120,
+      renderCell: (value: string) => (
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          {getMessageTypeIcon(value)}
+          <Typography variant="body2" sx={{ textTransform: 'capitalize' }}>
+            {value}
+          </Typography>
+        </Box>
+      ),
+    },
+    {
+      field: 'recipient',
+      headerName: 'Recipient',
+      minWidth: 200,
+      maxWidth: 250,
+      renderCell: (value: string) => (
+        <Typography
+          variant="body2"
+          sx={{
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {value}
+        </Typography>
+      ),
+    },
+    {
+      field: 'subject',
+      headerName: 'Subject',
+      minWidth: 250,
+      maxWidth: 300,
+      renderCell: (value: string) => (
+        <Typography
+          variant="body2"
+          sx={{
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {value || 'No subject'}
+        </Typography>
+      ),
+    },
+    {
+      field: 'status',
+      headerName: 'Status',
+      minWidth: 150,
+      renderCell: (value: CourierMessageStatus) => (
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          {getStatusIcon(value)}
+          <Chip
+            label={value}
+            color={getStatusColor(value) as any}
+            size="small"
+            sx={{ textTransform: 'capitalize' }}
+          />
+        </Box>
+      ),
+    },
+    {
+      field: 'template_type',
+      headerName: 'Template',
+      minWidth: 160,
+      renderCell: (value: string) => (
+        <Typography variant="body2" sx={{ fontFamily: 'monospace', fontSize: '0.75rem' }}>
+          {value || 'Unknown'}
+        </Typography>
+      ),
+    },
+    {
+      field: 'created_at',
+      headerName: 'Created',
+      minWidth: 180,
+      renderCell: (value: string) => (
+        <Typography variant="body2">{formatDate(value)}</Typography>
+      ),
+    },
+    {
+      field: 'send_count',
+      headerName: 'Send Count',
+      minWidth: 120,
+      renderCell: (value: number) => (
+        <Typography variant="body2">{value || 0}</Typography>
+      ),
+    },
+  ], []);
+
+  const handleRowClick = (message: any) => {
+    onMessageClick?.(message.id);
+  };
+
+  return (
+    <DataTable
+      data={messages}
+      columns={columns}
+      keyField="id"
+      loading={isLoading}
+      searchable={false}
+      onRowClick={handleRowClick}
+      emptyMessage="No messages found"
+    />
+  );
+});
+
+MessagesTable.displayName = 'MessagesTable';

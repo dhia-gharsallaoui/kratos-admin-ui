@@ -309,7 +309,7 @@ export const DataTable = React.memo(<T extends Record<string, any>>({
       )}
 
       {/* Table */}
-      <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+      <Paper elevation={0} sx={{ width: '100%', overflow: 'hidden', border: 1, borderColor: 'divider', borderRadius: 2 }}>
         <TableContainer sx={{ maxHeight }}>
           {loading ? (
             renderLoadingSkeleton()
@@ -324,6 +324,12 @@ export const DataTable = React.memo(<T extends Record<string, any>>({
                         minWidth: column.minWidth,
                         maxWidth: column.maxWidth,
                         width: column.width,
+                      }}
+                      sx={{
+                        fontWeight: 600,
+                        backgroundColor: 'background.paper',
+                        borderBottom: 1,
+                        borderColor: 'divider',
                       }}
                     >
                       {column.headerName}
@@ -351,6 +357,10 @@ export const DataTable = React.memo(<T extends Record<string, any>>({
                         '&:hover': {
                           backgroundColor: 'action.hover',
                           cursor: onRowClick ? 'pointer' : 'default',
+                        },
+                        '&:not(:last-child) td': {
+                          borderBottom: 1,
+                          borderColor: 'divider',
                         },
                       }}
                     >
