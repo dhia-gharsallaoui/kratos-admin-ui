@@ -1,132 +1,93 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import {
+  Configuration,
+  ConfigurationParameters,
+  OAuth2Api,
+  MetadataApi as HydraMetadataApi,
+  WellknownApi,
+  JwkApi,
+  OidcApi
+} from '@ory/hydra-client';
 import { getHydraAdminUrl, getHydraPublicUrl } from './config';
-import { apiLogger } from '@/lib/logger';
 
-// Create axios configurations for Hydra API clients
-const createAxiosConfig = (baseURL: string): AxiosRequestConfig => ({
-  baseURL,
-  timeout: 30000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
+// Create configurations for Hydra API clients
+const getAdminConfiguration = (): Configuration => {
+  const defaultConfig: ConfigurationParameters = {};
 
-// Admin API configuration
-const getAdminAxiosConfig = (): AxiosRequestConfig => {
-  return createAxiosConfig(getHydraAdminUrl());
+  return new Configuration({
+    ...defaultConfig,
+    basePath: getHydraAdminUrl(),
+  });
 };
 
-// Public API configuration
-const getPublicAxiosConfig = (): AxiosRequestConfig => {
-  return createAxiosConfig(getHydraPublicUrl());
-};
+const getPublicConfiguration = (): Configuration => {
+  const defaultConfig: ConfigurationParameters = {};
 
-// Singleton axios instances for performance optimization
-let adminAxiosInstance: AxiosInstance | null = null;
-let publicAxiosInstance: AxiosInstance | null = null;
-
-// Admin API client getter with singleton pattern
-export const getHydraAdminClient = (): AxiosInstance => {
-  if (!adminAxiosInstance) {
-    adminAxiosInstance = axios.create(getAdminAxiosConfig());
-
-    // Request interceptor for logging
-    adminAxiosInstance.interceptors.request.use(
-      (config) => {
-        apiLogger.debug(`Request: ${config.method?.toUpperCase()} ${config.url}`);
-        return config;
-      },
-      (error) => {
-        apiLogger.logError(error, 'Admin request error');
-        return Promise.reject(error);
-      }
-    );
-
-    // Response interceptor for logging and error handling
-    adminAxiosInstance.interceptors.response.use(
-      (response) => {
-        apiLogger.debug(`Response: ${response.status} ${response.config.url}`);
-        return response;
-      },
-      (error) => {
-        apiLogger.logError(error, 'Admin response error');
-        return Promise.reject(error);
-      }
-    );
-  }
-  return adminAxiosInstance;
-};
-
-// Public API client getter with singleton pattern
-export const getHydraPublicClient = (): AxiosInstance => {
-  if (!publicAxiosInstance) {
-    publicAxiosInstance = axios.create({
-      ...getPublicAxiosConfig(),
+  return new Configuration({
+    ...defaultConfig,
+    basePath: getHydraPublicUrl(),
+    baseOptions: {
       withCredentials: true,
-    });
-
-    // Request interceptor for logging
-    publicAxiosInstance.interceptors.request.use(
-      (config) => {
-        apiLogger.debug(`Request: ${config.method?.toUpperCase()} ${config.url}`);
-        return config;
-      },
-      (error) => {
-        apiLogger.logError(error, 'Public request error');
-        return Promise.reject(error);
-      }
-    );
-
-    // Response interceptor for logging and error handling
-    publicAxiosInstance.interceptors.response.use(
-      (response) => {
-        apiLogger.debug(`Response: ${response.status} ${response.config.url}`);
-        return response;
-      },
-      (error) => {
-        apiLogger.logError(error, 'Public response error');
-        return Promise.reject(error);
-      }
-    );
-  }
-  return publicAxiosInstance;
+    },
+  });
 };
 
-// Generic HTTP client wrapper
-export class HydraHttpClient {
-  private client: AxiosInstance;
+// Singleton API clients for performance optimization
+let adminOAuth2ApiInstance: OAuth2Api | null = null;
+let publicOAuth2ApiInstance: OAuth2Api | null = null;
+let hydraMetadataApiInstance: HydraMetadataApi | null = null;
+let wellknownApiInstance: WellknownApi | null = null;
+let jwkApiInstance: JwkApi | null = null;
+let oidcApiInstance: OidcApi | null = null;
 
-  constructor(client: AxiosInstance) {
-    this.client = client;
+// API client getters with singleton pattern
+export const getAdminOAuth2Api = (): OAuth2Api => {
+  if (!adminOAuth2ApiInstance) {
+    adminOAuth2ApiInstance = new OAuth2Api(getAdminConfiguration());
   }
+  return adminOAuth2ApiInstance;
+};
 
-  async get<T>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
-    return this.client.get<T>(url, config);
+export const getPublicOAuth2Api = (): OAuth2Api => {
+  if (!publicOAuth2ApiInstance) {
+    publicOAuth2ApiInstance = new OAuth2Api(getPublicConfiguration());
   }
+  return publicOAuth2ApiInstance;
+};
 
-  async post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
-    return this.client.post<T>(url, data, config);
+export const getHydraMetadataApi = (): HydraMetadataApi => {
+  if (!hydraMetadataApiInstance) {
+    hydraMetadataApiInstance = new HydraMetadataApi(getPublicConfiguration());
   }
+  return hydraMetadataApiInstance;
+};
 
-  async put<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
-    return this.client.put<T>(url, data, config);
+export const getWellknownApi = (): WellknownApi => {
+  if (!wellknownApiInstance) {
+    wellknownApiInstance = new WellknownApi(getPublicConfiguration());
   }
+  return wellknownApiInstance;
+};
 
-  async patch<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
-    return this.client.patch<T>(url, data, config);
+export const getJwkApi = (): JwkApi => {
+  if (!jwkApiInstance) {
+    jwkApiInstance = new JwkApi(getAdminConfiguration());
   }
+  return jwkApiInstance;
+};
 
-  async delete<T>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
-    return this.client.delete<T>(url, config);
+export const getOidcApi = (): OidcApi => {
+  if (!oidcApiInstance) {
+    oidcApiInstance = new OidcApi(getPublicConfiguration());
   }
-}
-
-// Pre-configured HTTP clients
-export const hydraAdminClient = new HydraHttpClient(getHydraAdminClient());
-export const hydraPublicClient = new HydraHttpClient(getHydraPublicClient());
+  return oidcApiInstance;
+};
 
 // Reset function for testing or configuration changes
 export const resetHydraApiClients = (): void => {
-  adminAxiosInstance = null;
-  publicAxiosInstance = null;
+  adminOAuth2ApiInstance = null;
+  publicOAuth2ApiInstance = null;
+  hydraMetadataApiInstance = null;
+  wellknownApiInstance = null;
+  jwkApiInstance = null;
+  oidcApiInstance = null;
 };

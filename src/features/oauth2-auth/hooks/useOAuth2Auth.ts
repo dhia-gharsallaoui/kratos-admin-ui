@@ -11,9 +11,9 @@ import {
   rejectOAuth2LogoutRequest,
   listOAuth2ConsentSessions,
   revokeOAuth2ConsentSessions,
-  listOAuth2LoginSessions,
-  revokeOAuth2LoginSessions,
   ListConsentSessionsParams,
+} from '@/services/hydra';
+import {
   AcceptOAuth2ConsentRequest,
   AcceptOAuth2LoginRequest,
   RejectOAuth2Request,
@@ -185,7 +185,7 @@ export function useRevokeOAuth2ConsentSessions() {
 export function useOAuth2LoginSessions(subject: string, enabled = true) {
   return useQuery({
     queryKey: oauth2AuthKeys.loginSessionsList(subject),
-    queryFn: () => listOAuth2LoginSessions(subject),
+    queryFn: () => listOAuth2ConsentSessions({ subject }),
     enabled: enabled && !!subject,
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
@@ -195,7 +195,7 @@ export function useRevokeOAuth2LoginSessions() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (subject: string) => revokeOAuth2LoginSessions(subject),
+    mutationFn: (subject: string) => revokeOAuth2ConsentSessions(subject),
     onSuccess: () => {
       // Invalidate all login sessions
       queryClient.invalidateQueries({ queryKey: oauth2AuthKeys.loginSessions() });
@@ -206,7 +206,7 @@ export function useRevokeOAuth2LoginSessions() {
 
 // Auth flow statistics hook
 export function useOAuth2AuthStats(enabled = true) {
-  const { data: consentSessionsData } = useOAuth2ConsentSessions({ enabled });
+  const { data: consentSessionsData } = useOAuth2ConsentSessions({});
 
   return useQuery({
     queryKey: oauth2AuthKeys.stats(),

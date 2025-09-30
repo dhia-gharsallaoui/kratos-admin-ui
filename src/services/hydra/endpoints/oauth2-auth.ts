@@ -1,4 +1,4 @@
-import { hydraAdminClient } from '../client';
+import { getAdminOAuth2Api } from '../client';
 import {
   OAuth2ConsentRequest,
   OAuth2LoginRequest,
@@ -7,9 +7,12 @@ import {
   AcceptOAuth2LoginRequest,
   RejectOAuth2Request,
   OAuth2RedirectTo,
-  PaginationParams,
-} from '../types';
+  OAuth2ConsentSession,
+} from '@ory/hydra-client';
+import { PaginationParams } from '../types';
 import { apiLogger } from '@/lib/logger';
+
+// Use PaginationParams from ../types instead
 
 // OAuth2 Authentication Flow operations
 
@@ -21,10 +24,8 @@ export interface ListConsentSessionsParams extends PaginationParams {
 // Consent Request operations
 export async function getOAuth2ConsentRequest(challenge: string) {
   try {
-    const response = await hydraAdminClient.get<OAuth2ConsentRequest>(
-      `/admin/oauth2/auth/requests/consent?consent_challenge=${encodeURIComponent(challenge)}`
-    );
-    return response;
+    const response = await getAdminOAuth2Api().getOAuth2ConsentRequest({ consentChallenge: challenge });
+    return { data: response.data };
   } catch (error) {
     apiLogger.logError(error, `Error getting OAuth2 consent request ${challenge}`);
     throw error;
@@ -36,11 +37,11 @@ export async function acceptOAuth2ConsentRequest(
   body: AcceptOAuth2ConsentRequest
 ) {
   try {
-    const response = await hydraAdminClient.put<OAuth2RedirectTo>(
-      `/admin/oauth2/auth/requests/consent/accept?consent_challenge=${encodeURIComponent(challenge)}`,
-      body
-    );
-    return response;
+    const response = await getAdminOAuth2Api().acceptOAuth2ConsentRequest({
+      consentChallenge: challenge,
+      acceptOAuth2ConsentRequest: body
+    });
+    return { data: response.data };
   } catch (error) {
     apiLogger.logError(error, `Error accepting OAuth2 consent request ${challenge}`);
     throw error;
@@ -52,11 +53,11 @@ export async function rejectOAuth2ConsentRequest(
   body: RejectOAuth2Request
 ) {
   try {
-    const response = await hydraAdminClient.put<OAuth2RedirectTo>(
-      `/admin/oauth2/auth/requests/consent/reject?consent_challenge=${encodeURIComponent(challenge)}`,
-      body
-    );
-    return response;
+    const response = await getAdminOAuth2Api().rejectOAuth2ConsentRequest({
+      consentChallenge: challenge,
+      rejectOAuth2Request: body
+    });
+    return { data: response.data };
   } catch (error) {
     apiLogger.logError(error, `Error rejecting OAuth2 consent request ${challenge}`);
     throw error;
@@ -66,10 +67,8 @@ export async function rejectOAuth2ConsentRequest(
 // Login Request operations
 export async function getOAuth2LoginRequest(challenge: string) {
   try {
-    const response = await hydraAdminClient.get<OAuth2LoginRequest>(
-      `/admin/oauth2/auth/requests/login?login_challenge=${encodeURIComponent(challenge)}`
-    );
-    return response;
+    const response = await getAdminOAuth2Api().getOAuth2LoginRequest({ loginChallenge: challenge });
+    return { data: response.data };
   } catch (error) {
     apiLogger.logError(error, `Error getting OAuth2 login request ${challenge}`);
     throw error;
@@ -81,11 +80,11 @@ export async function acceptOAuth2LoginRequest(
   body: AcceptOAuth2LoginRequest
 ) {
   try {
-    const response = await hydraAdminClient.put<OAuth2RedirectTo>(
-      `/admin/oauth2/auth/requests/login/accept?login_challenge=${encodeURIComponent(challenge)}`,
-      body
-    );
-    return response;
+    const response = await getAdminOAuth2Api().acceptOAuth2LoginRequest({
+      loginChallenge: challenge,
+      acceptOAuth2LoginRequest: body
+    });
+    return { data: response.data };
   } catch (error) {
     apiLogger.logError(error, `Error accepting OAuth2 login request ${challenge}`);
     throw error;
@@ -97,11 +96,11 @@ export async function rejectOAuth2LoginRequest(
   body: RejectOAuth2Request
 ) {
   try {
-    const response = await hydraAdminClient.put<OAuth2RedirectTo>(
-      `/admin/oauth2/auth/requests/login/reject?login_challenge=${encodeURIComponent(challenge)}`,
-      body
-    );
-    return response;
+    const response = await getAdminOAuth2Api().rejectOAuth2LoginRequest({
+      loginChallenge: challenge,
+      rejectOAuth2Request: body
+    });
+    return { data: response.data };
   } catch (error) {
     apiLogger.logError(error, `Error rejecting OAuth2 login request ${challenge}`);
     throw error;
@@ -111,10 +110,8 @@ export async function rejectOAuth2LoginRequest(
 // Logout Request operations
 export async function getOAuth2LogoutRequest(challenge: string) {
   try {
-    const response = await hydraAdminClient.get<OAuth2LogoutRequest>(
-      `/admin/oauth2/auth/requests/logout?logout_challenge=${encodeURIComponent(challenge)}`
-    );
-    return response;
+    const response = await getAdminOAuth2Api().getOAuth2LogoutRequest({ logoutChallenge: challenge });
+    return { data: response.data };
   } catch (error) {
     apiLogger.logError(error, `Error getting OAuth2 logout request ${challenge}`);
     throw error;
@@ -123,10 +120,8 @@ export async function getOAuth2LogoutRequest(challenge: string) {
 
 export async function acceptOAuth2LogoutRequest(challenge: string) {
   try {
-    const response = await hydraAdminClient.put<OAuth2RedirectTo>(
-      `/admin/oauth2/auth/requests/logout/accept?logout_challenge=${encodeURIComponent(challenge)}`
-    );
-    return response;
+    const response = await getAdminOAuth2Api().acceptOAuth2LogoutRequest({ logoutChallenge: challenge });
+    return { data: response.data };
   } catch (error) {
     apiLogger.logError(error, `Error accepting OAuth2 logout request ${challenge}`);
     throw error;
@@ -135,10 +130,8 @@ export async function acceptOAuth2LogoutRequest(challenge: string) {
 
 export async function rejectOAuth2LogoutRequest(challenge: string) {
   try {
-    const response = await hydraAdminClient.put<OAuth2RedirectTo>(
-      `/admin/oauth2/auth/requests/logout/reject?logout_challenge=${encodeURIComponent(challenge)}`
-    );
-    return response;
+    const response = await getAdminOAuth2Api().rejectOAuth2LogoutRequest({ logoutChallenge: challenge });
+    return { data: response.data };
   } catch (error) {
     apiLogger.logError(error, `Error rejecting OAuth2 logout request ${challenge}`);
     throw error;
@@ -148,18 +141,14 @@ export async function rejectOAuth2LogoutRequest(challenge: string) {
 // Consent Session operations
 export async function listOAuth2ConsentSessions(params: ListConsentSessionsParams = {}) {
   try {
-    const queryParams = new URLSearchParams();
-
-    if (params.page_size) queryParams.append('page_size', params.page_size.toString());
-    if (params.page_token) queryParams.append('page_token', params.page_token);
-    if (params.subject) queryParams.append('subject', params.subject);
-    if (params.login_session_id) queryParams.append('login_session_id', params.login_session_id);
-
-    const url = `/admin/oauth2/auth/sessions/consent${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
-    const response = await hydraAdminClient.get<any[]>(url);
+    const response = await getAdminOAuth2Api().listOAuth2ConsentSessions({
+      pageSize: params.page_size,
+      pageToken: params.page_token,
+      subject: params.subject || '',
+      loginSessionId: params.login_session_id
+    });
 
     return {
-      ...response,
       data: response.data || [],
     };
   } catch (error) {
@@ -174,43 +163,17 @@ export async function revokeOAuth2ConsentSessions(
   all?: boolean
 ) {
   try {
-    const queryParams = new URLSearchParams({ subject });
-    if (client) queryParams.append('client', client);
-    if (all) queryParams.append('all', 'true');
-
-    const url = `/admin/oauth2/auth/sessions/consent?${queryParams.toString()}`;
-    const response = await hydraAdminClient.delete(url);
-    return response;
+    const response = await getAdminOAuth2Api().revokeOAuth2ConsentSessions({
+      subject,
+      client,
+      all
+    });
+    return { data: response.data };
   } catch (error) {
     apiLogger.logError(error, `Error revoking OAuth2 consent sessions for subject ${subject}`);
     throw error;
   }
 }
 
-// Login Session operations
-export async function listOAuth2LoginSessions(subject: string) {
-  try {
-    const response = await hydraAdminClient.get<any[]>(
-      `/admin/oauth2/auth/sessions/login?subject=${encodeURIComponent(subject)}`
-    );
-    return {
-      ...response,
-      data: response.data || [],
-    };
-  } catch (error) {
-    apiLogger.logError(error, `Error listing OAuth2 login sessions for subject ${subject}`);
-    throw error;
-  }
-}
-
-export async function revokeOAuth2LoginSessions(subject: string) {
-  try {
-    const response = await hydraAdminClient.delete(
-      `/admin/oauth2/auth/sessions/login?subject=${encodeURIComponent(subject)}`
-    );
-    return response;
-  } catch (error) {
-    apiLogger.logError(error, `Error revoking OAuth2 login sessions for subject ${subject}`);
-    throw error;
-  }
-}
+// Note: OAuth2LoginSession operations are not available in the official Hydra client
+// Use OAuth2ConsentSession operations instead

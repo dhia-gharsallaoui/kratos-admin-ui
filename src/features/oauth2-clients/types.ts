@@ -58,6 +58,7 @@ export interface OAuth2ClientFormErrors {
   redirect_uris?: string;
   scope?: string;
   audience?: string;
+  owner?: string;
   policy_uri?: string;
   tos_uri?: string;
   metadata?: string;

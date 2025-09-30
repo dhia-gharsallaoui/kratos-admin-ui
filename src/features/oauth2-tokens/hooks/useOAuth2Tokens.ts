@@ -197,7 +197,7 @@ export function useOAuth2TokenStats(introspectedTokens: any[] = []) {
         // Scope distribution
         if (token.scope) {
           const scopes = token.scope.split(' ');
-          scopes.forEach(scope => {
+          scopes.forEach((scope: string) => {
             if (scope.trim()) {
               stats.scopeDistribution[scope.trim()] =
                 (stats.scopeDistribution[scope.trim()] || 0) + 1;

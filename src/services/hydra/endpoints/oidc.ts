@@ -1,5 +1,5 @@
-import { hydraPublicClient } from '../client';
-import { OidcConfiguration, OidcUserInfo, JsonWebKeySet } from '../types';
+import { getWellknownApi, getOidcApi } from '../client';
+import { OidcConfiguration, OidcUserInfo, JsonWebKeySet } from '@ory/hydra-client';
 import { apiLogger } from '@/lib/logger';
 
 // OpenID Connect operations
@@ -7,8 +7,8 @@ import { apiLogger } from '@/lib/logger';
 // Get OpenID Connect configuration (well-known endpoint)
 export async function getOidcConfiguration() {
   try {
-    const response = await hydraPublicClient.get<OidcConfiguration>('/.well-known/openid-configuration');
-    return response;
+    const response = await getOidcApi().discoverOidcConfiguration();
+    return { data: response.data };
   } catch (error) {
     apiLogger.logError(error, 'Error getting OIDC configuration');
     throw error;
@@ -18,8 +18,8 @@ export async function getOidcConfiguration() {
 // Get JSON Web Key Set (JWKS)
 export async function getJsonWebKeySet() {
   try {
-    const response = await hydraPublicClient.get<JsonWebKeySet>('/.well-known/jwks.json');
-    return response;
+    const response = await getWellknownApi().discoverJsonWebKeys();
+    return { data: response.data };
   } catch (error) {
     apiLogger.logError(error, 'Error getting JSON Web Key Set');
     throw error;
@@ -29,12 +29,12 @@ export async function getJsonWebKeySet() {
 // Get OpenID Connect UserInfo
 export async function getOidcUserInfo(accessToken: string) {
   try {
-    const response = await hydraPublicClient.get<OidcUserInfo>('/userinfo', {
+    const response = await getOidcApi().getOidcUserInfo({
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    return response;
+    return { data: response.data };
   } catch (error) {
     apiLogger.logError(error, 'Error getting OIDC UserInfo');
     throw error;
@@ -54,12 +54,14 @@ export async function createVerifiableCredential(
   }
 ) {
   try {
-    const response = await hydraPublicClient.post('/credentials', credentialRequest, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
+    const response = await getOidcApi().createVerifiableCredential({
+      createVerifiableCredentialRequestBody: {
+        format: credentialRequest.format,
+        types: credentialRequest.types,
+        proof: credentialRequest.proof
+      }
     });
-    return response;
+    return { data: response.data };
   } catch (error) {
     apiLogger.logError(error, 'Error creating verifiable credential');
     throw error;

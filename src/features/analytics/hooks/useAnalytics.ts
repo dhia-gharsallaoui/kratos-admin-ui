@@ -194,7 +194,7 @@ export const useHydraAnalytics = () => {
     queryFn: async (): Promise<HydraAnalytics> => {
       try {
         // Fetch OAuth2 clients
-        const clientsResponse = await listOAuth2Clients({ pageSize: 500 });
+        const clientsResponse = await listOAuth2Clients({ page_size: 500 });
         const clients = clientsResponse.data || [];
 
         // Count public vs confidential clients

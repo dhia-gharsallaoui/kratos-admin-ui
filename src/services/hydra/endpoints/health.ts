@@ -1,4 +1,4 @@
-import { hydraAdminClient, hydraPublicClient } from '../client';
+import { getHydraMetadataApi } from '../client';
 import { apiLogger } from '@/lib/logger';
 
 // Hydra Health Check operations
@@ -14,8 +14,8 @@ export interface VersionInfo {
 // Check Hydra admin readiness
 export async function checkHydraAdminReady() {
   try {
-    const response = await hydraAdminClient.get<HealthStatus>('/admin/health/ready');
-    return response;
+    const response = await getHydraMetadataApi().isReady();
+    return { data: { status: 'ok' as const } };
   } catch (error) {
     apiLogger.logError(error, 'Error checking Hydra admin readiness');
     throw error;
@@ -25,8 +25,8 @@ export async function checkHydraAdminReady() {
 // Check Hydra admin aliveness
 export async function checkHydraAdminAlive() {
   try {
-    const response = await hydraAdminClient.get<HealthStatus>('/admin/health/alive');
-    return response;
+    const response = await getHydraMetadataApi().isAlive();
+    return { data: { status: 'ok' as const } };
   } catch (error) {
     apiLogger.logError(error, 'Error checking Hydra admin aliveness');
     throw error;
@@ -36,8 +36,8 @@ export async function checkHydraAdminAlive() {
 // Check Hydra public readiness
 export async function checkHydraPublicReady() {
   try {
-    const response = await hydraPublicClient.get<HealthStatus>('/health/ready');
-    return response;
+    const response = await getHydraMetadataApi().isReady();
+    return { data: { status: 'ok' as const } };
   } catch (error) {
     apiLogger.logError(error, 'Error checking Hydra public readiness');
     throw error;
@@ -47,8 +47,8 @@ export async function checkHydraPublicReady() {
 // Check Hydra public aliveness
 export async function checkHydraPublicAlive() {
   try {
-    const response = await hydraPublicClient.get<HealthStatus>('/health/alive');
-    return response;
+    const response = await getHydraMetadataApi().isAlive();
+    return { data: { status: 'ok' as const } };
   } catch (error) {
     apiLogger.logError(error, 'Error checking Hydra public aliveness');
     throw error;
@@ -58,8 +58,8 @@ export async function checkHydraPublicAlive() {
 // Get Hydra version information
 export async function getHydraVersion() {
   try {
-    const response = await hydraAdminClient.get<VersionInfo>('/admin/version');
-    return response;
+    const response = await getHydraMetadataApi().getVersion();
+    return { data: response.data };
   } catch (error) {
     apiLogger.logError(error, 'Error getting Hydra version');
     throw error;

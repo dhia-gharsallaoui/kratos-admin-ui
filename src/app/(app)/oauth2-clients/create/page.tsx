@@ -65,7 +65,10 @@ export default function CreateOAuth2ClientPage() {
     try {
       const requestData = transformFormDataToCreateRequest(formData);
       const result = await createClientMutation.mutateAsync(requestData);
-      router.push(`/oauth2-clients/${result.data.client_id}`);
+
+      if (result.data.client_id) {
+        router.push(`/oauth2-clients/${result.data.client_id}`);
+      }
     } catch (error) {
       console.error('Failed to create client:', error);
     }
@@ -78,14 +81,14 @@ export default function CreateOAuth2ClientPage() {
     setFormData(prev => ({ ...prev, [field]: value }));
 
     // Clear error for this field
-    if (errors[field]) {
+    if (errors[field as keyof OAuth2ClientFormErrors]) {
       setErrors(prev => ({ ...prev, [field]: undefined }));
     }
   };
 
   const handleArrayChange = (field: keyof OAuth2ClientFormData, newValue: string[]) => {
     setFormData(prev => ({ ...prev, [field]: newValue }));
-    if (errors[field]) {
+    if (errors[field as keyof OAuth2ClientFormErrors]) {
       setErrors(prev => ({ ...prev, [field]: undefined }));
     }
   };
@@ -104,25 +107,25 @@ export default function CreateOAuth2ClientPage() {
 
   const addContact = () => {
     if (newContact.trim()) {
-      handleArrayChange('contacts', [...formData.contacts, newContact.trim()]);
+      handleArrayChange('contacts', [...(formData.contacts || []), newContact.trim()]);
       setNewContact('');
     }
   };
 
   const removeContact = (index: number) => {
-    const updated = formData.contacts.filter((_, i) => i !== index);
+    const updated = (formData.contacts || []).filter((_, i) => i !== index);
     handleArrayChange('contacts', updated);
   };
 
   const addAudience = () => {
     if (newAudience.trim()) {
-      handleArrayChange('audience', [...formData.audience, newAudience.trim()]);
+      handleArrayChange('audience', [...(formData.audience || []), newAudience.trim()]);
       setNewAudience('');
     }
   };
 
   const removeAudience = (index: number) => {
-    const updated = formData.audience.filter((_, i) => i !== index);
+    const updated = (formData.audience || []).filter((_, i) => i !== index);
     handleArrayChange('audience', updated);
   };
 
@@ -390,7 +393,7 @@ export default function CreateOAuth2ClientPage() {
           </Grid>
 
           {/* Contacts and Audience */}
-          <Grid item xs={12} md={6}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -410,7 +413,7 @@ export default function CreateOAuth2ClientPage() {
                   </Button>
                 </Box>
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                  {formData.contacts.map((contact, index) => (
+                  {(formData.contacts || []).map((contact, index) => (
                     <Chip
                       key={index}
                       label={contact}
@@ -423,7 +426,7 @@ export default function CreateOAuth2ClientPage() {
             </Card>
           </Grid>
 
-          <Grid item xs={12} md={6}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -443,7 +446,7 @@ export default function CreateOAuth2ClientPage() {
                   </Button>
                 </Box>
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                  {formData.audience.map((aud, index) => (
+                  {(formData.audience || []).map((aud, index) => (
                     <Chip
                       key={index}
                       label={aud}
