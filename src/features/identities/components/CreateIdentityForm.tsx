@@ -162,13 +162,13 @@ const TelWidget: React.FC<WidgetProps> = ({ id, value, onChange, onBlur, onFocus
   const getBorderColor = () => {
     if (isValid === true) return '#4caf50'; // Green for valid
     if (isValid === false) return '#f44336'; // Red for invalid
-    return 'rgba(0, 0, 0, 0.23)'; // Default gray
+    return theme.palette.divider; // Theme-aware default
   };
 
   const getHoverBorderColor = () => {
     if (isValid === true) return '#66bb6a'; // Lighter green on hover
     if (isValid === false) return '#ef5350'; // Lighter red on hover
-    return 'rgba(0, 0, 0, 0.87)'; // Default dark gray
+    return theme.palette.text.primary; // Theme-aware hover
   };
 
   return (
@@ -191,11 +191,11 @@ const TelWidget: React.FC<WidgetProps> = ({ id, value, onChange, onBlur, onFocus
               minWidth: 200,
               '& .MuiOutlinedInput-root': {
                 '& fieldset': {
-                  borderColor: 'rgba(0, 0, 0, 0.23)',
+                  borderColor: theme.palette.divider,
                   borderWidth: '1px',
                 },
                 '&:hover fieldset': {
-                  borderColor: 'rgba(0, 0, 0, 0.87)',
+                  borderColor: theme.palette.text.primary,
                   borderWidth: '1px',
                 },
                 '&.Mui-focused fieldset': {
@@ -258,6 +258,7 @@ const TelWidget: React.FC<WidgetProps> = ({ id, value, onChange, onBlur, onFocus
 
 // Custom TextWidget with Material-UI styling
 const TextWidget: React.FC<WidgetProps> = ({ id, value, onChange, onBlur, onFocus, placeholder, disabled, readonly, required, schema, label }) => {
+  const theme = useTheme();
   const isEmail = schema.format === 'email';
   const [isValid, setIsValid] = React.useState<boolean | null>(null);
 
@@ -313,13 +314,13 @@ const TextWidget: React.FC<WidgetProps> = ({ id, value, onChange, onBlur, onFocu
   const getBorderColor = () => {
     if (isValid === true) return '#4caf50'; // Green for valid
     if (isValid === false) return '#f44336'; // Red for invalid
-    return 'rgba(0, 0, 0, 0.23)'; // Default gray
+    return theme.palette.divider; // Theme-aware default
   };
 
   const getHoverBorderColor = () => {
     if (isValid === true) return '#66bb6a'; // Lighter green on hover
     if (isValid === false) return '#ef5350'; // Lighter red on hover
-    return 'rgba(0, 0, 0, 0.87)'; // Default dark gray
+    return theme.palette.text.primary; // Theme-aware hover
   };
 
   return (
@@ -536,14 +537,24 @@ const CreateIdentityForm: React.FC<CreateIdentityFormProps> = ({ onSuccess, onCa
   if (schemasLoading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" height="400px">
-        <CircularProgress />
+        <Spinner variant="ring" size="large" />
       </Box>
     );
   }
 
   return (
-    <Paper elevation={2} sx={{ p: 4, maxWidth: 800, mx: 'auto' }}>
-      <Typography variant="h5" component="h1" gutterBottom>
+    <Paper 
+      elevation={0} 
+      sx={{ 
+        p: 4, 
+        maxWidth: 800, 
+        mx: 'auto',
+        border: 1,
+        borderColor: 'divider',
+        borderRadius: 2,
+      }}
+    >
+      <Typography variant="h5" component="h1" gutterBottom fontWeight={600}>
         Create New Identity
       </Typography>
 

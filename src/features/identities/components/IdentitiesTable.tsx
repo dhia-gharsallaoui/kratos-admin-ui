@@ -14,6 +14,7 @@ import {
   Select,
   MenuItem,
   Chip,
+  useTheme,
 } from '@mui/material';
 import { Add, Search, Refresh, NavigateBefore, NavigateNext } from '@mui/icons-material';
 import { useIdentities, useIdentitiesSearch } from '@/features/identities/hooks';
@@ -25,6 +26,7 @@ import { formatDate } from '@/lib/date-utils';
 
 const IdentitiesTable: React.FC = React.memo(() => {
   const router = useRouter();
+  const theme = useTheme();
   const [searchTerm, setSearchTerm] = useState('');
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
   const [pageSize, setPageSize] = useState(25);
@@ -218,10 +220,7 @@ const IdentitiesTable: React.FC = React.memo(() => {
           color={params.value === 'active' ? 'success' : 'default'}
           size="small"
           sx={{
-            borderRadius: 'var(--radius)',
             fontWeight: 500,
-            background: params.value === 'active' ? '#10b981' : 'var(--muted)',
-            color: params.value === 'active' ? 'white' : 'var(--muted-foreground)',
           }}
         />
       ),
@@ -311,11 +310,9 @@ const IdentitiesTable: React.FC = React.memo(() => {
       elevation={0} 
       sx={{ 
         p: 3,
-        background: 'rgba(255, 255, 255, 0.9)',
-        backdropFilter: 'blur(10px)',
-        border: '1px solid rgba(102, 126, 234, 0.1)',
-        borderRadius: 3,
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+        border: 1,
+        borderColor: 'divider',
+        borderRadius: 2,
       }}
     >
       <Box mb={3}>
@@ -323,13 +320,7 @@ const IdentitiesTable: React.FC = React.memo(() => {
           variant="h4" 
           component="h1" 
           gutterBottom
-          sx={{
-            fontWeight: 700,
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            backgroundClip: 'text',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
+          fontWeight={600}
         >
           Identities
         </Typography>
@@ -367,32 +358,15 @@ const IdentitiesTable: React.FC = React.memo(() => {
           <Tooltip title="Refresh">
             <IconButton 
               onClick={handleRefresh} 
-              sx={{ 
-                mr: 1,
-                background: 'rgba(102, 126, 234, 0.1)',
-                '&:hover': {
-                  background: 'rgba(102, 126, 234, 0.2)',
-                  transform: 'scale(1.05)',
-                },
-                transition: 'all 0.3s ease',
-              }}
+              sx={{ mr: 1 }}
             >
-              <Refresh sx={{ color: '#667eea' }} />
+              <Refresh />
             </IconButton>
           </Tooltip>
           <Button 
             variant="contained" 
             startIcon={<Add />} 
             onClick={handleCreateNew}
-            sx={{
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)',
-              transition: 'all 0.3s ease',
-              '&:hover': {
-                boxShadow: '0 6px 20px rgba(102, 126, 234, 0.4)',
-                transform: 'translateY(-2px)',
-              },
-            }}
           >
             Create New
           </Button>
@@ -407,23 +381,23 @@ const IdentitiesTable: React.FC = React.memo(() => {
           hideFooterPagination
           showToolbar
           sx={{
-            border: '1px solid rgba(102, 126, 234, 0.1)',
+            border: 1,
+            borderColor: 'divider',
             borderRadius: 2,
             '& .MuiDataGrid-columnHeaders': {
-              background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
-              borderBottom: '2px solid rgba(102, 126, 234, 0.2)',
-              fontWeight: 700,
+              bgcolor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.02)',
+              borderBottom: 1,
+              borderColor: 'divider',
+              fontWeight: 600,
             },
             '& .MuiDataGrid-row': {
               cursor: 'pointer',
-              transition: 'all 0.2s ease',
               '&:hover': {
-                backgroundColor: 'rgba(102, 126, 234, 0.08)',
-                transform: 'scale(1.001)',
+                bgcolor: theme.palette.action.hover,
               },
             },
             '& .MuiDataGrid-cell': {
-              borderColor: 'rgba(102, 126, 234, 0.08)',
+              borderColor: 'divider',
             },
           }}
         />
@@ -463,20 +437,6 @@ const IdentitiesTable: React.FC = React.memo(() => {
             startIcon={<NavigateBefore />} 
             onClick={handlePreviousPage} 
             disabled={!canGoPrevious || isLoading}
-            sx={{
-              borderColor: '#667eea',
-              color: '#667eea',
-              transition: 'all 0.3s ease',
-              '&:hover': {
-                borderColor: '#764ba2',
-                background: 'rgba(102, 126, 234, 0.1)',
-                transform: 'translateX(-2px)',
-              },
-              '&:disabled': {
-                borderColor: 'rgba(0, 0, 0, 0.12)',
-                color: 'rgba(0, 0, 0, 0.26)',
-              },
-            }}
           >
             Previous
           </Button>
@@ -486,20 +446,6 @@ const IdentitiesTable: React.FC = React.memo(() => {
             endIcon={<NavigateNext />} 
             onClick={handleNextPage} 
             disabled={!canGoNext || isLoading}
-            sx={{
-              borderColor: '#667eea',
-              color: '#667eea',
-              transition: 'all 0.3s ease',
-              '&:hover': {
-                borderColor: '#764ba2',
-                background: 'rgba(102, 126, 234, 0.1)',
-                transform: 'translateX(2px)',
-              },
-              '&:disabled': {
-                borderColor: 'rgba(0, 0, 0, 0.12)',
-                color: 'rgba(0, 0, 0, 0.26)',
-              },
-            }}
           >
             Next
           </Button>
