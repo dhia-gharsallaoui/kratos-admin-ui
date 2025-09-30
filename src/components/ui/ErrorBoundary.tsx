@@ -1,6 +1,7 @@
 import React, { Component, ReactNode, ErrorInfo } from 'react';
-import { Box, Typography, Button, Alert, Card, CardContent } from '@mui/material';
+import { Box, Typography, Alert, Card, CardContent } from '@mui/material';
 import { Refresh, BugReport } from '@mui/icons-material';
+import { Button } from './Button';
 import { uiLogger } from '@/lib/logger';
 
 interface ErrorBoundaryState {
@@ -97,7 +98,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
                 </Typography>
 
                 <Button
-                  variant="contained"
+                  variant="primary"
                   startIcon={<Refresh />}
                   onClick={this.handleRetry}
                   sx={{ mb: 2 }}
@@ -160,7 +161,7 @@ export const PageErrorBoundary: React.FC<{ children: ReactNode }> = ({ children 
         <Alert
           severity="error"
           action={
-            <Button color="inherit" size="small" onClick={retry} startIcon={<Refresh />}>
+            <Button variant="text" size="small" onClick={retry} startIcon={<Refresh />}>
               Retry
             </Button>
           }
@@ -186,7 +187,7 @@ export const ComponentErrorBoundary: React.FC<{
       <Alert
         severity="error"
         action={
-          <Button color="inherit" size="small" onClick={retry} startIcon={<Refresh />}>
+          <Button variant="text" size="small" onClick={retry} startIcon={<Refresh />}>
             Retry
           </Button>
         }

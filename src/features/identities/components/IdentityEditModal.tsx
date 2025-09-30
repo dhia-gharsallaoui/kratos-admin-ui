@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Grid, Box, Typography, Alert, Chip } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Grid, Box, Typography, Alert, Chip } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { Identity } from '@ory/kratos-client';
 import { useUpdateIdentity } from '../hooks/useIdentities';
 import { DottedLoader } from '@/components/ui/DottedLoader';
+import { Button } from '@/components/ui/Button';
 import { formatDate } from '@/lib/date-utils';
 import { uiLogger } from '@/lib/logger';
 
@@ -248,12 +249,12 @@ export const IdentityEditModal: React.FC<IdentityEditModalProps> = ({ open, onCl
       </DialogContent>
 
       <DialogActions sx={{ p: 3, pt: 1 }}>
-        <Button onClick={handleClose} disabled={updateIdentityMutation.isPending}>
+        <Button onClick={handleClose} disabled={updateIdentityMutation.isPending} variant="outlined">
           Cancel
         </Button>
         <Button
           onClick={handleSubmit(onSubmit)}
-          variant="contained"
+          variant="primary"
           disabled={updateIdentityMutation.isPending || !isDirty}
           startIcon={updateIdentityMutation.isPending ? <DottedLoader variant="inline" size={16} /> : undefined}
         >

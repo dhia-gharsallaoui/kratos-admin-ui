@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   Box,
-  Button,
   Typography,
   TextField,
   InputAdornment,
@@ -30,6 +29,7 @@ import {
   NavigateNext,
   Clear,
 } from '@mui/icons-material';
+import { Button } from './Button';
 
 export interface DataTableColumn<T = any> {
   field: string;
@@ -285,7 +285,7 @@ export const DataTable = React.memo(<T extends Record<string, any>>({
         <Box sx={{ display: 'flex', gap: 1 }}>
           {/* Add button */}
           {onAdd && (
-            <Button variant="contained" startIcon={<Add />} onClick={onAdd}>
+            <Button variant="primary" startIcon={<Add />} onClick={onAdd}>
               {addButtonText}
             </Button>
           )}
