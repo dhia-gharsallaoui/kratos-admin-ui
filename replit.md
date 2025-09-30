@@ -65,6 +65,12 @@ Preferred communication style: Simple, everyday language.
 - **MetricCard**: Dashboard metric display with colored left border accent
 - **ChartCard**: Consistent container for charts and visualizations
 - **Spinner**: Loading indicator with 3 variants (default, dots, pulse)
+- **ErrorDisplay**: Modern error display component for consistent error UI
+  - Two variants: 'card' (full card with border) and 'inline' (simple message)
+  - Supports retry functionality with onRetry callback
+  - Theme-aware with red accent border on card variant
+  - Customizable title and message
+  - Used across identities, sessions, messages, and schemas pages
 
 ### Backend Integration
 
