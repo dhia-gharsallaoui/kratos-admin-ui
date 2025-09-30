@@ -227,8 +227,8 @@ const IdentitiesTable: React.FC = React.memo(() => {
     },
   ], [getSchemaName, getIdentifier]);
 
-  const handleRowClick = (identity: Identity) => {
-    router.push(`/identities/${identity.id}`);
+  const handleRowClick = (row: any) => {
+    router.push(`/identities/${row.id}`);
   };
 
   const handleCreateNew = () => {
