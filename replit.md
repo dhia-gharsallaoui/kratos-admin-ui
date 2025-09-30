@@ -41,6 +41,22 @@ Preferred communication style: Simple, everyday language.
 - **Protected Routes**: Role-based access control with ProtectedRoute component
 - **Provider Pattern**: Nested providers for Query, Theme, Auth, and MUI
 - **Skeleton Loading**: LoadingSkeleton and DottedLoader for better UX
+- **Reusable UI Components**: Modern, theme-aware components (DataTable, Form components, MetricCard, ChartCard, Spinner)
+
+**Reusable Component Library**:
+- **DataTable**: Feature-rich table component with search, filters, pagination, sorting support
+  - Clean design with `elevation={0}` and theme-aware borders
+  - Sticky headers, customizable columns, row click handlers
+  - Empty states, loading skeletons, responsive layout
+- **Form Components**: Consistent form building blocks
+  - FormContainer: Form wrapper with submit handling
+  - FormSection: Card-based form sections with titles and descriptions
+  - FormField: Styled text input with theme-aware borders
+  - FormSelect: Dropdown with consistent styling
+  - FormActions: Sticky action bar for submit/cancel buttons
+- **MetricCard**: Dashboard metric display with colored left border accent
+- **ChartCard**: Consistent container for charts and visualizations
+- **Spinner**: Loading indicator with 3 variants (default, dots, pulse)
 
 ### Backend Integration
 
