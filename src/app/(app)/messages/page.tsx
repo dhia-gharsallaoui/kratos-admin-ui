@@ -183,18 +183,7 @@ export default function MessagesPage() {
               </Typography>
             </Box>
             <Tooltip title="Refresh">
-              <IconButton
-                onClick={() => refetch()}
-                sx={{
-                  borderRadius: 'var(--radius)',
-                  background: 'var(--accent)',
-                  color: 'var(--accent-foreground)',
-                  '&:hover': {
-                    background: 'var(--accent)',
-                    opacity: 0.9,
-                  },
-                }}
-              >
+              <IconButton onClick={() => refetch()}>
                 <Refresh />
               </IconButton>
             </Tooltip>

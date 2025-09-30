@@ -153,7 +153,7 @@ export default function CreateOAuth2ClientPage() {
         <Grid container spacing={3}>
           {/* Basic Information */}
           <Grid size={{ xs: 12 }}>
-            <Card>
+            <Card elevation={0} sx={{ border: 1, borderColor: 'divider' }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
                   Basic Information
@@ -206,7 +206,7 @@ export default function CreateOAuth2ClientPage() {
 
           {/* OAuth2 Configuration */}
           <Grid size={{ xs: 12 }}>
-            <Card>
+            <Card elevation={0} sx={{ border: 1, borderColor: 'divider' }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
                   OAuth2 Configuration
@@ -300,7 +300,7 @@ export default function CreateOAuth2ClientPage() {
 
           {/* Redirect URIs */}
           <Grid size={{ xs: 12 }}>
-            <Card>
+            <Card elevation={0} sx={{ border: 1, borderColor: 'divider' }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
                   Redirect URIs
@@ -339,7 +339,7 @@ export default function CreateOAuth2ClientPage() {
 
           {/* Advanced Configuration */}
           <Grid size={{ xs: 12 }}>
-            <Card>
+            <Card elevation={0} sx={{ border: 1, borderColor: 'divider' }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
                   Advanced Configuration
@@ -396,7 +396,7 @@ export default function CreateOAuth2ClientPage() {
 
           {/* Contacts and Audience */}
           <Grid size={{ xs: 12, md: 6 }}>
-            <Card>
+            <Card elevation={0} sx={{ border: 1, borderColor: 'divider' }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
                   Contact Information
@@ -429,7 +429,7 @@ export default function CreateOAuth2ClientPage() {
           </Grid>
 
           <Grid size={{ xs: 12, md: 6 }}>
-            <Card>
+            <Card elevation={0} sx={{ border: 1, borderColor: 'divider' }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
                   Audience
@@ -463,7 +463,7 @@ export default function CreateOAuth2ClientPage() {
 
           {/* Submit Actions */}
           <Grid size={{ xs: 12 }}>
-            <Paper sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Paper elevation={0} sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: 1, borderColor: 'divider' }}>
               <Button variant="outlined" onClick={() => router.back()}>
                 Cancel
               </Button>
