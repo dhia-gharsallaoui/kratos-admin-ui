@@ -38,6 +38,7 @@ import {
   CheckCircle as CheckCircleIcon,
   Cancel as CancelIcon,
 } from '@mui/icons-material';
+import { AdminLayout } from '@/components/layout/AdminLayout';
 import {
   useTokenIntrospectionManager,
   useRevokeOAuth2Token,
@@ -274,7 +275,8 @@ export default function OAuth2TokensPage() {
   ];
 
   return (
-    <Box sx={{ p: 3 }}>
+    <AdminLayout>
+      <Box sx={{ p: 3 }}>
       {/* Header */}
       <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -639,6 +641,7 @@ export default function OAuth2TokensPage() {
           Failed to revoke token: {revokeTokenMutation.error.message}
         </Alert>
       )}
-    </Box>
+      </Box>
+    </AdminLayout>
   );
 }
