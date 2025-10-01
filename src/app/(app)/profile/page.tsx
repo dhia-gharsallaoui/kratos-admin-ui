@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Box, Container, Typography, Paper, Avatar, Grid, Card, CardContent, Divider, Button, TextField, Chip, Alert, Snackbar } from '@mui/material';
+import { Box, Container, Typography, Paper, Avatar, Grid, Card, CardContent, Divider, TextField, Chip, Alert, Snackbar } from '@mui/material';
+import { Button } from '@/components/ui/Button';
 import { Edit, Save, Cancel, Person, Email, Badge, Lock } from '@mui/icons-material';
 import { useUser } from '@/features/auth/hooks/useAuth';
 import { UserRole } from '@/features/auth';
@@ -67,51 +68,27 @@ export default function ProfilePage() {
               User Profile
             </Typography>
             {!isEditing ? (
-              <Button 
-                variant="contained" 
-                startIcon={<Edit />} 
+              <Button
+                variant="primary"
+                startIcon={<Edit />}
                 onClick={handleEdit}
-                sx={{
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                  boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    boxShadow: '0 6px 20px rgba(102, 126, 234, 0.4)',
-                    transform: 'translateY(-2px)',
-                  },
-                }}
               >
                 Edit Profile
               </Button>
             ) : (
               <Box>
-                <Button 
-                  variant="outlined" 
-                  startIcon={<Cancel />} 
-                  onClick={handleCancel} 
-                  sx={{ 
-                    mr: 1,
-                    borderColor: '#667eea',
-                    color: '#667eea',
-                    '&:hover': {
-                      borderColor: '#764ba2',
-                      background: 'rgba(102, 126, 234, 0.1)',
-                    },
-                  }}
+                <Button
+                  variant="outlined"
+                  startIcon={<Cancel />}
+                  onClick={handleCancel}
+                  sx={{ mr: 1 }}
                 >
                   Cancel
                 </Button>
-                <Button 
-                  variant="contained" 
-                  startIcon={<Save />} 
+                <Button
+                  variant="primary"
+                  startIcon={<Save />}
                   onClick={handleSave}
-                  sx={{
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)',
-                    '&:hover': {
-                      boxShadow: '0 6px 20px rgba(102, 126, 234, 0.4)',
-                    },
-                  }}
                 >
                   Save
                 </Button>

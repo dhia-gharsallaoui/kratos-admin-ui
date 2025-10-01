@@ -376,7 +376,7 @@ export const SessionDetailDialog: React.FC<SessionDetailDialogProps> = React.mem
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={onClose}>Close</Button>
+        <Button onClick={onClose} variant="outlined">Close</Button>
 
         {session.active && !isExpired && (
           <Button

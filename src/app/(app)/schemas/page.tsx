@@ -12,7 +12,6 @@ import {
   TableHead,
   TableRow,
   TablePagination,
-  Button,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -26,6 +25,7 @@ import {
   TextField,
   InputAdornment,
 } from '@mui/material';
+import { Button } from '@/components/ui/Button';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { ErrorDisplay } from '@/components/ui/ErrorDisplay';
 import { getIdentitySchema } from '@/services/kratos';
