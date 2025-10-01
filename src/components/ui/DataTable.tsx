@@ -4,7 +4,6 @@ import {
   Typography,
   TextField,
   InputAdornment,
-  IconButton,
   Tooltip,
   Paper,
   FormControl,
@@ -30,6 +29,7 @@ import {
   Clear,
 } from '@mui/icons-material';
 import { Button } from './Button';
+import { IconButton } from './IconButton';
 
 export interface DataTableColumn<T = any> {
   field: string;
@@ -293,7 +293,7 @@ export const DataTable = React.memo(<T extends Record<string, any>>({
           {/* Refresh button */}
           {onRefresh && (
             <Tooltip title="Refresh">
-              <IconButton onClick={onRefresh}>
+              <IconButton variant="action" onClick={onRefresh}>
                 <Refresh />
               </IconButton>
             </Tooltip>

@@ -6,7 +6,6 @@ import {
   Typography,
   Card,
   CardContent,
-  IconButton,
   Tooltip,
   TextField,
   InputAdornment,
@@ -18,6 +17,7 @@ import {
   Alert,
   CircularProgress,
 } from '@mui/material';
+import { IconButton } from '@/components/ui/IconButton';
 import { Search, Refresh, Close, ExpandMore } from '@mui/icons-material';
 import { ErrorDisplay } from '@/components/ui/ErrorDisplay';
 import { AdminLayout } from '@/components/layout/AdminLayout';
@@ -133,7 +133,7 @@ export default function MessagesPage() {
               </Typography>
             </Box>
             <Tooltip title="Refresh">
-              <IconButton onClick={() => refetch()}>
+              <IconButton variant="action" onClick={() => refetch()}>
                 <Refresh />
               </IconButton>
             </Tooltip>

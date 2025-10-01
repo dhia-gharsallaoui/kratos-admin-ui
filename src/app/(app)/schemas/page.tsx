@@ -20,12 +20,12 @@ import {
   Chip,
   Card,
   CardContent,
-  IconButton,
   Tooltip,
   TextField,
   InputAdornment,
 } from '@mui/material';
 import { Button } from '@/components/ui/Button';
+import { IconButton } from '@/components/ui/IconButton';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { ErrorDisplay } from '@/components/ui/ErrorDisplay';
 import { getIdentitySchema } from '@/services/kratos';
@@ -199,17 +199,10 @@ export default function SchemasPage() {
             </Box>
             <Tooltip title="Refresh">
               <IconButton
+                variant="action"
                 onClick={() => refetch()}
-                sx={{
-                  background: 'rgba(102, 126, 234, 0.1)',
-                  '&:hover': {
-                    background: 'rgba(102, 126, 234, 0.2)',
-                    transform: 'scale(1.05)',
-                  },
-                  transition: 'all 0.3s ease',
-                }}
               >
-                <Refresh sx={{ color: '#667eea' }} />
+                <Refresh />
               </IconButton>
             </Tooltip>
           </Box>
