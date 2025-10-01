@@ -40,7 +40,7 @@ async function proxyToService(request: NextRequest, baseUrl: string, pathPrefix:
     // The 'location' header from Ory Hydra's 201 responses causes "Invalid URL" TypeErrors
     // in the Edge Runtime, which then returns 500 errors to the frontend. We filter to only
     // include essential headers that are safe for the Edge Runtime to process.
-    const safeHeaders = ['content-type', 'cache-control', 'etag', 'last-modified', 'vary'];
+    const safeHeaders = ['content-type', 'cache-control', 'etag', 'last-modified', 'vary', 'link'];
     response.headers.forEach((value, key) => {
       const lowerKey = key.toLowerCase();
       // Only copy safe headers and custom x-* headers (excluding forwarding headers)
