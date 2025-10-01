@@ -132,14 +132,15 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
               >
                 <MenuIcon />
               </IconButton>
-              <Typography 
-                variant="h6" 
-                noWrap 
-                component="div" 
-                sx={{ 
+              <Typography
+                variant="h6"
+                noWrap
+                component="div"
+                sx={{
                   display: { xs: 'none', sm: 'block' },
                   fontWeight: 700,
                   letterSpacing: 0.5,
+                  color: currentTheme === 'dark' ? '#ffffff' : 'rgba(255, 255, 255, 0.95)',
                 }}
               >
                 Ory Admin
@@ -287,8 +288,10 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
               width: drawerWidth,
               boxSizing: 'border-box',
               transition: 'all 0.3s ease',
-              background: 'linear-gradient(180deg, #ffffff 0%, #f8f9ff 100%)',
-              borderRight: '1px solid rgba(102, 126, 234, 0.1)',
+              background: currentTheme === 'dark'
+                ? 'linear-gradient(180deg, #1e1e1e 0%, #1a1a1a 100%)'
+                : 'linear-gradient(180deg, #ffffff 0%, #f8f9ff 100%)',
+              borderRight: `1px solid rgba(102, 126, 234, ${currentTheme === 'dark' ? '0.2' : '0.1'})`,
             },
           }}
         >
@@ -298,7 +301,9 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
               alignItems: 'center',
               justifyContent: 'space-between',
               px: 2,
-              background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%)',
+              background: currentTheme === 'dark'
+                ? 'linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%)'
+                : 'linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%)',
             }}
           >
             <Typography 
@@ -327,7 +332,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
               {open ? <ChevronLeft /> : <ChevronRight />}
             </IconButton>
           </Toolbar>
-          <Divider sx={{ borderColor: 'rgba(102, 126, 234, 0.1)' }} />
+          <Divider sx={{ borderColor: currentTheme === 'dark' ? 'rgba(102, 126, 234, 0.3)' : 'rgba(102, 126, 234, 0.1)' }} />
           <List sx={{ px: 1.5, py: 2 }}>
             {filteredMenuItems.map((item) => {
               const isActive = pathname === item.path;
@@ -353,9 +358,11 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                         },
                       },
                       '&:hover': {
-                        background: isActive 
+                        background: isActive
                           ? 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)'
-                          : 'rgba(102, 126, 234, 0.08)',
+                          : currentTheme === 'dark'
+                            ? 'rgba(102, 126, 234, 0.2)'
+                            : 'rgba(102, 126, 234, 0.08)',
                         transform: 'translateX(4px)',
                       },
                     }}
@@ -379,7 +386,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
             })}
           </List>
           <Box sx={{ flexGrow: 1 }} />
-          <Divider sx={{ borderColor: 'rgba(102, 126, 234, 0.1)' }} />
+          <Divider sx={{ borderColor: currentTheme === 'dark' ? 'rgba(102, 126, 234, 0.3)' : 'rgba(102, 126, 234, 0.1)' }} />
           <List sx={{ px: 1.5, py: 2 }}>
             <ListItem disablePadding>
               <ListItemButton 
@@ -415,7 +422,9 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
             flexDirection: 'column',
             width: open ? { sm: `calc(100% - ${drawerWidth}px)` } : '100%',
             minHeight: '100vh',
-            background: 'linear-gradient(180deg, #f5f7fa 0%, #e9ecef 100%)',
+            background: currentTheme === 'dark'
+              ? 'linear-gradient(180deg, #121212 0%, #0a0a0a 100%)'
+              : 'linear-gradient(180deg, #f5f7fa 0%, #e9ecef 100%)',
             transition: 'all 0.3s ease',
           }}
         >
