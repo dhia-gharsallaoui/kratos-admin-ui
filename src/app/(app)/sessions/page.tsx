@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useMemo, useEffect, useCallback } from 'react';
-import { Box, Typography, CircularProgress, Card, CardContent, IconButton, Tooltip, TextField, InputAdornment } from '@mui/material';
+import { Box, Typography, CircularProgress, Card, CardContent, Tooltip, TextField, InputAdornment } from '@mui/material';
 import { Button } from '@/components/ui/Button';
+import { IconButton } from '@/components/ui/IconButton';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { Search, Refresh, Close, ExpandMore } from '@mui/icons-material';
 import { ErrorDisplay } from '@/components/ui/ErrorDisplay';
@@ -117,7 +118,7 @@ export default function SessionsPage() {
               </Typography>
             </Box>
             <Tooltip title="Refresh">
-              <IconButton onClick={() => refetch()}>
+              <IconButton variant="action" onClick={() => refetch()}>
                 <Refresh />
               </IconButton>
             </Tooltip>
