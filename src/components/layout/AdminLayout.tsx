@@ -107,12 +107,12 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
           position="fixed"
           elevation={0}
           sx={{
-            width: open ? { sm: `calc(100% - ${drawerWidth}px)` } : '100%',
-            ml: open ? { sm: `${drawerWidth}px` } : 0,
+            width: { xs: '100%', sm: open ? `calc(100% - ${drawerWidth}px)` : '100%' },
+            ml: { xs: 0, sm: open ? `${drawerWidth}px` : 0 },
             background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
             backdropFilter: 'blur(20px)',
             boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
-            transition: 'all 0.3s ease',
+            transition: 'width 0.3s ease, margin-left 0.3s ease',
           }}
         >
           <Toolbar sx={{ justifyContent: 'space-between' }}>
@@ -282,16 +282,17 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
           open={open}
           onClose={handleDrawerToggle}
           sx={{
-            width: drawerWidth,
+            width: open ? drawerWidth : 0,
             flexShrink: 0,
             [`& .MuiDrawer-paper`]: {
               width: drawerWidth,
               boxSizing: 'border-box',
-              transition: 'all 0.3s ease',
+              transition: 'transform 0.3s ease, background 0.3s ease',
               background: currentTheme === 'dark'
                 ? 'linear-gradient(180deg, #1e1e1e 0%, #1a1a1a 100%)'
                 : 'linear-gradient(180deg, #ffffff 0%, #f8f9ff 100%)',
               borderRight: `1px solid rgba(102, 126, 234, ${currentTheme === 'dark' ? '0.2' : '0.1'})`,
+              overflowX: 'hidden',
             },
           }}
         >
@@ -420,12 +421,12 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
             flexGrow: 1,
             display: 'flex',
             flexDirection: 'column',
-            width: open ? { sm: `calc(100% - ${drawerWidth}px)` } : '100%',
+            width: '100%',
             minHeight: '100vh',
             background: currentTheme === 'dark'
               ? 'linear-gradient(180deg, #121212 0%, #0a0a0a 100%)'
               : 'linear-gradient(180deg, #f5f7fa 0%, #e9ecef 100%)',
-            transition: 'all 0.3s ease',
+            transition: 'background 0.3s ease',
           }}
         >
           <Toolbar />
