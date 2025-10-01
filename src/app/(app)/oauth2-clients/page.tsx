@@ -4,7 +4,6 @@ import { useState } from 'react';
 import {
   Box,
   Typography,
-  Button,
   Card,
   CardContent,
   TextField,
@@ -19,6 +18,7 @@ import {
   DialogActions,
   Alert,
 } from '@mui/material';
+import { Button } from '@/components/ui/Button';
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import {
   Add as AddIcon,
@@ -260,18 +260,9 @@ export default function OAuth2ClientsPage() {
           </Box>
         </Box>
         <Button
-          variant="contained"
+          variant="primary"
           startIcon={<AddIcon />}
           onClick={() => router.push('/oauth2-clients/create')}
-          sx={{
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)',
-            transition: 'all 0.3s ease',
-            '&:hover': {
-              boxShadow: '0 6px 20px rgba(102, 126, 234, 0.4)',
-              transform: 'translateY(-2px)',
-            },
-          }}
         >
           Create Client
         </Button>
