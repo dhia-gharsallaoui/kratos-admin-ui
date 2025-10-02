@@ -1,16 +1,6 @@
 import React from 'react';
 import { Close, Mail, Sms, Person, Schedule, Info, ExpandMore, CheckCircle, Cancel, Error } from '@mui/icons-material';
-import { Box } from '@/components/ui/Box';
-import { Grid } from '@/components/ui/Grid';
-import { Accordion, AccordionSummary, AccordionDetails } from '@/components/ui/Accordion';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/Dialog';
-import { Typography } from '@/components/ui/Typography';
-import { Chip } from '@/components/ui/Chip';
-import { Card } from '@/components/ui/Card';
-import { CardContent } from '@/components/ui/CardContent';
-import { Alert } from '@/components/ui/Alert';
-import { Spinner } from '@/components/ui/Spinner';
-import { IconButton } from '@/components/ui/IconButton';
+import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Card, CardContent, Chip, Dialog, DialogContent, DialogTitle, Grid, IconButton, Spinner, Typography } from '@/components/ui';
 import { useMessage } from '../hooks';
 import { CourierMessageStatus } from '@/services/kratos/endpoints/courier';
 import { formatDate } from '@/lib/date-utils';

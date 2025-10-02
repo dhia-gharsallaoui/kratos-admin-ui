@@ -1,11 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Box } from '@/components/ui/Box';
-import { Typography } from '@/components/ui/Typography';
-import { Chip } from '@/components/ui/Chip';
-import { Tooltip } from '@/components/ui/Tooltip';
-import { Spinner } from '@/components/ui/Spinner';
-import { DataTable, DataTableColumn } from '@/components/ui/DataTable';
-import { ErrorDisplay } from '@/components/ui/ErrorDisplay';
+import { Box, Chip, DataTable, DataTableColumn, ErrorDisplay, Spinner, Tooltip, Typography } from '@/components/ui';
 import { useIdentities, useIdentitiesSearch } from '@/features/identities/hooks';
 import { useSchemas } from '@/features/schemas/hooks';
 import { Identity } from '@ory/kratos-client';

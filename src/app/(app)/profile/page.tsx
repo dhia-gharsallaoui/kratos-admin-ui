@@ -2,12 +2,7 @@
 
 import { useState } from 'react';
 import { Box, Container, Paper, Avatar, Grid, Divider, Snackbar } from '@mui/material';
-import { Button } from '@/components/ui/Button';
-import { Card, CardContent } from '@/components/ui/Card';
-import { Typography } from '@/components/ui/Typography';
-import { TextField } from '@/components/ui/TextField';
-import { Chip } from '@/components/ui/Chip';
-import { Alert } from '@/components/ui/Alert';
+import { Alert, Button, Card, CardContent, Chip, TextField, Typography } from '@/components/ui';
 import { Edit, Save, Cancel, Person, Email, Badge, Lock } from '@mui/icons-material';
 import { useUser } from '@/features/auth/hooks/useAuth';
 import { UserRole } from '@/features/auth';

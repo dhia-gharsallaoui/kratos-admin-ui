@@ -11,14 +11,7 @@ import {
   AccordionDetails,
   Divider,
 } from '@mui/material';
-import { Typography } from '@/components/ui/Typography';
-import { Card } from '@/components/ui/Card';
-import { TextField } from '@/components/ui/TextField';
-import { Button } from '@/components/ui/Button';
-import { Chip } from '@/components/ui/Chip';
-import { IconButton } from '@/components/ui/IconButton';
-import { Dialog, DialogContent, DialogActions } from '@/components/ui/Dialog';
-import { Alert } from '@/components/ui/Alert';
+import { Alert, Button, Card, Chip, Dialog, DialogActions, DialogContent, IconButton, TextField, Typography } from '@/components/ui';
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import {
   Token as TokenIcon,

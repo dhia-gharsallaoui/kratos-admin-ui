@@ -12,15 +12,7 @@ import {
   Skeleton,
   Divider,
 } from '@mui/material';
-import { Typography } from '@/components/ui/Typography';
-import { Card, CardContent } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { Chip } from '@/components/ui/Chip';
-import { IconButton } from '@/components/ui/IconButton';
-import { Menu, MenuItem } from '@/components/ui/Menu';
-import { Dialog, DialogTitle, DialogContent, DialogActions } from '@/components/ui/Dialog';
-import { Alert } from '@/components/ui/Alert';
-import { Tooltip } from '@/components/ui/Tooltip';
+import { Alert, Button, Card, CardContent, Chip, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Menu, MenuItem, Tooltip, Typography } from '@/components/ui';
 import {
   ArrowBack as ArrowBackIcon,
   MoreVert as MoreVertIcon,

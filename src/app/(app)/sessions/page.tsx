@@ -2,16 +2,9 @@
 
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import { Box } from '@mui/material';
-import { Button } from '@/components/ui/Button';
-import { IconButton } from '@/components/ui/IconButton';
-import { Card, CardContent } from '@/components/ui/Card';
-import { Typography } from '@/components/ui/Typography';
-import { TextField } from '@/components/ui/TextField';
-import { Tooltip } from '@/components/ui/Tooltip';
-import { Spinner } from '@/components/ui/Spinner';
-import { AdminLayout } from '@/components/layout/AdminLayout';
 import { Refresh, ExpandMore } from '@mui/icons-material';
-import { ErrorDisplay } from '@/components/ui/ErrorDisplay';
+import { Button, Card, CardContent, ErrorDisplay, IconButton, Spinner, TextField, Tooltip, Typography } from '@/components/ui';
+import { AdminLayout } from '@/components/layout/AdminLayout';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import { UserRole } from '@/features/auth';
 import { useSessionsPaginated, useSessionsWithSearch } from '@/features/sessions/hooks/useSessions';
