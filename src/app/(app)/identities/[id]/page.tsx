@@ -3,20 +3,16 @@
 import { useParams, useRouter } from 'next/navigation';
 import {
   Box,
-  Typography,
   Grid,
-  Chip,
-  Card,
-  CardContent,
   Divider,
-  IconButton,
-  Tooltip,
-  Alert,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
 } from '@mui/material';
+import { Typography } from '@/components/ui/Typography';
+import { Chip } from '@/components/ui/Chip';
+import { Card, CardContent } from '@/components/ui/Card';
+import { IconButton } from '@/components/ui/IconButton';
+import { Tooltip } from '@/components/ui/Tooltip';
+import { Alert } from '@/components/ui/Alert';
+import { Dialog } from '@/components/ui/Dialog';
 import { ArrowBack, Edit, Delete, Refresh, Link as LinkIcon, DeleteSweep, Person } from '@mui/icons-material';
 import { Button } from '@/components/ui/Button';
 import { AdminLayout } from '@/components/layout/AdminLayout';
@@ -119,10 +115,10 @@ export default function IdentityDetailPage() {
       <ProtectedRoute requiredRole={UserRole.ADMIN}>
         <AdminLayout>
           <Box sx={{ p: 3 }}>
-            <Typography variant="h4" color="error" gutterBottom>
+            <Typography variant="heading" level="h1" color="error">
               Identity Not Found
             </Typography>
-            <Typography variant="body1" sx={{ mb: 3 }}>
+            <Typography variant="body" style={{ marginBottom: '1.5rem' }}>
               The identity with ID &quot;{identityId}&quot; could not be found.
             </Typography>
             <Button variant="primary" onClick={handleBack}>
@@ -150,31 +146,34 @@ export default function IdentityDetailPage() {
             }}
           >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <IconButton onClick={handleBack}>
+              <IconButton onClick={handleBack} aria-label="Go back">
                 <ArrowBack />
               </IconButton>
               <Box>
-                <Typography variant="h4" gutterBottom>
+                <Typography variant="heading" level="h1">
                   Identity Details
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="code" color="secondary">
                   {identityId}
                 </Typography>
               </Box>
             </Box>
             <Box sx={{ display: 'flex', gap: 1 }}>
-              <Tooltip title="Refresh">
-                <IconButton onClick={() => refetch()}>
+              <Tooltip content="Refresh">
+                <IconButton onClick={() => refetch()} aria-label="Refresh">
                   <Refresh />
                 </IconButton>
               </Tooltip>
-              <Button variant="outlined" startIcon={<Edit />} onClick={handleEdit}>
+              <Button variant="outlined" onClick={handleEdit}>
+                <Edit style={{ marginRight: '0.5rem' }} />
                 Edit
               </Button>
-              <Button variant="outlined" startIcon={<LinkIcon />} onClick={handleRecover}>
+              <Button variant="outlined" onClick={handleRecover}>
+                <LinkIcon style={{ marginRight: '0.5rem' }} />
                 Recover
               </Button>
-              <Button variant="danger" startIcon={<Delete />} onClick={handleDelete}>
+              <Button variant="danger" onClick={handleDelete}>
+                <Delete style={{ marginRight: '0.5rem' }} />
                 Delete
               </Button>
             </Box>
@@ -183,77 +182,73 @@ export default function IdentityDetailPage() {
           <Grid container spacing={3}>
             {/* Basic Information */}
             <Grid size={{ xs: 12, md: 6 }}>
-              <Card elevation={0} sx={{ border: 1, borderColor: 'divider' }}>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    Basic Information
+              <Card>
+                <Typography variant="heading" level="h2">
+                  Basic Information
+                </Typography>
+                <Divider sx={{ mb: 2 }} />
+
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="body" color="secondary">
+                    Status
                   </Typography>
-                  <Divider sx={{ mb: 2 }} />
+                  <Chip
+                    label={identity.state || 'active'}
+                    variant="status"
+                    size="small"
+                    style={{ marginTop: '0.25rem' }}
+                  />
+                </Box>
 
-                  <Box sx={{ mb: 2 }}>
-                    <Typography variant="subtitle2" color="text.secondary">
-                      Status
-                    </Typography>
-                    <Chip
-                      label={identity.state || 'active'}
-                      color={identity.state === 'active' ? 'success' : 'default'}
-                      size="small"
-                      sx={{ mt: 0.5 }}
-                    />
-                  </Box>
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="body" color="secondary">
+                    Schema ID
+                  </Typography>
+                  <Typography variant="code">
+                    {identity.schema_id}
+                  </Typography>
+                </Box>
 
-                  <Box sx={{ mb: 2 }}>
-                    <Typography variant="subtitle2" color="text.secondary">
-                      Schema ID
-                    </Typography>
-                    <Typography variant="body1" sx={{ fontFamily: 'monospace' }}>
-                      {identity.schema_id}
-                    </Typography>
-                  </Box>
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="body" color="secondary">
+                    Created At
+                  </Typography>
+                  <Typography variant="body">{formatDate(identity.created_at || '')}</Typography>
+                </Box>
 
-                  <Box sx={{ mb: 2 }}>
-                    <Typography variant="subtitle2" color="text.secondary">
-                      Created At
-                    </Typography>
-                    <Typography variant="body1">{formatDate(identity.created_at || '')}</Typography>
-                  </Box>
-
-                  <Box sx={{ mb: 2 }}>
-                    <Typography variant="subtitle2" color="text.secondary">
-                      Updated At
-                    </Typography>
-                    <Typography variant="body1">{formatDate(identity.updated_at || '')}</Typography>
-                  </Box>
-                </CardContent>
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="body" color="secondary">
+                    Updated At
+                  </Typography>
+                  <Typography variant="body">{formatDate(identity.updated_at || '')}</Typography>
+                </Box>
               </Card>
             </Grid>
 
             {/* Traits */}
             <Grid size={{ xs: 12, md: 6 }}>
-              <Card elevation={0} sx={{ border: 1, borderColor: 'divider' }}>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    Traits
-                  </Typography>
-                  <Divider sx={{ mb: 2 }} />
+              <Card>
+                <Typography variant="heading" level="h2">
+                  Traits
+                </Typography>
+                <Divider sx={{ mb: 2 }} />
 
-                  {traits && Object.keys(traits).length > 0 ? (
-                    Object.entries(traits).map(([key, value]) => (
-                      <Box key={key} sx={{ mb: 2 }}>
-                        <Typography variant="subtitle2" color="text.secondary">
-                          {key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' ')}
-                        </Typography>
-                        <Typography variant="body1" sx={{ wordBreak: 'break-word' }}>
-                          {typeof value === 'object' ? JSON.stringify(value, null, 2) : String(value)}
-                        </Typography>
-                      </Box>
-                    ))
-                  ) : (
-                    <Typography variant="body2" color="text.secondary">
-                      No traits available
-                    </Typography>
-                  )}
-                </CardContent>
+                {traits && Object.keys(traits).length > 0 ? (
+                  Object.entries(traits).map(([key, value]) => (
+                    <Box key={key} sx={{ mb: 2 }}>
+                      <Typography variant="body" color="secondary">
+                        {key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' ')}
+                      </Typography>
+                      <Typography variant="body" style={{ wordBreak: 'break-word' }}>
+                        {typeof value === 'object' ? JSON.stringify(value, null, 2) : String(value)}
+                      </Typography>
+                    </Box>
+                  ))
+                ) : (
+                  <Typography variant="body" color="secondary">
+                    No traits available
+                  </Typography>
+                )}
               </Card>
             </Grid>
 
@@ -470,25 +465,29 @@ export default function IdentityDetailPage() {
           />
 
           {/* Delete All Sessions Dialog */}
-          <Dialog open={deleteSessionsDialogOpen} onClose={() => setDeleteSessionsDialogOpen(false)} maxWidth="sm" fullWidth>
-            <DialogTitle>Delete All Sessions</DialogTitle>
-            <DialogContent>
-              <Alert severity="warning" sx={{ mb: 2 }}>
-                This action will revoke all active sessions for this identity. The user will be logged out from all devices.
+          <Dialog
+            open={deleteSessionsDialogOpen}
+            onClose={() => setDeleteSessionsDialogOpen(false)}
+            title="Delete All Sessions"
+            maxWidth="sm"
+            actions={
+              <>
+                <Button variant="outlined" onClick={() => setDeleteSessionsDialogOpen(false)}>Cancel</Button>
+                <Button variant="danger" onClick={handleDeleteAllSessionsConfirm} disabled={deleteSessionsMutation.isPending}>
+                  {deleteSessionsMutation.isPending ? 'Deleting...' : 'Delete All Sessions'}
+                </Button>
+              </>
+            }
+          >
+            <Alert severity="warning" style={{ marginBottom: '1rem' }}>
+              This action will revoke all active sessions for this identity. The user will be logged out from all devices.
+            </Alert>
+            <Typography variant="body">Are you sure you want to delete all sessions for this identity? This action cannot be undone.</Typography>
+            {deleteSessionsMutation.error && (
+              <Alert severity="error" style={{ marginTop: '1rem' }}>
+                Failed to delete sessions: {deleteSessionsMutation.error.message}
               </Alert>
-              <Typography variant="body2">Are you sure you want to delete all sessions for this identity? This action cannot be undone.</Typography>
-              {deleteSessionsMutation.error && (
-                <Alert severity="error" sx={{ mt: 2 }}>
-                  Failed to delete sessions: {deleteSessionsMutation.error.message}
-                </Alert>
-              )}
-            </DialogContent>
-            <DialogActions>
-              <Button variant="text" onClick={() => setDeleteSessionsDialogOpen(false)}>Cancel</Button>
-              <Button variant="danger" onClick={handleDeleteAllSessionsConfirm} disabled={deleteSessionsMutation.isPending}>
-                {deleteSessionsMutation.isPending ? 'Deleting...' : 'Delete All Sessions'}
-              </Button>
-            </DialogActions>
+            )}
           </Dialog>
 
           {/* Session Detail Dialog */}

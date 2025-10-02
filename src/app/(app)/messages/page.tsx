@@ -3,29 +3,25 @@
 import { useState, useMemo, useEffect } from 'react';
 import {
   Box,
-  Typography,
-  Card,
-  CardContent,
-  Tooltip,
-  TextField,
-  InputAdornment,
-  Button,
   FormControl,
   InputLabel,
   Select,
   MenuItem,
-  Alert,
-  CircularProgress,
 } from '@mui/material';
+import { Button } from '@/components/ui/Button';
 import { IconButton } from '@/components/ui/IconButton';
-import { Search, Refresh, Close, ExpandMore } from '@mui/icons-material';
+import { Card, CardContent } from '@/components/ui/Card';
+import { Typography } from '@/components/ui/Typography';
+import { TextField } from '@/components/ui/TextField';
+import { Tooltip } from '@/components/ui/Tooltip';
+import { Spinner } from '@/components/ui/Spinner';
+import { Refresh, Close, ExpandMore } from '@mui/icons-material';
 import { ErrorDisplay } from '@/components/ui/ErrorDisplay';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import { UserRole } from '@/features/auth';
 import { useMessagesPaginated, useMessagesWithSearch } from '@/features/messages/hooks';
 import { CourierMessageStatus } from '@/services/kratos/endpoints/courier';
-import { DottedLoader } from '@/components/ui/DottedLoader';
 import { MessageDetailDialog, MessagesTable } from '@/features/messages/components';
 
 export default function MessagesPage() {
@@ -125,10 +121,10 @@ export default function MessagesPage() {
             }}
           >
             <Box>
-              <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
+              <Typography variant="heading" size="3xl">
                 Messages
               </Typography>
-              <Typography variant="body1" color="text.secondary">
+              <Typography variant="subheading">
                 Monitor email and SMS messages sent through Kratos
               </Typography>
             </Box>
@@ -139,31 +135,17 @@ export default function MessagesPage() {
             </Tooltip>
           </Box>
 
-          <Card elevation={0} sx={{ mb: 4, border: '1px solid var(--border)' }}>
+          <Card variant="bordered" sx={{ mb: 4 }}>
             <CardContent>
               {/* Filters */}
               <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap' }}>
                 <TextField
+                  variant="search"
                   placeholder="Search messages (recipient, subject, ID, template...)..."
                   size="small"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  slotProps={{
-                    input: {
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          {isSearching && searchQuery_.isLoading ? <CircularProgress size={16} /> : <Search fontSize="small" />}
-                        </InputAdornment>
-                      ),
-                      endAdornment: searchQuery ? (
-                        <InputAdornment position="end">
-                          <IconButton size="small" onClick={() => setSearchQuery('')}>
-                            <Close fontSize="small" />
-                          </IconButton>
-                        </InputAdornment>
-                      ) : null,
-                    },
-                  }}
+                  onClear={() => setSearchQuery('')}
                   sx={{ minWidth: '300px' }}
                 />
 
@@ -195,7 +177,7 @@ export default function MessagesPage() {
                 />
               ) : isLoading ? (
                 <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
-                  <DottedLoader />
+                  <Spinner variant="page" />
                 </Box>
               ) : (
                 <>
@@ -209,9 +191,9 @@ export default function MessagesPage() {
                   {isSearching && hasNextPage && (
                     <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
                       {searchQuery_.isAutoSearching ? (
-                        <Box sx={{ display: 'flex', salignItems: 'center', gap: 1 }}>
-                          <CircularProgress size={16} />
-                          <Typography variant="body2" color="text.secondary">
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          <Spinner variant="inline" />
+                          <Typography variant="subheading">
                             Searching for more messages...
                           </Typography>
                         </Box>
@@ -230,7 +212,7 @@ export default function MessagesPage() {
                         onClick={() => fetchNextPage()}
                         disabled={isFetchingNextPage}
                         variant="outlined"
-                        startIcon={isFetchingNextPage ? <CircularProgress size={16} /> : <ExpandMore />}
+                        startIcon={isFetchingNextPage ? <Spinner variant="button" /> : <ExpandMore />}
                       >
                         {isFetchingNextPage ? 'Loading...' : 'Load More Messages'}
                       </Button>
@@ -239,7 +221,7 @@ export default function MessagesPage() {
 
                   {/* Messages count */}
                   <Box sx={{ mt: 2, textAlign: 'center' }}>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="subheading">
                       {isSearching ? (
                         <>
                           Found {messages.length} message(s) matching &ldquo;{trimmedSearchQuery}&rdquo;

@@ -1,7 +1,7 @@
 import React from 'react';
-import { Box, BoxProps } from '@mui/material';
+import { Box, BoxProps, CircularProgress } from '@mui/material';
 
-type SpinnerVariant = 'dots' | 'ring' | 'pulse';
+type SpinnerVariant = 'dots' | 'ring' | 'pulse' | 'page' | 'button' | 'inline' | 'overlay';
 type SpinnerSize = 'small' | 'medium' | 'large';
 
 interface SpinnerProps extends Omit<BoxProps, 'size'> {
@@ -16,14 +16,80 @@ const sizeMap = {
   large: 64,
 };
 
-export const Spinner: React.FC<SpinnerProps> = ({ 
-  variant = 'ring', 
+export const Spinner: React.FC<SpinnerProps> = ({
+  variant = 'ring',
   size = 'medium',
   color = '#667eea',
   sx = {},
-  ...props 
+  ...props
 }) => {
   const spinnerSize = sizeMap[size];
+
+  // Page loading - centered in viewport
+  if (variant === 'page') {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '400px',
+          width: '100%',
+          ...sx,
+        }}
+        {...props}
+      >
+        <CircularProgress size={spinnerSize} sx={{ color }} />
+      </Box>
+    );
+  }
+
+  // Button loading - small inline spinner
+  if (variant === 'button') {
+    return (
+      <CircularProgress
+        size={16}
+        sx={{ color: color || 'inherit', ...sx }}
+        {...props}
+      />
+    );
+  }
+
+  // Inline loading - small spinner without container
+  if (variant === 'inline') {
+    return (
+      <CircularProgress
+        size={20}
+        sx={{ color, ...sx }}
+        {...props}
+      />
+    );
+  }
+
+  // Overlay loading - covers content with backdrop
+  if (variant === 'overlay') {
+    return (
+      <Box
+        sx={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'rgba(0, 0, 0, 0.3)',
+          backdropFilter: 'blur(2px)',
+          zIndex: 9999,
+          ...sx,
+        }}
+        {...props}
+      >
+        <CircularProgress size={spinnerSize} sx={{ color: '#ffffff' }} />
+      </Box>
+    );
+  }
 
   if (variant === 'dots') {
     return (

@@ -1,11 +1,16 @@
 'use client';
 
 import { useState, useMemo, useEffect, useCallback } from 'react';
-import { Box, Typography, CircularProgress, Card, CardContent, Tooltip, TextField, InputAdornment } from '@mui/material';
+import { Box } from '@mui/material';
 import { Button } from '@/components/ui/Button';
 import { IconButton } from '@/components/ui/IconButton';
+import { Card, CardContent } from '@/components/ui/Card';
+import { Typography } from '@/components/ui/Typography';
+import { TextField } from '@/components/ui/TextField';
+import { Tooltip } from '@/components/ui/Tooltip';
+import { Spinner } from '@/components/ui/Spinner';
 import { AdminLayout } from '@/components/layout/AdminLayout';
-import { Search, Refresh, Close, ExpandMore } from '@mui/icons-material';
+import { Refresh, ExpandMore } from '@mui/icons-material';
 import { ErrorDisplay } from '@/components/ui/ErrorDisplay';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import { UserRole } from '@/features/auth';
@@ -106,14 +111,10 @@ export default function SessionsPage() {
             }}
           >
             <Box>
-              <Typography 
-                variant="h4" 
-                fontWeight={600}
-                sx={{ mb: 1 }}
-              >
+              <Typography variant="heading" size="3xl">
                 Active Sessions
               </Typography>
-              <Typography variant="body1" color="text.secondary">
+              <Typography variant="subheading">
                 Monitor and manage user sessions across your system
               </Typography>
             </Box>
@@ -124,15 +125,7 @@ export default function SessionsPage() {
             </Tooltip>
           </Box>
 
-          <Card
-            elevation={0}
-            sx={{
-              mb: 4,
-              border: 1,
-              borderColor: 'divider',
-              borderRadius: 2,
-            }}
-          >
+          <Card variant="bordered" sx={{ mb: 4 }}>
             <CardContent>
               <Box
                 sx={{
@@ -142,36 +135,16 @@ export default function SessionsPage() {
                   mb: 2,
                 }}
               >
-                <Typography 
-                  variant="h6" 
-                  fontWeight={600}
-                >
+                <Typography variant="heading" size="lg">
                   All Sessions
                 </Typography>
                 <TextField
+                  variant="search"
                   placeholder="Search sessions..."
                   size="small"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  slotProps={{
-                    input: {
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          {isSearching && searchQuery_.isLoading ? <CircularProgress size={16} /> : <Search fontSize="small" />}
-                        </InputAdornment>
-                      ),
-                      endAdornment: searchQuery ? (
-                        <InputAdornment position="end">
-                          <IconButton size="small" onClick={() => setSearchQuery('')}>
-                            <Close fontSize="small" />
-                          </IconButton>
-                        </InputAdornment>
-                      ) : null,
-                      sx: {
-                        borderRadius: 'var(--radius)',
-                      },
-                    },
-                  }}
+                  onClear={() => setSearchQuery('')}
                   sx={{ width: { xs: '100%', sm: '300px' } }}
                 />
               </Box>
@@ -199,8 +172,8 @@ export default function SessionsPage() {
                     <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
                       {searchQuery_.isAutoSearching ? (
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <CircularProgress size={16} />
-                          <Typography variant="body2" color="text.secondary">
+                          <Spinner variant="inline" />
+                          <Typography variant="subheading">
                             Searching for more sessions...
                           </Typography>
                         </Box>
@@ -223,7 +196,7 @@ export default function SessionsPage() {
                         onClick={() => fetchNextPage()}
                         disabled={isFetchingNextPage}
                         variant="outlined"
-                        startIcon={isFetchingNextPage ? <CircularProgress size={16} /> : <ExpandMore />}
+                        startIcon={isFetchingNextPage ? <Spinner variant="button" /> : <ExpandMore />}
                       >
                         {isFetchingNextPage ? 'Loading...' : 'Load More Sessions'}
                       </Button>
@@ -232,7 +205,7 @@ export default function SessionsPage() {
 
                   {/* Sessions count info */}
                   <Box sx={{ p: 2, textAlign: 'center' }}>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="subheading">
                       {isSearching ? (
                         <>
                           Found {stableFilteredSessions.length} sessions matching &ldquo;{trimmedSearchQuery}&rdquo;
@@ -264,23 +237,12 @@ export default function SessionsPage() {
             </CardContent>
           </Card>
 
-          <Card
-            elevation={0}
-            sx={{
-              border: 1,
-              borderColor: 'divider',
-              borderRadius: 2,
-            }}
-          >
+          <Card variant="bordered">
             <CardContent>
-              <Typography 
-                variant="h6" 
-                fontWeight={600}
-                sx={{ mb: 2 }}
-              >
+              <Typography variant="heading" size="lg" sx={{ mb: 2 }}>
                 About Sessions
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="subheading">
                 This page shows all active sessions across all identities in the system. Sessions are automatically created when users authenticate
                 and expire based on your Kratos configuration. Use this page to monitor user activity and troubleshoot authentication issues.
               </Typography>

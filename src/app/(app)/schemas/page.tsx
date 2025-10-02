@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import {
   Box,
-  Typography,
   Paper,
   Table,
   TableBody,
@@ -12,25 +11,21 @@ import {
   TableHead,
   TableRow,
   TablePagination,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  CircularProgress,
-  Chip,
-  Card,
-  CardContent,
-  Tooltip,
-  TextField,
-  InputAdornment,
 } from '@mui/material';
 import { Button } from '@/components/ui/Button';
 import { IconButton } from '@/components/ui/IconButton';
+import { Card, CardContent } from '@/components/ui/Card';
+import { Typography } from '@/components/ui/Typography';
+import { TextField } from '@/components/ui/TextField';
+import { Tooltip } from '@/components/ui/Tooltip';
+import { Chip } from '@/components/ui/Chip';
+import { Dialog, DialogTitle, DialogContent, DialogActions } from '@/components/ui/Dialog';
+import { Spinner } from '@/components/ui/Spinner';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { ErrorDisplay } from '@/components/ui/ErrorDisplay';
 import { getIdentitySchema } from '@/services/kratos';
 import { useSchemas } from '@/features/schemas/hooks';
-import { Code, Description, Search, Refresh, MoreVert, Close } from '@mui/icons-material';
+import { Code, Description, Refresh, MoreVert, Close } from '@mui/icons-material';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import { UserRole } from '@/features/auth';
 import SyntaxHighlighter from 'react-syntax-highlighter';
@@ -180,20 +175,10 @@ export default function SchemasPage() {
             }}
           >
             <Box>
-              <Typography 
-                variant="h4" 
-                sx={{ 
-                  fontWeight: 700, 
-                  mb: 1,
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                  backgroundClip: 'text',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                }}
-              >
+              <Typography variant="gradient" size="3xl">
                 Identity Schemas
               </Typography>
-              <Typography variant="body1" color="text.secondary">
+              <Typography variant="subheading">
                 View and inspect your identity schemas and their properties
               </Typography>
             </Box>
@@ -207,14 +192,7 @@ export default function SchemasPage() {
             </Tooltip>
           </Box>
 
-          <Card
-            elevation={0}
-            sx={{
-              mb: 4,
-              border: '1px solid',
-              borderColor: 'divider',
-            }}
-          >
+          <Card variant="bordered" sx={{ mb: 4 }}>
             <CardContent>
               <Box
                 sx={{
@@ -224,40 +202,23 @@ export default function SchemasPage() {
                   mb: 2,
                 }}
               >
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                <Typography variant="heading" size="lg">
                   All Schemas
                 </Typography>
                 <TextField
+                  variant="search"
                   placeholder="Search schemas..."
                   size="small"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  slotProps={{
-                    input: {
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Search fontSize="small" />
-                        </InputAdornment>
-                      ),
-                      endAdornment: searchQuery ? (
-                        <InputAdornment position="end">
-                          <IconButton size="small" onClick={() => setSearchQuery('')}>
-                            <Close fontSize="small" />
-                          </IconButton>
-                        </InputAdornment>
-                      ) : null,
-                      sx: {
-                        borderRadius: 'var(--radius)',
-                      },
-                    },
-                  }}
+                  onClear={() => setSearchQuery('')}
                   sx={{ width: { xs: '100%', sm: '300px' } }}
                 />
               </Box>
 
               {isLoading ? (
                 <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
-                  <CircularProgress />
+                  <Spinner variant="page" />
                 </Box>
               ) : error ? (
                 <ErrorDisplay
@@ -306,8 +267,8 @@ export default function SchemasPage() {
                                     opacity: 0.5,
                                   }}
                                 />
-                                <Typography variant="h6">No schemas found</Typography>
-                                <Typography variant="body2" color="text.secondary">
+                                <Typography variant="heading" size="lg">No schemas found</Typography>
+                                <Typography variant="subheading">
                                   {searchQuery ? 'Try a different search term' : 'No schemas are currently configured'}
                                 </Typography>
                               </Box>
@@ -346,37 +307,21 @@ export default function SchemasPage() {
                                   overflow: 'hidden',
                                   textOverflow: 'ellipsis',
                                   whiteSpace: 'nowrap',
-                                  fontFamily: 'monospace',
-                                  fontSize: '0.875rem',
                                 }}
                               >
-                                {schema.id}
+                                <Typography variant="code">{schema.id}</Typography>
                               </TableCell>
                               <TableCell sx={{ fontWeight: 500 }}>{getSchemaTitle(schema)}</TableCell>
                               <TableCell>
                                 <Chip
+                                  variant="gradient"
                                   label={schema.schema.type || 'unknown'}
-                                  size="small"
-                                  color="primary"
-                                  variant="filled"
-                                  sx={{
-                                    borderRadius: 'var(--radius)',
-                                    fontWeight: 500,
-                                    background: 'var(--primary)',
-                                    color: 'var(--primary-foreground)',
-                                  }}
                                 />
                               </TableCell>
                               <TableCell>
                                 <Chip
+                                  variant="tag"
                                   label={`${getPropertiesCount(schema)} trait(s)`}
-                                  size="small"
-                                  color="secondary"
-                                  variant="outlined"
-                                  sx={{
-                                    borderRadius: 'var(--radius)',
-                                    fontWeight: 500,
-                                  }}
                                 />
                               </TableCell>
                               <TableCell>
@@ -385,12 +330,7 @@ export default function SchemasPage() {
                                   size="small"
                                   startIcon={<Code />}
                                   onClick={() => handleViewSchema(schema.id)}
-                                  sx={{
-                                    mr: 1,
-                                    borderRadius: 'var(--radius)',
-                                    textTransform: 'none',
-                                    fontWeight: 500,
-                                  }}
+                                  sx={{ mr: 1 }}
                                 >
                                   View Schema
                                 </Button>
@@ -423,21 +363,12 @@ export default function SchemasPage() {
             </CardContent>
           </Card>
 
-          <Card
-            elevation={0}
-            sx={{
-              borderRadius: 'var(--radius)',
-              background: 'var(--card)',
-              color: 'var(--card-foreground)',
-              border: '1px solid var(--border)',
-              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1)',
-            }}
-          >
+          <Card variant="bordered">
             <CardContent>
-              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+              <Typography variant="heading" size="lg" sx={{ mb: 2 }}>
                 About Identity Schemas
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="subheading">
                 Identity schemas define the structure of identity data in Ory Kratos. They determine what fields are available for registration,
                 login, and profile management. Use schemas to customize the user experience and data collection for your application.
               </Typography>
@@ -448,47 +379,23 @@ export default function SchemasPage() {
           <Dialog
             open={schemaDialogOpen}
             onClose={handleCloseSchemaDialog}
-            aria-labelledby="schema-dialog-title"
-            maxWidth="md"
-            fullWidth
-            slotProps={{
-              paper: {
-                sx: {
-                  borderRadius: 'var(--radius)',
-                  background: 'var(--card)',
-                  color: 'var(--card-foreground)',
-                  boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-                },
-              },
-            }}
-          >
-            <DialogTitle
-              id="schema-dialog-title"
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                borderBottom: '1px solid var(--border)',
-                px: 3,
-                py: 2,
-              }}
-            >
-              <Typography component="span" variant="h6" sx={{ fontWeight: 600 }}>
+            title={
+              <>
                 Schema Details{' '}
                 {selectedSchemaId && (
-                  <Typography component="span" sx={{ fontFamily: 'monospace', fontSize: '0.875rem' }}>
+                  <Typography variant="code" component="span" sx={{ ml: 1 }}>
                     (ID: {selectedSchemaId})
                   </Typography>
                 )}
-              </Typography>
-              <IconButton onClick={handleCloseSchemaDialog} size="small">
-                <Close />
-              </IconButton>
-            </DialogTitle>
+              </>
+            }
+            maxWidth="md"
+            fullWidth
+          >
             <DialogContent dividers sx={{ p: 0 }}>
               {schemaLoading ? (
                 <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
-                  <CircularProgress />
+                  <Spinner variant="page" />
                 </Box>
               ) : schemaContent ? (
                 <Box
@@ -524,21 +431,13 @@ export default function SchemasPage() {
                   </SyntaxHighlighter>
                 </Box>
               ) : (
-                <Typography color="error" sx={{ p: 3 }}>
+                <Typography variant="body" color="error" sx={{ p: 3 }}>
                   Failed to load schema content. Please try again.
                 </Typography>
               )}
             </DialogContent>
-            <DialogActions sx={{ p: 2, borderTop: '1px solid var(--border)' }}>
-              <Button
-                onClick={handleCloseSchemaDialog}
-                variant="outlined"
-                sx={{
-                  borderRadius: 'var(--radius)',
-                  textTransform: 'none',
-                  fontWeight: 500,
-                }}
-              >
+            <DialogActions>
+              <Button onClick={handleCloseSchemaDialog} variant="outlined">
                 Close
               </Button>
             </DialogActions>
