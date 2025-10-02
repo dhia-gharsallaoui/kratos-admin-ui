@@ -12,7 +12,7 @@ import { MetricCard } from '@/components/ui/MetricCard';
 import { ChartCard } from '@/components/ui/ChartCard';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { LineChart } from '@mui/x-charts/LineChart';
-import { Gauge } from '@mui/x-charts/Gauge';
+import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
 
 export default function Dashboard() {
   const { identity, session, system, hydra, isLoading, isError, refetchAll } = useAnalytics();
@@ -310,9 +310,11 @@ export default function Dashboard() {
                 <Box
                   sx={{
                     display: 'flex',
+                    flexDirection: 'column',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    height: 300,
+                    height: 350,
+                    py: 2,
                   }}
                 >
                   <Gauge
@@ -325,30 +327,39 @@ export default function Dashboard() {
                           )
                         : 0
                     }
-                    startAngle={-90}
-                    endAngle={90}
-                    innerRadius="70%"
-                    outerRadius="90%"
+                    startAngle={-110}
+                    endAngle={110}
+                    width={280}
+                    height={280}
+                    cornerRadius="50%"
                     text={({ value }) => `${value}%`}
-                    sx={{
-                      '& .MuiGauge-valueText': {
-                        fontSize: 32,
-                        fontWeight: 'bold',
+                    sx={(theme) => ({
+                      [`& .${gaugeClasses.valueText}`]: {
+                        fontSize: 56,
+                        fontWeight: 700,
+                        fill: '#667eea',
                       },
-                      '& .MuiGauge-valueArc': {
-                        fill: '#4caf50',
+                      [`& .${gaugeClasses.valueArc}`]: {
+                        fill: 'url(#gradient)',
                       },
-                      '& .MuiGauge-referenceArc': {
-                        fill: '#ff0000',
+                      [`& .${gaugeClasses.referenceArc}`]: {
+                        fill: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)',
                       },
-                    }}
-                  />
-                </Box>
-                <Box sx={{ mt: 4, textAlign: 'center' }}>
-                  <Typography variant="body" color="secondary">
-                    {identity.data?.verificationStatus.verified || 0} verified of{' '}
-                    {(identity.data?.verificationStatus.verified || 0) + (identity.data?.verificationStatus.unverified || 0)} total users
-                  </Typography>
+                    })}
+                  >
+                    <defs>
+                      <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#667eea" />
+                        <stop offset="100%" stopColor="#764ba2" />
+                      </linearGradient>
+                    </defs>
+                  </Gauge>
+                  <Box sx={{ mt: 2, textAlign: 'center' }}>
+                    <Typography variant="body" color="text.secondary">
+                      {identity.data?.verificationStatus.verified || 0} verified of{' '}
+                      {(identity.data?.verificationStatus.verified || 0) + (identity.data?.verificationStatus.unverified || 0)} total users
+                    </Typography>
+                  </Box>
                 </Box>
               </ChartCard>
             </Grid>
