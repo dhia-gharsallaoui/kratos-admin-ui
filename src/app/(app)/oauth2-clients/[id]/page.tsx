@@ -4,28 +4,23 @@ import { useState, use } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Box,
-  Typography,
-  Card,
-  CardContent,
-  Button,
   Grid,
-  Chip,
-  IconButton,
-  Menu,
-  MenuItem,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Alert,
-  Divider,
   Paper,
   List,
   ListItem,
   ListItemText,
   Skeleton,
-  Tooltip,
+  Divider,
 } from '@mui/material';
+import { Typography } from '@/components/ui/Typography';
+import { Card, CardContent } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
+import { Chip } from '@/components/ui/Chip';
+import { IconButton } from '@/components/ui/IconButton';
+import { Menu, MenuItem } from '@/components/ui/Menu';
+import { Dialog, DialogTitle, DialogContent, DialogActions } from '@/components/ui/Dialog';
+import { Alert } from '@/components/ui/Alert';
+import { Tooltip } from '@/components/ui/Tooltip';
 import {
   ArrowBack as ArrowBackIcon,
   MoreVert as MoreVertIcon,
@@ -122,7 +117,7 @@ export default function OAuth2ClientDetailPage({ params }: Props) {
       {/* Header */}
       <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <IconButton onClick={() => router.back()}>
+          <IconButton onClick={() => router.back()} aria-label="Go back">
             <ArrowBackIcon />
           </IconButton>
           <AppsIcon sx={{ fontSize: 32, color: 'primary.main' }} />
@@ -131,18 +126,19 @@ export default function OAuth2ClientDetailPage({ params }: Props) {
               <Skeleton width={300} height={40} />
             ) : (
               <>
-                <Typography variant="h4" component="h1" fontWeight="bold">
+                <Typography variant="heading" level="h1">
                   {client?.client_name || 'Unnamed Client'}
                 </Typography>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="code" color="secondary">
                     {client?.client_id}
                   </Typography>
                   {client?.client_id && (
-                    <Tooltip title={copiedField === 'client_id' ? 'Copied!' : 'Copy Client ID'}>
+                    <Tooltip content={copiedField === 'client_id' ? 'Copied!' : 'Copy Client ID'}>
                       <IconButton
                         size="small"
                         onClick={() => copyToClipboard(client.client_id!, 'client_id')}
+                        aria-label="Copy client ID"
                       >
                         <CopyIcon fontSize="small" />
                       </IconButton>
@@ -150,11 +146,9 @@ export default function OAuth2ClientDetailPage({ params }: Props) {
                   )}
                   {clientType && (
                     <Chip
-                      icon={clientType === 'confidential' ? <LockIcon /> : <PublicIcon />}
                       label={clientType}
+                      variant="tag"
                       size="small"
-                      color={clientType === 'confidential' ? 'primary' : 'default'}
-                      variant="outlined"
                     />
                   )}
                 </Box>
@@ -165,10 +159,11 @@ export default function OAuth2ClientDetailPage({ params }: Props) {
 
         {!isLoading && client && (
           <Box sx={{ display: 'flex', gap: 1 }}>
-            <Button variant="outlined" startIcon={<EditIcon />} onClick={handleEdit}>
+            <Button variant="outlined" onClick={handleEdit}>
+              <EditIcon style={{ marginRight: '0.5rem' }} />
               Edit
             </Button>
-            <IconButton onClick={handleMenuClick}>
+            <IconButton onClick={handleMenuClick} aria-label="More options">
               <MoreVertIcon />
             </IconButton>
           </Box>
@@ -505,7 +500,7 @@ export default function OAuth2ClientDetailPage({ params }: Props) {
         <DialogTitle>Delete OAuth2 Client</DialogTitle>
         <DialogContent>
           <Typography>
-            Are you sure you want to delete the client "{client?.client_name || client?.client_id}"?
+            Are you sure you want to delete the client &quot;{client?.client_name || client?.client_id}&quot;?
             This action cannot be undone and will invalidate all tokens issued to this client.
           </Typography>
         </DialogContent>

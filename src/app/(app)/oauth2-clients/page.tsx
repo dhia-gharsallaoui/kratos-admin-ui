@@ -3,22 +3,17 @@
 import { useState } from 'react';
 import {
   Box,
-  Typography,
-  Card,
-  CardContent,
-  TextField,
   Grid,
-  Chip,
-  IconButton,
-  Menu,
-  MenuItem,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Alert,
 } from '@mui/material';
 import { Button } from '@/components/ui/Button';
+import { IconButton } from '@/components/ui/IconButton';
+import { Card, CardContent } from '@/components/ui/Card';
+import { Typography } from '@/components/ui/Typography';
+import { TextField } from '@/components/ui/TextField';
+import { Chip } from '@/components/ui/Chip';
+import { Dialog, DialogTitle, DialogContent, DialogActions } from '@/components/ui/Dialog';
+import { Alert } from '@/components/ui/Alert';
+import { Menu, MenuItem } from '@/components/ui/Menu';
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import {
   Add as AddIcon,
@@ -118,10 +113,10 @@ export default function OAuth2ClientsPage() {
       minWidth: 200,
       renderCell: (params: GridRenderCellParams) => (
         <Box>
-          <Typography variant="body2" fontWeight="medium">
+          <Typography variant="body" sx={{ fontWeight: 500 }}>
             {params.value}
           </Typography>
-          <Typography variant="caption" color="text.secondary">
+          <Typography variant="code" sx={{ fontSize: '0.75rem' }}>
             {formatClientId(params.row.id)}
           </Typography>
         </Box>
@@ -137,17 +132,14 @@ export default function OAuth2ClientsPage() {
           {params.value?.slice(0, 2).map((grantType: string) => (
             <Chip
               key={grantType}
+              variant="tag"
               label={grantType.replace('_', ' ')}
-              size="small"
-              variant="outlined"
             />
           ))}
           {params.value?.length > 2 && (
             <Chip
+              variant="gradient"
               label={`+${params.value.length - 2}`}
-              size="small"
-              variant="outlined"
-              color="primary"
             />
           )}
         </Box>
@@ -163,18 +155,14 @@ export default function OAuth2ClientsPage() {
           {params.value?.slice(0, 3).map((scope: string) => (
             <Chip
               key={scope}
+              variant="role"
               label={scope}
-              size="small"
-              color="secondary"
-              variant="outlined"
             />
           ))}
           {params.value?.length > 3 && (
             <Chip
+              variant="gradient"
               label={`+${params.value.length - 3}`}
-              size="small"
-              color="secondary"
-              variant="outlined"
             />
           )}
         </Box>
@@ -188,10 +176,8 @@ export default function OAuth2ClientsPage() {
         const clientType = getClientType(params.row as OAuth2Client);
         return (
           <Chip
+            variant={clientType === 'confidential' ? 'gradient' : 'tag'}
             label={clientType}
-            size="small"
-            color={clientType === 'confidential' ? 'primary' : 'default'}
-            variant="filled"
           />
         );
       },
@@ -201,7 +187,7 @@ export default function OAuth2ClientsPage() {
       headerName: 'Created',
       width: 120,
       renderCell: (params: GridRenderCellParams) => (
-        <Typography variant="caption" color="text.secondary">
+        <Typography variant="label">
           {params.value || 'Unknown'}
         </Typography>
       ),
@@ -241,20 +227,10 @@ export default function OAuth2ClientsPage() {
             <AppsIcon sx={{ fontSize: 32, color: 'white' }} />
           </Box>
           <Box>
-            <Typography 
-              variant="h4" 
-              component="h1" 
-              fontWeight="bold"
-              sx={{
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                backgroundClip: 'text',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-              }}
-            >
+            <Typography variant="gradient" size="3xl">
               OAuth2 Clients
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="subheading">
               Manage OAuth2 client applications and their configurations
             </Typography>
           </Box>
@@ -305,50 +281,28 @@ export default function OAuth2ClientsPage() {
       </Grid>
 
       {/* Search */}
-      <Card 
-        elevation={0}
-        sx={{ 
-          mb: 3,
-          border: '1px solid',
-          borderColor: 'divider',
-        }}
-      >
+      <Card variant="bordered" sx={{ mb: 3 }}>
         <CardContent>
           <TextField
+            variant="search"
             fullWidth
             placeholder="Search clients by name, ID, or owner..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            variant="outlined"
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                '&:hover fieldset': {
-                  borderColor: '#667eea',
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: '#764ba2',
-                },
-              },
-            }}
+            onClear={() => setSearchTerm('')}
           />
         </CardContent>
       </Card>
 
       {/* Error Display */}
       {error && (
-        <Alert severity="error" sx={{ mb: 3 }}>
+        <Alert variant="inline" severity="error" sx={{ mb: 3 }}>
           Failed to load OAuth2 clients: {error.message}
         </Alert>
       )}
 
       {/* Data Grid */}
-      <Card
-        elevation={0}
-        sx={{
-          border: '1px solid',
-          borderColor: 'divider',
-        }}
-      >
+      <Card variant="bordered">
         <DataGrid
           rows={filteredRows}
           columns={columns}
@@ -390,33 +344,33 @@ export default function OAuth2ClientsPage() {
         open={Boolean(menuAnchor)}
         onClose={handleMenuClose}
       >
-        <MenuItem onClick={() => selectedClient && handleView(selectedClient)}>
-          <ViewIcon sx={{ mr: 1 }} fontSize="small" />
+        <MenuItem icon={<ViewIcon fontSize="small" />} onClick={() => selectedClient && handleView(selectedClient)}>
           View Details
         </MenuItem>
-        <MenuItem onClick={() => selectedClient && handleEdit(selectedClient)}>
-          <EditIcon sx={{ mr: 1 }} fontSize="small" />
+        <MenuItem icon={<EditIcon fontSize="small" />} onClick={() => selectedClient && handleEdit(selectedClient)}>
           Edit Client
         </MenuItem>
-        <MenuItem onClick={() => selectedClient && handleDeleteClick(selectedClient)}>
-          <DeleteIcon sx={{ mr: 1 }} fontSize="small" />
+        <MenuItem icon={<DeleteIcon fontSize="small" />} onClick={() => selectedClient && handleDeleteClick(selectedClient)}>
           Delete Client
         </MenuItem>
       </Menu>
 
       {/* Delete Confirmation Dialog */}
-      <Dialog open={deleteDialogOpen} onClose={handleDeleteCancel}>
-        <DialogTitle>Delete OAuth2 Client</DialogTitle>
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={handleDeleteCancel}
+        title="Delete OAuth2 Client"
+      >
         <DialogContent>
-          <Typography>
+          <Typography variant="body">
             Are you sure you want to delete this OAuth2 client? This action cannot be undone.
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDeleteCancel}>Cancel</Button>
+          <Button onClick={handleDeleteCancel} variant="outlined">Cancel</Button>
           <Button
             onClick={handleDeleteConfirm}
-            color="error"
+            variant="danger"
             disabled={deleteClientMutation.isPending}
           >
             {deleteClientMutation.isPending ? 'Deleting...' : 'Delete'}

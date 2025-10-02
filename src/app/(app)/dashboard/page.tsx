@@ -1,7 +1,12 @@
 'use client';
 
-import { Box, Typography, Grid, Paper, Card, CardContent, IconButton, Tooltip, Alert } from '@mui/material';
+import { Box, Grid, Paper } from '@mui/material';
 import { Refresh, TrendingUp, Group, Security, Schedule, Schema, HealthAndSafety, VpnKey, Cloud, Apps } from '@mui/icons-material';
+import { Typography } from '@/components/ui/Typography';
+import { IconButton } from '@/components/ui/IconButton';
+import { Tooltip } from '@/components/ui/Tooltip';
+import { Alert } from '@/components/ui/Alert';
+import { Card } from '@/components/ui/Card';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import { UserRole } from '@/features/auth';
@@ -64,7 +69,7 @@ export default function Dashboard() {
       <ProtectedRoute requiredRole={UserRole.VIEWER}>
         <AdminLayout>
           <Box sx={{ p: 3 }}>
-            <Alert severity="error" sx={{ mb: 3 }}>
+            <Alert severity="error">
               Failed to load analytics data. Please try refreshing the page.
             </Alert>
           </Box>
@@ -87,15 +92,15 @@ export default function Dashboard() {
             }}
           >
             <Box>
-              <Typography variant="h4" gutterBottom>
+              <Typography variant="heading" level="h1">
                 Analytics Dashboard
               </Typography>
-              <Typography variant="body1" color="text.secondary">
+              <Typography variant="body">
                 Insights and metrics for your Ory Kratos and Hydra systems
               </Typography>
             </Box>
-            <Tooltip title="Refresh Data">
-              <IconButton onClick={refetchAll}>
+            <Tooltip content="Refresh Data">
+              <IconButton onClick={refetchAll} aria-label="Refresh data">
                 <Refresh />
               </IconButton>
             </Tooltip>
@@ -344,7 +349,7 @@ export default function Dashboard() {
                   />
                 </Box>
                 <Box sx={{ mt: 4, textAlign: 'center' }}>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="body" color="secondary">
                     {identity.data?.verificationStatus.verified || 0} verified of{' '}
                     {(identity.data?.verificationStatus.verified || 0) + (identity.data?.verificationStatus.unverified || 0)} total users
                   </Typography>

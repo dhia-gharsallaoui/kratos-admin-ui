@@ -3,29 +3,22 @@
 import { useState } from 'react';
 import {
   Box,
-  Typography,
-  Card,
-  CardContent,
-  TextField,
-  Button,
   Grid,
-  Chip,
-  IconButton,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Alert,
   Tabs,
   Tab,
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  FormControl,
-  FormControlLabel,
-  Switch,
   Divider,
 } from '@mui/material';
+import { Typography } from '@/components/ui/Typography';
+import { Card } from '@/components/ui/Card';
+import { TextField } from '@/components/ui/TextField';
+import { Button } from '@/components/ui/Button';
+import { Chip } from '@/components/ui/Chip';
+import { IconButton } from '@/components/ui/IconButton';
+import { Dialog, DialogContent, DialogActions } from '@/components/ui/Dialog';
+import { Alert } from '@/components/ui/Alert';
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import {
   Token as TokenIcon,
@@ -198,17 +191,15 @@ export default function OAuth2TokensPage() {
               <Chip
                 key={scope}
                 label={scope}
+                variant="tag"
                 size="small"
-                color="primary"
-                variant="outlined"
               />
             ))}
             {remainingCount > 0 && (
               <Chip
                 label={`+${remainingCount}`}
+                variant="tag"
                 size="small"
-                color="primary"
-                variant="outlined"
               />
             )}
           </Box>
@@ -225,11 +216,9 @@ export default function OAuth2TokensPage() {
 
         return (
           <Chip
-            icon={<IconComponent />}
             label={statusInfo.displayName}
+            variant="status"
             size="small"
-            color={statusInfo.color}
-            variant="filled"
           />
         );
       },
@@ -289,10 +278,10 @@ export default function OAuth2TokensPage() {
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <TokenIcon sx={{ fontSize: 32, color: 'primary.main' }} />
           <Box>
-            <Typography variant="h4" component="h1" fontWeight="bold">
+            <Typography variant="heading" level="h1">
               OAuth2 Tokens
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body" color="secondary">
               Introspect, validate, and manage OAuth2 tokens
             </Typography>
           </Box>
@@ -356,7 +345,6 @@ export default function OAuth2TokensPage() {
             <Grid container spacing={3}>
               <Grid size={{ xs: 12 }}>
                 <TextField
-                  fullWidth
                   label="Access Token"
                   value={introspectFormData.token}
                   onChange={(e) => setIntrospectFormData(prev => ({ ...prev, token: e.target.value }))}
@@ -370,7 +358,6 @@ export default function OAuth2TokensPage() {
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
                 <TextField
-                  fullWidth
                   label="Scope (Optional)"
                   value={introspectFormData.scope}
                   onChange={(e) => setIntrospectFormData(prev => ({ ...prev, scope: e.target.value }))}
@@ -382,11 +369,11 @@ export default function OAuth2TokensPage() {
                 <Box sx={{ display: 'flex', gap: 2 }}>
                   <Button
                     type="submit"
-                    variant="contained"
-                    startIcon={<SearchIcon />}
+                    variant="primary"
                     disabled={isIntrospecting}
-                    sx={{ minWidth: 150 }}
+                    style={{ minWidth: '150px' }}
                   >
+                    <SearchIcon style={{ marginRight: '0.5rem' }} />
                     {isIntrospecting ? 'Introspecting...' : 'Introspect Token'}
                   </Button>
                   <Button
@@ -402,7 +389,7 @@ export default function OAuth2TokensPage() {
 
           {/* Error Display */}
           {introspectionError && (
-            <Alert severity="error" sx={{ mt: 2 }}>
+            <Alert severity="error" style={{ marginTop: '1rem' }}>
               Failed to introspect token: {introspectionError.message}
             </Alert>
           )}
@@ -412,11 +399,11 @@ export default function OAuth2TokensPage() {
           {introspectedTokens.length === 0 ? (
             <Box sx={{ textAlign: 'center', py: 4 }}>
               <TokenIcon sx={{ fontSize: 64, color: 'text.secondary', mb: 2 }} />
-              <Typography variant="h6" color="text.secondary" gutterBottom>
+              <Typography variant="heading" level="h2" color="secondary">
                 No tokens introspected yet
               </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Use the "Introspect Token" tab to analyze OAuth2 tokens
+              <Typography variant="body" color="secondary">
+                Use the &quot;Introspect Token&quot; tab to analyze OAuth2 tokens
               </Typography>
             </Box>
           ) : (
@@ -444,21 +431,21 @@ export default function OAuth2TokensPage() {
       </Card>
 
       {/* Token Details Dialog */}
-      <Dialog open={viewDialogOpen} onClose={() => setViewDialogOpen(false)} maxWidth="md" fullWidth>
-        <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <SecurityIcon />
-          Token Details
-        </DialogTitle>
+      <Dialog open={viewDialogOpen} onClose={() => setViewDialogOpen(false)} title="Token Details" maxWidth="md">
         <DialogContent>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+            <SecurityIcon />
+            <Typography variant="heading" level="h2">Token Details</Typography>
+          </Box>
           {selectedToken && (
             <Box>
               {/* Status Banner */}
               <Alert
                 severity={selectedToken.statusInfo?.isActive ? 'success' : 'error'}
-                sx={{ mb: 3 }}
-                icon={selectedToken.statusInfo?.isActive ? <CheckCircleIcon /> : <WarningIcon />}
+                style={{ marginBottom: '1.5rem' }}
               >
-                <Typography variant="body2">
+                {selectedToken.statusInfo?.isActive ? <CheckCircleIcon style={{ marginRight: '0.5rem' }} /> : <WarningIcon style={{ marginRight: '0.5rem' }} />}
+                <Typography variant="body">
                   Token is {selectedToken.statusInfo?.isActive ? 'active' : 'inactive/expired'}
                   {selectedToken.statusInfo?.timeToExpiry && (
                     <> • Expires in {selectedToken.statusInfo.timeToExpiry}</>
@@ -471,39 +458,39 @@ export default function OAuth2TokensPage() {
                 <Grid size={{ xs: 12 }}>
                   <Accordion defaultExpanded>
                     <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Typography variant="h6">Basic Information</Typography>
+                      <Typography variant="heading" level="h3">Basic Information</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
                       <Grid container spacing={2}>
                         <Grid size={{ xs: 12, md: 6 }}>
-                          <Typography variant="subtitle2" color="text.secondary">
+                          <Typography variant="body" color="secondary">
                             Subject
                           </Typography>
-                          <Typography variant="body1">
+                          <Typography variant="body">
                             {selectedToken.sub || 'N/A'}
                           </Typography>
                         </Grid>
                         <Grid size={{ xs: 12, md: 6 }}>
-                          <Typography variant="subtitle2" color="text.secondary">
+                          <Typography variant="body" color="secondary">
                             Client ID
                           </Typography>
-                          <Typography variant="body1">
+                          <Typography variant="body">
                             {selectedToken.client_id || 'N/A'}
                           </Typography>
                         </Grid>
                         <Grid size={{ xs: 12, md: 6 }}>
-                          <Typography variant="subtitle2" color="text.secondary">
+                          <Typography variant="body" color="secondary">
                             Token Type
                           </Typography>
-                          <Typography variant="body1">
+                          <Typography variant="body">
                             {selectedToken.tokenTypeFormatted || 'N/A'}
                           </Typography>
                         </Grid>
                         <Grid size={{ xs: 12, md: 6 }}>
-                          <Typography variant="subtitle2" color="text.secondary">
+                          <Typography variant="body" color="secondary">
                             Token Use
                           </Typography>
-                          <Typography variant="body1">
+                          <Typography variant="body">
                             {selectedToken.token_use || 'N/A'}
                           </Typography>
                         </Grid>
@@ -603,32 +590,35 @@ export default function OAuth2TokensPage() {
       </Dialog>
 
       {/* Revoke Token Dialog */}
-      <Dialog open={revokeDialogOpen} onClose={() => setRevokeDialogOpen(false)}>
-        <DialogTitle>Revoke Token</DialogTitle>
-        <DialogContent>
-          <Typography gutterBottom>
-            Are you sure you want to revoke this token? This action cannot be undone
-            and will immediately invalidate the token.
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ fontFamily: 'monospace' }}>
-            {revokeTokenValue}
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setRevokeDialogOpen(false)}>Cancel</Button>
-          <Button
-            onClick={handleRevokeConfirm}
-            color="error"
-            disabled={revokeTokenMutation.isPending}
-          >
-            {revokeTokenMutation.isPending ? 'Revoking...' : 'Revoke Token'}
-          </Button>
-        </DialogActions>
+      <Dialog
+        open={revokeDialogOpen}
+        onClose={() => setRevokeDialogOpen(false)}
+        title="Revoke Token"
+        actions={
+          <>
+            <Button onClick={() => setRevokeDialogOpen(false)} variant="outlined">Cancel</Button>
+            <Button
+              onClick={handleRevokeConfirm}
+              variant="danger"
+              disabled={revokeTokenMutation.isPending}
+            >
+              {revokeTokenMutation.isPending ? 'Revoking...' : 'Revoke Token'}
+            </Button>
+          </>
+        }
+      >
+        <Typography variant="body" style={{ marginBottom: '1rem' }}>
+          Are you sure you want to revoke this token? This action cannot be undone
+          and will immediately invalidate the token.
+        </Typography>
+        <Typography variant="code" color="secondary">
+          {revokeTokenValue}
+        </Typography>
       </Dialog>
 
       {/* Revoke Error Display */}
       {revokeTokenMutation.error && (
-        <Alert severity="error" sx={{ mt: 2 }}>
+        <Alert severity="error" style={{ marginTop: '1rem' }}>
           Failed to revoke token: {revokeTokenMutation.error.message}
         </Alert>
       )}

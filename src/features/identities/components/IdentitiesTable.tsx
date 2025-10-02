@@ -1,17 +1,15 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import {
-  Box,
-  Typography,
-  Chip,
-  Tooltip,
-} from '@mui/material';
+import { Box } from '@mui/material';
+import { Typography } from '@/components/ui/Typography';
+import { Chip } from '@/components/ui/Chip';
+import { Tooltip } from '@/components/ui/Tooltip';
+import { Spinner } from '@/components/ui/Spinner';
 import { DataTable, DataTableColumn } from '@/components/ui/DataTable';
 import { ErrorDisplay } from '@/components/ui/ErrorDisplay';
 import { useIdentities, useIdentitiesSearch } from '@/features/identities/hooks';
 import { useSchemas } from '@/features/schemas/hooks';
 import { Identity } from '@ory/kratos-client';
 import { useRouter } from 'next/navigation';
-import { DottedLoader } from '@/components/ui/DottedLoader';
 import { formatDate } from '@/lib/date-utils';
 
 const IdentitiesTable: React.FC = React.memo(() => {
@@ -151,10 +149,8 @@ const IdentitiesTable: React.FC = React.memo(() => {
       renderCell: (value: string) => (
         <Tooltip title={value}>
           <Typography
-            variant="body2"
+            variant="code"
             sx={{
-              fontFamily: 'monospace',
-              fontSize: '0.875rem',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
             }}
@@ -170,9 +166,9 @@ const IdentitiesTable: React.FC = React.memo(() => {
       minWidth: 220,
       renderCell: (_: any, identity: Identity) => (
         <Typography
-          variant="body2"
-          fontWeight={500}
+          variant="body"
           sx={{
+            fontWeight: 500,
             overflow: 'hidden',
             textOverflow: 'ellipsis',
           }}
@@ -187,13 +183,8 @@ const IdentitiesTable: React.FC = React.memo(() => {
       minWidth: 140,
       renderCell: (_: any, identity: Identity) => (
         <Chip
+          variant="gradient"
           label={getSchemaName(identity)}
-          size="small"
-          color="primary"
-          sx={{
-            fontWeight: 500,
-            fontSize: '0.75rem',
-          }}
         />
       ),
     },
@@ -203,10 +194,9 @@ const IdentitiesTable: React.FC = React.memo(() => {
       minWidth: 100,
       renderCell: (value: string) => (
         <Chip
+          variant="status"
+          status={value === 'active' ? 'active' : 'inactive'}
           label={value === 'active' ? 'Active' : 'Inactive'}
-          color={value === 'active' ? 'success' : 'default'}
-          size="small"
-          sx={{ fontWeight: 500 }}
         />
       ),
     },
@@ -215,7 +205,7 @@ const IdentitiesTable: React.FC = React.memo(() => {
       headerName: 'Created',
       minWidth: 180,
       renderCell: (value: string) => (
-        <Typography variant="body2">{formatDate(value)}</Typography>
+        <Typography variant="body">{formatDate(value)}</Typography>
       ),
     },
     {
@@ -223,7 +213,7 @@ const IdentitiesTable: React.FC = React.memo(() => {
       headerName: 'Updated',
       minWidth: 180,
       renderCell: (value: string) => (
-        <Typography variant="body2">{formatDate(value)}</Typography>
+        <Typography variant="body">{formatDate(value)}</Typography>
       ),
     },
   ], [getSchemaName, getIdentifier]);
@@ -247,7 +237,7 @@ const IdentitiesTable: React.FC = React.memo(() => {
   if (isLoading && !baseIdentities.length) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" height="400px">
-        <DottedLoader variant="page" />
+        <Spinner variant="page" />
       </Box>
     );
   }
@@ -266,15 +256,10 @@ const IdentitiesTable: React.FC = React.memo(() => {
   return (
     <Box>
       <Box mb={3}>
-        <Typography 
-          variant="h4" 
-          component="h1" 
-          gutterBottom
-          fontWeight={600}
-        >
+        <Typography variant="heading" size="3xl" gutterBottom>
           Identities
         </Typography>
-        <Typography variant="body1" color="text.secondary">
+        <Typography variant="subheading">
           Manage user identities in your Kratos instance.
         </Typography>
       </Box>
@@ -298,7 +283,7 @@ const IdentitiesTable: React.FC = React.memo(() => {
 
       {/* Pagination info */}
       <Box sx={{ mt: 2, textAlign: 'center' }}>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="subheading">
           {searchTerm.trim()
             ? `Found ${displayedIdentities.length} matches${shouldUseSearchResults ? ' (from multi-page search)' : ' (from current page)'}`
             : `Showing ${displayedIdentities.length} identities${hasMore ? ' (more available)' : ''}`}

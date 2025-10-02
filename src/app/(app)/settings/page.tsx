@@ -3,12 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   Box,
-  Typography,
-  TextField,
   Grid,
-  Alert,
-  Divider,
-  Button,
   Paper,
   Drawer,
   List,
@@ -18,14 +13,17 @@ import {
   ListItemText,
   FormControl,
   FormLabel,
-  RadioGroup,
   FormControlLabel,
-  Radio,
   Switch,
   Snackbar,
-  IconButton,
-  Tooltip,
+  Divider,
 } from '@mui/material';
+import { Typography } from '@/components/ui/Typography';
+import { TextField } from '@/components/ui/TextField';
+import { Alert } from '@/components/ui/Alert';
+import { Button } from '@/components/ui/Button';
+import { IconButton } from '@/components/ui/IconButton';
+import { Tooltip } from '@/components/ui/Tooltip';
 import {
   Settings as SettingsIcon,
   RestartAlt as ResetIcon,
@@ -175,25 +173,25 @@ export default function SettingsPage() {
 
   const renderGeneralSettings = () => (
     <Paper sx={{ p: 4 }}>
-      <Typography variant="h6" gutterBottom>
+      <Typography variant="heading" level="h2">
         Appearance
       </Typography>
       <Divider sx={{ mb: 3 }} />
-      
+
       <FormControl component="fieldset" sx={{ mb: 3 }}>
         <FormLabel component="legend" sx={{ mb: 2 }}>
           Theme Preference
         </FormLabel>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Typography variant="body2">Light</Typography>
+          <Typography variant="body">Light</Typography>
           <Switch
             checked={currentTheme === 'dark'}
             onChange={handleThemeChange}
             color="primary"
           />
-          <Typography variant="body2">Dark</Typography>
+          <Typography variant="body">Dark</Typography>
         </Box>
-        <Typography variant="caption" color="text.secondary" sx={{ mt: 1 }}>
+        <Typography variant="body" color="secondary" style={{ fontSize: '0.875rem', marginTop: '0.5rem' }}>
           Choose between light and dark theme. Your preference will be saved automatically.
         </Typography>
       </FormControl>
@@ -202,15 +200,15 @@ export default function SettingsPage() {
 
   const renderKratosSettings = () => (
     <Paper sx={{ p: 4 }}>
-      <Alert severity="info" sx={{ mb: 3 }}>
-        <Typography variant="body2">
+      <Alert severity="info" style={{ marginBottom: '1.5rem' }}>
+        <Typography variant="body">
           <strong>Note:</strong> These are the real Kratos endpoint URLs that the application will proxy to. Settings are stored in your
           browser&apos;s local storage and take effect immediately.
         </Typography>
       </Alert>
 
       <Box component="form" onSubmit={handleKratosSubmit(handleKratosSave)}>
-        <Typography variant="h6" gutterBottom>
+        <Typography variant="heading" level="h2">
           Endpoint Configuration
         </Typography>
         <Divider sx={{ mb: 3 }} />
@@ -257,7 +255,7 @@ export default function SettingsPage() {
           </Grid>
 
           <Grid size={{ xs: 12 }}>
-            <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
+            <Typography variant="heading" level="h2" style={{ marginTop: '1rem' }}>
               Current Configuration
             </Typography>
             <Divider sx={{ mb: 2 }} />
@@ -270,10 +268,10 @@ export default function SettingsPage() {
                 fontSize: '0.875rem',
               }}
             >
-              <Typography variant="body2" sx={{ mb: 1 }}>
+              <Typography variant="code" style={{ display: 'block', marginBottom: '0.5rem' }}>
                 <strong>Public URL:</strong> {kratosEndpoints.publicUrl}
               </Typography>
-              <Typography variant="body2">
+              <Typography variant="code" style={{ display: 'block' }}>
                 <strong>Admin URL:</strong> {kratosEndpoints.adminUrl}
               </Typography>
             </Box>
@@ -281,15 +279,16 @@ export default function SettingsPage() {
         </Grid>
 
         <Box sx={{ display: 'flex', gap: 2, mt: 4, justifyContent: 'flex-end' }}>
-          <Button onClick={handleKratosReset} startIcon={<ResetIcon />} color="secondary" variant="outlined">
+          <Button onClick={handleKratosReset} variant="outlined">
+            <ResetIcon style={{ marginRight: '0.5rem' }} />
             Reset to Defaults
           </Button>
           <Button
             type="submit"
-            variant="contained"
+            variant="primary"
             disabled={!kratosIsDirty}
-            startIcon={<SaveIcon />}
           >
+            <SaveIcon style={{ marginRight: '0.5rem' }} />
             Save Changes
           </Button>
         </Box>
@@ -299,15 +298,15 @@ export default function SettingsPage() {
 
   const renderHydraSettings = () => (
     <Paper sx={{ p: 4 }}>
-      <Alert severity="info" sx={{ mb: 3 }}>
-        <Typography variant="body2">
+      <Alert severity="info" style={{ marginBottom: '1.5rem' }}>
+        <Typography variant="body">
           <strong>Note:</strong> These are the real Hydra endpoint URLs that the application will proxy to. Settings are stored in your
           browser&apos;s local storage and take effect immediately.
         </Typography>
       </Alert>
 
       <Box component="form" onSubmit={handleHydraSubmit(handleHydraSave)}>
-        <Typography variant="h6" gutterBottom>
+        <Typography variant="heading" level="h2">
           Endpoint Configuration
         </Typography>
         <Divider sx={{ mb: 3 }} />
@@ -354,7 +353,7 @@ export default function SettingsPage() {
           </Grid>
 
           <Grid size={{ xs: 12 }}>
-            <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
+            <Typography variant="heading" level="h2" style={{ marginTop: '1rem' }}>
               Current Configuration
             </Typography>
             <Divider sx={{ mb: 2 }} />
@@ -367,10 +366,10 @@ export default function SettingsPage() {
                 fontSize: '0.875rem',
               }}
             >
-              <Typography variant="body2" sx={{ mb: 1 }}>
+              <Typography variant="code" style={{ display: 'block', marginBottom: '0.5rem' }}>
                 <strong>Public URL:</strong> {hydraEndpoints.publicUrl}
               </Typography>
-              <Typography variant="body2">
+              <Typography variant="code" style={{ display: 'block' }}>
                 <strong>Admin URL:</strong> {hydraEndpoints.adminUrl}
               </Typography>
             </Box>
@@ -378,15 +377,16 @@ export default function SettingsPage() {
         </Grid>
 
         <Box sx={{ display: 'flex', gap: 2, mt: 4, justifyContent: 'flex-end' }}>
-          <Button onClick={handleHydraReset} startIcon={<ResetIcon />} color="secondary" variant="outlined">
+          <Button onClick={handleHydraReset} variant="outlined">
+            <ResetIcon style={{ marginRight: '0.5rem' }} />
             Reset to Defaults
           </Button>
           <Button
             type="submit"
-            variant="contained"
+            variant="primary"
             disabled={!hydraIsDirty}
-            startIcon={<SaveIcon />}
           >
+            <SaveIcon style={{ marginRight: '0.5rem' }} />
             Save Changes
           </Button>
         </Box>
@@ -415,15 +415,15 @@ export default function SettingsPage() {
       >
         <Box sx={{ p: 3, borderBottom: '1px solid', borderColor: 'divider' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-            <Tooltip title="Go back">
-              <IconButton size="small" onClick={() => router.back()}>
+            <Tooltip content="Go back">
+              <IconButton size="small" onClick={() => router.back()} aria-label="Go back">
                 <ArrowBackIcon />
               </IconButton>
             </Tooltip>
             <SettingsIcon />
-            <Typography variant="h6">Settings</Typography>
+            <Typography variant="heading" level="h2">Settings</Typography>
           </Box>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body" color="secondary">
             Configure application preferences
           </Typography>
         </Box>
@@ -468,10 +468,10 @@ export default function SettingsPage() {
       {/* Main Content */}
       <Box sx={{ flexGrow: 1, p: 4, overflow: 'auto' }}>
         <Box sx={{ maxWidth: 800 }}>
-          <Typography variant="h4" gutterBottom>
+          <Typography variant="heading" level="h1">
             {settingsMenuItems.find(item => item.id === activeSection)?.label}
           </Typography>
-          <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
+          <Typography variant="body" color="secondary" style={{ display: 'block', marginBottom: '2rem' }}>
             {settingsMenuItems.find(item => item.id === activeSection)?.description}
           </Typography>
 
@@ -488,12 +488,12 @@ export default function SettingsPage() {
         onClose={() => setShowSuccessMessage(false)}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       >
-        <Alert 
-          onClose={() => setShowSuccessMessage(false)} 
-          severity="success" 
-          sx={{ width: '100%' }}
-          icon={<CheckCircleIcon fontSize="inherit" />}
+        <Alert
+          onClose={() => setShowSuccessMessage(false)}
+          severity="success"
+          style={{ width: '100%' }}
         >
+          <CheckCircleIcon style={{ marginRight: '0.5rem' }} fontSize="inherit" />
           Settings saved successfully!
         </Alert>
       </Snackbar>

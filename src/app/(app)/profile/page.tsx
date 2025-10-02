@@ -1,8 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { Box, Container, Typography, Paper, Avatar, Grid, Card, CardContent, Divider, TextField, Chip, Alert, Snackbar } from '@mui/material';
+import { Box, Container, Paper, Avatar, Grid, Divider, Snackbar } from '@mui/material';
 import { Button } from '@/components/ui/Button';
+import { Card, CardContent } from '@/components/ui/Card';
+import { Typography } from '@/components/ui/Typography';
+import { TextField } from '@/components/ui/TextField';
+import { Chip } from '@/components/ui/Chip';
+import { Alert } from '@/components/ui/Alert';
 import { Edit, Save, Cancel, Person, Email, Badge, Lock } from '@mui/icons-material';
 import { useUser } from '@/features/auth/hooks/useAuth';
 import { UserRole } from '@/features/auth';
@@ -56,15 +61,7 @@ export default function ProfilePage() {
               justifyContent: 'space-between',
             }}
           >
-            <Typography 
-              variant="h4" 
-              component="h1" 
-              gutterBottom
-              sx={{
-                color: 'text.primary',
-                fontWeight: 700,
-              }}
-            >
+            <Typography variant="heading" size="3xl" gutterBottom>
               User Profile
             </Typography>
             {!isEditing ? (
@@ -117,18 +114,22 @@ export default function ProfilePage() {
                   {user.displayName.charAt(0)}
                 </Avatar>
 
-                <Chip label={user.role} color={user.role === UserRole.ADMIN ? 'primary' : 'secondary'} sx={{ mb: 1 }} />
+                <Chip
+                  variant={user.role === UserRole.ADMIN ? 'gradient' : 'role'}
+                  label={user.role}
+                  sx={{ mb: 1 }}
+                />
 
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="label">
                   Account created: March 1, 2025
                 </Typography>
               </Box>
             </Grid>
 
             <Grid size={{ xs: 12, md: 8 }}>
-              <Card variant="outlined" sx={{ mb: 3 }}>
+              <Card variant="bordered" sx={{ mb: 3 }}>
                 <CardContent>
-                  <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Typography variant="heading" size="lg" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
                     <Person sx={{ mr: 1 }} /> Personal Information
                   </Typography>
                   <Divider sx={{ mb: 2 }} />
@@ -137,37 +138,37 @@ export default function ProfilePage() {
                     <Grid size={{ xs: 12 }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                         <Badge sx={{ mr: 1, color: 'text.secondary' }} />
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="label">
                           Display Name
                         </Typography>
                       </Box>
                       {isEditing ? (
                         <TextField fullWidth value={displayName} onChange={(e) => setDisplayName(e.target.value)} size="small" />
                       ) : (
-                        <Typography variant="body1">{user.displayName}</Typography>
+                        <Typography variant="body">{user.displayName}</Typography>
                       )}
                     </Grid>
 
                     <Grid size={{ xs: 12 }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                         <Email sx={{ mr: 1, color: 'text.secondary' }} />
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="label">
                           Email Address
                         </Typography>
                       </Box>
                       {isEditing ? (
                         <TextField fullWidth value={email} onChange={(e) => setEmail(e.target.value)} size="small" />
                       ) : (
-                        <Typography variant="body1">{user.email}</Typography>
+                        <Typography variant="body">{user.email}</Typography>
                       )}
                     </Grid>
                   </Grid>
                 </CardContent>
               </Card>
 
-              <Card variant="outlined">
+              <Card variant="bordered">
                 <CardContent>
-                  <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Typography variant="heading" size="lg" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
                     <Lock sx={{ mr: 1 }} /> Account Information
                   </Typography>
                   <Divider sx={{ mb: 2 }} />
@@ -176,21 +177,21 @@ export default function ProfilePage() {
                     <Grid size={{ xs: 12 }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                         <Person sx={{ mr: 1, color: 'text.secondary' }} />
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="label">
                           Username
                         </Typography>
                       </Box>
-                      <Typography variant="body1">{user.username}</Typography>
+                      <Typography variant="body">{user.username}</Typography>
                     </Grid>
 
                     <Grid size={{ xs: 12 }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                         <Badge sx={{ mr: 1, color: 'text.secondary' }} />
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="label">
                           Role
                         </Typography>
                       </Box>
-                      <Typography variant="body1" sx={{ textTransform: 'capitalize' }}>
+                      <Typography variant="body" sx={{ textTransform: 'capitalize' }}>
                         {user.role}
                       </Typography>
                     </Grid>
@@ -208,7 +209,7 @@ export default function ProfilePage() {
         onClose={() => setShowSnackbar(false)}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert onClose={() => setShowSnackbar(false)} severity="success" sx={{ width: '100%' }}>
+        <Alert variant="toast" onClose={() => setShowSnackbar(false)} severity="success" sx={{ width: '100%' }}>
           Profile updated successfully!
         </Alert>
       </Snackbar>
