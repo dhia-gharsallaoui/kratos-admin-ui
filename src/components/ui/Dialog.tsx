@@ -55,7 +55,7 @@ export const Dialog = React.forwardRef<HTMLDivElement, DialogProps>(
     return (
       <StyledDialog ref={ref} onClose={onClose} {...props}>
         {title && (
-          <StyledDialogTitle $gradient={gradient}>
+          <StyledDialogTitle $gradient={gradient || undefined}>
             {typeof title === 'string' ? (
               <Typography variant="h6" component="span" fontWeight={600}>
                 {title}
