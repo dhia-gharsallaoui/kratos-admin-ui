@@ -128,9 +128,46 @@ export function Sidebar({ open, onClose }: SidebarProps) {
           <List>
             {filteredMainNavItems.map((item) => (
               <ListItem key={item.title} disablePadding>
-                <Link href={item.path} passHref legacyBehavior>
+                <ListItemButton
+                  component={Link}
+                  href={item.path}
+                  selected={isActive(item.path)}
+                  sx={{
+                    py: 1.5,
+                    borderRadius: 1,
+                    mx: 1,
+                    '&.Mui-selected': {
+                      backgroundColor: 'primary.50',
+                      color: 'primary.main',
+                      '&:hover': {
+                        backgroundColor: 'primary.100',
+                      },
+                      '& .MuiListItemIcon-root': {
+                        color: 'primary.main',
+                      },
+                    },
+                  }}
+                >
+                  <ListItemIcon>{item.icon}</ListItemIcon>
+                  <ListItemText primary={item.title} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        </Box>
+
+        {/* Hydra Section */}
+        {filteredHydraNavItems.length > 0 && (
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="label" sx={{ px: 2, color: 'text.secondary', fontWeight: 'bold', textTransform: 'uppercase', fontSize: '0.75rem', display: 'block' }}>
+              Hydra (OAuth2)
+            </Typography>
+            <List>
+              {filteredHydraNavItems.map((item) => (
+                <ListItem key={item.title} disablePadding>
                   <ListItemButton
-                    component="a"
+                    component={Link}
+                    href={item.path}
                     selected={isActive(item.path)}
                     sx={{
                       py: 1.5,
@@ -151,45 +188,6 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                     <ListItemIcon>{item.icon}</ListItemIcon>
                     <ListItemText primary={item.title} />
                   </ListItemButton>
-                </Link>
-              </ListItem>
-            ))}
-          </List>
-        </Box>
-
-        {/* Hydra Section */}
-        {filteredHydraNavItems.length > 0 && (
-          <Box sx={{ mb: 2 }}>
-            <Typography variant="label" sx={{ px: 2, color: 'text.secondary', fontWeight: 'bold', textTransform: 'uppercase', fontSize: '0.75rem', display: 'block' }}>
-              Hydra (OAuth2)
-            </Typography>
-            <List>
-              {filteredHydraNavItems.map((item) => (
-                <ListItem key={item.title} disablePadding>
-                  <Link href={item.path} passHref legacyBehavior>
-                    <ListItemButton
-                      component="a"
-                      selected={isActive(item.path)}
-                      sx={{
-                        py: 1.5,
-                        borderRadius: 1,
-                        mx: 1,
-                        '&.Mui-selected': {
-                          backgroundColor: 'primary.50',
-                          color: 'primary.main',
-                          '&:hover': {
-                            backgroundColor: 'primary.100',
-                          },
-                          '& .MuiListItemIcon-root': {
-                            color: 'primary.main',
-                          },
-                        },
-                      }}
-                    >
-                      <ListItemIcon>{item.icon}</ListItemIcon>
-                      <ListItemText primary={item.title} />
-                    </ListItemButton>
-                  </Link>
                 </ListItem>
               ))}
             </List>

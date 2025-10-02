@@ -126,12 +126,10 @@ export function Header({ onSidebarToggle }: HeaderProps) {
               </Box>
             )}
             <Divider />
-            <Link href="/profile" passHref legacyBehavior>
-              <MenuItem onClick={handleCloseUserMenu} component="a" disabled={pathname === '/profile'}>
-                <PersonIcon fontSize="small" sx={{ mr: 1 }} />
-                <Typography variant="body">Profile</Typography>
-              </MenuItem>
-            </Link>
+            <MenuItem onClick={handleCloseUserMenu} component={Link} href="/profile" disabled={pathname === '/profile'}>
+              <PersonIcon fontSize="small" sx={{ mr: 1 }} />
+              <Typography variant="body">Profile</Typography>
+            </MenuItem>
             <MenuItem onClick={handleLogout}>
               <LogoutIcon fontSize="small" sx={{ mr: 1 }} />
               <Typography variant="body">Logout</Typography>

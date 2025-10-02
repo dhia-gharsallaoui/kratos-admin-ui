@@ -16,9 +16,11 @@ export interface MenuProps extends Omit<MuiMenuProps, 'variant'> {
   muiVariant?: MuiMenuProps['variant'];
 }
 
-export interface MenuItemProps extends MuiMenuItemProps {
+export interface MenuItemProps extends Omit<MuiMenuItemProps, 'component'> {
   icon?: React.ReactNode;
   divider?: boolean;
+  component?: React.ElementType;
+  href?: string;
 }
 
 const StyledMenu = styled(MuiMenu)(({ theme }) => ({
