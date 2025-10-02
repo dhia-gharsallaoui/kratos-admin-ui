@@ -1,24 +1,13 @@
 import React, { ReactNode, useState } from 'react';
 import {
-  Box,
   CssBaseline,
   AppBar,
   Toolbar,
-  Typography,
   Drawer,
-  List,
   Divider,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  IconButton,
+  Avatar,
   useMediaQuery,
   useTheme as useMuiTheme,
-  Avatar,
-  Menu,
-  MenuItem,
-  Tooltip,
 } from '@mui/material';
 import {
   Dashboard,
@@ -38,6 +27,19 @@ import {
   VpnKey,
   Token,
 } from '@mui/icons-material';
+import {
+  Box,
+  Typography,
+  IconButton,
+  Menu,
+  MenuItem,
+  Tooltip,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+} from '@/components/ui';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useTheme } from '@/providers/ThemeProvider';
@@ -133,9 +135,8 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                 <MenuIcon />
               </IconButton>
               <Typography
-                variant="h6"
-                noWrap
-                component="div"
+                variant="heading"
+                size="lg"
                 sx={{
                   display: { xs: 'none', sm: 'block' },
                   fontWeight: 700,
@@ -147,10 +148,11 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
               </Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Tooltip title="GitHub Repository">
+              <Tooltip content="GitHub Repository">
                 <IconButton
-                  color="inherit"
-                  sx={{ 
+                  variant="action"
+                  sx={{
+                    color: 'inherit',
                     background: 'rgba(255,255,255,0.1)',
                     '&:hover': {
                       background: 'rgba(255,255,255,0.2)',
@@ -163,28 +165,31 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                   <GitHub />
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Settings">
-                <IconButton 
-                  color="inherit" 
-                  component={Link} 
-                  href="/settings"
-                  sx={{ 
-                    background: 'rgba(255,255,255,0.1)',
-                    '&:hover': {
-                      background: 'rgba(255,255,255,0.2)',
-                      transform: 'translateY(-2px)',
-                    },
-                    transition: 'all 0.2s ease',
-                  }}
-                >
-                  <Settings />
-                </IconButton>
+              <Tooltip content="Settings">
+                <Link href="/settings" passHref legacyBehavior>
+                  <IconButton
+                    variant="action"
+                    component="a"
+                    sx={{
+                      color: 'inherit',
+                      background: 'rgba(255,255,255,0.1)',
+                      '&:hover': {
+                        background: 'rgba(255,255,255,0.2)',
+                        transform: 'translateY(-2px)',
+                      },
+                      transition: 'all 0.2s ease',
+                    }}
+                  >
+                    <Settings />
+                  </IconButton>
+                </Link>
               </Tooltip>
-              <Tooltip title="Toggle theme">
-                <IconButton 
-                  color="inherit" 
+              <Tooltip content="Toggle theme">
+                <IconButton
+                  variant="action"
                   onClick={toggleTheme}
-                  sx={{ 
+                  sx={{
+                    color: 'inherit',
                     background: 'rgba(255,255,255,0.1)',
                     '&:hover': {
                       background: 'rgba(255,255,255,0.2)',
@@ -197,13 +202,13 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                 </IconButton>
               </Tooltip>
               <IconButton
-                size="large"
+                variant="action"
                 aria-label="account of current user"
                 aria-controls="menu-appbar"
                 aria-haspopup="true"
                 onClick={handleMenu}
-                color="inherit"
-                sx={{ 
+                sx={{
+                  color: 'inherit',
                   background: 'rgba(255,255,255,0.15)',
                   '&:hover': {
                     background: 'rgba(255,255,255,0.25)',
@@ -246,21 +251,22 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                   },
                 }}
               >
-                <MenuItem 
-                  onClick={handleClose} 
-                  component={Link} 
-                  href="/profile" 
-                  disabled={pathname === '/profile'}
-                  sx={{
-                    py: 1.5,
-                    '&:hover': {
-                      background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
-                    },
-                  }}
-                >
-                  <Person fontSize="small" sx={{ mr: 1.5, color: '#667eea' }} />
-                  Profile
-                </MenuItem>
+                <Link href="/profile" passHref legacyBehavior>
+                  <MenuItem
+                    onClick={handleClose}
+                    component="a"
+                    disabled={pathname === '/profile'}
+                    sx={{
+                      py: 1.5,
+                      '&:hover': {
+                        background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
+                      },
+                    }}
+                  >
+                    <Person fontSize="small" sx={{ mr: 1.5, color: '#667eea' }} />
+                    Profile
+                  </MenuItem>
+                </Link>
                 <MenuItem 
                   onClick={handleLogout}
                   sx={{
@@ -307,10 +313,9 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                 : 'linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%)',
             }}
           >
-            <Typography 
-              variant="h6" 
-              noWrap 
-              component="div"
+            <Typography
+              variant="heading"
+              size="lg"
               sx={{
                 fontWeight: 800,
                 background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
@@ -321,7 +326,8 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
             >
               Ory Admin
             </Typography>
-            <IconButton 
+            <IconButton
+              variant="action"
               onClick={handleDrawerToggle}
               sx={{
                 background: 'rgba(102, 126, 234, 0.1)',
@@ -339,35 +345,35 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
               const isActive = pathname === item.path;
               return (
                 <ListItem key={item.text} disablePadding sx={{ mb: 0.5 }}>
-                  <ListItemButton 
-                    component={Link} 
-                    href={item.path} 
-                    selected={isActive}
-                    sx={{
-                      borderRadius: 2,
-                      py: 1.5,
-                      transition: 'all 0.3s ease',
-                      '&.Mui-selected': {
-                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                        color: 'white',
-                        boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)',
-                        '&:hover': {
-                          background: 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)',
-                        },
-                        '& .MuiListItemIcon-root': {
+                  <Link href={item.path} passHref legacyBehavior>
+                    <ListItemButton
+                      component="a"
+                      selected={isActive}
+                      sx={{
+                        borderRadius: 2,
+                        py: 1.5,
+                        transition: 'all 0.3s ease',
+                        '&.Mui-selected': {
+                          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                           color: 'white',
+                          boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)',
+                          '&:hover': {
+                            background: 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)',
+                          },
+                          '& .MuiListItemIcon-root': {
+                            color: 'white',
+                          },
                         },
-                      },
-                      '&:hover': {
-                        background: isActive
-                          ? 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)'
-                          : currentTheme === 'dark'
-                            ? 'rgba(102, 126, 234, 0.2)'
-                            : 'rgba(102, 126, 234, 0.08)',
-                        transform: 'translateX(4px)',
-                      },
-                    }}
-                  >
+                        '&:hover': {
+                          background: isActive
+                            ? 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)'
+                            : currentTheme === 'dark'
+                              ? 'rgba(102, 126, 234, 0.2)'
+                              : 'rgba(102, 126, 234, 0.08)',
+                          transform: 'translateX(4px)',
+                        },
+                      }}
+                    >
                     <ListItemIcon sx={{ 
                       minWidth: 40,
                       color: isActive ? 'white' : '#667eea',
@@ -382,6 +388,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                       }}
                     />
                   </ListItemButton>
+                  </Link>
                 </ListItem>
               );
             })}
