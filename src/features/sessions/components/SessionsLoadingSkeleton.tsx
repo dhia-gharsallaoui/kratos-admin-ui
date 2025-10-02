@@ -1,4 +1,5 @@
-import { Skeleton, TableCell, TableRow } from '@mui/material';
+import { Skeleton } from '@/components/ui/Skeleton';
+import { TableCell, TableRow } from '@/components/ui/Table';
 
 interface SessionsLoadingSkeletonProps {
   rows?: number;

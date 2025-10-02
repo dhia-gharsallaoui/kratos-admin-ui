@@ -1,23 +1,16 @@
 import React, { useState } from 'react';
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Typography,
-  Box,
-  Chip,
-  Grid,
-  Card,
-  CardContent,
-  Alert,
-  CircularProgress,
-  IconButton,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-} from '@mui/material';
 import { Close, Person, Security, Devices, ExpandMore, Delete, Update, Info } from '@mui/icons-material';
+import { Dialog, DialogContent, DialogActions, DialogTitle } from '@/components/ui/Dialog';
+import { Typography } from '@/components/ui/Typography';
+import { Box } from '@/components/ui/Box';
+import { Chip } from '@/components/ui/Chip';
+import { Grid } from '@/components/ui/Grid';
+import { Card } from '@/components/ui/Card';
+import { CardContent } from '@/components/ui/CardContent';
+import { Alert } from '@/components/ui/Alert';
+import { Spinner } from '@/components/ui/Spinner';
+import { IconButton } from '@/components/ui/IconButton';
+import { Accordion, AccordionSummary, AccordionDetails } from '@/components/ui/Accordion';
 import { Button } from '@/components/ui/Button';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getSession, disableSession, extendSession } from '../../../services/kratos/endpoints/sessions';
@@ -124,7 +117,7 @@ export const SessionDetailDialog: React.FC<SessionDetailDialogProps> = React.mem
       <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
         <DialogContent>
           <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
-            <CircularProgress />
+            <Spinner variant="page" />
           </Box>
         </DialogContent>
       </Dialog>
@@ -136,14 +129,14 @@ export const SessionDetailDialog: React.FC<SessionDetailDialogProps> = React.mem
       <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
         <DialogTitle>
           <Box display="flex" alignItems="center" justifyContent="space-between">
-            <Typography variant="h6">Session Details</Typography>
-            <IconButton onClick={onClose} size="small">
+            <Typography variant="heading" size="lg">Session Details</Typography>
+            <IconButton onClick={onClose} variant="action" size="small">
               <Close />
             </IconButton>
           </Box>
         </DialogTitle>
         <DialogContent>
-          <Alert severity="error">Failed to load session details: {fetchError?.message || 'Unknown error'}</Alert>
+          <Alert variant="inline" severity="error">Failed to load session details: {fetchError?.message || 'Unknown error'}</Alert>
         </DialogContent>
       </Dialog>
     );
@@ -157,8 +150,8 @@ export const SessionDetailDialog: React.FC<SessionDetailDialogProps> = React.mem
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle>
         <Box display="flex" alignItems="center" justifyContent="space-between">
-          <Typography variant="h6">Session Details</Typography>
-          <IconButton onClick={onClose} size="small">
+          <Typography variant="heading" size="lg">Session Details</Typography>
+          <IconButton onClick={onClose} variant="action" size="small">
             <Close />
           </IconButton>
         </Box>
@@ -166,7 +159,7 @@ export const SessionDetailDialog: React.FC<SessionDetailDialogProps> = React.mem
 
       <DialogContent dividers>
         {error && (
-          <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>
+          <Alert variant="inline" severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>
             {error}
           </Alert>
         )}
@@ -178,59 +171,63 @@ export const SessionDetailDialog: React.FC<SessionDetailDialogProps> = React.mem
               <CardContent>
                 <Box display="flex" alignItems="center" gap={1} mb={2}>
                   <Info color="primary" />
-                  <Typography variant="h6">Basic Information</Typography>
+                  <Typography variant="heading" size="lg">Basic Information</Typography>
                 </Box>
 
                 <Grid container spacing={2}>
                   <Grid size={{ xs: 12, sm: 6 }}>
-                    <Typography variant="subtitle2" color="text.secondary">
+                    <Typography variant="label" color="text.secondary">
                       Session ID
                     </Typography>
-                    <Typography variant="body2" fontFamily="monospace" sx={{ wordBreak: 'break-all' }}>
+                    <Typography variant="code" sx={{ wordBreak: 'break-all' }}>
                       {session.id}
                     </Typography>
                   </Grid>
 
                   <Grid size={{ xs: 12, sm: 6 }}>
-                    <Typography variant="subtitle2" color="text.secondary">
+                    <Typography variant="label" color="text.secondary">
                       Status
                     </Typography>
-                    <Chip label={session.active ? 'Active' : 'Inactive'} color={session.active ? 'success' : 'default'} size="small" />
+                    <Chip
+                      label={session.active ? 'Active' : 'Inactive'}
+                      variant="status"
+                      status={session.active ? 'active' : 'inactive'}
+                    />
                   </Grid>
 
                   <Grid size={{ xs: 12, sm: 6 }}>
-                    <Typography variant="subtitle2" color="text.secondary">
+                    <Typography variant="label" color="text.secondary">
                       Authenticated At
                     </Typography>
-                    <Typography variant="body2">{session.authenticated_at ? formatDate(session.authenticated_at) : 'N/A'}</Typography>
+                    <Typography variant="body">{session.authenticated_at ? formatDate(session.authenticated_at) : 'N/A'}</Typography>
                   </Grid>
 
                   <Grid size={{ xs: 12, sm: 6 }}>
-                    <Typography variant="subtitle2" color="text.secondary">
+                    <Typography variant="label" color="text.secondary">
                       Issued At
                     </Typography>
-                    <Typography variant="body2">{session.issued_at ? formatDate(session.issued_at) : 'N/A'}</Typography>
+                    <Typography variant="body">{session.issued_at ? formatDate(session.issued_at) : 'N/A'}</Typography>
                   </Grid>
 
                   <Grid size={{ xs: 12, sm: 6 }}>
-                    <Typography variant="subtitle2" color="text.secondary">
+                    <Typography variant="label" color="text.secondary">
                       Expires At
                     </Typography>
-                    <Typography variant="body2" color={isExpired ? 'error.main' : isExpiringSoon ? 'warning.main' : 'text.primary'}>
+                    <Typography variant="body" color={isExpired ? 'error.main' : isExpiringSoon ? 'warning.main' : 'text.primary'}>
                       {session.expires_at ? formatDate(session.expires_at) : 'N/A'}
                     </Typography>
                     {timeRemaining && (
-                      <Typography variant="caption" display="block" color="text.secondary">
+                      <Typography variant="label" display="block" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
                         {timeRemaining}
                       </Typography>
                     )}
                   </Grid>
 
                   <Grid size={{ xs: 12, sm: 6 }}>
-                    <Typography variant="subtitle2" color="text.secondary">
+                    <Typography variant="label" color="text.secondary">
                       Assurance Level
                     </Typography>
-                    <Typography variant="body2">{session.authenticator_assurance_level || 'N/A'}</Typography>
+                    <Typography variant="body">{session.authenticator_assurance_level || 'N/A'}</Typography>
                   </Grid>
                 </Grid>
               </CardContent>
@@ -244,45 +241,45 @@ export const SessionDetailDialog: React.FC<SessionDetailDialogProps> = React.mem
                 <CardContent>
                   <Box display="flex" alignItems="center" gap={1} mb={2}>
                     <Person color="primary" />
-                    <Typography variant="h6">Identity Information</Typography>
+                    <Typography variant="heading" size="lg">Identity Information</Typography>
                   </Box>
 
                   <Grid container spacing={2}>
                     <Grid size={{ xs: 12, sm: 6 }}>
-                      <Typography variant="subtitle2" color="text.secondary">
+                      <Typography variant="label" color="text.secondary">
                         Identity ID
                       </Typography>
-                      <Typography variant="body2" fontFamily="monospace" sx={{ wordBreak: 'break-all' }}>
+                      <Typography variant="code" sx={{ wordBreak: 'break-all' }}>
                         {session.identity.id}
                       </Typography>
                     </Grid>
 
                     <Grid size={{ xs: 12, sm: 6 }}>
-                      <Typography variant="subtitle2" color="text.secondary">
+                      <Typography variant="label" color="text.secondary">
                         Display Name
                       </Typography>
-                      <Typography variant="body2">{getIdentityDisplay(session.identity)}</Typography>
+                      <Typography variant="body">{getIdentityDisplay(session.identity)}</Typography>
                     </Grid>
 
                     <Grid size={{ xs: 12, sm: 6 }}>
-                      <Typography variant="subtitle2" color="text.secondary">
+                      <Typography variant="label" color="text.secondary">
                         State
                       </Typography>
-                      <Chip label={session.identity.state} size="small" />
+                      <Chip label={session.identity.state} variant="tag" />
                     </Grid>
 
                     <Grid size={{ xs: 12, sm: 6 }}>
-                      <Typography variant="subtitle2" color="text.secondary">
+                      <Typography variant="label" color="text.secondary">
                         Schema ID
                       </Typography>
-                      <Typography variant="body2">{session.identity.schema_id || 'N/A'}</Typography>
+                      <Typography variant="body">{session.identity.schema_id || 'N/A'}</Typography>
                     </Grid>
                   </Grid>
 
                   {session.identity.traits && (
                     <Accordion sx={{ mt: 2 }}>
                       <AccordionSummary expandIcon={<ExpandMore />}>
-                        <Typography variant="subtitle2">Identity Traits</Typography>
+                        <Typography variant="label">Identity Traits</Typography>
                       </AccordionSummary>
                       <AccordionDetails>
                         <Box
@@ -312,12 +309,12 @@ export const SessionDetailDialog: React.FC<SessionDetailDialogProps> = React.mem
                 <CardContent>
                   <Box display="flex" alignItems="center" gap={1} mb={2}>
                     <Security color="primary" />
-                    <Typography variant="h6">Authentication Methods</Typography>
+                    <Typography variant="heading" size="lg">Authentication Methods</Typography>
                   </Box>
 
                   <Accordion>
                     <AccordionSummary expandIcon={<ExpandMore />}>
-                      <Typography variant="subtitle2">{session.authentication_methods.length} method(s) used</Typography>
+                      <Typography variant="label">{session.authentication_methods.length} method(s) used</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
                       <Box
@@ -346,12 +343,12 @@ export const SessionDetailDialog: React.FC<SessionDetailDialogProps> = React.mem
                 <CardContent>
                   <Box display="flex" alignItems="center" gap={1} mb={2}>
                     <Devices color="primary" />
-                    <Typography variant="h6">Devices</Typography>
+                    <Typography variant="heading" size="lg">Devices</Typography>
                   </Box>
 
                   <Accordion>
                     <AccordionSummary expandIcon={<ExpandMore />}>
-                      <Typography variant="subtitle2">{session.devices.length} device(s) registered</Typography>
+                      <Typography variant="label">{session.devices.length} device(s) registered</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
                       <Box
@@ -382,7 +379,7 @@ export const SessionDetailDialog: React.FC<SessionDetailDialogProps> = React.mem
           <Button
             onClick={handleExtendSession}
             disabled={actionLoading === 'extend'}
-            startIcon={actionLoading === 'extend' ? <CircularProgress size={16} /> : <Update />}
+            startIcon={actionLoading === 'extend' ? <Spinner variant="inline" size="small" /> : <Update />}
             variant="outlined"
           >
             Extend Session
@@ -392,7 +389,7 @@ export const SessionDetailDialog: React.FC<SessionDetailDialogProps> = React.mem
         <Button
           onClick={handleRevokeSession}
           disabled={actionLoading === 'delete'}
-          startIcon={actionLoading === 'delete' ? <CircularProgress size={16} /> : <Delete />}
+          startIcon={actionLoading === 'delete' ? <Spinner variant="inline" size="small" /> : <Delete />}
           variant="danger"
         >
           Revoke Session

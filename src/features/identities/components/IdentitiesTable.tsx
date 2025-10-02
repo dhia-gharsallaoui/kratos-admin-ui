@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Box } from '@mui/material';
+import { Box } from '@/components/ui/Box';
 import { Typography } from '@/components/ui/Typography';
 import { Chip } from '@/components/ui/Chip';
 import { Tooltip } from '@/components/ui/Tooltip';

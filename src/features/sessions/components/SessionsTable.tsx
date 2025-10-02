@@ -1,6 +1,9 @@
 import React, { useMemo } from 'react';
-import { Box, Typography, Chip, Tooltip } from '@mui/material';
 import { Person, AccessTime, Warning } from '@mui/icons-material';
+import { Box } from '@/components/ui/Box';
+import { Typography } from '@/components/ui/Typography';
+import { Chip } from '@/components/ui/Chip';
+import { Tooltip } from '@/components/ui/Tooltip';
 import { DataTable, DataTableColumn } from '@/components/ui/DataTable';
 import { formatDate } from '@/lib/date-utils';
 
@@ -53,12 +56,10 @@ export const SessionsTable: React.FC<SessionsTableProps> = React.memo(({
       minWidth: 200,
       maxWidth: 250,
       renderCell: (value: string) => (
-        <Tooltip title={value}>
+        <Tooltip content={value}>
           <Typography
-            variant="body2"
+            variant="code"
             sx={{
-              fontFamily: 'monospace',
-              fontSize: '0.875rem',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
             }}
@@ -75,7 +76,7 @@ export const SessionsTable: React.FC<SessionsTableProps> = React.memo(({
       maxWidth: 250,
       renderCell: (_: any, session: any) => (
         <Typography
-          variant="body2"
+          variant="body"
           sx={{
             fontWeight: 500,
             overflow: 'hidden',
@@ -93,14 +94,8 @@ export const SessionsTable: React.FC<SessionsTableProps> = React.memo(({
       renderCell: (value: boolean) => (
         <Chip
           label={value ? 'Active' : 'Inactive'}
-          color={value ? 'success' : 'default'}
-          size="small"
-          sx={{
-            borderRadius: 'var(--radius)',
-            fontWeight: 500,
-            background: value ? '#10b981' : 'var(--muted)',
-            color: value ? 'white' : 'var(--muted-foreground)',
-          }}
+          variant="status"
+          status={value ? 'active' : 'inactive'}
         />
       ),
     },
@@ -111,7 +106,7 @@ export const SessionsTable: React.FC<SessionsTableProps> = React.memo(({
       renderCell: (value: string) => value ? (
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
           <AccessTime fontSize="small" color="action" />
-          <Typography variant="body2">{formatDate(value)}</Typography>
+          <Typography variant="body">{formatDate(value)}</Typography>
         </Box>
       ) : 'N/A',
     },
@@ -129,7 +124,7 @@ export const SessionsTable: React.FC<SessionsTableProps> = React.memo(({
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
             {isExpiringSoon && <Warning fontSize="small" color="warning" />}
             <Typography
-              variant="body2"
+              variant="body"
               color={isExpiringSoon ? 'warning.main' : 'text.primary'}
               fontWeight={isExpiringSoon ? 500 : 400}
             >

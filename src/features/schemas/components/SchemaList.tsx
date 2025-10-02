@@ -1,8 +1,13 @@
 'use client';
 
 import React from 'react';
-import { List, ListItem, ListItemButton, ListItemText, ListItemIcon, Card, Typography, Chip, Box, Skeleton } from '@mui/material';
 import { Schema as SchemaIcon } from '@mui/icons-material';
+import { List, ListItem, ListItemButton, ListItemText, ListItemIcon } from '@/components/ui/List';
+import { Card } from '@/components/ui/Card';
+import { Typography } from '@/components/ui/Typography';
+import { Chip } from '@/components/ui/Chip';
+import { Box } from '@/components/ui/Box';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { IdentitySchemaContainer } from '@ory/kratos-client';
 import { formatSchemaForDisplay } from '../utils';
 
@@ -35,7 +40,7 @@ const SchemaList: React.FC<SchemaListProps> = ({ schemas, loading, selectedSchem
     return (
       <Card>
         <Box sx={{ p: 3, textAlign: 'center' }}>
-          <Typography variant="body1" color="text.secondary">
+          <Typography variant="body" color="text.secondary">
             No schemas found
           </Typography>
         </Box>
@@ -59,16 +64,16 @@ const SchemaList: React.FC<SchemaListProps> = ({ schemas, loading, selectedSchem
                 <ListItemText
                   primary={
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <Typography variant="subtitle2">{formattedSchema.displayName}</Typography>
-                      {formattedSchema.isDefault && <Chip label="Default" color="primary" size="small" variant="outlined" />}
+                      <Typography variant="label">{formattedSchema.displayName}</Typography>
+                      {formattedSchema.isDefault && <Chip label="Default" variant="tag" />}
                     </Box>
                   }
                   secondary={
                     <Box>
-                      <Typography variant="body2" color="text.secondary">
+                      <Typography variant="body" color="text.secondary">
                         {formattedSchema.description}
                       </Typography>
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography variant="label" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
                         {formattedSchema.fieldCount} fields • ID: {schema.id}
                       </Typography>
                     </Box>
