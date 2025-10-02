@@ -1,5 +1,6 @@
 import React from 'react';
-import { Box, Typography, Link } from '@mui/material';
+import { Link } from '@mui/material';
+import { Box, Typography } from '@/components/ui';
 
 const Footer: React.FC = () => {
   return (
@@ -18,9 +19,10 @@ const Footer: React.FC = () => {
       }}
     >
       <Typography
-        variant="body2"
-        color="text.secondary"
+        variant="body"
+        size="sm"
         sx={{
+          color: 'text.secondary',
           display: 'flex',
           alignItems: 'center',
           gap: 0.5,

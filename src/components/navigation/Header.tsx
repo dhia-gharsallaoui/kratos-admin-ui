@@ -1,10 +1,19 @@
 import { useState } from 'react';
-import { AppBar, Avatar, Box, IconButton, Menu, MenuItem, Toolbar, Tooltip, Typography, Chip, Divider } from '@mui/material';
+import { AppBar, Avatar, Toolbar, Divider } from '@mui/material';
 import { Person as PersonIcon, Logout as LogoutIcon, Menu as MenuIcon, AdminPanelSettings, RemoveRedEye } from '@mui/icons-material';
 import { useUser, useLogout } from '@/features/auth';
 import { UserRole } from '@/features/auth';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import {
+  Box,
+  Typography,
+  IconButton,
+  Menu,
+  MenuItem,
+  Tooltip,
+  Chip,
+} from '@/components/ui';
 
 interface HeaderProps {
   onSidebarToggle: () => void;
@@ -41,32 +50,38 @@ export function Header({ onSidebarToggle }: HeaderProps) {
       }}
     >
       <Toolbar>
-        <IconButton color="inherit" aria-label="open drawer" edge="start" onClick={onSidebarToggle} sx={{ mr: 2, display: { sm: 'none' } }}>
+        <IconButton
+          variant="action"
+          aria-label="open drawer"
+          onClick={onSidebarToggle}
+          sx={{
+            mr: 2,
+            display: { sm: 'none' },
+            color: 'inherit',
+          }}
+        >
           <MenuIcon />
         </IconButton>
-        <Typography variant="h6" component="div" sx={{ display: { xs: 'none', sm: 'block' } }}>
+        <Typography variant="heading" size="lg" sx={{ display: { xs: 'none', sm: 'block' } }}>
           Ory Kratos Admin
         </Typography>
         <Box sx={{ flexGrow: 1 }} />
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           {user && (
             <Chip
-              icon={user.role === UserRole.ADMIN ? <AdminPanelSettings fontSize="small" /> : <RemoveRedEye fontSize="small" />}
+              variant={user.role === UserRole.ADMIN ? 'role' : 'tag'}
               label={user.displayName}
-              variant="outlined"
-              color={user.role === UserRole.ADMIN ? 'primary' : 'secondary'}
-              size="small"
+              icon={user.role === UserRole.ADMIN ? <AdminPanelSettings fontSize="small" /> : <RemoveRedEye fontSize="small" />}
               sx={{ mr: 2, display: { xs: 'none', sm: 'flex' } }}
             />
           )}
-          <Tooltip title="Account">
+          <Tooltip content="Account">
             <IconButton
+              variant="action"
               onClick={handleOpenUserMenu}
-              size="large"
-              edge="end"
               aria-label="account of current user"
               aria-haspopup="true"
-              color="inherit"
+              sx={{ color: 'inherit' }}
             >
               <Avatar
                 sx={{
@@ -97,23 +112,29 @@ export function Header({ onSidebarToggle }: HeaderProps) {
           >
             {user && (
               <Box sx={{ px: 2, py: 1 }}>
-                <Typography variant="subtitle2" sx={{ fontWeight: 'bold' }}>
+                <Typography variant="label" sx={{ fontWeight: 'bold', display: 'block', mb: 0.5 }}>
                   {user.displayName}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body" size="sm" sx={{ display: 'block', color: 'text.secondary' }}>
                   {user.email}
                 </Typography>
-                <Chip label={user.role} size="small" color={user.role === UserRole.ADMIN ? 'primary' : 'secondary'} sx={{ mt: 1 }} />
+                <Chip
+                  variant={user.role === UserRole.ADMIN ? 'role' : 'tag'}
+                  label={user.role}
+                  sx={{ mt: 1 }}
+                />
               </Box>
             )}
             <Divider />
-            <MenuItem onClick={handleCloseUserMenu} component={Link} href="/profile" disabled={pathname === '/profile'}>
-              <PersonIcon fontSize="small" sx={{ mr: 1 }} />
-              <Typography textAlign="center">Profile</Typography>
-            </MenuItem>
+            <Link href="/profile" passHref legacyBehavior>
+              <MenuItem onClick={handleCloseUserMenu} component="a" disabled={pathname === '/profile'}>
+                <PersonIcon fontSize="small" sx={{ mr: 1 }} />
+                <Typography variant="body">Profile</Typography>
+              </MenuItem>
+            </Link>
             <MenuItem onClick={handleLogout}>
               <LogoutIcon fontSize="small" sx={{ mr: 1 }} />
-              <Typography textAlign="center">Logout</Typography>
+              <Typography variant="body">Logout</Typography>
             </MenuItem>
           </Menu>
         </Box>
