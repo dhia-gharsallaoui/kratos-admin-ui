@@ -3,9 +3,9 @@
 import { useParams, useRouter } from 'next/navigation';
 import {
   Box,
-  Grid,
   Divider,
 } from '@mui/material';
+import { Grid } from '@/components/ui'
 import { Typography } from '@/components/ui/Typography';
 import { Chip } from '@/components/ui/Chip';
 import { Card, CardContent } from '@/components/ui/Card';
@@ -183,72 +183,76 @@ export default function IdentityDetailPage() {
             {/* Basic Information */}
             <Grid size={{ xs: 12, md: 6 }}>
               <Card>
-                <Typography variant="heading" level="h2">
-                  Basic Information
-                </Typography>
-                <Divider sx={{ mb: 2 }} />
+                <CardContent>
+                  <Typography variant="heading" level="h2">
+                    Basic Information
+                  </Typography>
+                  <Divider sx={{ mb: 2 }} />
 
-                <Box sx={{ mb: 2 }}>
-                  <Typography variant="body" color="secondary">
-                    Status
-                  </Typography>
-                  <Chip
-                    label={identity.state || 'active'}
-                    variant="status"
-                    size="small"
-                    style={{ marginTop: '0.25rem' }}
-                  />
-                </Box>
+                  <Box sx={{ mb: 2 }}>
+                    <Typography variant="body" color="secondary">
+                      Status
+                    </Typography>
+                    <Chip
+                      label={identity.state || 'active'}
+                      variant="status"
+                      size="small"
+                      style={{ marginTop: '0.25rem' }}
+                    />
+                  </Box>
 
-                <Box sx={{ mb: 2 }}>
-                  <Typography variant="body" color="secondary">
-                    Schema ID
-                  </Typography>
-                  <Typography variant="code">
-                    {identity.schema_id}
-                  </Typography>
-                </Box>
+                  <Box sx={{ mb: 2 }}>
+                    <Typography variant="body" color="secondary">
+                      Schema ID
+                    </Typography>
+                    <Typography variant="code">
+                      {identity.schema_id}
+                    </Typography>
+                  </Box>
 
-                <Box sx={{ mb: 2 }}>
-                  <Typography variant="body" color="secondary">
-                    Created At
-                  </Typography>
-                  <Typography variant="body">{formatDate(identity.created_at || '')}</Typography>
-                </Box>
+                  <Box sx={{ mb: 2 }}>
+                    <Typography variant="body" color="secondary">
+                      Created At
+                    </Typography>
+                    <Typography variant="body">{formatDate(identity.created_at || '')}</Typography>
+                  </Box>
 
-                <Box sx={{ mb: 2 }}>
-                  <Typography variant="body" color="secondary">
-                    Updated At
-                  </Typography>
-                  <Typography variant="body">{formatDate(identity.updated_at || '')}</Typography>
-                </Box>
+                  <Box sx={{ mb: 2 }}>
+                    <Typography variant="body" color="secondary">
+                      Updated At
+                    </Typography>
+                    <Typography variant="body">{formatDate(identity.updated_at || '')}</Typography>
+                  </Box>
+                </CardContent>
               </Card>
             </Grid>
 
             {/* Traits */}
             <Grid size={{ xs: 12, md: 6 }}>
               <Card>
-                <Typography variant="heading" level="h2">
-                  Traits
-                </Typography>
-                <Divider sx={{ mb: 2 }} />
-
-                {traits && Object.keys(traits).length > 0 ? (
-                  Object.entries(traits).map(([key, value]) => (
-                    <Box key={key} sx={{ mb: 2 }}>
-                      <Typography variant="body" color="secondary">
-                        {key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' ')}
-                      </Typography>
-                      <Typography variant="body" style={{ wordBreak: 'break-word' }}>
-                        {typeof value === 'object' ? JSON.stringify(value, null, 2) : String(value)}
-                      </Typography>
-                    </Box>
-                  ))
-                ) : (
-                  <Typography variant="body" color="secondary">
-                    No traits available
+                <CardContent>
+                  <Typography variant="heading" level="h2">
+                    Traits
                   </Typography>
-                )}
+                  <Divider sx={{ mb: 2 }} />
+
+                  {traits && Object.keys(traits).length > 0 ? (
+                    Object.entries(traits).map(([key, value]) => (
+                      <Box key={key} sx={{ mb: 2 }}>
+                        <Typography variant="body" color="secondary">
+                          {key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' ')}
+                        </Typography>
+                        <Typography variant="body" style={{ wordBreak: 'break-word' }}>
+                          {typeof value === 'object' ? JSON.stringify(value, null, 2) : String(value)}
+                        </Typography>
+                      </Box>
+                    ))
+                  ) : (
+                    <Typography variant="body" color="secondary">
+                      No traits available
+                    </Typography>
+                  )}
+                </CardContent>
               </Card>
             </Grid>
 

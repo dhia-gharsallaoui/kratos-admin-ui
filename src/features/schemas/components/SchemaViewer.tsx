@@ -1,7 +1,12 @@
 'use client';
 
 import React from 'react';
-import { Card, CardContent, Typography, Box, Chip, Skeleton } from '@mui/material';
+import { Card } from '@/components/ui/Card';
+import { CardContent } from '@/components/ui/CardContent';
+import { Typography } from '@/components/ui/Typography';
+import { Box } from '@/components/ui/Box';
+import { Chip } from '@/components/ui/Chip';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { IdentitySchemaContainer } from '@ory/kratos-client';
 import { formatSchemaForDisplay, extractSchemaFields } from '../utils';
 
@@ -30,33 +35,33 @@ const SchemaViewer: React.FC<SchemaViewerProps> = ({ schema, loading = false }) 
   return (
     <Card>
       <CardContent>
-        <Typography variant="h6" gutterBottom>
+        <Typography variant="heading" size="lg" gutterBottom>
           {formattedSchema.displayName}
         </Typography>
 
-        <Typography variant="body2" color="text.secondary" component="p" sx={{ mb: 2 }}>
+        <Typography variant="body" color="text.secondary" component="p" sx={{ mb: 2 }}>
           {formattedSchema.description}
         </Typography>
 
         <Box sx={{ mb: 2 }}>
-          <Typography variant="subtitle2" gutterBottom>
+          <Typography variant="label" gutterBottom>
             Schema ID: {schema.id}
           </Typography>
-          {formattedSchema.isDefault && <Chip label="Default Schema" color="primary" size="small" />}
+          {formattedSchema.isDefault && <Chip label="Default Schema" variant="gradient" />}
         </Box>
 
         <Box sx={{ mb: 2 }}>
-          <Typography variant="subtitle2" gutterBottom>
+          <Typography variant="label" gutterBottom>
             Fields ({formattedSchema.fieldCount}):
           </Typography>
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
             {fields.map((field) => (
-              <Chip key={field} label={field} variant="outlined" size="small" />
+              <Chip key={field} label={field} variant="tag" />
             ))}
           </Box>
         </Box>
 
-        <Typography variant="subtitle2" gutterBottom>
+        <Typography variant="label" gutterBottom>
           Schema Definition:
         </Typography>
         <Box

@@ -1,8 +1,14 @@
 import React, { useEffect } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Grid, Box, Typography, Alert, Chip } from '@mui/material';
+import { Grid } from '@/components/ui/Grid';
+import { Box } from '@/components/ui/Box';
 import { useForm, Controller } from 'react-hook-form';
 import { Identity } from '@ory/kratos-client';
 import { useUpdateIdentity } from '../hooks/useIdentities';
+import { Dialog, DialogContent, DialogActions } from '@/components/ui/Dialog';
+import { Typography } from '@/components/ui/Typography';
+import { TextField } from '@/components/ui/TextField';
+import { Chip } from '@/components/ui/Chip';
+import { Alert } from '@/components/ui/Alert';
 import { DottedLoader } from '@/components/ui/DottedLoader';
 import { Button } from '@/components/ui/Button';
 import { formatDate } from '@/lib/date-utils';
@@ -103,31 +109,33 @@ export const IdentityEditModal: React.FC<IdentityEditModalProps> = ({ open, onCl
       onClose={handleClose}
       maxWidth="md"
       fullWidth
+      title={
+        <Box>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            <Typography variant="heading" size="lg">Edit Identity</Typography>
+            <Chip label={identity.schema_id} variant="tag" />
+          </Box>
+          <Typography variant="code" sx={{ mt: 1 }}>
+            {identity.id}
+          </Typography>
+        </Box>
+      }
       slotProps={{
         paper: {
           sx: { minHeight: '500px' },
         },
       }}
     >
-      <DialogTitle>
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-        >
-          <Typography variant="h6">Edit Identity</Typography>
-          <Chip label={identity.schema_id} size="small" variant="outlined" sx={{ fontFamily: 'monospace' }} />
-        </Box>
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 1, fontFamily: 'monospace' }}>
-          {identity.id}
-        </Typography>
-      </DialogTitle>
 
       <DialogContent>
         {updateIdentityMutation.isError && (
-          <Alert severity="error" sx={{ mb: 2 }}>
+          <Alert variant="inline" severity="error" sx={{ mb: 2 }}>
             Failed to update identity: {(updateIdentityMutation.error as any)?.message || 'Unknown error'}
           </Alert>
         )}
@@ -136,7 +144,7 @@ export const IdentityEditModal: React.FC<IdentityEditModalProps> = ({ open, onCl
           <Grid container spacing={3}>
             {/* Basic Information */}
             <Grid size={{ xs: 12 }}>
-              <Typography variant="h6" gutterBottom>
+              <Typography variant="heading" size="lg" gutterBottom>
                 Basic Information
               </Typography>
             </Grid>
@@ -232,17 +240,17 @@ export const IdentityEditModal: React.FC<IdentityEditModalProps> = ({ open, onCl
 
             {/* Read-only Information */}
             <Grid size={{ xs: 12 }}>
-              <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
+              <Typography variant="heading" size="lg" gutterBottom sx={{ mt: 2 }}>
                 Read-only Information
               </Typography>
             </Grid>
 
             <Grid size={{ xs: 12, md: 6 }}>
-              <TextField label="Created At" value={formatDate(identity.created_at)} fullWidth disabled variant="filled" />
+              <TextField label="Created At" value={formatDate(identity.created_at)} fullWidth disabled variant="readonly" />
             </Grid>
 
             <Grid size={{ xs: 12, md: 6 }}>
-              <TextField label="Updated At" value={formatDate(identity.updated_at)} fullWidth disabled variant="filled" />
+              <TextField label="Updated At" value={formatDate(identity.updated_at)} fullWidth disabled variant="readonly" />
             </Grid>
           </Grid>
         </Box>

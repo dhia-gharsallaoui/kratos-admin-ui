@@ -1,21 +1,15 @@
 import React, { useState } from 'react';
-import {
-  Box,
-  Typography,
-  Paper,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Alert,
-  CircularProgress,
-  TextField,
-  Autocomplete,
-  useTheme,
-} from '@mui/material';
+import { Box } from '@/components/ui/Box';
+import { FormControl, InputLabel, Select } from '@/components/ui/Select';
+import { Autocomplete } from '@/components/ui/Autocomplete';
+import { TextField as MuiTextField, MenuItem } from '@mui/material';
+import { useTheme } from '@mui/material';
 import { Save, Cancel } from '@mui/icons-material';
+import { Typography } from '@/components/ui/Typography';
+import { Alert } from '@/components/ui/Alert';
 import { Button } from '@/components/ui/Button';
 import { Spinner } from '@/components/ui/Spinner';
+import { Card } from '@/components/ui/Card';
 import Form from '@rjsf/mui';
 import { RJSFSchema, UiSchema, WidgetProps, FieldTemplateProps, ObjectFieldTemplateProps, SubmitButtonProps } from '@rjsf/utils';
 import validator from '@rjsf/validator-ajv8';
@@ -183,7 +177,7 @@ const TelWidget: React.FC<WidgetProps> = ({ id, value, onChange, onBlur, onFocus
         options={countryOptions}
         getOptionLabel={(option) => option.label}
         renderInput={(params) => (
-          <TextField
+          <MuiTextField
             {...params}
             label="Country"
             variant="outlined"
@@ -210,7 +204,7 @@ const TelWidget: React.FC<WidgetProps> = ({ id, value, onChange, onBlur, onFocus
         size="small"
       />
 
-      <TextField
+      <MuiTextField
         id={id}
         type="tel"
         label={required ? `${label || 'Phone Number'} *` : label || 'Phone Number'}
@@ -324,7 +318,7 @@ const TextWidget: React.FC<WidgetProps> = ({ id, value, onChange, onBlur, onFocu
   };
 
   return (
-    <TextField
+    <MuiTextField
       id={id}
       label={required ? `${label} *` : label}
       type={isEmail ? 'email' : 'text'}
@@ -375,17 +369,17 @@ const FieldTemplate: React.FC<FieldTemplateProps> = ({ children, description, er
     <Box sx={{ mb: 2 }}>
       {children}
       {description && (
-        <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
+        <Typography variant="label" sx={{ mt: 0.5, display: 'block', opacity: 0.7 }}>
           {description}
         </Typography>
       )}
       {errors && (
-        <Typography variant="caption" color="error" sx={{ mt: 0.5, display: 'block' }}>
+        <Typography variant="label" sx={{ mt: 0.5, display: 'block', color: 'error.main' }}>
           {errors}
         </Typography>
       )}
       {help && (
-        <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
+        <Typography variant="label" sx={{ mt: 0.5, display: 'block', opacity: 0.7 }}>
           {help}
         </Typography>
       )}
@@ -398,12 +392,12 @@ const ObjectFieldTemplate: React.FC<ObjectFieldTemplateProps> = ({ title, descri
   return (
     <Box sx={{ mb: 3 }}>
       {title && (
-        <Typography variant="h6" sx={{ mb: 2, fontWeight: 500 }}>
+        <Typography variant="heading" size="lg" sx={{ mb: 2 }}>
           {title}
         </Typography>
       )}
       {description && (
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+        <Typography variant="subheading" sx={{ mb: 2 }}>
           {description}
         </Typography>
       )}
@@ -543,27 +537,24 @@ const CreateIdentityForm: React.FC<CreateIdentityFormProps> = ({ onSuccess, onCa
   }
 
   return (
-    <Paper 
-      elevation={0} 
-      sx={{ 
-        p: 4, 
-        maxWidth: 800, 
+    <Card
+      variant="bordered"
+      sx={{
+        p: 4,
+        maxWidth: 800,
         mx: 'auto',
-        border: 1,
-        borderColor: 'divider',
-        borderRadius: 2,
       }}
     >
-      <Typography variant="h5" component="h1" gutterBottom fontWeight={600}>
+      <Typography variant="gradient" size="2xl" gutterBottom>
         Create New Identity
       </Typography>
 
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+      <Typography variant="subheading" sx={{ mb: 3 }}>
         Create a new user identity in your Kratos instance. Select a schema to see the required fields.
       </Typography>
 
       {createIdentityMutation.isError && (
-        <Alert severity="error" sx={{ mb: 3 }}>
+        <Alert variant="inline" severity="error" sx={{ mb: 3 }}>
           Failed to create identity: {(createIdentityMutation.error as any)?.message || 'Unknown error'}
         </Alert>
       )}
@@ -574,7 +565,7 @@ const CreateIdentityForm: React.FC<CreateIdentityFormProps> = ({ onSuccess, onCa
           <Select
             value={selectedSchemaId}
             label="Identity Schema"
-            onChange={(e) => handleSchemaChange(e.target.value)}
+            onChange={(e) => handleSchemaChange(e.target.value as string)}
             disabled={createIdentityMutation.isPending}
           >
             {schemas?.map((schema: IdentitySchemaContainer) => (
@@ -626,7 +617,7 @@ const CreateIdentityForm: React.FC<CreateIdentityFormProps> = ({ onSuccess, onCa
                 <Button
                   type="submit"
                   variant="primary"
-                  startIcon={createIdentityMutation.isPending ? <CircularProgress size={20} /> : <Save />}
+                  startIcon={createIdentityMutation.isPending ? <Spinner variant="inline" size="small" /> : <Save />}
                   disabled={createIdentityMutation.isPending || !selectedSchemaId}
                 >
                   {createIdentityMutation.isPending ? 'Creating...' : 'Create Identity'}
@@ -647,7 +638,7 @@ const CreateIdentityForm: React.FC<CreateIdentityFormProps> = ({ onSuccess, onCa
           </Box>
         )}
       </Box>
-    </Paper>
+    </Card>
   );
 };
 

@@ -1,7 +1,9 @@
 import React, { useMemo } from 'react';
-import { Box, Typography, Chip } from '@mui/material';
 import { Mail, Sms, CheckCircle, Schedule, Cancel, Error as ErrorIcon } from '@mui/icons-material';
+import { Box } from '@/components/ui/Box';
 import { DataTable, DataTableColumn } from '@/components/ui/DataTable';
+import { Typography } from '@/components/ui/Typography';
+import { Chip } from '@/components/ui/Chip';
 import { CourierMessageStatus } from '@/services/kratos/endpoints/courier';
 import { formatDate } from '@/lib/date-utils';
 
@@ -65,7 +67,7 @@ export const MessagesTable: React.FC<MessagesTableProps> = React.memo(({
       renderCell: (value: string) => (
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           {getMessageTypeIcon(value)}
-          <Typography variant="body2" sx={{ textTransform: 'capitalize' }}>
+          <Typography variant="body" sx={{ textTransform: 'capitalize' }}>
             {value}
           </Typography>
         </Box>
@@ -78,7 +80,7 @@ export const MessagesTable: React.FC<MessagesTableProps> = React.memo(({
       maxWidth: 250,
       renderCell: (value: string) => (
         <Typography
-          variant="body2"
+          variant="body"
           sx={{
             overflow: 'hidden',
             textOverflow: 'ellipsis',
@@ -96,7 +98,7 @@ export const MessagesTable: React.FC<MessagesTableProps> = React.memo(({
       maxWidth: 300,
       renderCell: (value: string) => (
         <Typography
-          variant="body2"
+          variant="body"
           sx={{
             overflow: 'hidden',
             textOverflow: 'ellipsis',
@@ -116,9 +118,8 @@ export const MessagesTable: React.FC<MessagesTableProps> = React.memo(({
           {getStatusIcon(value)}
           <Chip
             label={value}
-            color={getStatusColor(value) as any}
-            size="small"
-            sx={{ textTransform: 'capitalize' }}
+            variant="status"
+            status={value === 'sent' ? 'active' : value === 'queued' ? 'pending' : 'inactive'}
           />
         </Box>
       ),
@@ -128,7 +129,7 @@ export const MessagesTable: React.FC<MessagesTableProps> = React.memo(({
       headerName: 'Template',
       minWidth: 160,
       renderCell: (value: string) => (
-        <Typography variant="body2" sx={{ fontFamily: 'monospace', fontSize: '0.75rem' }}>
+        <Typography variant="code">
           {value || 'Unknown'}
         </Typography>
       ),
@@ -138,7 +139,7 @@ export const MessagesTable: React.FC<MessagesTableProps> = React.memo(({
       headerName: 'Created',
       minWidth: 180,
       renderCell: (value: string) => (
-        <Typography variant="body2">{formatDate(value)}</Typography>
+        <Typography variant="body">{formatDate(value)}</Typography>
       ),
     },
     {
@@ -146,7 +147,7 @@ export const MessagesTable: React.FC<MessagesTableProps> = React.memo(({
       headerName: 'Send Count',
       minWidth: 120,
       renderCell: (value: number) => (
-        <Typography variant="body2">{value || 0}</Typography>
+        <Typography variant="body">{value || 0}</Typography>
       ),
     },
   ], []);

@@ -1,8 +1,11 @@
 import React from 'react';
-import { Typography, Box, Chip, Alert } from '@mui/material';
+import { Box } from '@/components/ui/Box';
 import { Identity } from '@ory/kratos-client';
 import { useDeleteIdentity } from '../hooks/useIdentities';
 import { FormDialog, FormDialogAction } from '@/components/ui/FormDialog';
+import { Typography } from '@/components/ui/Typography';
+import { Chip } from '@/components/ui/Chip';
+import { Alert } from '@/components/ui/Alert';
 import { uiLogger } from '@/lib/logger';
 
 interface IdentityDeleteDialogProps {
@@ -66,7 +69,7 @@ export const IdentityDeleteDialog: React.FC<IdentityDeleteDialogProps> = ({ open
       disableBackdropClick={deleteIdentityMutation.isPending}
     >
       <Box sx={{ mb: 3 }}>
-        <Typography variant="body1" gutterBottom>
+        <Typography variant="body" gutterBottom>
           Are you sure you want to delete this identity? This action cannot be undone.
         </Typography>
       </Box>
@@ -81,29 +84,29 @@ export const IdentityDeleteDialog: React.FC<IdentityDeleteDialogProps> = ({ open
             mb: 1,
           }}
         >
-          <Typography variant="h6">{displayName}</Typography>
-          <Chip label={identity.schema_id} size="small" variant="outlined" sx={{ fontFamily: 'monospace' }} />
+          <Typography variant="heading" size="lg">{displayName}</Typography>
+          <Chip label={identity.schema_id} variant="tag" />
         </Box>
 
-        <Typography variant="body2" color="text.secondary" sx={{ fontFamily: 'monospace', mb: 1 }}>
+        <Typography variant="code" sx={{ mb: 1 }}>
           ID: {identity.id}
         </Typography>
 
         {traits?.email && (
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="label">
             Email: {traits.email}
           </Typography>
         )}
 
         {traits?.username && (
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="label">
             Username: {traits.username}
           </Typography>
         )}
       </Box>
 
-      <Alert severity="warning" sx={{ mt: 2 }}>
-        <Typography variant="body2">
+      <Alert variant="inline" severity="warning" sx={{ mt: 2 }}>
+        <Typography variant="body">
           <strong>Warning:</strong> Deleting this identity will:
         </Typography>
         <Box component="ul" sx={{ mt: 1, mb: 0, pl: 2 }}>
