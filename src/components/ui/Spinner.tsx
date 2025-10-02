@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, BoxProps, CircularProgress } from '@mui/material';
+import { useExtendedTheme } from '@/theme';
 
 type SpinnerVariant = 'dots' | 'ring' | 'pulse' | 'page' | 'button' | 'inline' | 'overlay';
 type SpinnerSize = 'small' | 'medium' | 'large';
@@ -19,10 +20,12 @@ const sizeMap = {
 export const Spinner: React.FC<SpinnerProps> = ({
   variant = 'ring',
   size = 'medium',
-  color = '#667eea',
+  color,
   sx = {},
   ...props
 }) => {
+  const theme = useExtendedTheme();
+  const defaultColor = color || theme.gradient.colors.primary;
   const spinnerSize = sizeMap[size];
 
   // Page loading - centered in viewport
@@ -39,7 +42,7 @@ export const Spinner: React.FC<SpinnerProps> = ({
         }}
         {...props}
       >
-        <CircularProgress size={spinnerSize} sx={{ color }} />
+        <CircularProgress size={spinnerSize} sx={{ color: defaultColor }} />
       </Box>
     );
   }
@@ -60,7 +63,7 @@ export const Spinner: React.FC<SpinnerProps> = ({
     return (
       <CircularProgress
         size={20}
-        sx={{ color, ...sx }}
+        sx={{ color: defaultColor, ...sx }}
         {...props}
       />
     );
@@ -110,7 +113,7 @@ export const Spinner: React.FC<SpinnerProps> = ({
               width: spinnerSize / 6,
               height: spinnerSize / 6,
               borderRadius: '50%',
-              backgroundColor: color,
+              backgroundColor: defaultColor,
               animation: 'bounce 1.4s ease-in-out infinite',
               animationDelay: `${i * 0.16}s`,
               '@keyframes bounce': {
@@ -147,7 +150,7 @@ export const Spinner: React.FC<SpinnerProps> = ({
             width: '100%',
             height: '100%',
             borderRadius: '50%',
-            border: `3px solid ${color}`,
+            border: `3px solid ${defaultColor}`,
             animation: 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
             '@keyframes pulse': {
               '0%, 100%': {
@@ -183,8 +186,8 @@ export const Spinner: React.FC<SpinnerProps> = ({
           height: '100%',
           borderRadius: '50%',
           border: `3px solid transparent`,
-          borderTopColor: color,
-          borderRightColor: color,
+          borderTopColor: defaultColor,
+          borderRightColor: defaultColor,
           animation: 'spin 0.8s linear infinite',
           '@keyframes spin': {
             '0%': {
@@ -206,8 +209,8 @@ export const Spinner: React.FC<SpinnerProps> = ({
           height: '70%',
           borderRadius: '50%',
           border: `2px solid transparent`,
-          borderBottomColor: '#764ba2',
-          borderLeftColor: '#764ba2',
+          borderBottomColor: theme.gradient.colors.secondary,
+          borderLeftColor: theme.gradient.colors.secondary,
           animation: 'spin-reverse 1.2s linear infinite',
           '@keyframes spin-reverse': {
             '0%': {

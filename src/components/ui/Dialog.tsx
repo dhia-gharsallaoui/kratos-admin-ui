@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
+import { gradients } from '@/theme';
 
 export interface DialogProps extends Omit<MuiDialogProps, 'title'> {
   variant?: 'default' | 'form' | 'confirm' | 'detail';
@@ -34,7 +35,7 @@ const StyledDialogTitle = styled(MuiDialogTitle)<{ $gradient?: boolean }>(({ the
   padding: theme.spacing(2, 3),
   borderBottom: `1px solid ${theme.palette.divider}`,
   ...(($gradient) && {
-    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    background: gradients.normal,
     color: '#ffffff',
   }),
 }));

@@ -9,6 +9,7 @@ import {
   ListItemText,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { alpha } from '@/theme';
 
 export interface MenuProps extends Omit<MuiMenuProps, 'variant'> {
   variant?: 'dropdown' | 'context' | 'user';
@@ -39,12 +40,12 @@ const StyledMenuItem = styled(MuiMenuItem)(({ theme }) => ({
   margin: '2px 0',
   transition: 'all 0.2s ease',
   '&:hover': {
-    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+    backgroundColor: alpha.primary[10],
   },
   '&.Mui-selected': {
     backgroundColor: 'rgba(102, 126, 234, 0.15)',
     '&:hover': {
-      backgroundColor: 'rgba(102, 126, 234, 0.2)',
+      backgroundColor: alpha.primary[20],
     },
   },
 }));
