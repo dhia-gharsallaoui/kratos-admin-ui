@@ -1,6 +1,7 @@
 import React from 'react';
 import { Tooltip as MuiTooltip, TooltipProps as MuiTooltipProps } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { alpha, shadows } from '@/theme';
 
 export interface TooltipProps extends Omit<MuiTooltipProps, 'enterDelay' | 'title'> {
   variant?: 'default' | 'info' | 'help';
@@ -30,17 +31,17 @@ const InfoTooltip = styled(({ className, ...props }: MuiTooltipProps) => (
   <MuiTooltip {...props} classes={{ popper: className }} />
 ))(({ theme }) => ({
   '& .MuiTooltip-tooltip': {
-    backgroundColor: 'rgba(102, 126, 234, 0.95)',
+    backgroundColor: alpha.primary[95],
     color: '#ffffff',
     fontSize: '0.875rem',
     padding: '10px 14px',
     borderRadius: '8px',
     maxWidth: 300,
     fontWeight: 500,
-    boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)',
+    boxShadow: shadows.md,
   },
   '& .MuiTooltip-arrow': {
-    color: 'rgba(102, 126, 234, 0.95)',
+    color: alpha.primary[95],
   },
 }));
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { IconButton as MuiIconButton, IconButtonProps as MuiIconButtonProps } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { gradientColors, alpha } from '@/theme';
 
 export interface IconButtonProps extends Omit<MuiIconButtonProps, 'variant'> {
   variant?: 'action' | 'default';
@@ -20,13 +21,13 @@ const StyledIconButton = styled(MuiIconButton, {
   if ($variant === 'action') {
     return {
       ...baseStyles,
-      background: 'rgba(102, 126, 234, 0.1)',
+      background: alpha.primary[10],
       '&:hover': {
-        background: 'rgba(102, 126, 234, 0.2)',
+        background: alpha.primary[20],
         transform: 'scale(1.05)',
       },
       '& .MuiSvgIcon-root': {
-        color: '#667eea',
+        color: gradientColors.primary,
       },
     };
   }

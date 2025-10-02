@@ -2,6 +2,7 @@ import React from 'react';
 import { TextField as MuiTextField, TextFieldProps as MuiTextFieldProps, InputAdornment, IconButton } from '@mui/material';
 import { Search, Clear } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
+import { gradientColors } from '@/theme';
 
 export interface TextFieldProps extends Omit<MuiTextFieldProps, 'variant'> {
   variant?: 'standard' | 'search' | 'readonly';
@@ -20,10 +21,10 @@ const StyledTextField = styled(MuiTextField, {
       borderRadius: '8px',
       transition: 'all 0.3s ease',
       '&:hover fieldset': {
-        borderColor: '#667eea',
+        borderColor: gradientColors.primary,
       },
       '&.Mui-focused fieldset': {
-        borderColor: '#764ba2',
+        borderColor: gradientColors.secondary,
       },
     },
   };

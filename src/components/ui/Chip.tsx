@@ -1,6 +1,7 @@
 import React from 'react';
 import { Chip as MuiChip, ChipProps as MuiChipProps } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { gradients, gradientColors, alpha } from '@/theme';
 
 type CustomChipVariant = 'gradient' | 'status' | 'role' | 'tag';
 
@@ -25,7 +26,7 @@ const StyledChip = styled(MuiChip, {
   if ($variant === 'gradient') {
     return {
       ...baseStyles,
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      background: gradients.normal,
       color: '#ffffff',
       border: 'none',
       fontWeight: 600,
@@ -68,9 +69,9 @@ const StyledChip = styled(MuiChip, {
   if ($variant === 'role') {
     return {
       ...baseStyles,
-      backgroundColor: 'rgba(102, 126, 234, 0.1)',
-      color: '#667eea',
-      border: '1px solid rgba(102, 126, 234, 0.3)',
+      backgroundColor: alpha.primary[10],
+      color: gradientColors.primary,
+      border: `1px solid ${alpha.primary[30]}`,
       fontWeight: 600,
     };
   }

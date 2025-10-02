@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button as MuiButton, ButtonProps as MuiButtonProps } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { gradients, shadows } from '@/theme';
 
 export interface ButtonProps extends Omit<MuiButtonProps, 'variant'> {
   variant?: 'primary' | 'secondary' | 'outlined' | 'text' | 'danger';
@@ -37,14 +38,14 @@ const StyledButton = styled(MuiButton, {
   if ($variant === 'primary') {
     return {
       ...baseStyles,
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      background: gradients.normal,
       color: '#ffffff',
       border: 'none',
-      boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)',
+      boxShadow: shadows.md,
       '&:hover': {
         ...baseStyles['&:hover'],
-        background: 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)',
-        boxShadow: '0 6px 20px rgba(102, 126, 234, 0.4)',
+        background: gradients.reversed,
+        boxShadow: shadows.lg,
         transform: 'translateY(-2px)',
       },
     };

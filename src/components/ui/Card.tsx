@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card as MuiCard, CardProps as MuiCardProps, CardContent as MuiCardContent } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { gradients, alpha } from '@/theme';
 
 export interface CardProps extends Omit<MuiCardProps, 'variant'> {
   variant?: 'bordered' | 'gradient' | 'metric' | 'outlined';
@@ -30,10 +31,10 @@ const StyledCard = styled(MuiCard, {
   if ($variant === 'gradient') {
     return {
       ...baseStyles,
-      background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
+      background: gradients.subtle,
       border: '2px solid',
-      borderColor: 'rgba(102, 126, 234, 0.3)',
-      boxShadow: '0 4px 20px rgba(102, 126, 234, 0.1)',
+      borderColor: alpha.primary[30],
+      boxShadow: `0 4px 20px ${alpha.primary[10]}`,
     };
   }
 

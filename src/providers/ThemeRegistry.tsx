@@ -4,6 +4,8 @@ import { useState } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Inter } from 'next/font/google';
+import { gradientColor } from '@/theme/colors';
+import '@/theme/types'; // Import types for module augmentation
 
 // Load Inter font
 const inter = Inter({
@@ -21,6 +23,8 @@ export default function ThemeRegistry({ children }: { children: React.ReactNode 
         secondary: {
           main: '#f50057',
         },
+        // Add custom gradient color directly
+        gradient: gradientColor,
       },
       typography: {
         fontFamily: inter.style.fontFamily,

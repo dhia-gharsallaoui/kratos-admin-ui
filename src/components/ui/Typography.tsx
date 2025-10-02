@@ -1,6 +1,7 @@
 import React from 'react';
 import { Typography as MuiTypography, TypographyProps as MuiTypographyProps } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { gradients } from '@/theme';
 
 type CustomVariant = 'heading' | 'subheading' | 'body' | 'label' | 'code' | 'gradient';
 
@@ -72,7 +73,7 @@ const StyledTypography = styled(MuiTypography, {
     return {
       ...baseStyles,
       fontWeight: 700,
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      background: gradients.text,
       backgroundClip: 'text',
       WebkitBackgroundClip: 'text',
       WebkitTextFillColor: 'transparent',
