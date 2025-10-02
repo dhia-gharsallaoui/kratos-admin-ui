@@ -15,7 +15,10 @@ import { styled, alpha } from '@mui/material/styles';
 
 export interface ListProps extends MuiListProps {}
 export interface ListItemProps extends MuiListItemProps {}
-export interface ListItemButtonProps extends MuiListItemButtonProps {}
+export interface ListItemButtonProps extends Omit<MuiListItemButtonProps, 'component'> {
+  component?: React.ElementType;
+  href?: string;
+}
 export interface ListItemTextProps extends MuiListItemTextProps {}
 export interface ListItemIconProps extends MuiListItemIconProps {}
 

@@ -3,8 +3,10 @@ import { IconButton as MuiIconButton, IconButtonProps as MuiIconButtonProps } fr
 import { styled } from '@mui/material/styles';
 import { gradientColors, alpha } from '@/theme';
 
-export interface IconButtonProps extends Omit<MuiIconButtonProps, 'variant'> {
+export interface IconButtonProps extends Omit<MuiIconButtonProps, 'variant' | 'component'> {
   variant?: 'action' | 'default';
+  component?: React.ElementType;
+  href?: string;
 }
 
 interface StyledIconButtonProps extends Omit<MuiIconButtonProps, 'variant'> {
