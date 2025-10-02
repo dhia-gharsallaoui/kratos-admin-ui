@@ -18,12 +18,7 @@ import {
   Snackbar,
   Divider,
 } from '@mui/material';
-import { Typography } from '@/components/ui/Typography';
-import { TextField } from '@/components/ui/TextField';
-import { Alert } from '@/components/ui/Alert';
-import { Button } from '@/components/ui/Button';
-import { IconButton } from '@/components/ui/IconButton';
-import { Tooltip } from '@/components/ui/Tooltip';
+import { Alert, Button, IconButton, TextField, Tooltip, Typography } from '@/components/ui';
 import {
   Settings as SettingsIcon,
   RestartAlt as ResetIcon,

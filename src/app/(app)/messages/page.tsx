@@ -8,15 +8,8 @@ import {
   Select,
   MenuItem,
 } from '@mui/material';
-import { Button } from '@/components/ui/Button';
-import { IconButton } from '@/components/ui/IconButton';
-import { Card, CardContent } from '@/components/ui/Card';
-import { Typography } from '@/components/ui/Typography';
-import { TextField } from '@/components/ui/TextField';
-import { Tooltip } from '@/components/ui/Tooltip';
-import { Spinner } from '@/components/ui/Spinner';
 import { Refresh, Close, ExpandMore } from '@mui/icons-material';
-import { ErrorDisplay } from '@/components/ui/ErrorDisplay';
+import { Button, Card, CardContent, ErrorDisplay, IconButton, Spinner, TextField, Tooltip, Typography } from '@/components/ui';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import { UserRole } from '@/features/auth';

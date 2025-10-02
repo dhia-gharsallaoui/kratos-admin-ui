@@ -1,11 +1,7 @@
 import React from 'react';
-import { Box } from '@/components/ui/Box';
 import { Identity } from '@ory/kratos-client';
+import { Alert, Box, Chip, FormDialog, FormDialogAction, Typography } from '@/components/ui';
 import { useDeleteIdentity } from '../hooks/useIdentities';
-import { FormDialog, FormDialogAction } from '@/components/ui/FormDialog';
-import { Typography } from '@/components/ui/Typography';
-import { Chip } from '@/components/ui/Chip';
-import { Alert } from '@/components/ui/Alert';
 import { uiLogger } from '@/lib/logger';
 
 interface IdentityDeleteDialogProps {

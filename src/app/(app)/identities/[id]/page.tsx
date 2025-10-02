@@ -5,21 +5,12 @@ import {
   Box,
   Divider,
 } from '@mui/material';
-import { Grid } from '@/components/ui'
-import { Typography } from '@/components/ui/Typography';
-import { Chip } from '@/components/ui/Chip';
-import { Card, CardContent } from '@/components/ui/Card';
-import { IconButton } from '@/components/ui/IconButton';
-import { Tooltip } from '@/components/ui/Tooltip';
-import { Alert } from '@/components/ui/Alert';
-import { Dialog } from '@/components/ui/Dialog';
 import { ArrowBack, Edit, Delete, Refresh, Link as LinkIcon, DeleteSweep, Person } from '@mui/icons-material';
-import { Button } from '@/components/ui/Button';
+import { Alert, Button, Card, CardContent, Chip, Dialog, DottedLoader, Grid, IconButton, Tooltip, Typography } from '@/components/ui';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import { UserRole } from '@/features/auth';
 import { useIdentity } from '@/features/identities/hooks';
-import { DottedLoader } from '@/components/ui/DottedLoader';
 import { IdentityEditModal } from '@/features/identities/components/IdentityEditModal';
 import { IdentityDeleteDialog } from '@/features/identities/components/IdentityDeleteDialog';
 import { IdentityRecoveryDialog } from '@/features/identities/components/IdentityRecoveryDialog';

@@ -2,12 +2,7 @@
 
 import React from 'react';
 import { Schema as SchemaIcon } from '@mui/icons-material';
-import { List, ListItem, ListItemButton, ListItemText, ListItemIcon } from '@/components/ui/List';
-import { Card } from '@/components/ui/Card';
-import { Typography } from '@/components/ui/Typography';
-import { Chip } from '@/components/ui/Chip';
-import { Box } from '@/components/ui/Box';
-import { Skeleton } from '@/components/ui/Skeleton';
+import { Box, Card, Chip, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Skeleton, Typography } from '@/components/ui';
 import { IdentitySchemaContainer } from '@ory/kratos-client';
 import { formatSchemaForDisplay } from '../utils';
 

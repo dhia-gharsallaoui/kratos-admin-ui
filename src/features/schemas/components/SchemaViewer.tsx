@@ -1,12 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Card } from '@/components/ui/Card';
-import { CardContent } from '@/components/ui/CardContent';
-import { Typography } from '@/components/ui/Typography';
-import { Box } from '@/components/ui/Box';
-import { Chip } from '@/components/ui/Chip';
-import { Skeleton } from '@/components/ui/Skeleton';
+import { Box, Card, CardContent, Chip, Skeleton, Typography } from '@/components/ui';
 import { IdentitySchemaContainer } from '@ory/kratos-client';
 import { formatSchemaForDisplay, extractSchemaFields } from '../utils';
 

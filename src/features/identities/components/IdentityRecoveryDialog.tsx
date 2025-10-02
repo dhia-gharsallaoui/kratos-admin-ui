@@ -1,17 +1,8 @@
 import React, { useState } from 'react';
 import { Close, ContentCopy, Link as LinkIcon } from '@mui/icons-material';
-import { Box } from '@/components/ui/Box';
-import { TextField } from '@/components/ui/TextField';
-import { InputAdornment } from '@/components/ui/InputAdornment';
-import { IconButton } from '@/components/ui/IconButton';
-import { Snackbar } from '@/components/ui/Snackbar';
-import { Dialog, DialogContent, DialogActions } from '@/components/ui/Dialog';
-import { Typography } from '@/components/ui/Typography';
-import { Alert } from '@/components/ui/Alert';
-import { Button } from '@/components/ui/Button';
+import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DottedLoader, IconButton, InputAdornment, Snackbar, TextField, Typography } from '@/components/ui';
 import { Identity } from '@ory/kratos-client';
 import { createRecoveryLink } from '@/services/kratos';
-import { DottedLoader } from '@/components/ui/DottedLoader';
 
 interface IdentityRecoveryDialogProps {
   open: boolean;

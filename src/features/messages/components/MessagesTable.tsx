@@ -1,9 +1,6 @@
 import React, { useMemo } from 'react';
 import { Mail, Sms, CheckCircle, Schedule, Cancel, Error as ErrorIcon } from '@mui/icons-material';
-import { Box } from '@/components/ui/Box';
-import { DataTable, DataTableColumn } from '@/components/ui/DataTable';
-import { Typography } from '@/components/ui/Typography';
-import { Chip } from '@/components/ui/Chip';
+import { Box, Chip, DataTable, DataTableColumn, Typography } from '@/components/ui';
 import { CourierMessageStatus } from '@/services/kratos/endpoints/courier';
 import { formatDate } from '@/lib/date-utils';
 

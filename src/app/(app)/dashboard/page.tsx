@@ -2,11 +2,7 @@
 
 import { Box, Grid, Paper } from '@mui/material';
 import { Refresh, TrendingUp, Group, Security, Schedule, Schema, HealthAndSafety, VpnKey, Cloud, Apps } from '@mui/icons-material';
-import { Typography } from '@/components/ui/Typography';
-import { IconButton } from '@/components/ui/IconButton';
-import { Tooltip } from '@/components/ui/Tooltip';
-import { Alert } from '@/components/ui/Alert';
-import { Card } from '@/components/ui/Card';
+import { Alert, Card, IconButton, Tooltip, Typography } from '@/components/ui';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import { UserRole } from '@/features/auth';

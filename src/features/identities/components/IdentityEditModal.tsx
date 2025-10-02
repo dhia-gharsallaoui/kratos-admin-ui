@@ -1,16 +1,8 @@
 import React, { useEffect } from 'react';
-import { Grid } from '@/components/ui/Grid';
-import { Box } from '@/components/ui/Box';
 import { useForm, Controller } from 'react-hook-form';
 import { Identity } from '@ory/kratos-client';
+import { Alert, Box, Button, Chip, Dialog, DialogActions, DialogContent, DottedLoader, Grid, TextField, Typography } from '@/components/ui';
 import { useUpdateIdentity } from '../hooks/useIdentities';
-import { Dialog, DialogContent, DialogActions } from '@/components/ui/Dialog';
-import { Typography } from '@/components/ui/Typography';
-import { TextField } from '@/components/ui/TextField';
-import { Chip } from '@/components/ui/Chip';
-import { Alert } from '@/components/ui/Alert';
-import { DottedLoader } from '@/components/ui/DottedLoader';
-import { Button } from '@/components/ui/Button';
 import { formatDate } from '@/lib/date-utils';
 import { uiLogger } from '@/lib/logger';
 

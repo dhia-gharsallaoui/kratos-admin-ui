@@ -1,5 +1,4 @@
-import { Skeleton } from '@/components/ui/Skeleton';
-import { TableCell, TableRow } from '@/components/ui/Table';
+import { Skeleton, TableCell, TableRow } from '@/components/ui';
 
 interface SessionsLoadingSkeletonProps {
   rows?: number;

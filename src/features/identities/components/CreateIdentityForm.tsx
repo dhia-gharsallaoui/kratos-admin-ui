@@ -1,15 +1,8 @@
 import React, { useState } from 'react';
-import { Box } from '@/components/ui/Box';
-import { FormControl, InputLabel, Select } from '@/components/ui/Select';
-import { Autocomplete } from '@/components/ui/Autocomplete';
 import { TextField as MuiTextField, MenuItem } from '@mui/material';
 import { useTheme } from '@mui/material';
 import { Save, Cancel } from '@mui/icons-material';
-import { Typography } from '@/components/ui/Typography';
-import { Alert } from '@/components/ui/Alert';
-import { Button } from '@/components/ui/Button';
-import { Spinner } from '@/components/ui/Spinner';
-import { Card } from '@/components/ui/Card';
+import { Alert, Autocomplete, Box, Button, Card, FormControl, InputLabel, Select, Spinner, Typography } from '@/components/ui';
 import Form from '@rjsf/mui';
 import { RJSFSchema, UiSchema, WidgetProps, FieldTemplateProps, ObjectFieldTemplateProps, SubmitButtonProps } from '@rjsf/utils';
 import validator from '@rjsf/validator-ajv8';

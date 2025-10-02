@@ -1,10 +1,6 @@
 import React, { useMemo } from 'react';
 import { Person, AccessTime, Warning } from '@mui/icons-material';
-import { Box } from '@/components/ui/Box';
-import { Typography } from '@/components/ui/Typography';
-import { Chip } from '@/components/ui/Chip';
-import { Tooltip } from '@/components/ui/Tooltip';
-import { DataTable, DataTableColumn } from '@/components/ui/DataTable';
+import { Box, Chip, DataTable, DataTableColumn, Tooltip, Typography } from '@/components/ui';
 import { formatDate } from '@/lib/date-utils';
 
 interface SessionsTableProps {

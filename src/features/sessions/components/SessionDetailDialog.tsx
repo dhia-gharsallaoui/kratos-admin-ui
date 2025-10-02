@@ -1,17 +1,6 @@
 import React, { useState } from 'react';
 import { Close, Person, Security, Devices, ExpandMore, Delete, Update, Info } from '@mui/icons-material';
-import { Dialog, DialogContent, DialogActions, DialogTitle } from '@/components/ui/Dialog';
-import { Typography } from '@/components/ui/Typography';
-import { Box } from '@/components/ui/Box';
-import { Chip } from '@/components/ui/Chip';
-import { Grid } from '@/components/ui/Grid';
-import { Card } from '@/components/ui/Card';
-import { CardContent } from '@/components/ui/CardContent';
-import { Alert } from '@/components/ui/Alert';
-import { Spinner } from '@/components/ui/Spinner';
-import { IconButton } from '@/components/ui/IconButton';
-import { Accordion, AccordionSummary, AccordionDetails } from '@/components/ui/Accordion';
-import { Button } from '@/components/ui/Button';
+import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, Card, CardContent, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, Spinner, Typography } from '@/components/ui';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getSession, disableSession, extendSession } from '../../../services/kratos/endpoints/sessions';
 import { formatDate } from '@/lib/date-utils';
