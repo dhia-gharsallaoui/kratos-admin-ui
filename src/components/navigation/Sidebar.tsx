@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { DashboardOutlined, PeopleOutlined, SecurityOutlined, DescriptionOutlined, LogoutOutlined, MailOutlined, Apps, VpnKey, Token } from '@mui/icons-material';
-import { Divider, Drawer } from '@mui/material';
+import { Divider, Drawer } from '@/components/ui';
 import { useLogout, useUser } from '@/features/auth';
 import { UserRole } from '@/features/auth';
 import {

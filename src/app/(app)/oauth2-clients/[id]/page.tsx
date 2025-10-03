@@ -4,14 +4,14 @@ import { useState, use } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Box,
+  Divider,
   Grid,
-  Paper,
   List,
   ListItem,
   ListItemText,
+  Paper,
   Skeleton,
-  Divider,
-} from '@mui/material';
+} from '@/components/ui';
 import { Alert, Button, Card, CardContent, Chip, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Menu, MenuItem, Tooltip, Typography } from '@/components/ui';
 import {
   ArrowBack as ArrowBackIcon,

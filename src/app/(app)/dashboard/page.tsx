@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Grid, Paper } from '@mui/material';
+import { Box, Grid, Paper } from '@/components/ui';
 import { Refresh, TrendingUp, Group, Security, Schedule, Schema, HealthAndSafety, VpnKey, Cloud, Apps } from '@mui/icons-material';
 import { Alert, Card, IconButton, Tooltip, Typography } from '@/components/ui';
 import { AdminLayout } from '@/components/layout/AdminLayout';

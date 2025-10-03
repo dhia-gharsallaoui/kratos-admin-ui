@@ -10,8 +10,8 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TablePagination,
-} from '@mui/material';
+} from '@/components/ui';
+import { TablePagination } from '@mui/material';
 import { Code, Description, Refresh, MoreVert, Close } from '@mui/icons-material';
 import { Button, Card, CardContent, Chip, Dialog, DialogActions, DialogContent, DialogTitle, ErrorDisplay, IconButton, Spinner, TextField, Tooltip, Typography } from '@/components/ui';
 import { AdminLayout } from '@/components/layout/AdminLayout';

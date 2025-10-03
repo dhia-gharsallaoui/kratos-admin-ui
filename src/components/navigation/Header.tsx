@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { AppBar, Avatar, Toolbar, Divider } from '@mui/material';
+import { AppBar, Avatar, Divider, Toolbar } from '@/components/ui';
 import { Person as PersonIcon, Logout as LogoutIcon, Menu as MenuIcon, AdminPanelSettings, RemoveRedEye } from '@mui/icons-material';
 import { useUser, useLogout } from '@/features/auth';
 import { UserRole } from '@/features/auth';

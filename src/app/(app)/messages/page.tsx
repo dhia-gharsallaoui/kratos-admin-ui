@@ -5,9 +5,9 @@ import {
   Box,
   FormControl,
   InputLabel,
-  Select,
   MenuItem,
-} from '@mui/material';
+  Select,
+} from '@/components/ui';
 import { Refresh, Close, ExpandMore } from '@mui/icons-material';
 import { Button, Card, CardContent, ErrorDisplay, IconButton, Spinner, TextField, Tooltip, Typography } from '@/components/ui';
 import { AdminLayout } from '@/components/layout/AdminLayout';
