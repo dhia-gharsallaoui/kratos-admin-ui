@@ -1,11 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  Box,
-  Grid,
-} from '@/components/ui';
-import { Alert, Button, Card, CardContent, Chip, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Menu, MenuItem, TextField, Typography } from '@/components/ui';
+import { Box, Grid } from '@/components/ui';
+import { Alert, Button, Card, CardContent, Chip, Dialog, DialogActions, DialogContent, IconButton, Menu, MenuItem, TextField, Typography } from '@/components/ui';
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import {
   Add as AddIcon,
@@ -16,12 +13,12 @@ import {
   Apps as AppsIcon,
 } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
-import { AdminLayout } from '@/components/layout/AdminLayout';
+import { ProtectedPage, PageHeader, SectionCard } from '@/components/layout';
 import { useAllOAuth2Clients, useDeleteOAuth2Client } from '@/features/oauth2-clients';
 import { transformOAuth2ClientForTable, formatClientId, getClientType } from '@/features/oauth2-clients';
 import { OAuth2Client } from '@/services/hydra';
 import { MetricCard } from '@/components/ui/MetricCard';
-import { 
+import {
   Group,
   Public as PublicIcon,
   Lock as LockIcon,
@@ -201,40 +198,22 @@ export default function OAuth2ClientsPage() {
   ];
 
   return (
-    <AdminLayout>
+    <ProtectedPage>
       <Box sx={{ p: 3 }}>
-      {/* Header */}
-      <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Box
-            sx={{
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              borderRadius: 2,
-              p: 1.5,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <AppsIcon sx={{ fontSize: 32, color: 'white' }} />
-          </Box>
-          <Box>
-            <Typography variant="gradient" size="3xl">
-              OAuth2 Clients
-            </Typography>
-            <Typography variant="subheading">
-              Manage OAuth2 client applications and their configurations
-            </Typography>
-          </Box>
-        </Box>
-        <Button
-          variant="primary"
-          startIcon={<AddIcon />}
-          onClick={() => router.push('/oauth2-clients/create')}
-        >
-          Create Client
-        </Button>
-      </Box>
+        <PageHeader
+          title="OAuth2 Clients"
+          subtitle="Manage OAuth2 client applications and their configurations"
+          icon={<AppsIcon sx={{ fontSize: 32, color: 'white' }} />}
+          actions={
+            <Button
+              variant="primary"
+              startIcon={<AddIcon />}
+              onClick={() => router.push('/oauth2-clients/create')}
+            >
+              Create Client
+            </Button>
+          }
+        />
 
       {/* Stats Cards */}
       <Grid container spacing={3} sx={{ mb: 3 }}>
@@ -273,18 +252,16 @@ export default function OAuth2ClientsPage() {
       </Grid>
 
       {/* Search */}
-      <Card variant="bordered" sx={{ mb: 3 }}>
-        <CardContent>
-          <TextField
-            variant="search"
-            fullWidth
-            placeholder="Search clients by name, ID, or owner..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            onClear={() => setSearchTerm('')}
-          />
-        </CardContent>
-      </Card>
+      <SectionCard sx={{ mb: 3 }}>
+        <TextField
+          variant="search"
+          fullWidth
+          placeholder="Search clients by name, ID, or owner..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          onClear={() => setSearchTerm('')}
+        />
+      </SectionCard>
 
       {/* Error Display */}
       {error && (
@@ -370,6 +347,6 @@ export default function OAuth2ClientsPage() {
         </DialogActions>
       </Dialog>
       </Box>
-    </AdminLayout>
+    </ProtectedPage>
   );
 }

@@ -1,14 +1,11 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import {
-  Box,
-  Divider,
-} from '@/components/ui';
+import { Box, Divider } from '@/components/ui';
 import { ArrowBack, Edit, Delete, Refresh, Link as LinkIcon, DeleteSweep, Person } from '@mui/icons-material';
 import { Alert, Button, Card, CardContent, Chip, Dialog, DottedLoader, Grid, IconButton, Tooltip, Typography } from '@/components/ui';
-import { AdminLayout } from '@/components/layout/AdminLayout';
-import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
+import { ProtectedPage, PageHeader, SectionCard, FlexBox } from '@/components/layout';
+import { FieldDisplay } from '@/components/display';
 import { UserRole } from '@/features/auth';
 import { useIdentity } from '@/features/identities/hooks';
 import { IdentityEditModal } from '@/features/identities/components/IdentityEditModal';
@@ -91,52 +88,40 @@ export default function IdentityDetailPage() {
 
   if (isLoading) {
     return (
-      <ProtectedRoute requiredRole={UserRole.ADMIN}>
-        <AdminLayout>
-          <Box display="flex" justifyContent="center" alignItems="center" height="400px">
-            <DottedLoader variant="page" />
-          </Box>
-        </AdminLayout>
-      </ProtectedRoute>
+      <ProtectedPage requiredRole={UserRole.ADMIN}>
+        <Box display="flex" justifyContent="center" alignItems="center" height="400px">
+          <DottedLoader variant="page" />
+        </Box>
+      </ProtectedPage>
     );
   }
 
   if (isError || !identity) {
     return (
-      <ProtectedRoute requiredRole={UserRole.ADMIN}>
-        <AdminLayout>
-          <Box sx={{ p: 3 }}>
-            <Typography variant="heading" level="h1" color="error">
-              Identity Not Found
-            </Typography>
-            <Typography variant="body" style={{ marginBottom: '1.5rem' }}>
-              The identity with ID &quot;{identityId}&quot; could not be found.
-            </Typography>
-            <Button variant="primary" onClick={handleBack}>
-              Back to Identities
-            </Button>
-          </Box>
-        </AdminLayout>
-      </ProtectedRoute>
+      <ProtectedPage requiredRole={UserRole.ADMIN}>
+        <Box sx={{ p: 3 }}>
+          <Typography variant="heading" level="h1" color="error">
+            Identity Not Found
+          </Typography>
+          <Typography variant="body" style={{ marginBottom: '1.5rem' }}>
+            The identity with ID &quot;{identityId}&quot; could not be found.
+          </Typography>
+          <Button variant="primary" onClick={handleBack}>
+            Back to Identities
+          </Button>
+        </Box>
+      </ProtectedPage>
     );
   }
 
   const traits = identity.traits as any;
 
   return (
-    <ProtectedRoute requiredRole={UserRole.ADMIN}>
-      <AdminLayout>
-        <Box sx={{ p: 3 }}>
-          {/* Header */}
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              mb: 3,
-            }}
-          >
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+    <ProtectedPage requiredRole={UserRole.ADMIN}>
+      <Box sx={{ p: 3 }}>
+        <PageHeader
+          title={
+            <FlexBox align="center" gap={2}>
               <IconButton onClick={handleBack} aria-label="Go back">
                 <ArrowBack />
               </IconButton>
@@ -148,8 +133,10 @@ export default function IdentityDetailPage() {
                   {identityId}
                 </Typography>
               </Box>
-            </Box>
-            <Box sx={{ display: 'flex', gap: 1 }}>
+            </FlexBox>
+          }
+          actions={
+            <FlexBox gap={1}>
               <Tooltip content="Refresh">
                 <IconButton onClick={() => refetch()} aria-label="Refresh">
                   <Refresh />
@@ -167,84 +154,58 @@ export default function IdentityDetailPage() {
                 <Delete style={{ marginRight: '0.5rem' }} />
                 Delete
               </Button>
-            </Box>
-          </Box>
+            </FlexBox>
+          }
+        />
 
           <Grid container spacing={3}>
             {/* Basic Information */}
             <Grid size={{ xs: 12, md: 6 }}>
-              <Card>
-                <CardContent>
-                  <Typography variant="heading" level="h2">
-                    Basic Information
-                  </Typography>
-                  <Divider sx={{ mb: 2 }} />
-
-                  <Box sx={{ mb: 2 }}>
-                    <Typography variant="body" color="secondary">
-                      Status
-                    </Typography>
-                    <Chip
-                      label={identity.state || 'active'}
-                      variant="status"
-                      size="small"
-                      style={{ marginTop: '0.25rem' }}
-                    />
-                  </Box>
-
-                  <Box sx={{ mb: 2 }}>
-                    <Typography variant="body" color="secondary">
-                      Schema ID
-                    </Typography>
-                    <Typography variant="code">
-                      {identity.schema_id}
-                    </Typography>
-                  </Box>
-
-                  <Box sx={{ mb: 2 }}>
-                    <Typography variant="body" color="secondary">
-                      Created At
-                    </Typography>
-                    <Typography variant="body">{formatDate(identity.created_at || '')}</Typography>
-                  </Box>
-
-                  <Box sx={{ mb: 2 }}>
-                    <Typography variant="body" color="secondary">
-                      Updated At
-                    </Typography>
-                    <Typography variant="body">{formatDate(identity.updated_at || '')}</Typography>
-                  </Box>
-                </CardContent>
-              </Card>
+              <SectionCard title="Basic Information">
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  <FieldDisplay
+                    label="Status"
+                    value={identity.state || 'active'}
+                    valueType="chip"
+                    chipVariant="status"
+                  />
+                  <FieldDisplay
+                    label="Schema ID"
+                    value={identity.schema_id}
+                    valueType="code"
+                    copyable
+                  />
+                  <FieldDisplay
+                    label="Created At"
+                    value={formatDate(identity.created_at || '')}
+                  />
+                  <FieldDisplay
+                    label="Updated At"
+                    value={formatDate(identity.updated_at || '')}
+                  />
+                </Box>
+              </SectionCard>
             </Grid>
 
             {/* Traits */}
             <Grid size={{ xs: 12, md: 6 }}>
-              <Card>
-                <CardContent>
-                  <Typography variant="heading" level="h2">
-                    Traits
-                  </Typography>
-                  <Divider sx={{ mb: 2 }} />
-
-                  {traits && Object.keys(traits).length > 0 ? (
-                    Object.entries(traits).map(([key, value]) => (
-                      <Box key={key} sx={{ mb: 2 }}>
-                        <Typography variant="body" color="secondary">
-                          {key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' ')}
-                        </Typography>
-                        <Typography variant="body" style={{ wordBreak: 'break-word' }}>
-                          {typeof value === 'object' ? JSON.stringify(value, null, 2) : String(value)}
-                        </Typography>
-                      </Box>
-                    ))
-                  ) : (
-                    <Typography variant="body" color="secondary">
-                      No traits available
-                    </Typography>
-                  )}
-                </CardContent>
-              </Card>
+              <SectionCard
+                title="Traits"
+                emptyMessage={!traits || Object.keys(traits).length === 0 ? 'No traits available' : undefined}
+              >
+                {traits && Object.keys(traits).length > 0 && (
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    {Object.entries(traits).map(([key, value]) => (
+                      <FieldDisplay
+                        key={key}
+                        label={key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' ')}
+                        value={typeof value === 'object' ? JSON.stringify(value, null, 2) : String(value)}
+                        valueType={typeof value === 'object' ? 'code' : 'text'}
+                      />
+                    ))}
+                  </Box>
+                )}
+              </SectionCard>
             </Grid>
 
             {/* Public Metadata */}
@@ -495,7 +456,6 @@ export default function IdentityDetailPage() {
             />
           )}
         </Box>
-      </AdminLayout>
-    </ProtectedRoute>
-  );
-}
+      </ProtectedPage>
+    );
+  }

@@ -1,10 +1,8 @@
 'use client';
 
-import { Box, Grid, Paper } from '@/components/ui';
+import { Box, Grid, Alert, IconButton, Tooltip, Typography } from '@/components/ui';
 import { Refresh, TrendingUp, Group, Security, Schedule, Schema, HealthAndSafety, VpnKey, Cloud, Apps } from '@mui/icons-material';
-import { Alert, Card, IconButton, Tooltip, Typography } from '@/components/ui';
-import { AdminLayout } from '@/components/layout/AdminLayout';
-import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
+import { ProtectedPage, PageHeader } from '@/components/layout';
 import { UserRole } from '@/features/auth';
 import { useAnalytics } from '@/features/analytics/hooks';
 import { Spinner } from '@/components/ui/Spinner';
@@ -50,57 +48,40 @@ export default function Dashboard() {
 
   if (isLoading) {
     return (
-      <ProtectedRoute requiredRole={UserRole.VIEWER}>
-        <AdminLayout>
-          <Box display="flex" justifyContent="center" alignItems="center" height="400px">
-            <Spinner variant="ring" size="large" />
-          </Box>
-        </AdminLayout>
-      </ProtectedRoute>
+      <ProtectedPage requiredRole={UserRole.VIEWER}>
+        <Box display="flex" justifyContent="center" alignItems="center" height="400px">
+          <Spinner variant="ring" size="large" />
+        </Box>
+      </ProtectedPage>
     );
   }
 
   if (isError) {
     return (
-      <ProtectedRoute requiredRole={UserRole.VIEWER}>
-        <AdminLayout>
-          <Box sx={{ p: 3 }}>
-            <Alert severity="error">
-              Failed to load analytics data. Please try refreshing the page.
-            </Alert>
-          </Box>
-        </AdminLayout>
-      </ProtectedRoute>
+      <ProtectedPage requiredRole={UserRole.VIEWER}>
+        <Box sx={{ p: 3 }}>
+          <Alert severity="error">
+            Failed to load analytics data. Please try refreshing the page.
+          </Alert>
+        </Box>
+      </ProtectedPage>
     );
   }
 
   return (
-    <ProtectedRoute requiredRole={UserRole.VIEWER}>
-      <AdminLayout>
-        <Box sx={{ p: 3 }}>
-          {/* Header */}
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              mb: 4,
-            }}
-          >
-            <Box>
-              <Typography variant="heading" level="h1">
-                Analytics Dashboard
-              </Typography>
-              <Typography variant="body">
-                Insights and metrics for your Ory Kratos and Hydra systems
-              </Typography>
-            </Box>
+    <ProtectedPage requiredRole={UserRole.VIEWER}>
+      <Box sx={{ p: 3 }}>
+        <PageHeader
+          title="Analytics Dashboard"
+          subtitle="Insights and metrics for your Ory Kratos and Hydra systems"
+          actions={
             <Tooltip content="Refresh Data">
               <IconButton onClick={refetchAll} aria-label="Refresh data">
                 <Refresh />
               </IconButton>
             </Tooltip>
-          </Box>
+          }
+        />
 
           {/* Key Metrics Cards */}
           <Grid container spacing={3} sx={{ mb: 4 }}>
@@ -430,7 +411,6 @@ export default function Dashboard() {
             </Grid>
           </Grid>
         </Box>
-      </AdminLayout>
-    </ProtectedRoute>
-  );
-}
+      </ProtectedPage>
+    );
+  }
