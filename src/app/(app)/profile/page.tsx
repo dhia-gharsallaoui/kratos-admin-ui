@@ -6,7 +6,8 @@ import { Alert, Button, Card, CardContent, Chip, TextField, Typography } from '@
 import { Edit, Save, Cancel, Person, Email, Badge, Lock } from '@mui/icons-material';
 import { useUser } from '@/features/auth/hooks/useAuth';
 import { UserRole } from '@/features/auth';
-import { AdminLayout } from '@/components/layout/AdminLayout';
+import { ProtectedPage, PageHeader, SectionCard, FlexBox } from '@/components/layout';
+import { FieldDisplay } from '@/components/display';
 
 export default function ProfilePage() {
   const user = useUser();
@@ -37,56 +38,48 @@ export default function ProfilePage() {
   };
 
   return (
-    <AdminLayout>
+    <ProtectedPage>
       <Container maxWidth="md">
-        <Paper 
-          elevation={0} 
-          sx={{ 
-            p: 4, 
+        <Paper
+          elevation={0}
+          sx={{
+            p: 4,
             borderRadius: 3,
             border: '1px solid',
             borderColor: 'divider',
           }}
         >
-          <Box
-            sx={{
-              mb: 4,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}
-          >
-            <Typography variant="heading" size="3xl" gutterBottom>
-              User Profile
-            </Typography>
-            {!isEditing ? (
-              <Button
-                variant="primary"
-                startIcon={<Edit />}
-                onClick={handleEdit}
-              >
-                Edit Profile
-              </Button>
-            ) : (
-              <Box>
-                <Button
-                  variant="outlined"
-                  startIcon={<Cancel />}
-                  onClick={handleCancel}
-                  sx={{ mr: 1 }}
-                >
-                  Cancel
-                </Button>
+          <PageHeader
+            title="User Profile"
+            actions={
+              !isEditing ? (
                 <Button
                   variant="primary"
-                  startIcon={<Save />}
-                  onClick={handleSave}
+                  startIcon={<Edit />}
+                  onClick={handleEdit}
                 >
-                  Save
+                  Edit Profile
                 </Button>
-              </Box>
-            )}
-          </Box>
+              ) : (
+                <FlexBox gap={1}>
+                  <Button
+                    variant="outlined"
+                    startIcon={<Cancel />}
+                    onClick={handleCancel}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    variant="primary"
+                    startIcon={<Save />}
+                    onClick={handleSave}
+                  >
+                    Save
+                  </Button>
+                </FlexBox>
+              )
+            }
+          />
 
           <Grid container spacing={4}>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -122,77 +115,58 @@ export default function ProfilePage() {
             </Grid>
 
             <Grid size={{ xs: 12, md: 8 }}>
-              <Card variant="bordered" sx={{ mb: 3 }}>
-                <CardContent>
-                  <Typography variant="heading" size="lg" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Person sx={{ mr: 1 }} /> Personal Information
-                  </Typography>
-                  <Divider sx={{ mb: 2 }} />
-
-                  <Grid container spacing={2}>
-                    <Grid size={{ xs: 12 }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                        <Badge sx={{ mr: 1, color: 'text.secondary' }} />
-                        <Typography variant="label">
-                          Display Name
-                        </Typography>
-                      </Box>
-                      {isEditing ? (
+              <SectionCard
+                title={
+                  <FlexBox align="center" gap={1}>
+                    <Person />
+                    <Typography variant="heading" size="lg">Personal Information</Typography>
+                  </FlexBox>
+                }
+                sx={{ mb: 3 }}
+              >
+                <Grid container spacing={2}>
+                  <Grid size={{ xs: 12 }}>
+                    {isEditing ? (
+                      <>
+                        <Typography variant="label" sx={{ mb: 1, display: 'block' }}>Display Name</Typography>
                         <TextField fullWidth value={displayName} onChange={(e) => setDisplayName(e.target.value)} size="small" />
-                      ) : (
-                        <Typography variant="body">{user.displayName}</Typography>
-                      )}
-                    </Grid>
+                      </>
+                    ) : (
+                      <FieldDisplay label="Display Name" value={user.displayName} />
+                    )}
+                  </Grid>
 
-                    <Grid size={{ xs: 12 }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                        <Email sx={{ mr: 1, color: 'text.secondary' }} />
-                        <Typography variant="label">
-                          Email Address
-                        </Typography>
-                      </Box>
-                      {isEditing ? (
+                  <Grid size={{ xs: 12 }}>
+                    {isEditing ? (
+                      <>
+                        <Typography variant="label" sx={{ mb: 1, display: 'block' }}>Email Address</Typography>
                         <TextField fullWidth value={email} onChange={(e) => setEmail(e.target.value)} size="small" />
-                      ) : (
-                        <Typography variant="body">{user.email}</Typography>
-                      )}
-                    </Grid>
+                      </>
+                    ) : (
+                      <FieldDisplay label="Email Address" value={user.email} />
+                    )}
                   </Grid>
-                </CardContent>
-              </Card>
+                </Grid>
+              </SectionCard>
 
-              <Card variant="bordered">
-                <CardContent>
-                  <Typography variant="heading" size="lg" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Lock sx={{ mr: 1 }} /> Account Information
-                  </Typography>
-                  <Divider sx={{ mb: 2 }} />
-
-                  <Grid container spacing={2}>
-                    <Grid size={{ xs: 12 }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                        <Person sx={{ mr: 1, color: 'text.secondary' }} />
-                        <Typography variant="label">
-                          Username
-                        </Typography>
-                      </Box>
-                      <Typography variant="body">{user.username}</Typography>
-                    </Grid>
-
-                    <Grid size={{ xs: 12 }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                        <Badge sx={{ mr: 1, color: 'text.secondary' }} />
-                        <Typography variant="label">
-                          Role
-                        </Typography>
-                      </Box>
-                      <Typography variant="body" sx={{ textTransform: 'capitalize' }}>
-                        {user.role}
-                      </Typography>
-                    </Grid>
+              <SectionCard
+                title={
+                  <FlexBox align="center" gap={1}>
+                    <Lock />
+                    <Typography variant="heading" size="lg">Account Information</Typography>
+                  </FlexBox>
+                }
+              >
+                <Grid container spacing={2}>
+                  <Grid size={{ xs: 12 }}>
+                    <FieldDisplay label="Username" value={user.username} />
                   </Grid>
-                </CardContent>
-              </Card>
+
+                  <Grid size={{ xs: 12 }}>
+                    <FieldDisplay label="Role" value={user.role} valueType="chip" chipVariant="role" />
+                  </Grid>
+                </Grid>
+              </SectionCard>
             </Grid>
           </Grid>
         </Paper>
@@ -208,6 +182,6 @@ export default function ProfilePage() {
           Profile updated successfully!
         </Alert>
       </Snackbar>
-    </AdminLayout>
+    </ProtectedPage>
   );
 }

@@ -2,17 +2,8 @@
 
 import { useState, use } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  Box,
-  Divider,
-  Grid,
-  List,
-  ListItem,
-  ListItemText,
-  Paper,
-  Skeleton,
-} from '@/components/ui';
-import { Alert, Button, Card, CardContent, Chip, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Menu, MenuItem, Tooltip, Typography } from '@/components/ui';
+import { Box, Divider, Grid, List, ListItem, ListItemText, Paper, Skeleton } from '@/components/ui';
+import { Alert, Button, Card, CardContent, Chip, Dialog, DialogActions, DialogContent, IconButton, Menu, MenuItem, Tooltip, Typography } from '@/components/ui';
 import {
   ArrowBack as ArrowBackIcon,
   MoreVert as MoreVertIcon,
@@ -24,7 +15,8 @@ import {
   Public as PublicIcon,
   Lock as LockIcon,
 } from '@mui/icons-material';
-import { AdminLayout } from '@/components/layout/AdminLayout';
+import { ProtectedPage, PageHeader, SectionCard, FlexBox } from '@/components/layout';
+import { FieldDisplay } from '@/components/display';
 import { useOAuth2Client, useDeleteOAuth2Client } from '@/features/oauth2-clients';
 import { getClientType, getGrantTypeDisplayName, getResponseTypeDisplayName } from '@/features/oauth2-clients';
 
@@ -93,18 +85,18 @@ export default function OAuth2ClientDetailPage({ params }: Props) {
 
   if (error) {
     return (
-      <AdminLayout>
+      <ProtectedPage>
         <Box sx={{ p: 3 }}>
           <Alert severity="error">
             Failed to load client: {error.message}
           </Alert>
         </Box>
-      </AdminLayout>
+      </ProtectedPage>
     );
   }
 
   return (
-    <AdminLayout>
+    <ProtectedPage>
       <Box sx={{ p: 3 }}>
       {/* Header */}
       <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -488,8 +480,11 @@ export default function OAuth2ClientDetailPage({ params }: Props) {
       </Menu>
 
       {/* Delete Confirmation Dialog */}
-      <Dialog open={deleteDialogOpen} onClose={handleDeleteCancel}>
-        <DialogTitle>Delete OAuth2 Client</DialogTitle>
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={handleDeleteCancel}
+        title="Delete OAuth2 Client"
+      >
         <DialogContent>
           <Typography>
             Are you sure you want to delete the client &quot;{client?.client_name || client?.client_id}&quot;?
@@ -500,7 +495,7 @@ export default function OAuth2ClientDetailPage({ params }: Props) {
           <Button onClick={handleDeleteCancel}>Cancel</Button>
           <Button
             onClick={handleDeleteConfirm}
-            color="error"
+            variant="danger"
             disabled={deleteClientMutation.isPending}
           >
             {deleteClientMutation.isPending ? 'Deleting...' : 'Delete'}
@@ -515,6 +510,6 @@ export default function OAuth2ClientDetailPage({ params }: Props) {
         </Alert>
       )}
       </Box>
-    </AdminLayout>
+    </ProtectedPage>
   );
 }
