@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Box, Container, Paper, Avatar, Grid, Divider, Snackbar } from '@mui/material';
+import { Avatar, Box, Container, Divider, Grid, Paper, Snackbar } from '@/components/ui';
 import { Alert, Button, Card, CardContent, Chip, TextField, Typography } from '@/components/ui';
 import { Edit, Save, Cancel, Person, Email, Badge, Lock } from '@mui/icons-material';
 import { useUser } from '@/features/auth/hooks/useAuth';

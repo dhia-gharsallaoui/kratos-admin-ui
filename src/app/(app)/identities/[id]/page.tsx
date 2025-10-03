@@ -4,7 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import {
   Box,
   Divider,
-} from '@mui/material';
+} from '@/components/ui';
 import { ArrowBack, Edit, Delete, Refresh, Link as LinkIcon, DeleteSweep, Person } from '@mui/icons-material';
 import { Alert, Button, Card, CardContent, Chip, Dialog, DottedLoader, Grid, IconButton, Tooltip, Typography } from '@/components/ui';
 import { AdminLayout } from '@/components/layout/AdminLayout';

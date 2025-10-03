@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { TextField as MuiTextField, MenuItem } from '@mui/material';
+import { TextField as MuiTextField } from '@mui/material';
 import { useTheme } from '@mui/material';
+import { MenuItem } from '@/components/ui';
 import { Save, Cancel } from '@mui/icons-material';
 import { Alert, Autocomplete, Box, Button, Card, FormControl, InputLabel, Select, Spinner, Typography } from '@/components/ui';
 import Form from '@rjsf/mui';

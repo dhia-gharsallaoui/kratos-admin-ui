@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect, useCallback } from 'react';
-import { Box } from '@mui/material';
+import { Box } from '@/components/ui';
 import { Refresh, ExpandMore } from '@mui/icons-material';
 import { Button, Card, CardContent, ErrorDisplay, IconButton, Spinner, TextField, Tooltip, Typography } from '@/components/ui';
 import { AdminLayout } from '@/components/layout/AdminLayout';

@@ -1,14 +1,16 @@
 import React, { ReactNode, useState } from 'react';
 import {
   CssBaseline,
-  AppBar,
-  Toolbar,
-  Drawer,
-  Divider,
-  Avatar,
   useMediaQuery,
   useTheme as useMuiTheme,
 } from '@mui/material';
+import {
+  AppBar,
+  Avatar,
+  Divider,
+  Drawer,
+  Toolbar,
+} from '@/components/ui';
 import {
   Dashboard,
   Person,

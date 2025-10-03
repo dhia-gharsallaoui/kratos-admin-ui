@@ -3,26 +3,26 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
+  Alert,
+  Autocomplete,
   Box,
-  Typography,
+  Button,
   Card,
   CardContent,
-  TextField,
-  Button,
-  Grid,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Chip,
-  FormControlLabel,
-  Switch,
-  Alert,
   Divider,
-  Paper,
+  FormControl,
+  FormControlLabel,
+  Grid,
   IconButton,
-  Autocomplete,
-} from '@mui/material';
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+  Switch,
+  TextField,
+  Typography,
+} from '@/components/ui';
 import {
   ArrowBack as ArrowBackIcon,
   Add as AddIcon,
@@ -221,7 +221,7 @@ export default function CreateOAuth2ClientPage() {
                         onChange={(e) => handleArrayChange('grant_types', e.target.value as string[])}
                         renderValue={(selected) => (
                           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                            {selected.map((value) => (
+                            {(selected as string[]).map((value: string) => (
                               <Chip key={value} label={value.replace('_', ' ')} size="small" />
                             ))}
                           </Box>
@@ -249,7 +249,7 @@ export default function CreateOAuth2ClientPage() {
                         onChange={(e) => handleArrayChange('response_types', e.target.value as string[])}
                         renderValue={(selected) => (
                           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                            {selected.map((value) => (
+                            {(selected as string[]).map((value: string) => (
                               <Chip key={value} label={value} size="small" />
                             ))}
                           </Box>
@@ -469,7 +469,7 @@ export default function CreateOAuth2ClientPage() {
               </Button>
               <Button
                 type="submit"
-                variant="contained"
+                variant="primary"
                 disabled={createClientMutation.isPending}
                 sx={{ minWidth: 120 }}
               >
