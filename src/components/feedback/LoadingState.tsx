@@ -10,11 +10,7 @@ export interface LoadingStateProps {
   size?: 'small' | 'medium' | 'large';
 }
 
-export function LoadingState({
-  message = 'Loading...',
-  variant = 'section',
-  size = 'medium',
-}: LoadingStateProps) {
+export function LoadingState({ message = 'Loading...', variant = 'section', size = 'medium' }: LoadingStateProps) {
   const paddingMap = {
     page: 12,
     section: 8,

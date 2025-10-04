@@ -11,30 +11,24 @@ export interface FlexBoxProps extends Omit<BoxProps, 'ref'> {
   wrap?: boolean;
 }
 
-export const FlexBox = React.forwardRef<HTMLDivElement, FlexBoxProps>(({
-  direction = 'row',
-  align = 'flex-start',
-  justify = 'flex-start',
-  gap,
-  wrap = false,
-  sx,
-  ...rest
-}, ref) => {
-  return (
-    <Box
-      ref={ref}
-      {...rest}
-      sx={{
-        display: 'flex',
-        flexDirection: direction,
-        alignItems: align,
-        justifyContent: justify,
-        gap,
-        flexWrap: wrap ? 'wrap' : 'nowrap',
-        ...sx,
-      }}
-    />
-  );
-});
+export const FlexBox = React.forwardRef<HTMLDivElement, FlexBoxProps>(
+  ({ direction = 'row', align = 'flex-start', justify = 'flex-start', gap, wrap = false, sx, ...rest }, ref) => {
+    return (
+      <Box
+        ref={ref}
+        {...rest}
+        sx={{
+          display: 'flex',
+          flexDirection: direction,
+          alignItems: align,
+          justifyContent: justify,
+          gap,
+          flexWrap: wrap ? 'wrap' : 'nowrap',
+          ...sx,
+        }}
+      />
+    );
+  }
+);
 
 FlexBox.displayName = 'FlexBox';

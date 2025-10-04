@@ -29,7 +29,7 @@ export async function introspectOAuth2Token(tokenData: IntrospectTokenRequest) {
   try {
     const response = await getAdminOAuth2Api().introspectOAuth2Token({
       token: tokenData.token,
-      scope: tokenData.scope
+      scope: tokenData.scope,
     });
     return { data: response.data };
   } catch (error) {
@@ -44,7 +44,7 @@ export async function revokeOAuth2Token(tokenData: RevokeTokenRequest) {
     const response = await getPublicOAuth2Api().revokeOAuth2Token({
       token: tokenData.token,
       clientId: tokenData.client_id,
-      clientSecret: tokenData.client_secret
+      clientSecret: tokenData.client_secret,
     });
     return { data: response.data };
   } catch (error) {
@@ -61,7 +61,7 @@ export async function exchangeOAuth2Token(tokenData: TokenExchangeRequest) {
       clientId: tokenData.client_id,
       code: tokenData.code,
       redirectUri: tokenData.redirect_uri,
-      refreshToken: tokenData.refresh_token
+      refreshToken: tokenData.refresh_token,
     });
     return { data: response.data };
   } catch (error) {

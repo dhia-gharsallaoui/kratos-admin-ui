@@ -107,14 +107,12 @@ const StyledButton = styled(MuiButton, {
   };
 });
 
-export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ variant = 'primary', children, ...props }, ref) => {
-    return (
-      <StyledButton ref={ref} $variant={variant} disableRipple {...props}>
-        {children}
-      </StyledButton>
-    );
-  }
-);
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ variant = 'primary', children, ...props }, ref) => {
+  return (
+    <StyledButton ref={ref} $variant={variant} disableRipple {...props}>
+      {children}
+    </StyledButton>
+  );
+});
 
 Button.displayName = 'Button';

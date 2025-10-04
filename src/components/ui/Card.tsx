@@ -57,19 +57,17 @@ const StyledCard = styled(MuiCard, {
   };
 });
 
-export const Card = React.forwardRef<HTMLDivElement, CardProps>(
-  ({ variant = 'bordered', ...props }, ref) => {
-    return (
-      <StyledCard
-        ref={ref}
-        $variant={variant}
-        elevation={variant === 'outlined' ? 1 : 0}
-        variant={variant === 'outlined' ? 'outlined' : undefined}
-        {...props}
-      />
-    );
-  }
-);
+export const Card = React.forwardRef<HTMLDivElement, CardProps>(({ variant = 'bordered', ...props }, ref) => {
+  return (
+    <StyledCard
+      ref={ref}
+      $variant={variant}
+      elevation={variant === 'outlined' ? 1 : 0}
+      variant={variant === 'outlined' ? 'outlined' : undefined}
+      {...props}
+    />
+  );
+});
 
 Card.displayName = 'Card';
 

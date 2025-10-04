@@ -58,8 +58,8 @@ export async function createVerifiableCredential(
       createVerifiableCredentialRequestBody: {
         format: credentialRequest.format,
         types: credentialRequest.types,
-        proof: credentialRequest.proof
-      }
+        proof: credentialRequest.proof,
+      },
     });
     return { data: response.data };
   } catch (error) {

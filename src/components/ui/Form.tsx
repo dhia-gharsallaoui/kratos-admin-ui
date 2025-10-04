@@ -25,12 +25,7 @@ interface FormSectionProps {
   divider?: boolean;
 }
 
-export const FormSection: React.FC<FormSectionProps> = ({
-  title,
-  description,
-  children,
-  divider = true,
-}) => {
+export const FormSection: React.FC<FormSectionProps> = ({ title, description, children, divider = true }) => {
   return (
     <Card elevation={0} sx={{ border: 1, borderColor: 'divider', borderRadius: 2 }}>
       <CardContent>
@@ -159,25 +154,13 @@ export const FormActions: React.FC<FormActionsProps> = ({
       }}
     >
       {onCancel && (
-        <Button
-          variant="outlined"
-          startIcon={<Cancel />}
-          onClick={onCancel}
-          disabled={isLoading}
-        >
+        <Button variant="outlined" startIcon={<Cancel />} onClick={onCancel} disabled={isLoading}>
           {cancelText}
         </Button>
       )}
       {!onCancel && <Box />}
       {onSubmit && (
-        <Button
-          type="submit"
-          variant="primary"
-          startIcon={submitIcon}
-          onClick={onSubmit}
-          disabled={disabled || isLoading}
-          sx={{ minWidth: 120 }}
-        >
+        <Button type="submit" variant="primary" startIcon={submitIcon} onClick={onSubmit} disabled={disabled || isLoading} sx={{ minWidth: 120 }}>
           {isLoading ? 'Saving...' : submitText}
         </Button>
       )}

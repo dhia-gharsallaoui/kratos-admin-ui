@@ -16,12 +16,7 @@ export interface PageTabsProps {
   variant?: 'default' | 'pills' | 'underline';
 }
 
-export function PageTabs({
-  tabs,
-  value,
-  onChange,
-  variant = 'default',
-}: PageTabsProps) {
+export function PageTabs({ tabs, value, onChange, variant = 'default' }: PageTabsProps) {
   if (variant === 'pills') {
     return (
       <Box

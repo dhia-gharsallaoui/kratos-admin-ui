@@ -54,45 +54,44 @@ const StyledTextField = styled(MuiTextField, {
   return baseStyles;
 });
 
-export const TextField = React.forwardRef<HTMLDivElement, TextFieldProps>(
-  ({ variant = 'standard', onClear, value, ...props }, ref) => {
-    const renderInputProps = () => {
-      if (variant === 'search') {
-        return {
-          startAdornment: (
-            <InputAdornment position="start">
-              <Search fontSize="small" />
-            </InputAdornment>
-          ),
-          endAdornment: value && onClear ? (
+export const TextField = React.forwardRef<HTMLDivElement, TextFieldProps>(({ variant = 'standard', onClear, value, ...props }, ref) => {
+  const renderInputProps = () => {
+    if (variant === 'search') {
+      return {
+        startAdornment: (
+          <InputAdornment position="start">
+            <Search fontSize="small" />
+          </InputAdornment>
+        ),
+        endAdornment:
+          value && onClear ? (
             <InputAdornment position="end">
               <IconButton size="small" onClick={onClear}>
                 <Clear fontSize="small" />
               </IconButton>
             </InputAdornment>
           ) : null,
-        };
-      }
-      return props.InputProps;
-    };
+      };
+    }
+    return props.InputProps;
+  };
 
-    const getVariant = (): 'outlined' | 'filled' | 'standard' => {
-      if (variant === 'readonly') return 'filled';
-      return 'outlined';
-    };
+  const getVariant = (): 'outlined' | 'filled' | 'standard' => {
+    if (variant === 'readonly') return 'filled';
+    return 'outlined';
+  };
 
-    return (
-      <StyledTextField
-        ref={ref}
-        $variant={variant}
-        variant={getVariant()}
-        value={value}
-        disabled={variant === 'readonly'}
-        InputProps={renderInputProps()}
-        {...props}
-      />
-    );
-  }
-);
+  return (
+    <StyledTextField
+      ref={ref}
+      $variant={variant}
+      variant={getVariant()}
+      value={value}
+      disabled={variant === 'readonly'}
+      InputProps={renderInputProps()}
+      {...props}
+    />
+  );
+});
 
 TextField.displayName = 'TextField';

@@ -64,7 +64,7 @@ export const useAuthStore = create<AuthStoreState>()(
         if (state) {
           // Check if login should be disabled (for testing/screenshots)
           const disableLogin = process.env.NEXT_PUBLIC_DISABLE_LOGIN === 'true';
-          
+
           if (disableLogin && !state.isAuthenticated) {
             // Auto-login as admin user
             const adminUser = findUserByCredentials('admin', 'admin123');
@@ -74,7 +74,7 @@ export const useAuthStore = create<AuthStoreState>()(
               state.isAuthenticated = true;
             }
           }
-          
+
           state.setLoading(false);
         }
       },

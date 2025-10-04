@@ -11,11 +11,7 @@ export interface ProtectedPageProps {
   layout?: boolean;
 }
 
-export function ProtectedPage({
-  requiredRole,
-  children,
-  layout = true,
-}: ProtectedPageProps) {
+export function ProtectedPage({ requiredRole, children, layout = true }: ProtectedPageProps) {
   const content = layout ? <AdminLayout>{children}</AdminLayout> : children;
 
   if (requiredRole) {

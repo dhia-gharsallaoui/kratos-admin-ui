@@ -34,7 +34,7 @@ const StyledDialogTitle = styled(MuiDialogTitle)<{ $gradient?: boolean }>(({ the
   justifyContent: 'space-between',
   padding: theme.spacing(2, 3),
   borderBottom: `1px solid ${theme.palette.divider}`,
-  ...(($gradient) && {
+  ...($gradient && {
     background: gradients.normal,
     color: '#ffffff',
   }),
@@ -77,11 +77,7 @@ export const Dialog = React.forwardRef<HTMLDivElement, DialogProps>(
           </StyledDialogTitle>
         )}
         {children}
-        {actions && (
-          <StyledDialogActions>
-            {actions}
-          </StyledDialogActions>
-        )}
+        {actions && <StyledDialogActions>{actions}</StyledDialogActions>}
       </StyledDialog>
     );
   }

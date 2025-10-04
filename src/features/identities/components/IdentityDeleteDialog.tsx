@@ -31,18 +31,10 @@ export const IdentityDeleteDialog: React.FC<IdentityDeleteDialogProps> = ({ open
 
   const traits = identity.traits as any;
   const displayName =
-    traits?.name?.first && traits?.name?.last
-      ? `${traits.name.first} ${traits.name.last}`
-      : traits?.username || traits?.email || 'Unknown User';
+    traits?.name?.first && traits?.name?.last ? `${traits.name.first} ${traits.name.last}` : traits?.username || traits?.email || 'Unknown User';
 
   return (
-    <FormDialog
-      open={open}
-      onClose={onClose}
-      title="Delete Identity"
-      titleColor="error.main"
-      disableBackdropClick={deleteIdentityMutation.isPending}
-    >
+    <FormDialog open={open} onClose={onClose} title="Delete Identity" titleColor="error.main" disableBackdropClick={deleteIdentityMutation.isPending}>
       <Box sx={{ mb: 3 }}>
         <Typography variant="body" gutterBottom>
           Are you sure you want to delete this identity? This action cannot be undone.
@@ -59,7 +51,9 @@ export const IdentityDeleteDialog: React.FC<IdentityDeleteDialogProps> = ({ open
             mb: 1,
           }}
         >
-          <Typography variant="heading" size="lg">{displayName}</Typography>
+          <Typography variant="heading" size="lg">
+            {displayName}
+          </Typography>
           <Chip label={identity.schema_id} variant="tag" />
         </Box>
 
@@ -67,17 +61,9 @@ export const IdentityDeleteDialog: React.FC<IdentityDeleteDialogProps> = ({ open
           ID: {identity.id}
         </Typography>
 
-        {traits?.email && (
-          <Typography variant="label">
-            Email: {traits.email}
-          </Typography>
-        )}
+        {traits?.email && <Typography variant="label">Email: {traits.email}</Typography>}
 
-        {traits?.username && (
-          <Typography variant="label">
-            Username: {traits.username}
-          </Typography>
-        )}
+        {traits?.username && <Typography variant="label">Username: {traits.username}</Typography>}
       </Box>
 
       <Alert variant="inline" severity="warning" sx={{ mt: 2 }}>
@@ -104,14 +90,14 @@ export const IdentityDeleteDialog: React.FC<IdentityDeleteDialogProps> = ({ open
           primaryAction={{
             label: deleteIdentityMutation.isPending ? 'Deleting...' : 'Delete Identity',
             onClick: handleDelete,
-            disabled: deleteIdentityMutation.isPending
+            disabled: deleteIdentityMutation.isPending,
           }}
           secondaryActions={[
             {
               label: 'Cancel',
               onClick: onClose,
-              disabled: deleteIdentityMutation.isPending
-            }
+              disabled: deleteIdentityMutation.isPending,
+            },
           ]}
         />
       </Box>

@@ -6,12 +6,7 @@ const nextConfig = {
     domains: ['localhost', 'kratos.local'],
   },
   experimental: {
-    optimizePackageImports: [
-      '@mui/material',
-      '@mui/icons-material',
-      '@mui/x-data-grid',
-      '@mui/x-charts',
-    ],
+    optimizePackageImports: ['@mui/material', '@mui/icons-material', '@mui/x-data-grid', '@mui/x-charts'],
   },
 };
 

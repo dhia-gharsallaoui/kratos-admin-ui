@@ -1,7 +1,20 @@
 import React, { useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Identity } from '@ory/kratos-client';
-import { ActionBar, Alert, Box, Button, Chip, Dialog, DialogActions, DialogContent, DottedLoader, Grid, TextField, Typography } from '@/components/ui';
+import {
+  ActionBar,
+  Alert,
+  Box,
+  Button,
+  Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DottedLoader,
+  Grid,
+  TextField,
+  Typography,
+} from '@/components/ui';
 import { useUpdateIdentity } from '../hooks/useIdentities';
 import { formatDate } from '@/lib/date-utils';
 import { uiLogger } from '@/lib/logger';
@@ -110,7 +123,9 @@ export const IdentityEditModal: React.FC<IdentityEditModalProps> = ({ open, onCl
               justifyContent: 'space-between',
             }}
           >
-            <Typography variant="heading" size="lg">Edit Identity</Typography>
+            <Typography variant="heading" size="lg">
+              Edit Identity
+            </Typography>
             <Chip label={identity.schema_id} variant="tag" />
           </Box>
           <Typography variant="code" sx={{ mt: 1 }}>
@@ -124,7 +139,6 @@ export const IdentityEditModal: React.FC<IdentityEditModalProps> = ({ open, onCl
         },
       }}
     >
-
       <DialogContent>
         {updateIdentityMutation.isError && (
           <Alert variant="inline" severity="error" sx={{ mb: 2 }}>

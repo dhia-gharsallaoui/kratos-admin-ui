@@ -44,10 +44,7 @@ async function proxyToService(request: NextRequest, baseUrl: string, pathPrefix:
     response.headers.forEach((value, key) => {
       const lowerKey = key.toLowerCase();
       // Only copy safe headers and custom x-* headers (excluding forwarding headers)
-      if (
-        safeHeaders.includes(lowerKey) ||
-        (lowerKey.startsWith('x-') && !lowerKey.startsWith('x-forwarded') && !lowerKey.startsWith('x-real-ip'))
-      ) {
+      if (safeHeaders.includes(lowerKey) || (lowerKey.startsWith('x-') && !lowerKey.startsWith('x-forwarded') && !lowerKey.startsWith('x-real-ip'))) {
         headers.set(key, value);
       }
     });

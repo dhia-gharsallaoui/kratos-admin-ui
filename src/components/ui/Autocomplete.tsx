@@ -6,7 +6,7 @@ export interface AutocompleteProps<
   T,
   Multiple extends boolean | undefined = undefined,
   DisableClearable extends boolean | undefined = undefined,
-  FreeSolo extends boolean | undefined = undefined
+  FreeSolo extends boolean | undefined = undefined,
 > extends MuiAutocompleteProps<T, Multiple, DisableClearable, FreeSolo> {}
 
 const StyledAutocomplete = styled(MuiAutocomplete)(({ theme }) => ({
@@ -45,7 +45,7 @@ export const Autocomplete = React.forwardRef(
     T,
     Multiple extends boolean | undefined = undefined,
     DisableClearable extends boolean | undefined = undefined,
-    FreeSolo extends boolean | undefined = undefined
+    FreeSolo extends boolean | undefined = undefined,
   >(
     props: AutocompleteProps<T, Multiple, DisableClearable, FreeSolo>,
     ref: React.ForwardedRef<HTMLDivElement>
@@ -56,7 +56,7 @@ export const Autocomplete = React.forwardRef(
   T,
   Multiple extends boolean | undefined = undefined,
   DisableClearable extends boolean | undefined = undefined,
-  FreeSolo extends boolean | undefined = undefined
+  FreeSolo extends boolean | undefined = undefined,
 >(
   props: AutocompleteProps<T, Multiple, DisableClearable, FreeSolo> & {
     ref?: React.ForwardedRef<HTMLDivElement>;

@@ -24,12 +24,7 @@ export interface ActionBarProps {
   spacing?: number;
 }
 
-export function ActionBar({
-  primaryAction,
-  secondaryActions = [],
-  align = 'right',
-  spacing = 2,
-}: ActionBarProps) {
+export function ActionBar({ primaryAction, secondaryActions = [], align = 'right', spacing = 2 }: ActionBarProps) {
   const alignmentStyles = {
     left: 'flex-start',
     right: 'flex-end',
@@ -71,13 +66,7 @@ export function ActionBar({
         <MuiButton
           onClick={primaryAction.onClick}
           disabled={primaryAction.disabled || primaryAction.loading}
-          startIcon={
-            primaryAction.loading ? (
-              <CircularProgress size={16} sx={{ color: '#ffffff' }} />
-            ) : (
-              primaryAction.icon
-            )
-          }
+          startIcon={primaryAction.loading ? <CircularProgress size={16} sx={{ color: '#ffffff' }} /> : primaryAction.icon}
           sx={{
             background: gradients.normal,
             color: '#ffffff',

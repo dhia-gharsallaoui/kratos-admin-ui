@@ -13,11 +13,7 @@ import {
   revokeOAuth2ConsentSessions,
   ListConsentSessionsParams,
 } from '@/services/hydra';
-import {
-  AcceptOAuth2ConsentRequest,
-  AcceptOAuth2LoginRequest,
-  RejectOAuth2Request,
-} from '@/services/hydra';
+import { AcceptOAuth2ConsentRequest, AcceptOAuth2LoginRequest, RejectOAuth2Request } from '@/services/hydra';
 import { OAuth2AuthFlowFilters } from '../types';
 
 // Query keys
@@ -50,8 +46,7 @@ export function useAcceptOAuth2ConsentRequest() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ challenge, body }: { challenge: string; body: AcceptOAuth2ConsentRequest }) =>
-      acceptOAuth2ConsentRequest(challenge, body),
+    mutationFn: ({ challenge, body }: { challenge: string; body: AcceptOAuth2ConsentRequest }) => acceptOAuth2ConsentRequest(challenge, body),
     onSuccess: (data, variables) => {
       // Remove the specific consent request from cache as it's been handled
       queryClient.removeQueries({ queryKey: oauth2AuthKeys.consentRequest(variables.challenge) });
@@ -66,8 +61,7 @@ export function useRejectOAuth2ConsentRequest() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ challenge, body }: { challenge: string; body: RejectOAuth2Request }) =>
-      rejectOAuth2ConsentRequest(challenge, body),
+    mutationFn: ({ challenge, body }: { challenge: string; body: RejectOAuth2Request }) => rejectOAuth2ConsentRequest(challenge, body),
     onSuccess: (data, variables) => {
       // Remove the specific consent request from cache as it's been handled
       queryClient.removeQueries({ queryKey: oauth2AuthKeys.consentRequest(variables.challenge) });
@@ -92,8 +86,7 @@ export function useAcceptOAuth2LoginRequest() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ challenge, body }: { challenge: string; body: AcceptOAuth2LoginRequest }) =>
-      acceptOAuth2LoginRequest(challenge, body),
+    mutationFn: ({ challenge, body }: { challenge: string; body: AcceptOAuth2LoginRequest }) => acceptOAuth2LoginRequest(challenge, body),
     onSuccess: (data, variables) => {
       // Remove the specific login request from cache as it's been handled
       queryClient.removeQueries({ queryKey: oauth2AuthKeys.loginRequest(variables.challenge) });
@@ -108,8 +101,7 @@ export function useRejectOAuth2LoginRequest() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ challenge, body }: { challenge: string; body: RejectOAuth2Request }) =>
-      rejectOAuth2LoginRequest(challenge, body),
+    mutationFn: ({ challenge, body }: { challenge: string; body: RejectOAuth2Request }) => rejectOAuth2LoginRequest(challenge, body),
     onSuccess: (data, variables) => {
       // Remove the specific login request from cache as it's been handled
       queryClient.removeQueries({ queryKey: oauth2AuthKeys.loginRequest(variables.challenge) });
@@ -173,8 +165,7 @@ export function useRevokeOAuth2ConsentSessions() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ subject, client, all }: { subject: string; client?: string; all?: boolean }) =>
-      revokeOAuth2ConsentSessions(subject, client, all),
+    mutationFn: ({ subject, client, all }: { subject: string; client?: string; all?: boolean }) => revokeOAuth2ConsentSessions(subject, client, all),
     onSuccess: () => {
       // Invalidate all consent sessions
       queryClient.invalidateQueries({ queryKey: oauth2AuthKeys.consentSessions() });

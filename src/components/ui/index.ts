@@ -1,7 +1,14 @@
 // UI Components Barrel Export
 // Import all components from a single file: import { Button, TextField, Typography } from '@/components/ui'
 
-export { Accordion, AccordionSummary, AccordionDetails, type AccordionProps, type AccordionSummaryProps, type AccordionDetailsProps } from './Accordion';
+export {
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  type AccordionProps,
+  type AccordionSummaryProps,
+  type AccordionDetailsProps,
+} from './Accordion';
 export { ActionBar, type ActionBarProps } from '../layout/ActionBar';
 export { Alert, type AlertProps } from './Alert';
 export { AppBar, type AppBarProps } from './AppBar';
@@ -22,7 +29,13 @@ export { Divider, type DividerProps } from './Divider';
 export { default as DottedLoader } from './DottedLoader';
 export { Drawer, type DrawerProps } from './Drawer';
 export { EmptyState, type EmptyStateProps } from '../feedback/EmptyState';
-export { default as ErrorBoundary, PageErrorBoundary, ComponentErrorBoundary, ErrorBoundaryWrapper, type ErrorBoundaryWrapperProps } from './ErrorBoundary';
+export {
+  default as ErrorBoundary,
+  PageErrorBoundary,
+  ComponentErrorBoundary,
+  ErrorBoundaryWrapper,
+  type ErrorBoundaryWrapperProps,
+} from './ErrorBoundary';
 export { ErrorDisplay, type ErrorDisplayProps } from './ErrorDisplay';
 export { ErrorState, type ErrorStateProps } from '../feedback/ErrorState';
 export { FormSection, FormField, FormSelect, FormActions, FormContainer } from './Form';
@@ -32,7 +45,18 @@ export { FormLabel, type FormLabelProps } from './FormLabel';
 export { Grid, type GridProps } from './Grid';
 export { IconButton, type IconButtonProps } from './IconButton';
 export { InputAdornment, type InputAdornmentProps } from './InputAdornment';
-export { List, ListItem, ListItemButton, ListItemText, ListItemIcon, type ListProps, type ListItemProps, type ListItemButtonProps, type ListItemTextProps, type ListItemIconProps } from './List';
+export {
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  ListItemIcon,
+  type ListProps,
+  type ListItemProps,
+  type ListItemButtonProps,
+  type ListItemTextProps,
+  type ListItemIconProps,
+} from './List';
 export { default as LoadingSkeleton } from './LoadingSkeleton';
 export { LoadingState, type LoadingStateProps } from '../feedback/LoadingState';
 export { Menu, MenuItem, type MenuProps, type MenuItemProps } from './Menu';
@@ -45,7 +69,20 @@ export { Skeleton, type SkeletonProps } from './Skeleton';
 export { Snackbar, type SnackbarProps } from './Snackbar';
 export { default as Spinner } from './Spinner';
 export { Switch, type SwitchProps } from './Switch';
-export { Table, TableHead, TableBody, TableRow, TableCell, TableContainer, type TableProps, type TableHeadProps, type TableBodyProps, type TableRowProps, type TableCellProps, type TableContainerProps } from './Table';
+export {
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  TableContainer,
+  type TableProps,
+  type TableHeadProps,
+  type TableBodyProps,
+  type TableRowProps,
+  type TableCellProps,
+  type TableContainerProps,
+} from './Table';
 export { TextField, type TextFieldProps } from './TextField';
 export { Toolbar, type ToolbarProps } from './Toolbar';
 export { Tooltip, type TooltipProps } from './Tooltip';

@@ -38,108 +38,96 @@ const getTimeRemaining = (expiresAt: string): string | null => {
   return `${minutes}m remaining`;
 };
 
-export const SessionsTable: React.FC<SessionsTableProps> = React.memo(({
-  sessions,
-  isLoading,
-  isFetchingNextPage,
-  searchQuery,
-  onSessionClick
-}) => {
+export const SessionsTable: React.FC<SessionsTableProps> = React.memo(({ sessions, isLoading, isFetchingNextPage, searchQuery, onSessionClick }) => {
   // Define columns for the DataTable
-  const columns: DataTableColumn[] = useMemo(() => [
-    {
-      field: 'id',
-      headerName: 'Session ID',
-      minWidth: 200,
-      maxWidth: 250,
-      renderCell: (value: string) => (
-        <Tooltip content={value}>
+  const columns: DataTableColumn[] = useMemo(
+    () => [
+      {
+        field: 'id',
+        headerName: 'Session ID',
+        minWidth: 200,
+        maxWidth: 250,
+        renderCell: (value: string) => (
+          <Tooltip content={value}>
+            <Typography
+              variant="code"
+              sx={{
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              {value.substring(0, 8)}...
+            </Typography>
+          </Tooltip>
+        ),
+      },
+      {
+        field: 'identity',
+        headerName: 'Identity',
+        minWidth: 200,
+        maxWidth: 250,
+        renderCell: (_: any, session: any) => (
           <Typography
-            variant="code"
+            variant="body"
             sx={{
+              fontWeight: 500,
               overflow: 'hidden',
               textOverflow: 'ellipsis',
             }}
           >
-            {value.substring(0, 8)}...
+            {getIdentityDisplay(session)}
           </Typography>
-        </Tooltip>
-      ),
-    },
-    {
-      field: 'identity',
-      headerName: 'Identity',
-      minWidth: 200,
-      maxWidth: 250,
-      renderCell: (_: any, session: any) => (
-        <Typography
-          variant="body"
-          sx={{
-            fontWeight: 500,
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-          }}
-        >
-          {getIdentityDisplay(session)}
-        </Typography>
-      ),
-    },
-    {
-      field: 'active',
-      headerName: 'Status',
-      minWidth: 120,
-      renderCell: (value: boolean) => (
-        <StatusBadge
-          status={value ? 'active' : 'inactive'}
-          label={value ? 'Active' : 'Inactive'}
-          showIcon
-        />
-      ),
-    },
-    {
-      field: 'authenticated_at',
-      headerName: 'Authenticated At',
-      minWidth: 180,
-      renderCell: (value: string) => value ? (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-          <AccessTime fontSize="small" color="action" />
-          <Typography variant="body">{formatDate(value)}</Typography>
-        </Box>
-      ) : 'N/A',
-    },
-    {
-      field: 'expires_at',
-      headerName: 'Expires',
-      minWidth: 160,
-      renderCell: (value: string) => {
-        if (!value) return 'N/A';
-
-        const timeRemaining = getTimeRemaining(value);
-        const isExpiringSoon = timeRemaining && timeRemaining.includes('m remaining');
-
-        return (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-            {isExpiringSoon && <Warning fontSize="small" color="warning" />}
-            <Typography
-              variant="body"
-              color={isExpiringSoon ? 'warning.main' : 'text.primary'}
-              fontWeight={isExpiringSoon ? 500 : 400}
-            >
-              {timeRemaining}
-            </Typography>
-          </Box>
-        );
+        ),
       },
-    },
-  ], []);
+      {
+        field: 'active',
+        headerName: 'Status',
+        minWidth: 120,
+        renderCell: (value: boolean) => <StatusBadge status={value ? 'active' : 'inactive'} label={value ? 'Active' : 'Inactive'} showIcon />,
+      },
+      {
+        field: 'authenticated_at',
+        headerName: 'Authenticated At',
+        minWidth: 180,
+        renderCell: (value: string) =>
+          value ? (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <AccessTime fontSize="small" color="action" />
+              <Typography variant="body">{formatDate(value)}</Typography>
+            </Box>
+          ) : (
+            'N/A'
+          ),
+      },
+      {
+        field: 'expires_at',
+        headerName: 'Expires',
+        minWidth: 160,
+        renderCell: (value: string) => {
+          if (!value) return 'N/A';
+
+          const timeRemaining = getTimeRemaining(value);
+          const isExpiringSoon = timeRemaining && timeRemaining.includes('m remaining');
+
+          return (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              {isExpiringSoon && <Warning fontSize="small" color="warning" />}
+              <Typography variant="body" color={isExpiringSoon ? 'warning.main' : 'text.primary'} fontWeight={isExpiringSoon ? 500 : 400}>
+                {timeRemaining}
+              </Typography>
+            </Box>
+          );
+        },
+      },
+    ],
+    []
+  );
 
   const handleRowClick = (session: any) => {
     onSessionClick?.(session.id);
   };
 
-  const emptyStateMessage = searchQuery
-    ? 'Try a different search term'
-    : 'Sessions will appear here when users log in';
+  const emptyStateMessage = searchQuery ? 'Try a different search term' : 'Sessions will appear here when users log in';
 
   return (
     <DataTable

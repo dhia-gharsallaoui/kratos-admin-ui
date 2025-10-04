@@ -97,12 +97,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
                   An unexpected error occurred. Please try refreshing the page or contact support if the problem persists.
                 </Typography>
 
-                <Button
-                  variant="primary"
-                  startIcon={<Refresh />}
-                  onClick={this.handleRetry}
-                  sx={{ mb: 2 }}
-                >
+                <Button variant="primary" startIcon={<Refresh />} onClick={this.handleRetry} sx={{ mb: 2 }}>
                   Try Again
                 </Button>
 
@@ -146,10 +141,7 @@ export interface ErrorBoundaryWrapperProps {
   showDetails?: boolean;
 }
 
-export const ErrorBoundaryWrapper: React.FC<ErrorBoundaryWrapperProps> = ({
-  children,
-  ...props
-}) => {
+export const ErrorBoundaryWrapper: React.FC<ErrorBoundaryWrapperProps> = ({ children, ...props }) => {
   return <ErrorBoundary {...props}>{children}</ErrorBoundary>;
 };
 
@@ -167,9 +159,7 @@ export const PageErrorBoundary: React.FC<{ children: ReactNode }> = ({ children 
           }
         >
           <Typography variant="h6">Page Error</Typography>
-          <Typography variant="body2">
-            Failed to load this page. {error.message}
-          </Typography>
+          <Typography variant="body2">Failed to load this page. {error.message}</Typography>
         </Alert>
       </Box>
     )}

@@ -9,7 +9,7 @@ export function transformOAuth2ClientForTable(client: OAuth2Client): OAuth2Clien
     displayName: client.client_name || client.client_id || 'Unnamed Client',
     createdDate: client.created_at ? new Date(client.created_at).toLocaleDateString() : undefined,
     updatedDate: client.updated_at ? new Date(client.updated_at).toLocaleDateString() : undefined,
-    scopeList: client.scope ? client.scope.split(' ').filter(s => s.trim()) : [],
+    scopeList: client.scope ? client.scope.split(' ').filter((s) => s.trim()) : [],
     redirectUrisList: client.redirect_uris || [],
     grantTypesList: client.grant_types || [],
   };
@@ -21,12 +21,12 @@ export function transformFormDataToCreateRequest(formData: OAuth2ClientFormData)
     client_name: formData.client_name,
     client_uri: formData.client_uri || undefined,
     logo_uri: formData.logo_uri || undefined,
-    contacts: formData.contacts?.filter(contact => contact.trim()) || undefined,
+    contacts: formData.contacts?.filter((contact) => contact.trim()) || undefined,
     grant_types: formData.grant_types,
     response_types: formData.response_types,
-    redirect_uris: formData.redirect_uris.filter(uri => uri.trim()),
+    redirect_uris: formData.redirect_uris.filter((uri) => uri.trim()),
     scope: formData.scope || undefined,
-    audience: formData.audience?.filter(aud => aud.trim()) || undefined,
+    audience: formData.audience?.filter((aud) => aud.trim()) || undefined,
     owner: formData.owner || undefined,
     policy_uri: formData.policy_uri || undefined,
     tos_uri: formData.tos_uri || undefined,
@@ -77,26 +77,26 @@ export function validateOAuth2ClientForm(formData: OAuth2ClientFormData): OAuth2
   }
 
   // Conditional validation: authorization_code flow requires redirect URIs
-  if (formData.grant_types.includes('authorization_code') && formData.redirect_uris.filter(uri => uri.trim()).length === 0) {
+  if (formData.grant_types.includes('authorization_code') && formData.redirect_uris.filter((uri) => uri.trim()).length === 0) {
     errors.redirect_uris = 'Redirect URIs are required for authorization_code grant type';
   }
 
   // URL validation
   const urlFields = ['client_uri', 'logo_uri', 'policy_uri', 'tos_uri'] as const;
-  urlFields.forEach(field => {
+  urlFields.forEach((field) => {
     if (formData[field] && !isValidUrl(formData[field]!)) {
       errors[field] = 'Must be a valid URL';
     }
   });
 
   // Redirect URIs validation
-  const invalidRedirectUris = formData.redirect_uris.filter(uri => uri.trim() && !isValidUrl(uri));
+  const invalidRedirectUris = formData.redirect_uris.filter((uri) => uri.trim() && !isValidUrl(uri));
   if (invalidRedirectUris.length > 0) {
     errors.redirect_uris = 'All redirect URIs must be valid URLs';
   }
 
   // Contacts validation (email format)
-  const invalidContacts = formData.contacts?.filter(contact => contact.trim() && !isValidEmail(contact));
+  const invalidContacts = formData.contacts?.filter((contact) => contact.trim() && !isValidEmail(contact));
   if (invalidContacts && invalidContacts.length > 0) {
     errors.contacts = 'All contacts must be valid email addresses';
   }
@@ -165,11 +165,11 @@ export function getClientType(client: OAuth2Client): 'public' | 'confidential' {
 // Get grant types display names
 export function getGrantTypeDisplayName(grantType: string): string {
   const displayNames: Record<string, string> = {
-    'authorization_code': 'Authorization Code',
-    'client_credentials': 'Client Credentials',
-    'refresh_token': 'Refresh Token',
-    'implicit': 'Implicit',
-    'password': 'Resource Owner Password',
+    authorization_code: 'Authorization Code',
+    client_credentials: 'Client Credentials',
+    refresh_token: 'Refresh Token',
+    implicit: 'Implicit',
+    password: 'Resource Owner Password',
     'urn:ietf:params:oauth:grant-type:jwt-bearer': 'JWT Bearer',
   };
   return displayNames[grantType] || grantType;
@@ -178,9 +178,9 @@ export function getGrantTypeDisplayName(grantType: string): string {
 // Get response types display names
 export function getResponseTypeDisplayName(responseType: string): string {
   const displayNames: Record<string, string> = {
-    'code': 'Authorization Code',
-    'token': 'Access Token',
-    'id_token': 'ID Token',
+    code: 'Authorization Code',
+    token: 'Access Token',
+    id_token: 'ID Token',
     'code token': 'Code + Token',
     'code id_token': 'Code + ID Token',
     'token id_token': 'Token + ID Token',

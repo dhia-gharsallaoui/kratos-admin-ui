@@ -1,12 +1,4 @@
-import {
-  Configuration,
-  ConfigurationParameters,
-  OAuth2Api,
-  MetadataApi as HydraMetadataApi,
-  WellknownApi,
-  JwkApi,
-  OidcApi
-} from '@ory/hydra-client';
+import { Configuration, ConfigurationParameters, OAuth2Api, MetadataApi as HydraMetadataApi, WellknownApi, JwkApi, OidcApi } from '@ory/hydra-client';
 import { getHydraAdminUrl, getHydraPublicUrl } from './config';
 
 // Create configurations for Hydra API clients

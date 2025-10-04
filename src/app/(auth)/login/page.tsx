@@ -140,9 +140,9 @@ export default function LoginPage() {
             animation: 'fadeInUp 0.8s ease-out',
           }}
         >
-          <Typography 
-            component="h1" 
-            variant="h3" 
+          <Typography
+            component="h1"
+            variant="h3"
             gutterBottom
             sx={{
               fontWeight: 800,
@@ -198,10 +198,10 @@ export default function LoginPage() {
                 label="Password"
               />
             </FormControl>
-            <Button 
-              type="submit" 
-              fullWidth 
-              variant="contained" 
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
               sx={{
                 mt: 3,
                 mb: 2,
@@ -219,7 +219,7 @@ export default function LoginPage() {
                 '&:active': {
                   transform: 'translateY(0)',
                 },
-              }} 
+              }}
               disabled={loading}
             >
               {loading ? <CircularProgress size={24} sx={{ color: 'white' }} /> : 'Sign In'}
@@ -239,9 +239,10 @@ export default function LoginPage() {
                   elevation={0}
                   sx={{
                     cursor: 'pointer',
-                    background: user.role === UserRole.ADMIN
-                      ? gradients.subtle
-                      : 'linear-gradient(135deg, rgba(240, 147, 251, 0.1) 0%, rgba(79, 172, 254, 0.1) 100%)',
+                    background:
+                      user.role === UserRole.ADMIN
+                        ? gradients.subtle
+                        : 'linear-gradient(135deg, rgba(240, 147, 251, 0.1) 0%, rgba(79, 172, 254, 0.1) 100%)',
                     border: '2px solid',
                     borderColor: user.role === UserRole.ADMIN ? alpha.primary[30] : 'rgba(240, 147, 251, 0.3)',
                     borderRadius: 3,
@@ -249,9 +250,7 @@ export default function LoginPage() {
                     '&:hover': {
                       borderColor: user.role === UserRole.ADMIN ? gradientColors.primary : '#f093fb',
                       transform: 'translateY(-4px)',
-                      boxShadow: user.role === UserRole.ADMIN
-                        ? `0 8px 24px ${alpha.primary[30]}`
-                        : '0 8px 24px rgba(240, 147, 251, 0.3)',
+                      boxShadow: user.role === UserRole.ADMIN ? `0 8px 24px ${alpha.primary[30]}` : '0 8px 24px rgba(240, 147, 251, 0.3)',
                     },
                   }}
                   onClick={() => setDemoCredentials(user.username, user.password)}
@@ -285,9 +284,7 @@ export default function LoginPage() {
                       sx={{
                         mb: 1.5,
                         fontWeight: 600,
-                        background: user.role === UserRole.ADMIN
-                          ? gradients.normal
-                          : 'linear-gradient(135deg, #f093fb 0%, #4facfe 100%)',
+                        background: user.role === UserRole.ADMIN ? gradients.normal : 'linear-gradient(135deg, #f093fb 0%, #4facfe 100%)',
                         color: 'white',
                       }}
                     />

@@ -63,11 +63,7 @@ export function SearchBar({
                 {loading ? (
                   <CircularProgress size={20} sx={{ mr: 1 }} />
                 ) : value ? (
-                  <IconButton
-                    size="small"
-                    onClick={handleClear}
-                    sx={{ mr: 1 }}
-                  >
+                  <IconButton size="small" onClick={handleClear} sx={{ mr: 1 }}>
                     <Clear sx={{ fontSize: 20 }} />
                   </IconButton>
                 ) : null}

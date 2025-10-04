@@ -100,15 +100,9 @@ export default function ProfilePage() {
                   {user.displayName.charAt(0)}
                 </Avatar>
 
-                <Chip
-                  variant={user.role === UserRole.ADMIN ? 'gradient' : 'role'}
-                  label={user.role}
-                  sx={{ mb: 1 }}
-                />
+                <Chip variant={user.role === UserRole.ADMIN ? 'gradient' : 'role'} label={user.role} sx={{ mb: 1 }} />
 
-                <Typography variant="label">
-                  Account created: March 1, 2025
-                </Typography>
+                <Typography variant="label">Account created: March 1, 2025</Typography>
               </Box>
             </Grid>
 
@@ -117,7 +111,9 @@ export default function ProfilePage() {
                 title={
                   <FlexBox align="center" gap={1}>
                     <Person />
-                    <Typography variant="heading" size="lg">Personal Information</Typography>
+                    <Typography variant="heading" size="lg">
+                      Personal Information
+                    </Typography>
                   </FlexBox>
                 }
                 sx={{ mb: 3 }}
@@ -126,7 +122,9 @@ export default function ProfilePage() {
                   <Grid size={{ xs: 12 }}>
                     {isEditing ? (
                       <>
-                        <Typography variant="label" sx={{ mb: 1, display: 'block' }}>Display Name</Typography>
+                        <Typography variant="label" sx={{ mb: 1, display: 'block' }}>
+                          Display Name
+                        </Typography>
                         <TextField fullWidth value={displayName} onChange={(e) => setDisplayName(e.target.value)} size="small" />
                       </>
                     ) : (
@@ -137,7 +135,9 @@ export default function ProfilePage() {
                   <Grid size={{ xs: 12 }}>
                     {isEditing ? (
                       <>
-                        <Typography variant="label" sx={{ mb: 1, display: 'block' }}>Email Address</Typography>
+                        <Typography variant="label" sx={{ mb: 1, display: 'block' }}>
+                          Email Address
+                        </Typography>
                         <TextField fullWidth value={email} onChange={(e) => setEmail(e.target.value)} size="small" />
                       </>
                     ) : (
@@ -151,7 +151,9 @@ export default function ProfilePage() {
                 title={
                   <FlexBox align="center" gap={1}>
                     <Lock />
-                    <Typography variant="heading" size="lg">Account Information</Typography>
+                    <Typography variant="heading" size="lg">
+                      Account Information
+                    </Typography>
                   </FlexBox>
                 }
               >

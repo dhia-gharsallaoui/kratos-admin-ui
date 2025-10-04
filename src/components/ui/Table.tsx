@@ -54,41 +54,29 @@ const StyledTableContainer = styled(MuiTableContainer)(({ theme }) => ({
   borderRadius: 'var(--radius)',
 }));
 
-export const Table = React.forwardRef<HTMLTableElement, TableProps>(
-  (props, ref) => {
-    return <StyledTable ref={ref} {...props} />;
-  }
-);
+export const Table = React.forwardRef<HTMLTableElement, TableProps>((props, ref) => {
+  return <StyledTable ref={ref} {...props} />;
+});
 
-export const TableHead = React.forwardRef<HTMLTableSectionElement, TableHeadProps>(
-  (props, ref) => {
-    return <StyledTableHead ref={ref} {...props} />;
-  }
-);
+export const TableHead = React.forwardRef<HTMLTableSectionElement, TableHeadProps>((props, ref) => {
+  return <StyledTableHead ref={ref} {...props} />;
+});
 
-export const TableBody = React.forwardRef<HTMLTableSectionElement, TableBodyProps>(
-  (props, ref) => {
-    return <StyledTableBody ref={ref} {...props} />;
-  }
-);
+export const TableBody = React.forwardRef<HTMLTableSectionElement, TableBodyProps>((props, ref) => {
+  return <StyledTableBody ref={ref} {...props} />;
+});
 
-export const TableRow = React.forwardRef<HTMLTableRowElement, TableRowProps>(
-  (props, ref) => {
-    return <StyledTableRow ref={ref} {...props} />;
-  }
-);
+export const TableRow = React.forwardRef<HTMLTableRowElement, TableRowProps>((props, ref) => {
+  return <StyledTableRow ref={ref} {...props} />;
+});
 
-export const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>(
-  (props, ref) => {
-    return <StyledTableCell ref={ref} {...props} />;
-  }
-);
+export const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>((props, ref) => {
+  return <StyledTableCell ref={ref} {...props} />;
+});
 
-export const TableContainer = React.forwardRef<HTMLDivElement, TableContainerProps>(
-  (props, ref) => {
-    return <StyledTableContainer ref={ref} {...props} />;
-  }
-);
+export const TableContainer = React.forwardRef<HTMLDivElement, TableContainerProps>((props, ref) => {
+  return <StyledTableContainer ref={ref} {...props} />;
+});
 
 Table.displayName = 'Table';
 TableHead.displayName = 'TableHead';

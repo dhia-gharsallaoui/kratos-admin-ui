@@ -8,10 +8,8 @@ const StyledToolbar = styled(MuiToolbar)(({ theme }) => ({
   // Keep MUI Toolbar styling
 }));
 
-export const Toolbar = React.forwardRef<HTMLDivElement, ToolbarProps>(
-  (props, ref) => {
-    return <StyledToolbar ref={ref} {...props} />;
-  }
-);
+export const Toolbar = React.forwardRef<HTMLDivElement, ToolbarProps>((props, ref) => {
+  return <StyledToolbar ref={ref} {...props} />;
+});
 
 Toolbar.displayName = 'Toolbar';

@@ -14,12 +14,7 @@ export interface ErrorStateProps {
   variant?: 'page' | 'inline';
 }
 
-export function ErrorState({
-  title = 'Something went wrong',
-  message,
-  action,
-  variant = 'page',
-}: ErrorStateProps) {
+export function ErrorState({ title = 'Something went wrong', message, action, variant = 'page' }: ErrorStateProps) {
   if (variant === 'inline') {
     return (
       <Alert

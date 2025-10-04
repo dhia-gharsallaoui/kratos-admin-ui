@@ -135,83 +135,73 @@ const IdentitiesTable: React.FC = React.memo(() => {
   const displayedIdentities = shouldUseSearchResults ? searchResults : clientFilteredIdentities;
 
   // Define columns
-  const columns: DataTableColumn[] = useMemo(() => [
-    {
-      field: 'id',
-      headerName: 'ID',
-      minWidth: 180,
-      maxWidth: 200,
-      renderCell: (value: string) => (
-        <Tooltip title={value}>
+  const columns: DataTableColumn[] = useMemo(
+    () => [
+      {
+        field: 'id',
+        headerName: 'ID',
+        minWidth: 180,
+        maxWidth: 200,
+        renderCell: (value: string) => (
+          <Tooltip title={value}>
+            <Typography
+              variant="code"
+              sx={{
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              {value.substring(0, 8)}...
+            </Typography>
+          </Tooltip>
+        ),
+      },
+      {
+        field: 'identifier',
+        headerName: 'Identifier',
+        minWidth: 220,
+        renderCell: (_: any, identity: Identity) => (
           <Typography
-            variant="code"
+            variant="body"
             sx={{
+              fontWeight: 500,
               overflow: 'hidden',
               textOverflow: 'ellipsis',
             }}
           >
-            {value.substring(0, 8)}...
+            {getIdentifier(identity)}
           </Typography>
-        </Tooltip>
-      ),
-    },
-    {
-      field: 'identifier',
-      headerName: 'Identifier',
-      minWidth: 220,
-      renderCell: (_: any, identity: Identity) => (
-        <Typography
-          variant="body"
-          sx={{
-            fontWeight: 500,
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-          }}
-        >
-          {getIdentifier(identity)}
-        </Typography>
-      ),
-    },
-    {
-      field: 'schema_id',
-      headerName: 'Schema',
-      minWidth: 140,
-      renderCell: (_: any, identity: Identity) => (
-        <Chip
-          variant="gradient"
-          label={getSchemaName(identity)}
-        />
-      ),
-    },
-    {
-      field: 'state',
-      headerName: 'State',
-      minWidth: 100,
-      renderCell: (value: string) => (
-        <Chip
-          variant="status"
-          status={value === 'active' ? 'active' : 'inactive'}
-          label={value === 'active' ? 'Active' : 'Inactive'}
-        />
-      ),
-    },
-    {
-      field: 'created_at',
-      headerName: 'Created',
-      minWidth: 180,
-      renderCell: (value: string) => (
-        <Typography variant="body">{formatDate(value)}</Typography>
-      ),
-    },
-    {
-      field: 'updated_at',
-      headerName: 'Updated',
-      minWidth: 180,
-      renderCell: (value: string) => (
-        <Typography variant="body">{formatDate(value)}</Typography>
-      ),
-    },
-  ], [getSchemaName, getIdentifier]);
+        ),
+      },
+      {
+        field: 'schema_id',
+        headerName: 'Schema',
+        minWidth: 140,
+        renderCell: (_: any, identity: Identity) => <Chip variant="gradient" label={getSchemaName(identity)} />,
+      },
+      {
+        field: 'state',
+        headerName: 'State',
+        minWidth: 100,
+        renderCell: (value: string) => (
+          <Chip variant="status" status={value === 'active' ? 'active' : 'inactive'} label={value === 'active' ? 'Active' : 'Inactive'} />
+        ),
+      },
+      {
+        field: 'created_at',
+        headerName: 'Created',
+        minWidth: 180,
+        renderCell: (value: string) => <Typography variant="body">{formatDate(value)}</Typography>,
+      },
+      {
+        field: 'updated_at',
+        headerName: 'Updated',
+        minWidth: 180,
+        renderCell: (value: string) => <Typography variant="body">{formatDate(value)}</Typography>,
+      },
+    ],
+    [getSchemaName, getIdentifier]
+  );
 
   const handleRowClick = (row: any) => {
     router.push(`/identities/${row.id}`);

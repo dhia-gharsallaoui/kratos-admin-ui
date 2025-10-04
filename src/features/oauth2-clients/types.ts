@@ -74,15 +74,7 @@ export const OAUTH2_GRANT_TYPES = [
   'urn:ietf:params:oauth:grant-type:jwt-bearer',
 ] as const;
 
-export const OAUTH2_RESPONSE_TYPES = [
-  'code',
-  'token',
-  'id_token',
-  'code token',
-  'code id_token',
-  'token id_token',
-  'code token id_token',
-] as const;
+export const OAUTH2_RESPONSE_TYPES = ['code', 'token', 'id_token', 'code token', 'code id_token', 'token id_token', 'code token id_token'] as const;
 
 export const OAUTH2_SUBJECT_TYPES = ['public', 'pairwise'] as const;
 

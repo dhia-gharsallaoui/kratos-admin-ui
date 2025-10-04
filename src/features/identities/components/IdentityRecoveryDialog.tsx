@@ -1,6 +1,20 @@
 import React, { useState } from 'react';
 import { Close, ContentCopy, Link as LinkIcon } from '@mui/icons-material';
-import { ActionBar, Alert, Box, Button, Dialog, DialogActions, DialogContent, DottedLoader, IconButton, InputAdornment, Snackbar, TextField, Typography } from '@/components/ui';
+import {
+  ActionBar,
+  Alert,
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DottedLoader,
+  IconButton,
+  InputAdornment,
+  Snackbar,
+  TextField,
+  Typography,
+} from '@/components/ui';
 import { Identity } from '@ory/kratos-client';
 import { createRecoveryLink } from '@/services/kratos';
 
@@ -68,7 +82,9 @@ export const IdentityRecoveryDialog: React.FC<IdentityRecoveryDialogProps> = ({ 
         title={
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <LinkIcon color="primary" />
-            <Typography variant="heading" size="lg">Generate Recovery Link</Typography>
+            <Typography variant="heading" size="lg">
+              Generate Recovery Link
+            </Typography>
           </Box>
         }
         slotProps={{
@@ -79,7 +95,6 @@ export const IdentityRecoveryDialog: React.FC<IdentityRecoveryDialogProps> = ({ 
           },
         }}
       >
-
         <DialogContent sx={{ p: 3 }}>
           <Box sx={{ mb: 3 }}>
             <Typography variant="body" gutterBottom>

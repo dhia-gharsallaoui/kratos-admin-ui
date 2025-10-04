@@ -2,15 +2,7 @@
 
 import React from 'react';
 import { Box, Chip } from '@/components/ui';
-import {
-  CheckCircle,
-  Cancel,
-  Warning,
-  HourglassEmpty,
-  Error as ErrorIcon,
-  Circle,
-  HealthAndSafety,
-} from '@mui/icons-material';
+import { CheckCircle, Cancel, Warning, HourglassEmpty, Error as ErrorIcon, Circle, HealthAndSafety } from '@mui/icons-material';
 
 type StatusType = 'active' | 'inactive' | 'pending' | 'error' | 'success' | 'warning' | 'healthy' | 'unhealthy';
 
@@ -90,13 +82,7 @@ const statusConfig: Record<
   },
 };
 
-export function StatusBadge({
-  status,
-  label,
-  showIcon = true,
-  size = 'medium',
-  variant = 'filled',
-}: StatusBadgeProps) {
+export function StatusBadge({ status, label, showIcon = true, size = 'medium', variant = 'filled' }: StatusBadgeProps) {
   const config = statusConfig[status];
   const displayLabel = label || config.label;
   const Icon = config.icon;

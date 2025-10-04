@@ -122,11 +122,7 @@ export default function SessionsPage() {
                   All Sessions
                 </Typography>
                 <Box sx={{ width: { xs: '100%', sm: '300px' } }}>
-                  <SearchBar
-                    value={searchQuery}
-                    onChange={setSearchQuery}
-                    placeholder="Search sessions..."
-                  />
+                  <SearchBar value={searchQuery} onChange={setSearchQuery} placeholder="Search sessions..." />
                 </Box>
               </Box>
 
@@ -156,16 +152,10 @@ export default function SessionsPage() {
                       {searchQuery_.isAutoSearching ? (
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                           <Spinner variant="inline" />
-                          <Typography variant="subheading">
-                            Searching for more sessions...
-                          </Typography>
+                          <Typography variant="subheading">Searching for more sessions...</Typography>
                         </Box>
                       ) : (
-                        <Button
-                          onClick={() => searchQuery_.loadMoreMatches()}
-                          variant="outlined"
-                          startIcon={<ExpandMore />}
-                        >
+                        <Button onClick={() => searchQuery_.loadMoreMatches()} variant="outlined" startIcon={<ExpandMore />}>
                           Load More Matches
                         </Button>
                       )}

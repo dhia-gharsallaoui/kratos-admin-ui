@@ -9,10 +9,8 @@ const StyledPaper = styled(MuiPaper)(({ theme }) => ({
   transition: 'all 0.3s ease',
 }));
 
-export const Paper = React.forwardRef<HTMLDivElement, PaperProps>(
-  (props, ref) => {
-    return <StyledPaper ref={ref} {...props} />;
-  }
-);
+export const Paper = React.forwardRef<HTMLDivElement, PaperProps>((props, ref) => {
+  return <StyledPaper ref={ref} {...props} />;
+});
 
 Paper.displayName = 'Paper';

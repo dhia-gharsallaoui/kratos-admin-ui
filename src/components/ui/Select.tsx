@@ -54,29 +54,21 @@ const StyledMenuItem = styled(MuiMenuItem)(({ theme }) => ({
   },
 }));
 
-export const FormControl = React.forwardRef<HTMLDivElement, FormControlProps>(
-  (props, ref) => {
-    return <StyledFormControl ref={ref} {...props} />;
-  }
-);
+export const FormControl = React.forwardRef<HTMLDivElement, FormControlProps>((props, ref) => {
+  return <StyledFormControl ref={ref} {...props} />;
+});
 
-export const InputLabel = React.forwardRef<HTMLLabelElement, InputLabelProps>(
-  (props, ref) => {
-    return <StyledInputLabel ref={ref} {...props} />;
-  }
-);
+export const InputLabel = React.forwardRef<HTMLLabelElement, InputLabelProps>((props, ref) => {
+  return <StyledInputLabel ref={ref} {...props} />;
+});
 
-export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
-  (props, ref) => {
-    return <StyledSelect ref={ref} {...props} />;
-  }
-);
+export const Select = React.forwardRef<HTMLDivElement, SelectProps>((props, ref) => {
+  return <StyledSelect ref={ref} {...props} />;
+});
 
-export const MenuItem = React.forwardRef<HTMLLIElement, MenuItemProps>(
-  (props, ref) => {
-    return <StyledMenuItem ref={ref} {...props} />;
-  }
-);
+export const MenuItem = React.forwardRef<HTMLLIElement, MenuItemProps>((props, ref) => {
+  return <StyledMenuItem ref={ref} {...props} />;
+});
 
 FormControl.displayName = 'FormControl';
 InputLabel.displayName = 'InputLabel';

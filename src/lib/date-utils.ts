@@ -8,10 +8,7 @@
  * @param options - Intl.DateTimeFormatOptions for customization
  * @returns Formatted date string or empty string if invalid
  */
-export const formatDate = (
-  date: string | Date | null | undefined,
-  options?: Intl.DateTimeFormatOptions
-): string => {
+export const formatDate = (date: string | Date | null | undefined, options?: Intl.DateTimeFormatOptions): string => {
   if (!date) {
     return '';
   }

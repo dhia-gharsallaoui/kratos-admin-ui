@@ -46,7 +46,7 @@ export function StatCard({
   variant = 'default',
 }: StatCardProps) {
   // Use colorVariant if provided, otherwise fall back to iconColor prop or default primary
-  const iconColor = colorVariant ? colorMap[colorVariant] : (iconColorProp || gradientColors.primary);
+  const iconColor = colorVariant ? colorMap[colorVariant] : iconColorProp || gradientColors.primary;
   if (loading) {
     return (
       <Card
@@ -145,11 +145,12 @@ export function StatCard({
                 px: 1,
                 py: 0.25,
                 borderRadius: 1,
-                backgroundColor: variant === 'gradient'
-                  ? 'rgba(255, 255, 255, 0.2)'
-                  : trend.direction === 'up'
-                  ? 'rgba(76, 175, 80, 0.1)'
-                  : 'rgba(244, 67, 54, 0.1)',
+                backgroundColor:
+                  variant === 'gradient'
+                    ? 'rgba(255, 255, 255, 0.2)'
+                    : trend.direction === 'up'
+                      ? 'rgba(76, 175, 80, 0.1)'
+                      : 'rgba(244, 67, 54, 0.1)',
               }}
             >
               {trend.direction === 'up' ? (
@@ -171,11 +172,7 @@ export function StatCard({
                 variant="caption"
                 sx={{
                   fontWeight: 600,
-                  color: variant === 'gradient'
-                    ? '#ffffff'
-                    : trend.direction === 'up'
-                    ? '#4caf50'
-                    : '#f44336',
+                  color: variant === 'gradient' ? '#ffffff' : trend.direction === 'up' ? '#4caf50' : '#f44336',
                 }}
               >
                 {trend.value}%

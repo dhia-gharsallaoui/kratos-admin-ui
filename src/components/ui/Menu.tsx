@@ -52,38 +52,26 @@ const StyledMenuItem = styled(MuiMenuItem)(({ theme }) => ({
   },
 }));
 
-export const Menu = React.forwardRef<HTMLDivElement, MenuProps>(
-  ({ variant = 'dropdown', muiVariant, children, ...props }, ref) => {
-    return (
-      <StyledMenu ref={ref} variant={muiVariant} {...props}>
-        {children}
-      </StyledMenu>
-    );
-  }
-);
+export const Menu = React.forwardRef<HTMLDivElement, MenuProps>(({ variant = 'dropdown', muiVariant, children, ...props }, ref) => {
+  return (
+    <StyledMenu ref={ref} variant={muiVariant} {...props}>
+      {children}
+    </StyledMenu>
+  );
+});
 
 Menu.displayName = 'Menu';
 
-export const MenuItem = React.forwardRef<HTMLLIElement, MenuItemProps>(
-  ({ icon, children, divider = false, ...props }, ref) => {
-    return (
-      <>
-        <StyledMenuItem ref={ref} {...props}>
-          {icon && (
-            <ListItemIcon sx={{ minWidth: 36 }}>
-              {icon}
-            </ListItemIcon>
-          )}
-          {typeof children === 'string' ? (
-            <ListItemText primary={children} />
-          ) : (
-            children
-          )}
-        </StyledMenuItem>
-        {divider && <Divider sx={{ my: 1 }} />}
-      </>
-    );
-  }
-);
+export const MenuItem = React.forwardRef<HTMLLIElement, MenuItemProps>(({ icon, children, divider = false, ...props }, ref) => {
+  return (
+    <>
+      <StyledMenuItem ref={ref} {...props}>
+        {icon && <ListItemIcon sx={{ minWidth: 36 }}>{icon}</ListItemIcon>}
+        {typeof children === 'string' ? <ListItemText primary={children} /> : children}
+      </StyledMenuItem>
+      {divider && <Divider sx={{ my: 1 }} />}
+    </>
+  );
+});
 
 MenuItem.displayName = 'MenuItem';

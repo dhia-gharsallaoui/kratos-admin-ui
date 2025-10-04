@@ -19,7 +19,7 @@ const storage = {
       state_changed_at: '2025-01-15T10:00:00Z',
       traits: {
         email: 'user@example.com',
-        name: { first: 'John', last: 'Doe' }
+        name: { first: 'John', last: 'Doe' },
       },
       verifiable_addresses: [
         {
@@ -27,19 +27,19 @@ const storage = {
           value: 'user@example.com',
           verified: true,
           via: 'email',
-          status: 'completed'
-        }
+          status: 'completed',
+        },
       ],
       recovery_addresses: [
         {
           id: '1',
           value: 'user@example.com',
-          via: 'email'
-        }
+          via: 'email',
+        },
       ],
       metadata_public: null,
       created_at: '2025-01-15T10:00:00Z',
-      updated_at: '2025-01-15T10:00:00Z'
+      updated_at: '2025-01-15T10:00:00Z',
     },
     {
       id: '660e8400-e29b-41d4-a716-446655440001',
@@ -49,7 +49,7 @@ const storage = {
       state_changed_at: '2025-01-14T15:30:00Z',
       traits: {
         email: 'admin@example.com',
-        name: { first: 'Jane', last: 'Admin' }
+        name: { first: 'Jane', last: 'Admin' },
       },
       verifiable_addresses: [
         {
@@ -57,20 +57,20 @@ const storage = {
           value: 'admin@example.com',
           verified: true,
           via: 'email',
-          status: 'completed'
-        }
+          status: 'completed',
+        },
       ],
       recovery_addresses: [
         {
           id: '2',
           value: 'admin@example.com',
-          via: 'email'
-        }
+          via: 'email',
+        },
       ],
       metadata_public: null,
       created_at: '2025-01-14T15:30:00Z',
-      updated_at: '2025-01-14T15:30:00Z'
-    }
+      updated_at: '2025-01-14T15:30:00Z',
+    },
   ],
   sessions: [
     {
@@ -86,9 +86,9 @@ const storage = {
         state: 'active',
         traits: {
           email: 'user@example.com',
-          name: { first: 'John', last: 'Doe' }
-        }
-      }
+          name: { first: 'John', last: 'Doe' },
+        },
+      },
     },
     {
       id: 'session-2',
@@ -103,10 +103,10 @@ const storage = {
         state: 'active',
         traits: {
           email: 'admin@example.com',
-          name: { first: 'Jane', last: 'Admin' }
-        }
-      }
-    }
+          name: { first: 'Jane', last: 'Admin' },
+        },
+      },
+    },
   ],
   schemas: [
     {
@@ -125,22 +125,22 @@ const storage = {
               'ory.sh/kratos': {
                 credentials: { password: { identifier: true } },
                 recovery: { via: 'email' },
-                verification: { via: 'email' }
-              }
+                verification: { via: 'email' },
+              },
             },
             name: {
               type: 'object',
               properties: {
                 first: { type: 'string', title: 'First Name' },
-                last: { type: 'string', title: 'Last Name' }
-              }
-            }
+                last: { type: 'string', title: 'Last Name' },
+              },
+            },
           },
           required: ['email'],
-          additionalProperties: false
-        }
-      }
-    }
+          additionalProperties: false,
+        },
+      },
+    },
   ],
   messages: [
     {
@@ -151,8 +151,8 @@ const storage = {
       subject: 'Welcome',
       status: 'sent',
       created_at: '2025-01-15T10:00:00Z',
-      updated_at: '2025-01-15T10:00:00Z'
-    }
+      updated_at: '2025-01-15T10:00:00Z',
+    },
   ],
   oauth2Clients: [
     {
@@ -165,9 +165,9 @@ const storage = {
       scope: 'openid profile email',
       owner: 'admin',
       created_at: '2025-01-15T10:00:00Z',
-      updated_at: '2025-01-15T10:00:00Z'
-    }
-  ]
+      updated_at: '2025-01-15T10:00:00Z',
+    },
+  ],
 };
 
 // Helper functions
@@ -176,7 +176,7 @@ function sendJSON(res, statusCode, data) {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
   });
   res.end(JSON.stringify(data));
 }
@@ -184,7 +184,7 @@ function sendJSON(res, statusCode, data) {
 function parseBody(req) {
   return new Promise((resolve, reject) => {
     let body = '';
-    req.on('data', chunk => body += chunk.toString());
+    req.on('data', (chunk) => (body += chunk.toString()));
     req.on('end', () => {
       try {
         resolve(body ? JSON.parse(body) : {});
@@ -210,17 +210,18 @@ const kratosAdminHandlers = {
     return {
       status: 200,
       data: items,
-      headers: end < storage.identities.length ? {
-        'link': `<http://localhost:4434/identities?page_token=${end}&page_size=${pageSize}>; rel="next"`
-      } : {}
+      headers:
+        end < storage.identities.length
+          ? {
+              link: `<http://localhost:4434/identities?page_token=${end}&page_size=${pageSize}>; rel="next"`,
+            }
+          : {},
     };
   },
 
   'GET /identities/:id': (url, params) => {
-    const identity = storage.identities.find(i => i.id === params.id);
-    return identity
-      ? { status: 200, data: identity }
-      : { status: 404, data: { error: { message: 'Identity not found' } } };
+    const identity = storage.identities.find((i) => i.id === params.id);
+    return identity ? { status: 200, data: identity } : { status: 404, data: { error: { message: 'Identity not found' } } };
   },
 
   'POST /identities': async (url, params, req) => {
@@ -236,7 +237,7 @@ const kratosAdminHandlers = {
       recovery_addresses: [],
       metadata_public: body.metadata_public || null,
       created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
     };
     storage.identities.push(newIdentity);
     return { status: 201, data: newIdentity };
@@ -244,7 +245,7 @@ const kratosAdminHandlers = {
 
   'PATCH /identities/:id': async (url, params, req) => {
     const body = await parseBody(req);
-    const index = storage.identities.findIndex(i => i.id === params.id);
+    const index = storage.identities.findIndex((i) => i.id === params.id);
     if (index === -1) {
       return { status: 404, data: { error: { message: 'Identity not found' } } };
     }
@@ -253,14 +254,14 @@ const kratosAdminHandlers = {
       ...storage.identities[index],
       ...body,
       id: params.id,
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
     };
 
     return { status: 200, data: storage.identities[index] };
   },
 
   'DELETE /identities/:id': (url, params) => {
-    const index = storage.identities.findIndex(i => i.id === params.id);
+    const index = storage.identities.findIndex((i) => i.id === params.id);
     if (index === -1) {
       return { status: 404, data: { error: { message: 'Identity not found' } } };
     }
@@ -269,7 +270,7 @@ const kratosAdminHandlers = {
   },
 
   'POST /identities/:id/recovery': (url, params) => {
-    const identity = storage.identities.find(i => i.id === params.id);
+    const identity = storage.identities.find((i) => i.id === params.id);
     if (!identity) {
       return { status: 404, data: { error: { message: 'Identity not found' } } };
     }
@@ -277,8 +278,8 @@ const kratosAdminHandlers = {
       status: 200,
       data: {
         recovery_link: `http://localhost:4433/self-service/recovery?token=mock-token-${params.id}`,
-        expires_at: new Date(Date.now() + 3600000).toISOString()
-      }
+        expires_at: new Date(Date.now() + 3600000).toISOString(),
+      },
     };
   },
 
@@ -290,7 +291,7 @@ const kratosAdminHandlers = {
 
     let sessions = storage.sessions;
     if (active !== null) {
-      sessions = sessions.filter(s => s.active === (active === 'true'));
+      sessions = sessions.filter((s) => s.active === (active === 'true'));
     }
 
     const start = pageToken ? parseInt(pageToken) : 0;
@@ -300,21 +301,22 @@ const kratosAdminHandlers = {
     return {
       status: 200,
       data: items,
-      headers: end < sessions.length ? {
-        'link': `<http://localhost:4434/sessions?page_token=${end}&page_size=${pageSize}>; rel="next"`
-      } : {}
+      headers:
+        end < sessions.length
+          ? {
+              link: `<http://localhost:4434/sessions?page_token=${end}&page_size=${pageSize}>; rel="next"`,
+            }
+          : {},
     };
   },
 
   'GET /sessions/:id': (url, params) => {
-    const session = storage.sessions.find(s => s.id === params.id);
-    return session
-      ? { status: 200, data: session }
-      : { status: 404, data: { error: { message: 'Session not found' } } };
+    const session = storage.sessions.find((s) => s.id === params.id);
+    return session ? { status: 200, data: session } : { status: 404, data: { error: { message: 'Session not found' } } };
   },
 
   'DELETE /sessions/:id': (url, params) => {
-    const index = storage.sessions.findIndex(s => s.id === params.id);
+    const index = storage.sessions.findIndex((s) => s.id === params.id);
     if (index === -1) {
       return { status: 404, data: { error: { message: 'Session not found' } } };
     }
@@ -323,7 +325,7 @@ const kratosAdminHandlers = {
   },
 
   'PATCH /sessions/:id/extend': (url, params) => {
-    const session = storage.sessions.find(s => s.id === params.id);
+    const session = storage.sessions.find((s) => s.id === params.id);
     if (!session) {
       return { status: 404, data: { error: { message: 'Session not found' } } };
     }
@@ -332,7 +334,7 @@ const kratosAdminHandlers = {
   },
 
   'DELETE /sessions/:id/disable': (url, params) => {
-    const session = storage.sessions.find(s => s.id === params.id);
+    const session = storage.sessions.find((s) => s.id === params.id);
     if (!session) {
       return { status: 404, data: { error: { message: 'Session not found' } } };
     }
@@ -352,17 +354,18 @@ const kratosAdminHandlers = {
     return {
       status: 200,
       data: items,
-      headers: end < storage.messages.length ? {
-        'link': `<http://localhost:4434/courier/messages?page_token=${end}&page_size=${pageSize}>; rel="next"`
-      } : {}
+      headers:
+        end < storage.messages.length
+          ? {
+              link: `<http://localhost:4434/courier/messages?page_token=${end}&page_size=${pageSize}>; rel="next"`,
+            }
+          : {},
     };
   },
 
   'GET /courier/messages/:id': (url, params) => {
-    const message = storage.messages.find(m => m.id === params.id);
-    return message
-      ? { status: 200, data: message }
-      : { status: 404, data: { error: { message: 'Message not found' } } };
+    const message = storage.messages.find((m) => m.id === params.id);
+    return message ? { status: 200, data: message } : { status: 404, data: { error: { message: 'Message not found' } } };
   },
 
   // Health
@@ -375,18 +378,16 @@ const kratosPublicHandlers = {
   'GET /schemas': () => {
     return {
       status: 200,
-      data: storage.schemas.map(s => ({
+      data: storage.schemas.map((s) => ({
         id: s.id,
-        url: `http://localhost:4433/schemas/${s.id}`
-      }))
+        url: `http://localhost:4433/schemas/${s.id}`,
+      })),
     };
   },
 
   'GET /schemas/:id': (url, params) => {
-    const schema = storage.schemas.find(s => s.id === params.id);
-    return schema
-      ? { status: 200, data: schema }
-      : { status: 404, data: { error: { message: 'Schema not found' } } };
+    const schema = storage.schemas.find((s) => s.id === params.id);
+    return schema ? { status: 200, data: schema } : { status: 404, data: { error: { message: 'Schema not found' } } };
   },
 
   // Health
@@ -408,10 +409,8 @@ const hydraAdminHandlers = {
   },
 
   'GET /clients/:id': (url, params) => {
-    const client = storage.oauth2Clients.find(c => c.client_id === params.id);
-    return client
-      ? { status: 200, data: client }
-      : { status: 404, data: { error: { message: 'Client not found' } } };
+    const client = storage.oauth2Clients.find((c) => c.client_id === params.id);
+    return client ? { status: 200, data: client } : { status: 404, data: { error: { message: 'Client not found' } } };
   },
 
   'POST /clients': async (url, params, req) => {
@@ -427,7 +426,7 @@ const hydraAdminHandlers = {
       owner: body.owner || '',
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
-      ...body
+      ...body,
     };
     storage.oauth2Clients.push(newClient);
     return { status: 201, data: newClient };
@@ -435,7 +434,7 @@ const hydraAdminHandlers = {
 
   'PUT /clients/:id': async (url, params, req) => {
     const body = await parseBody(req);
-    const index = storage.oauth2Clients.findIndex(c => c.client_id === params.id);
+    const index = storage.oauth2Clients.findIndex((c) => c.client_id === params.id);
     if (index === -1) {
       return { status: 404, data: { error: { message: 'Client not found' } } };
     }
@@ -443,7 +442,7 @@ const hydraAdminHandlers = {
     storage.oauth2Clients[index] = {
       ...body,
       client_id: params.id,
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
     };
 
     return { status: 200, data: storage.oauth2Clients[index] };
@@ -451,14 +450,14 @@ const hydraAdminHandlers = {
 
   'PATCH /clients/:id': async (url, params, req) => {
     const body = await parseBody(req);
-    const index = storage.oauth2Clients.findIndex(c => c.client_id === params.id);
+    const index = storage.oauth2Clients.findIndex((c) => c.client_id === params.id);
     if (index === -1) {
       return { status: 404, data: { error: { message: 'Client not found' } } };
     }
 
     // Handle JSON Patch operations
     if (Array.isArray(body)) {
-      body.forEach(operation => {
+      body.forEach((operation) => {
         if (operation.op === 'replace' && operation.path && operation.value !== undefined) {
           const key = operation.path.replace(/^\//, '');
           storage.oauth2Clients[index][key] = operation.value;
@@ -467,7 +466,7 @@ const hydraAdminHandlers = {
     } else {
       storage.oauth2Clients[index] = {
         ...storage.oauth2Clients[index],
-        ...body
+        ...body,
       };
     }
 
@@ -476,7 +475,7 @@ const hydraAdminHandlers = {
   },
 
   'DELETE /clients/:id': (url, params) => {
-    const index = storage.oauth2Clients.findIndex(c => c.client_id === params.id);
+    const index = storage.oauth2Clients.findIndex((c) => c.client_id === params.id);
     if (index === -1) {
       return { status: 404, data: { error: { message: 'Client not found' } } };
     }
@@ -504,9 +503,9 @@ const hydraPublicHandlers = {
       jwks_uri: 'http://localhost:4444/.well-known/jwks.json',
       subject_types_supported: ['public', 'pairwise'],
       response_types_supported: ['code', 'id_token', 'token id_token'],
-      grant_types_supported: ['authorization_code', 'refresh_token', 'client_credentials']
-    }
-  })
+      grant_types_supported: ['authorization_code', 'refresh_token', 'client_credentials'],
+    },
+  }),
 };
 
 // Request handler
@@ -534,7 +533,7 @@ async function handleRequest(req, res, handlers) {
           res.writeHead(204, {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
           });
           res.end();
         } else {
@@ -567,7 +566,7 @@ async function handleRequest(req, res, handlers) {
             res.writeHead(204, {
               'Access-Control-Allow-Origin': '*',
               'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
-              'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+              'Access-Control-Allow-Headers': 'Content-Type, Authorization',
             });
             res.end();
           } else {

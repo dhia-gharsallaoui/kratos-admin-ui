@@ -8,10 +8,8 @@ const StyledAppBar = styled(MuiAppBar)(({ theme }) => ({
   // Keep MUI AppBar styling
 }));
 
-export const AppBar = React.forwardRef<HTMLDivElement, AppBarProps>(
-  (props, ref) => {
-    return <StyledAppBar ref={ref} {...props} />;
-  }
-);
+export const AppBar = React.forwardRef<HTMLDivElement, AppBarProps>((props, ref) => {
+  return <StyledAppBar ref={ref} {...props} />;
+});
 
 AppBar.displayName = 'AppBar';

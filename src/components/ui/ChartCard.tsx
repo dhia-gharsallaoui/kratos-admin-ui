@@ -6,18 +6,12 @@ interface ChartCardProps extends Omit<PaperProps, 'title'> {
   height?: number;
 }
 
-export const ChartCard: React.FC<ChartCardProps> = ({ 
-  title, 
-  height = 450, 
-  children,
-  sx = {},
-  ...props 
-}) => {
+export const ChartCard: React.FC<ChartCardProps> = ({ title, height = 450, children, sx = {}, ...props }) => {
   return (
-    <Paper 
+    <Paper
       elevation={0}
-      sx={{ 
-        p: 3, 
+      sx={{
+        p: 3,
         height,
         border: '1px solid',
         borderColor: 'divider',
@@ -29,8 +23,8 @@ export const ChartCard: React.FC<ChartCardProps> = ({
       }}
       {...props}
     >
-      <Typography 
-        variant="h6" 
+      <Typography
+        variant="h6"
         gutterBottom
         sx={{
           fontWeight: 600,

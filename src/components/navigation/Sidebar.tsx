@@ -1,18 +1,20 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { DashboardOutlined, PeopleOutlined, SecurityOutlined, DescriptionOutlined, LogoutOutlined, MailOutlined, Apps, VpnKey, Token } from '@mui/icons-material';
+import {
+  DashboardOutlined,
+  PeopleOutlined,
+  SecurityOutlined,
+  DescriptionOutlined,
+  LogoutOutlined,
+  MailOutlined,
+  Apps,
+  VpnKey,
+  Token,
+} from '@mui/icons-material';
 import { Divider, Drawer } from '@/components/ui';
 import { useLogout, useUser } from '@/features/auth';
 import { UserRole } from '@/features/auth';
-import {
-  Box,
-  Typography,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-} from '@/components/ui';
+import { Box, Typography, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@/components/ui';
 
 interface NavItem {
   title: string;
@@ -122,7 +124,10 @@ export function Sidebar({ open, onClose }: SidebarProps) {
       <Box sx={{ flexGrow: 1, py: 2 }}>
         {/* Kratos Section */}
         <Box sx={{ mb: 2 }}>
-          <Typography variant="label" sx={{ px: 2, color: 'text.secondary', fontWeight: 'bold', textTransform: 'uppercase', fontSize: '0.75rem', display: 'block' }}>
+          <Typography
+            variant="label"
+            sx={{ px: 2, color: 'text.secondary', fontWeight: 'bold', textTransform: 'uppercase', fontSize: '0.75rem', display: 'block' }}
+          >
             Kratos (Identity)
           </Typography>
           <List>
@@ -159,7 +164,10 @@ export function Sidebar({ open, onClose }: SidebarProps) {
         {/* Hydra Section */}
         {filteredHydraNavItems.length > 0 && (
           <Box sx={{ mb: 2 }}>
-            <Typography variant="label" sx={{ px: 2, color: 'text.secondary', fontWeight: 'bold', textTransform: 'uppercase', fontSize: '0.75rem', display: 'block' }}>
+            <Typography
+              variant="label"
+              sx={{ px: 2, color: 'text.secondary', fontWeight: 'bold', textTransform: 'uppercase', fontSize: '0.75rem', display: 'block' }}
+            >
               Hydra (OAuth2)
             </Typography>
             <List>

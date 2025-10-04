@@ -7,7 +7,9 @@
  * @param linkHeader - The Link header value from an HTTP response
  * @returns Object containing next and previous page tokens, or null if not found
  */
-export const parseLinkHeader = (linkHeader: string | null | undefined): {
+export const parseLinkHeader = (
+  linkHeader: string | null | undefined
+): {
   next: string | null;
   prev: string | null;
 } => {
@@ -60,15 +62,9 @@ export interface PaginatedResponse<T = any> {
  * @param dataKey - Key to extract data from if response is nested (optional)
  * @returns Standardized paginated response
  */
-export const processPaginatedResponse = <T = any>(
-  data: any,
-  headers: Record<string, any> | Headers,
-  dataKey?: string
-): PaginatedResponse<T> => {
+export const processPaginatedResponse = <T = any>(data: any, headers: Record<string, any> | Headers, dataKey?: string): PaginatedResponse<T> => {
   // Extract link header (support both Headers object and plain object)
-  const linkHeader = headers instanceof Headers
-    ? headers.get('link')
-    : headers?.link;
+  const linkHeader = headers instanceof Headers ? headers.get('link') : headers?.link;
 
   const { next, prev } = parseLinkHeader(linkHeader);
 
@@ -113,12 +109,7 @@ export const fetchAllPages = async <T = any>(
   fetchPage: (pageToken?: string) => Promise<{ data: any; headers: Record<string, any> }>,
   options: FetchAllPagesOptions<T> = {}
 ): Promise<T[]> => {
-  const {
-    maxPages = 100,
-    onProgress,
-    dataKey,
-    stopOnError = true,
-  } = options;
+  const { maxPages = 100, onProgress, dataKey, stopOnError = true } = options;
 
   const allData: T[] = [];
   let currentPageToken: string | undefined = undefined;
@@ -130,11 +121,7 @@ export const fetchAllPages = async <T = any>(
       onProgress?.(pageCount + 1);
 
       const response = await fetchPage(currentPageToken);
-      const paginatedResponse = processPaginatedResponse<T>(
-        response.data,
-        response.headers,
-        dataKey
-      );
+      const paginatedResponse = processPaginatedResponse<T>(response.data, response.headers, dataKey);
 
       allData.push(...paginatedResponse.data);
       pageCount++;
@@ -176,10 +163,7 @@ export const fetchAllPages = async <T = any>(
  * @param pageSize - Number of items per page
  * @returns URL search parameters for pagination
  */
-export const createPaginationParams = (
-  pageToken?: string,
-  pageSize?: number
-): Record<string, string> => {
+export const createPaginationParams = (pageToken?: string, pageSize?: number): Record<string, string> => {
   const params: Record<string, string> = {};
 
   if (pageSize !== undefined) {

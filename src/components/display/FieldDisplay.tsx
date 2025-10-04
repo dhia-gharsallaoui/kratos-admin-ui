@@ -57,25 +57,14 @@ export function FieldDisplay({
         );
 
       case 'chip':
-        return (
-          <Chip
-            variant={chipVariant}
-            label={String(value)}
-            size="small"
-          />
-        );
+        return <Chip variant={chipVariant} label={String(value)} size="small" />;
 
       case 'chips':
         if (Array.isArray(value)) {
           return (
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
               {value.map((item, index) => (
-                <Chip
-                  key={index}
-                  variant={chipVariant}
-                  label={String(item)}
-                  size="small"
-                />
+                <Chip key={index} variant={chipVariant} label={String(item)} size="small" />
               ))}
             </Box>
           );
@@ -135,11 +124,7 @@ export function FieldDisplay({
                 '&:hover': { opacity: 1 },
               }}
             >
-              {copied ? (
-                <CheckIcon sx={{ fontSize: 16, color: 'success.main' }} />
-              ) : (
-                <CopyIcon sx={{ fontSize: 16 }} />
-              )}
+              {copied ? <CheckIcon sx={{ fontSize: 16, color: 'success.main' }} /> : <CopyIcon sx={{ fontSize: 16 }} />}
             </IconButton>
           </Tooltip>
         )}

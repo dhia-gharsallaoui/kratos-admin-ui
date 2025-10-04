@@ -39,10 +39,7 @@ export const DottedLoader: React.FC<DottedLoaderProps> = ({ size, variant = 'pag
   const innerSize = loaderSize * 0.6;
   const offsetSize = loaderSize / 2;
 
-  const loaderStyles = getLoaderStyles(
-    theme.gradient.colors.primary,
-    theme.gradient.colors.secondary
-  );
+  const loaderStyles = getLoaderStyles(theme.gradient.colors.primary, theme.gradient.colors.secondary);
   const styles = loaderStyles[variant];
 
   return (

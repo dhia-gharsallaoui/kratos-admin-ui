@@ -1,6 +1,24 @@
 import React, { useState } from 'react';
 import { Close, Person, Security, Devices, ExpandMore, Delete, Update, Info } from '@mui/icons-material';
-import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, Card, CardContent, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, Spinner, Typography } from '@/components/ui';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Alert,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Grid,
+  IconButton,
+  Spinner,
+  Typography,
+} from '@/components/ui';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getSession, disableSession, extendSession } from '../../../services/kratos/endpoints/sessions';
 import { formatDate } from '@/lib/date-utils';
@@ -78,7 +96,6 @@ export const SessionDetailDialog: React.FC<SessionDetailDialogProps> = React.mem
     extendMutation.mutate();
   };
 
-
   const getTimeRemaining = (expiresAt: string) => {
     if (!expiresAt) return null;
 
@@ -119,17 +136,16 @@ export const SessionDetailDialog: React.FC<SessionDetailDialogProps> = React.mem
       <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
         <DialogTitle>
           <Box display="flex" alignItems="center" justifyContent="space-between">
-            <Typography variant="heading" size="lg">Session Details</Typography>
+            <Typography variant="heading" size="lg">
+              Session Details
+            </Typography>
             <IconButton onClick={onClose} variant="action" size="small">
               <Close />
             </IconButton>
           </Box>
         </DialogTitle>
         <DialogContent>
-          <ErrorState
-            variant="inline"
-            message={`Failed to load session details: ${fetchError?.message || 'Unknown error'}`}
-          />
+          <ErrorState variant="inline" message={`Failed to load session details: ${fetchError?.message || 'Unknown error'}`} />
         </DialogContent>
       </Dialog>
     );
@@ -143,7 +159,9 @@ export const SessionDetailDialog: React.FC<SessionDetailDialogProps> = React.mem
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle>
         <Box display="flex" alignItems="center" justifyContent="space-between">
-          <Typography variant="heading" size="lg">Session Details</Typography>
+          <Typography variant="heading" size="lg">
+            Session Details
+          </Typography>
           <IconButton onClick={onClose} variant="action" size="small">
             <Close />
           </IconButton>
@@ -164,7 +182,9 @@ export const SessionDetailDialog: React.FC<SessionDetailDialogProps> = React.mem
               <CardContent>
                 <Box display="flex" alignItems="center" gap={1} mb={2}>
                   <Info color="primary" />
-                  <Typography variant="heading" size="lg">Basic Information</Typography>
+                  <Typography variant="heading" size="lg">
+                    Basic Information
+                  </Typography>
                 </Box>
 
                 <Grid container spacing={2}>
@@ -181,11 +201,7 @@ export const SessionDetailDialog: React.FC<SessionDetailDialogProps> = React.mem
                     <Typography variant="label" color="text.secondary">
                       Status
                     </Typography>
-                    <StatusBadge
-                      status={session.active ? 'active' : 'inactive'}
-                      label={session.active ? 'Active' : 'Inactive'}
-                      showIcon
-                    />
+                    <StatusBadge status={session.active ? 'active' : 'inactive'} label={session.active ? 'Active' : 'Inactive'} showIcon />
                   </Grid>
 
                   <Grid size={{ xs: 12, sm: 6 }}>
@@ -234,7 +250,9 @@ export const SessionDetailDialog: React.FC<SessionDetailDialogProps> = React.mem
                 <CardContent>
                   <Box display="flex" alignItems="center" gap={1} mb={2}>
                     <Person color="primary" />
-                    <Typography variant="heading" size="lg">Identity Information</Typography>
+                    <Typography variant="heading" size="lg">
+                      Identity Information
+                    </Typography>
                   </Box>
 
                   <Grid container spacing={2}>
@@ -302,7 +320,9 @@ export const SessionDetailDialog: React.FC<SessionDetailDialogProps> = React.mem
                 <CardContent>
                   <Box display="flex" alignItems="center" gap={1} mb={2}>
                     <Security color="primary" />
-                    <Typography variant="heading" size="lg">Authentication Methods</Typography>
+                    <Typography variant="heading" size="lg">
+                      Authentication Methods
+                    </Typography>
                   </Box>
 
                   <Accordion>
@@ -336,7 +356,9 @@ export const SessionDetailDialog: React.FC<SessionDetailDialogProps> = React.mem
                 <CardContent>
                   <Box display="flex" alignItems="center" gap={1} mb={2}>
                     <Devices color="primary" />
-                    <Typography variant="heading" size="lg">Devices</Typography>
+                    <Typography variant="heading" size="lg">
+                      Devices
+                    </Typography>
                   </Box>
 
                   <Accordion>
@@ -371,18 +393,22 @@ export const SessionDetailDialog: React.FC<SessionDetailDialogProps> = React.mem
           primaryAction={{
             label: actionLoading === 'delete' ? 'Revoking...' : 'Revoke Session',
             onClick: handleRevokeSession,
-            disabled: actionLoading === 'delete'
+            disabled: actionLoading === 'delete',
           }}
           secondaryActions={[
-            ...(session.active && !isExpired ? [{
-              label: actionLoading === 'extend' ? 'Extending...' : 'Extend Session',
-              onClick: handleExtendSession,
-              disabled: actionLoading === 'extend'
-            }] : []),
+            ...(session.active && !isExpired
+              ? [
+                  {
+                    label: actionLoading === 'extend' ? 'Extending...' : 'Extend Session',
+                    onClick: handleExtendSession,
+                    disabled: actionLoading === 'extend',
+                  },
+                ]
+              : []),
             {
               label: 'Close',
-              onClick: onClose
-            }
+              onClick: onClose,
+            },
           ]}
         />
       </DialogActions>

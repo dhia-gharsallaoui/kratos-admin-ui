@@ -18,13 +18,7 @@ export interface EmptyStateProps {
   illustration?: React.ReactNode;
 }
 
-export function EmptyState({
-  icon: Icon = InboxOutlined,
-  title,
-  description,
-  action,
-  illustration,
-}: EmptyStateProps) {
+export function EmptyState({ icon: Icon = InboxOutlined, title, description, action, illustration }: EmptyStateProps) {
   return (
     <Box
       sx={{
