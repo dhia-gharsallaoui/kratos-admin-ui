@@ -1,10 +1,29 @@
 import { useQuery } from '@tanstack/react-query';
-import { getAllIdentities, getSessionsUntilDate, listIdentitySchemas, listSessions } from '@/services/kratos';
-import { listOAuth2Clients, listOAuth2ConsentSessions } from '@/services/hydra';
+import { getAllIdentities, getSessionsUntilDate, listIdentitySchemas, listSessions, checkKratosHealth } from '@/services/kratos';
+import { listOAuth2Clients, listOAuth2ConsentSessions, checkHydraHealth } from '@/services/hydra';
 import { IdentityAnalytics, SessionAnalytics, SystemAnalytics, HydraAnalytics } from '../types';
 
+// Health check hooks
+const useKratosHealthCheck = () => {
+  return useQuery({
+    queryKey: ['health', 'kratos'],
+    queryFn: checkKratosHealth,
+    staleTime: 2 * 60 * 1000, // Cache for 2 minutes
+    retry: 1, // Only retry once for health checks
+  });
+};
+
+const useHydraHealthCheck = () => {
+  return useQuery({
+    queryKey: ['health', 'hydra'],
+    queryFn: checkHydraHealth,
+    staleTime: 2 * 60 * 1000, // Cache for 2 minutes
+    retry: 1, // Only retry once for health checks
+  });
+};
+
 // Hook to fetch comprehensive identity analytics
-export const useIdentityAnalytics = () => {
+export const useIdentityAnalytics = (isKratosHealthy: boolean) => {
   return useQuery({
     queryKey: ['analytics', 'identities'],
     queryFn: async (): Promise<IdentityAnalytics> => {
@@ -76,13 +95,14 @@ export const useIdentityAnalytics = () => {
         verificationStatus: { verified, unverified },
       };
     },
+    enabled: isKratosHealthy, // Only fetch when Kratos is healthy
     staleTime: 5 * 60 * 1000, // Cache for 5 minutes
     refetchInterval: 10 * 60 * 1000, // Refetch every 10 minutes
   });
 };
 
 // Hook to fetch session analytics
-export const useSessionAnalytics = () => {
+export const useSessionAnalytics = (isKratosHealthy: boolean) => {
   return useQuery({
     queryKey: ['analytics', 'sessions'],
     queryFn: async (): Promise<SessionAnalytics> => {
@@ -163,13 +183,14 @@ export const useSessionAnalytics = () => {
         sessionsLast7Days,
       };
     },
+    enabled: isKratosHealthy, // Only fetch when Kratos is healthy
     staleTime: 2 * 60 * 1000, // Cache for 2 minutes
     refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
   });
 };
 
 // Hook to fetch system analytics
-export const useSystemAnalytics = () => {
+export const useSystemAnalytics = (isKratosHealthy: boolean) => {
   return useQuery({
     queryKey: ['analytics', 'system'],
     queryFn: async (): Promise<SystemAnalytics> => {
@@ -182,13 +203,14 @@ export const useSystemAnalytics = () => {
         lastUpdated: new Date(),
       };
     },
+    enabled: isKratosHealthy, // Only fetch when Kratos is healthy
     staleTime: 10 * 60 * 1000, // Cache for 10 minutes
     refetchInterval: 15 * 60 * 1000, // Refetch every 15 minutes
   });
 };
 
 // Hook to fetch Hydra analytics
-export const useHydraAnalytics = () => {
+export const useHydraAnalytics = (isHydraHealthy: boolean) => {
   return useQuery({
     queryKey: ['analytics', 'hydra'],
     queryFn: async (): Promise<HydraAnalytics> => {
@@ -241,6 +263,7 @@ export const useHydraAnalytics = () => {
         };
       }
     },
+    enabled: isHydraHealthy, // Only fetch when Hydra is healthy
     staleTime: 5 * 60 * 1000, // Cache for 5 minutes
     refetchInterval: 10 * 60 * 1000, // Refetch every 10 minutes
   });
@@ -248,19 +271,57 @@ export const useHydraAnalytics = () => {
 
 // Combined analytics hook
 export const useAnalytics = () => {
-  const identityAnalytics = useIdentityAnalytics();
-  const sessionAnalytics = useSessionAnalytics();
-  const systemAnalytics = useSystemAnalytics();
-  const hydraAnalytics = useHydraAnalytics();
+  // Check health first
+  const kratosHealth = useKratosHealthCheck();
+  const hydraHealth = useHydraHealthCheck();
+
+  const isKratosHealthy = kratosHealth.data?.isHealthy ?? false;
+  const isHydraHealthy = hydraHealth.data?.isHealthy ?? false;
+
+  // Only fetch analytics if services are healthy
+  const identityAnalytics = useIdentityAnalytics(isKratosHealthy);
+  const sessionAnalytics = useSessionAnalytics(isKratosHealthy);
+  const systemAnalytics = useSystemAnalytics(isKratosHealthy);
+  const hydraAnalytics = useHydraAnalytics(isHydraHealthy);
+
+  // Determine loading state
+  const isLoading =
+    kratosHealth.isLoading ||
+    hydraHealth.isLoading ||
+    (isKratosHealthy && (identityAnalytics.isLoading || sessionAnalytics.isLoading || systemAnalytics.isLoading)) ||
+    (isHydraHealthy && hydraAnalytics.isLoading);
+
+  // Determine error state - prioritize health check errors
+  const isError =
+    kratosHealth.isError ||
+    hydraHealth.isError ||
+    (!kratosHealth.data?.isHealthy && !kratosHealth.isLoading) ||
+    (!hydraHealth.data?.isHealthy && !hydraHealth.isLoading) ||
+    identityAnalytics.isError ||
+    sessionAnalytics.isError ||
+    systemAnalytics.isError ||
+    hydraAnalytics.isError;
+
+  // Get the first error (prioritize health check errors)
+  let firstError: any = null;
+  if (!kratosHealth.data?.isHealthy && !kratosHealth.isLoading && kratosHealth.data?.error) {
+    firstError = new Error(kratosHealth.data.error);
+  } else if (!hydraHealth.data?.isHealthy && !hydraHealth.isLoading && hydraHealth.data?.error) {
+    firstError = new Error(hydraHealth.data.error);
+  } else {
+    firstError = identityAnalytics.error || sessionAnalytics.error || systemAnalytics.error || hydraAnalytics.error;
+  }
 
   return {
-    identity: identityAnalytics,
-    session: sessionAnalytics,
-    system: systemAnalytics,
-    hydra: hydraAnalytics,
-    isLoading: identityAnalytics.isLoading || sessionAnalytics.isLoading || systemAnalytics.isLoading || hydraAnalytics.isLoading,
-    isError: identityAnalytics.isError || sessionAnalytics.isError || systemAnalytics.isError || hydraAnalytics.isError,
+    identity: { ...identityAnalytics, error: firstError || identityAnalytics.error },
+    session: { ...sessionAnalytics, error: firstError || sessionAnalytics.error },
+    system: { ...systemAnalytics, error: firstError || systemAnalytics.error },
+    hydra: { ...hydraAnalytics, error: firstError || hydraAnalytics.error },
+    isLoading,
+    isError,
     refetchAll: () => {
+      kratosHealth.refetch();
+      hydraHealth.refetch();
       identityAnalytics.refetch();
       sessionAnalytics.refetch();
       systemAnalytics.refetch();
