@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Box, Typography, Button, Alert } from '@/components/ui';
-import { ErrorOutline, Refresh } from '@mui/icons-material';
+import { ErrorOutline, Refresh, Settings } from '@mui/icons-material';
 
 export interface ErrorStateProps {
   title?: string;
@@ -10,11 +10,17 @@ export interface ErrorStateProps {
   action?: {
     label: string;
     onClick: () => void;
+    icon?: React.ReactNode;
+  };
+  secondaryAction?: {
+    label: string;
+    onClick: () => void;
+    icon?: React.ReactNode;
   };
   variant?: 'page' | 'inline';
 }
 
-export function ErrorState({ title = 'Something went wrong', message, action, variant = 'page' }: ErrorStateProps) {
+export function ErrorState({ title = 'Something went wrong', message, action, secondaryAction, variant = 'page' }: ErrorStateProps) {
   if (variant === 'inline') {
     return (
       <Alert
@@ -24,7 +30,7 @@ export function ErrorState({ title = 'Something went wrong', message, action, va
             <Button
               size="small"
               onClick={action.onClick}
-              startIcon={<Refresh sx={{ fontSize: 16 }} />}
+              startIcon={action.icon || <Refresh sx={{ fontSize: 16 }} />}
               sx={{
                 color: 'error.main',
                 fontWeight: 600,
@@ -90,26 +96,41 @@ export function ErrorState({ title = 'Something went wrong', message, action, va
         color="text.secondary"
         sx={{
           mb: 3,
-          maxWidth: 400,
+          maxWidth: 500,
         }}
       >
         {message}
       </Typography>
 
-      {action && (
-        <Button
-          onClick={action.onClick}
-          startIcon={<Refresh />}
-          variant="outlined"
-          color="error"
-          sx={{
-            fontWeight: 600,
-            px: 3,
-          }}
-        >
-          {action.label}
-        </Button>
-      )}
+      <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', justifyContent: 'center' }}>
+        {action && (
+          <Button
+            onClick={action.onClick}
+            startIcon={action.icon || <Refresh />}
+            variant="outlined"
+            color="error"
+            sx={{
+              fontWeight: 600,
+              px: 3,
+            }}
+          >
+            {action.label}
+          </Button>
+        )}
+        {secondaryAction && (
+          <Button
+            onClick={secondaryAction.onClick}
+            startIcon={secondaryAction.icon || <Settings />}
+            variant="outlined"
+            sx={{
+              fontWeight: 600,
+              px: 3,
+            }}
+          >
+            {secondaryAction.label}
+          </Button>
+        )}
+      </Box>
     </Box>
   );
 }
