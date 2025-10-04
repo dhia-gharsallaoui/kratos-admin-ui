@@ -10,3 +10,6 @@ export { getAdminApi, getPublicApi, getMetadataApi } from './client';
 
 // Export configuration utilities
 export * from './config';
+
+// Export health check utilities
+export { checkKratosHealth } from './health';

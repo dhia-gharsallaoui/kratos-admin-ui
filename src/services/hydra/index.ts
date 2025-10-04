@@ -9,3 +9,6 @@ export * from './endpoints/oauth2-auth';
 export * from './endpoints/oauth2-tokens';
 export * from './endpoints/health';
 export * from './endpoints/oidc';
+
+// Export health check utilities
+export { checkHydraHealth } from './health';
