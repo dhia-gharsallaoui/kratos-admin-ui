@@ -25,7 +25,6 @@ import {
 } from '@/components/ui';
 import { ArrowBack as ArrowBackIcon, Add as AddIcon, Delete as DeleteIcon, Apps as AppsIcon } from '@mui/icons-material';
 import { AdminLayout } from '@/components/layout/AdminLayout';
-import { ActionBar } from '@/components/layout';
 import { LoadingState, ErrorState } from '@/components/feedback';
 import { useOAuth2Client, useUpdateOAuth2Client } from '@/features/oauth2-clients';
 import {
@@ -488,20 +487,14 @@ export default function EditOAuth2ClientPage({ params }: Props) {
 
             {/* Submit Actions */}
             <Grid size={{ xs: 12 }}>
-              <ActionBar
-                align="right"
-                primaryAction={{
-                  label: updateClientMutation.isPending ? 'Updating...' : 'Update Client',
-                  onClick: () => {},
-                  disabled: updateClientMutation.isPending,
-                }}
-                secondaryActions={[
-                  {
-                    label: 'Cancel',
-                    onClick: () => router.back(),
-                  },
-                ]}
-              />
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+                <Button variant="outlined" onClick={() => router.back()} disabled={updateClientMutation.isPending}>
+                  Cancel
+                </Button>
+                <Button type="submit" variant="contained" disabled={updateClientMutation.isPending}>
+                  {updateClientMutation.isPending ? 'Updating...' : 'Update Client'}
+                </Button>
+              </Box>
             </Grid>
           </Grid>
         </form>
