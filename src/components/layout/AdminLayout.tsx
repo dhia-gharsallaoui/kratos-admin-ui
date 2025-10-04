@@ -1,34 +1,17 @@
 import React, { ReactNode, useState } from 'react';
 import { CssBaseline, useMediaQuery, useTheme as useMuiTheme } from '@mui/material';
-import { AppBar, Avatar, Divider, Drawer, Toolbar } from '@/components/ui';
-import {
-  Dashboard,
-  Person,
-  Schema,
-  Menu as MenuIcon,
-  ChevronLeft,
-  ChevronRight,
-  DarkMode,
-  LightMode,
-  People,
-  Logout,
-  GitHub,
-  Message,
-  Settings,
-  Apps,
-  VpnKey,
-  Token,
-} from '@mui/icons-material';
-import { Box, Typography, IconButton, Menu, MenuItem, Tooltip, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@/components/ui';
+import { AppBar, Avatar, Toolbar } from '@/components/ui';
+import { Menu as MenuIcon, DarkMode, LightMode, Person, Logout, GitHub, Settings } from '@mui/icons-material';
+import { Box, Typography, IconButton, Menu, MenuItem, Tooltip } from '@/components/ui';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useTheme } from '@/providers/ThemeProvider';
 import { useUser, useLogout } from '@/features/auth/hooks/useAuth';
-import { UserRole } from '@/features/auth';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
-import { gradientColors, gradients, alpha } from '@/theme';
+import { gradientColors, gradients } from '@/theme';
+import { Sidebar } from '@/components/navigation/Sidebar';
 
-const drawerWidth = 240;
+const drawerWidth = 280;
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -44,22 +27,6 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   const user = useUser();
   const logout = useLogout();
   const router = useRouter();
-
-  const menuItems = [
-    { text: 'Dashboard', icon: <Dashboard />, path: '/dashboard' },
-    {
-      text: 'Identities',
-      icon: <People />,
-      path: '/identities',
-      adminOnly: true,
-    },
-    { text: 'Schemas', icon: <Schema />, path: '/schemas' },
-    { text: 'Sessions', icon: <Person />, path: '/sessions', adminOnly: true },
-    { text: 'Messages', icon: <Message />, path: '/messages', adminOnly: true },
-    { text: 'OAuth2 Clients', icon: <Apps />, path: '/oauth2-clients', adminOnly: true },
-    { text: 'OAuth2 Tokens', icon: <Token />, path: '/oauth2-tokens', adminOnly: true },
-    { text: 'Settings', icon: <Settings />, path: '/settings' },
-  ];
 
   const handleDrawerToggle = () => {
     setOpen(!open);
@@ -78,9 +45,6 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
     logout();
     router.push('/login');
   };
-
-  // Filter menu items based on user role
-  const filteredMenuItems = menuItems.filter((item) => !item.adminOnly || (user && user.role === UserRole.ADMIN));
 
   return (
     <ProtectedRoute>
@@ -262,139 +226,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
             </Box>
           </Toolbar>
         </AppBar>
-        <Drawer
-          variant={isMobile ? 'temporary' : 'persistent'}
-          open={open}
-          onClose={handleDrawerToggle}
-          sx={{
-            width: open ? drawerWidth : 0,
-            flexShrink: 0,
-            [`& .MuiDrawer-paper`]: {
-              width: drawerWidth,
-              boxSizing: 'border-box',
-              transition: 'transform 0.3s ease, background 0.3s ease',
-              background:
-                currentTheme === 'dark' ? 'linear-gradient(180deg, #1e1e1e 0%, #1a1a1a 100%)' : 'linear-gradient(180deg, #ffffff 0%, #f8f9ff 100%)',
-              borderRight: `1px solid ${currentTheme === 'dark' ? alpha.primary[20] : alpha.primary[10]}`,
-              overflowX: 'hidden',
-            },
-          }}
-        >
-          <Toolbar
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              px: 2,
-              background: currentTheme === 'dark' ? gradients.subtle : gradients.subtle,
-            }}
-          >
-            <Typography
-              variant="heading"
-              size="lg"
-              sx={{
-                fontWeight: 800,
-                background: gradients.text,
-                backgroundClip: 'text',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-              }}
-            >
-              Ory Admin
-            </Typography>
-            <IconButton
-              variant="action"
-              onClick={handleDrawerToggle}
-              sx={{
-                background: alpha.primary[10],
-                '&:hover': {
-                  background: alpha.primary[20],
-                },
-              }}
-            >
-              {open ? <ChevronLeft /> : <ChevronRight />}
-            </IconButton>
-          </Toolbar>
-          <Divider sx={{ borderColor: currentTheme === 'dark' ? alpha.primary[30] : alpha.primary[10] }} />
-          <List sx={{ px: 1.5, py: 2 }}>
-            {filteredMenuItems.map((item) => {
-              const isActive = pathname === item.path;
-              return (
-                <ListItem key={item.text} disablePadding sx={{ mb: 0.5 }}>
-                  <ListItemButton
-                    component={Link}
-                    href={item.path}
-                    selected={isActive}
-                    sx={{
-                      borderRadius: 2,
-                      py: 1.5,
-                      transition: 'all 0.3s ease',
-                      '&.Mui-selected': {
-                        background: gradients.normal,
-                        color: 'white',
-                        boxShadow: `0 4px 15px ${alpha.primary[30]}`,
-                        '&:hover': {
-                          background: gradients.reversed,
-                        },
-                        '& .MuiListItemIcon-root': {
-                          color: 'white',
-                        },
-                      },
-                      '&:hover': {
-                        background: isActive ? gradients.reversed : currentTheme === 'dark' ? alpha.primary[20] : alpha.primary[10],
-                        transform: 'translateX(4px)',
-                      },
-                    }}
-                  >
-                    <ListItemIcon
-                      sx={{
-                        minWidth: 40,
-                        color: isActive ? 'white' : gradientColors.primary,
-                        transition: 'all 0.3s ease',
-                      }}
-                    >
-                      {item.icon}
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={item.text}
-                      primaryTypographyProps={{
-                        fontWeight: isActive ? 600 : 500,
-                      }}
-                    />
-                  </ListItemButton>
-                </ListItem>
-              );
-            })}
-          </List>
-          <Box sx={{ flexGrow: 1 }} />
-          <Divider sx={{ borderColor: currentTheme === 'dark' ? alpha.primary[30] : alpha.primary[10] }} />
-          <List sx={{ px: 1.5, py: 2 }}>
-            <ListItem disablePadding>
-              <ListItemButton
-                onClick={handleLogout}
-                sx={{
-                  borderRadius: 2,
-                  py: 1.5,
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    background: 'linear-gradient(135deg, rgba(245, 87, 108, 0.1) 0%, rgba(240, 147, 251, 0.1) 100%)',
-                    transform: 'translateX(4px)',
-                  },
-                }}
-              >
-                <ListItemIcon sx={{ minWidth: 40, color: '#f5576c' }}>
-                  <Logout />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Logout"
-                  primaryTypographyProps={{
-                    fontWeight: 500,
-                  }}
-                />
-              </ListItemButton>
-            </ListItem>
-          </List>
-        </Drawer>
+        <Sidebar open={open} onClose={handleDrawerToggle} />
         <Box
           component="main"
           sx={{
