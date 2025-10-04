@@ -1,12 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { Avatar, Box, Container, Divider, Grid, Paper, Snackbar } from '@/components/ui';
-import { Alert, Button, Card, CardContent, Chip, TextField, Typography } from '@/components/ui';
-import { Edit, Save, Cancel, Person, Email, Badge, Lock } from '@mui/icons-material';
+import { Avatar, Box, Container, Grid, Paper, Snackbar, Alert, TextField, Typography, Chip } from '@/components/ui';
+import { Edit, Save, Cancel, Person, Lock } from '@mui/icons-material';
 import { useUser } from '@/features/auth/hooks/useAuth';
 import { UserRole } from '@/features/auth';
-import { ProtectedPage, PageHeader, SectionCard, FlexBox } from '@/components/layout';
+import { ProtectedPage, PageHeader, SectionCard, FlexBox, ActionBar } from '@/components/layout';
 import { FieldDisplay } from '@/components/display';
 
 export default function ProfilePage() {
@@ -53,30 +52,29 @@ export default function ProfilePage() {
             title="User Profile"
             actions={
               !isEditing ? (
-                <Button
-                  variant="primary"
-                  startIcon={<Edit />}
-                  onClick={handleEdit}
-                >
-                  Edit Profile
-                </Button>
+                <ActionBar
+                  primaryAction={{
+                    label: 'Edit Profile',
+                    icon: <Edit />,
+                    onClick: handleEdit,
+                  }}
+                />
               ) : (
-                <FlexBox gap={1}>
-                  <Button
-                    variant="outlined"
-                    startIcon={<Cancel />}
-                    onClick={handleCancel}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    variant="primary"
-                    startIcon={<Save />}
-                    onClick={handleSave}
-                  >
-                    Save
-                  </Button>
-                </FlexBox>
+                <ActionBar
+                  primaryAction={{
+                    label: 'Save',
+                    icon: <Save />,
+                    onClick: handleSave,
+                  }}
+                  secondaryActions={[
+                    {
+                      label: 'Cancel',
+                      icon: <Cancel />,
+                      onClick: handleCancel,
+                      variant: 'outlined',
+                    },
+                  ]}
+                />
               )
             }
           />

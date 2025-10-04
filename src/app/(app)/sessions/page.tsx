@@ -1,16 +1,17 @@
 'use client';
 
-import { useState, useMemo, useEffect, useCallback } from 'react';
-import { Box } from '@/components/ui';
+import { useState, useEffect, useCallback } from 'react';
+import { Box, Card, CardContent, IconButton, Tooltip, Typography, Button } from '@/components/ui';
 import { Refresh, ExpandMore } from '@mui/icons-material';
-import { Button, Card, CardContent, ErrorDisplay, IconButton, Spinner, TextField, Tooltip, Typography } from '@/components/ui';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
+import { SearchBar, ErrorState, LoadingState } from '@/components';
 import { UserRole } from '@/features/auth';
 import { useSessionsPaginated, useSessionsWithSearch } from '@/features/sessions/hooks/useSessions';
 import { useStableSessions } from '@/features/sessions/hooks/useStableSessions';
 import { SessionsTable } from '@/features/sessions/components/SessionsTable';
 import { SessionDetailDialog } from '@/features/sessions/components/SessionDetailDialog';
+import { Spinner } from '@/components/ui/Spinner';
 
 export default function SessionsPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -126,28 +127,29 @@ export default function SessionsPage() {
                   justifyContent: 'space-between',
                   alignItems: 'center',
                   mb: 2,
+                  gap: 2,
                 }}
               >
                 <Typography variant="heading" size="lg">
                   All Sessions
                 </Typography>
-                <TextField
-                  variant="search"
-                  placeholder="Search sessions..."
-                  size="small"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onClear={() => setSearchQuery('')}
-                  sx={{ width: { xs: '100%', sm: '300px' } }}
-                />
+                <Box sx={{ width: { xs: '100%', sm: '300px' } }}>
+                  <SearchBar
+                    value={searchQuery}
+                    onChange={setSearchQuery}
+                    placeholder="Search sessions..."
+                  />
+                </Box>
               </Box>
 
               {isError ? (
-                <ErrorDisplay
-                  variant="card"
-                  title="Failed to Load Sessions"
+                <ErrorState
+                  variant="page"
                   message={error?.message || 'Unable to fetch sessions. Please check your connection and try again.'}
-                  onRetry={refetch}
+                  action={{
+                    label: 'Retry',
+                    onClick: refetch,
+                  }}
                 />
               ) : (
                 <>
