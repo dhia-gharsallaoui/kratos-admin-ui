@@ -79,25 +79,30 @@ export function useTokenIntrospectionManager() {
   const [introspectedTokens, setIntrospectedTokens] = useState<Map<string, any>>(new Map());
   const introspectMutation = useIntrospectOAuth2Token();
 
-  const addTokenIntrospection = useCallback(async (tokenData: IntrospectTokenRequest) => {
-    try {
-      const result = await introspectMutation.mutateAsync(tokenData);
-      const tokenKey = `${tokenData.token.substring(0, 8)}...${tokenData.token.substring(tokenData.token.length - 8)}`;
+  const addTokenIntrospection = useCallback(
+    async (tokenData: IntrospectTokenRequest) => {
+      try {
+        const result = await introspectMutation.mutateAsync(tokenData);
+        const tokenKey = `${tokenData.token.substring(0, 8)}...${tokenData.token.substring(tokenData.token.length - 8)}`;
 
-      setIntrospectedTokens(prev => new Map(prev).set(tokenKey, {
-        ...result.data,
-        tokenPreview: tokenKey,
-        introspectedAt: new Date().toISOString(),
-      }));
+        setIntrospectedTokens((prev) =>
+          new Map(prev).set(tokenKey, {
+            ...result.data,
+            tokenPreview: tokenKey,
+            introspectedAt: new Date().toISOString(),
+          })
+        );
 
-      return result;
-    } catch (error) {
-      throw error;
-    }
-  }, [introspectMutation]);
+        return result;
+      } catch (error) {
+        throw error;
+      }
+    },
+    [introspectMutation]
+  );
 
   const removeTokenIntrospection = useCallback((tokenKey: string) => {
-    setIntrospectedTokens(prev => {
+    setIntrospectedTokens((prev) => {
       const newMap = new Map(prev);
       newMap.delete(tokenKey);
       return newMap;
@@ -158,7 +163,7 @@ export function useOAuth2TokenStats(introspectedTokens: any[] = []) {
       let totalLifetime = 0;
       let validLifetimeCount = 0;
 
-      introspectedTokens.forEach(token => {
+      introspectedTokens.forEach((token) => {
         // Active/inactive counts
         if (token.active) {
           stats.activeTokens++;
@@ -174,24 +179,24 @@ export function useOAuth2TokenStats(introspectedTokens: any[] = []) {
         // Expiring soon counts
         if (token.exp) {
           const timeToExpiry = token.exp - now;
-          if (timeToExpiry > 0 && timeToExpiry <= 86400) { // 24 hours
+          if (timeToExpiry > 0 && timeToExpiry <= 86400) {
+            // 24 hours
             stats.tokensExpiringIn24h++;
           }
-          if (timeToExpiry > 0 && timeToExpiry <= 604800) { // 7 days
+          if (timeToExpiry > 0 && timeToExpiry <= 604800) {
+            // 7 days
             stats.tokensExpiringIn7d++;
           }
         }
 
         // Token type distribution
         if (token.token_type) {
-          stats.tokenTypeDistribution[token.token_type] =
-            (stats.tokenTypeDistribution[token.token_type] || 0) + 1;
+          stats.tokenTypeDistribution[token.token_type] = (stats.tokenTypeDistribution[token.token_type] || 0) + 1;
         }
 
         // Client distribution
         if (token.client_id) {
-          stats.clientDistribution[token.client_id] =
-            (stats.clientDistribution[token.client_id] || 0) + 1;
+          stats.clientDistribution[token.client_id] = (stats.clientDistribution[token.client_id] || 0) + 1;
         }
 
         // Scope distribution
@@ -199,15 +204,14 @@ export function useOAuth2TokenStats(introspectedTokens: any[] = []) {
           const scopes = token.scope.split(' ');
           scopes.forEach((scope: string) => {
             if (scope.trim()) {
-              stats.scopeDistribution[scope.trim()] =
-                (stats.scopeDistribution[scope.trim()] || 0) + 1;
+              stats.scopeDistribution[scope.trim()] = (stats.scopeDistribution[scope.trim()] || 0) + 1;
             }
           });
         }
 
         // Average token lifetime calculation
         if (token.iat && token.exp) {
-          totalLifetime += (token.exp - token.iat);
+          totalLifetime += token.exp - token.iat;
           validLifetimeCount++;
         }
       });
@@ -227,16 +231,17 @@ export function useBatchTokenOperations() {
   const revokeTokenMutation = useRevokeOAuth2Token();
   const flushTokensMutation = useFlushInactiveOAuth2Tokens();
 
-  const revokeBatchTokens = useCallback(async (tokens: RevokeTokenRequest[]) => {
-    const results = await Promise.allSettled(
-      tokens.map(tokenData => revokeTokenMutation.mutateAsync(tokenData))
-    );
+  const revokeBatchTokens = useCallback(
+    async (tokens: RevokeTokenRequest[]) => {
+      const results = await Promise.allSettled(tokens.map((tokenData) => revokeTokenMutation.mutateAsync(tokenData)));
 
-    const successful = results.filter(result => result.status === 'fulfilled').length;
-    const failed = results.filter(result => result.status === 'rejected').length;
+      const successful = results.filter((result) => result.status === 'fulfilled').length;
+      const failed = results.filter((result) => result.status === 'rejected').length;
 
-    return { successful, failed, results };
-  }, [revokeTokenMutation]);
+      return { successful, failed, results };
+    },
+    [revokeTokenMutation]
+  );
 
   return {
     revokeBatchTokens,

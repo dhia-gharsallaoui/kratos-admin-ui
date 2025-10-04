@@ -69,13 +69,7 @@ export const CodeHighlighter: React.FC<CodeHighlighterProps> = (props) => {
       }, []);
 
       if (!theme) {
-        return (
-          <Skeleton
-            variant="rectangular"
-            height={props.maxHeight || 400}
-            sx={{ borderRadius: 1 }}
-          />
-        );
+        return <Skeleton variant="rectangular" height={props.maxHeight || 400} sx={{ borderRadius: 1 }} />;
       }
 
       return <CodeHighlighterContent {...props} theme={theme} />;
@@ -85,15 +79,7 @@ export const CodeHighlighter: React.FC<CodeHighlighterProps> = (props) => {
   }, [isDark, props]);
 
   return (
-    <Suspense
-      fallback={
-        <Skeleton
-          variant="rectangular"
-          height={props.maxHeight || 400}
-          sx={{ borderRadius: 1 }}
-        />
-      }
-    >
+    <Suspense fallback={<Skeleton variant="rectangular" height={props.maxHeight || 400} sx={{ borderRadius: 1 }} />}>
       <ThemeProvider />
     </Suspense>
   );
@@ -106,11 +92,7 @@ export interface JsonViewerProps {
   collapsible?: boolean;
 }
 
-export const JsonViewer: React.FC<JsonViewerProps> = ({
-  data,
-  maxHeight = 400,
-  collapsible = false,
-}) => {
+export const JsonViewer: React.FC<JsonViewerProps> = ({ data, maxHeight = 400, collapsible = false }) => {
   const jsonString = useMemo(() => {
     try {
       return JSON.stringify(data, null, 2);
@@ -122,23 +104,12 @@ export const JsonViewer: React.FC<JsonViewerProps> = ({
   if (collapsible) {
     return (
       <Box sx={{ border: 1, borderColor: 'divider', borderRadius: 1 }}>
-        <CodeHighlighter
-          code={jsonString}
-          language="json"
-          maxHeight={maxHeight}
-          customStyle={{ border: 'none' }}
-        />
+        <CodeHighlighter code={jsonString} language="json" maxHeight={maxHeight} customStyle={{ border: 'none' }} />
       </Box>
     );
   }
 
-  return (
-    <CodeHighlighter
-      code={jsonString}
-      language="json"
-      maxHeight={maxHeight}
-    />
-  );
+  return <CodeHighlighter code={jsonString} language="json" maxHeight={maxHeight} />;
 };
 
 export default CodeHighlighter;

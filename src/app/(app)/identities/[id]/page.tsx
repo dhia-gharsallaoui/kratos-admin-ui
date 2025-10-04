@@ -160,225 +160,57 @@ export default function IdentityDetailPage() {
           }
         />
 
-          <Grid container spacing={3}>
-            {/* Basic Information */}
-            <Grid size={{ xs: 12, md: 6 }}>
-              <SectionCard title="Basic Information">
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                  <Box>
-                    <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-                      Status
-                    </Typography>
-                    <StatusBadge
-                      status={identity.state === 'active' ? 'active' : 'inactive'}
-                      label={identity.state || 'active'}
-                    />
-                  </Box>
-                  <FieldDisplay
-                    label="Schema ID"
-                    value={identity.schema_id}
-                    valueType="code"
-                    copyable
-                  />
-                  <FieldDisplay
-                    label="Created At"
-                    value={formatDate(identity.created_at || '')}
-                  />
-                  <FieldDisplay
-                    label="Updated At"
-                    value={formatDate(identity.updated_at || '')}
-                  />
+        <Grid container spacing={3}>
+          {/* Basic Information */}
+          <Grid size={{ xs: 12, md: 6 }}>
+            <SectionCard title="Basic Information">
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <Box>
+                  <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                    Status
+                  </Typography>
+                  <StatusBadge status={identity.state === 'active' ? 'active' : 'inactive'} label={identity.state || 'active'} />
                 </Box>
-              </SectionCard>
-            </Grid>
+                <FieldDisplay label="Schema ID" value={identity.schema_id} valueType="code" copyable />
+                <FieldDisplay label="Created At" value={formatDate(identity.created_at || '')} />
+                <FieldDisplay label="Updated At" value={formatDate(identity.updated_at || '')} />
+              </Box>
+            </SectionCard>
+          </Grid>
 
-            {/* Traits */}
-            <Grid size={{ xs: 12, md: 6 }}>
-              <SectionCard
-                title="Traits"
-                emptyMessage={!traits || Object.keys(traits).length === 0 ? 'No traits available' : undefined}
-              >
-                {traits && Object.keys(traits).length > 0 && (
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    {Object.entries(traits).map(([key, value]) => (
-                      <FieldDisplay
-                        key={key}
-                        label={key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' ')}
-                        value={typeof value === 'object' ? JSON.stringify(value, null, 2) : String(value)}
-                        valueType={typeof value === 'object' ? 'code' : 'text'}
-                      />
-                    ))}
-                  </Box>
-                )}
-              </SectionCard>
-            </Grid>
+          {/* Traits */}
+          <Grid size={{ xs: 12, md: 6 }}>
+            <SectionCard title="Traits" emptyMessage={!traits || Object.keys(traits).length === 0 ? 'No traits available' : undefined}>
+              {traits && Object.keys(traits).length > 0 && (
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  {Object.entries(traits).map(([key, value]) => (
+                    <FieldDisplay
+                      key={key}
+                      label={key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' ')}
+                      value={typeof value === 'object' ? JSON.stringify(value, null, 2) : String(value)}
+                      valueType={typeof value === 'object' ? 'code' : 'text'}
+                    />
+                  ))}
+                </Box>
+              )}
+            </SectionCard>
+          </Grid>
 
-            {/* Public Metadata */}
-            <Grid size={{ xs: 12, md: 6 }}>
-              <Card elevation={0} sx={{ border: 1, borderColor: 'divider' }}>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    Public Metadata
-                  </Typography>
-                  <Divider sx={{ mb: 2 }} />
+          {/* Public Metadata */}
+          <Grid size={{ xs: 12, md: 6 }}>
+            <Card elevation={0} sx={{ border: 1, borderColor: 'divider' }}>
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  Public Metadata
+                </Typography>
+                <Divider sx={{ mb: 2 }} />
 
-                  {identity.metadata_public && Object.keys(identity.metadata_public).length > 0 ? (
-                    <Box
-                      sx={{
-                        borderRadius: 1,
-                        overflow: 'auto',
-                        maxHeight: '400px',
-                        background: theme.palette.background.default,
-                      }}
-                    >
-                      <SyntaxHighlighter
-                        language="json"
-                        style={theme.palette.mode === 'dark' ? vs2015 : github}
-                        customStyle={{
-                          margin: 0,
-                          padding: '1rem',
-                          fontSize: '0.875rem',
-                          background: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f8f9fa',
-                          borderRadius: 'var(--radius)',
-                          lineHeight: 1.4,
-                          border: `1px solid ${theme.palette.divider}`,
-                        }}
-                        showLineNumbers={false}
-                        wrapLongLines={true}
-                      >
-                        {JSON.stringify(identity.metadata_public, null, 2)}
-                      </SyntaxHighlighter>
-                    </Box>
-                  ) : (
-                    <Typography variant="body2" color="text.secondary">
-                      No public metadata available
-                    </Typography>
-                  )}
-                </CardContent>
-              </Card>
-            </Grid>
-
-            {/* Admin Metadata */}
-            <Grid size={{ xs: 12, md: 6 }}>
-              <Card elevation={0} sx={{ border: 1, borderColor: 'divider' }}>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    Admin Metadata
-                  </Typography>
-                  <Divider sx={{ mb: 2 }} />
-
-                  {identity.metadata_admin && Object.keys(identity.metadata_admin).length > 0 ? (
-                    <Box
-                      sx={{
-                        borderRadius: 1,
-                        overflow: 'auto',
-                        maxHeight: '400px',
-                        background: theme.palette.background.default,
-                      }}
-                    >
-                      <SyntaxHighlighter
-                        language="json"
-                        style={theme.palette.mode === 'dark' ? vs2015 : github}
-                        customStyle={{
-                          margin: 0,
-                          padding: '1rem',
-                          fontSize: '0.875rem',
-                          background: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f8f9fa',
-                          borderRadius: 'var(--radius)',
-                          lineHeight: 1.4,
-                          border: `1px solid ${theme.palette.divider}`,
-                        }}
-                        showLineNumbers={false}
-                        wrapLongLines={true}
-                      >
-                        {JSON.stringify(identity.metadata_admin, null, 2)}
-                      </SyntaxHighlighter>
-                    </Box>
-                  ) : (
-                    <Typography variant="body2" color="text.secondary">
-                      No admin metadata available
-                    </Typography>
-                  )}
-                </CardContent>
-              </Card>
-            </Grid>
-
-            {/* Sessions Section */}
-            <Grid size={{ xs: 12 }}>
-              <Card elevation={0} sx={{ border: 1, borderColor: 'divider' }}>
-                <CardContent>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <Person color="primary" />
-                      <Typography variant="h6">Sessions</Typography>
-                    </Box>
-                    <Box sx={{ display: 'flex', gap: 1 }}>
-                      <Tooltip title="Refresh Sessions">
-                        <IconButton onClick={() => refetchSessions()} size="small">
-                          <Refresh />
-                        </IconButton>
-                      </Tooltip>
-                      <Button
-                        variant="danger"
-                        size="small"
-                        startIcon={<DeleteSweep />}
-                        onClick={handleDeleteAllSessions}
-                        disabled={deleteSessionsMutation.isPending || sessionsLoading || !sessionsData?.data?.length}
-                      >
-                        Delete All Sessions
-                      </Button>
-                    </Box>
-                  </Box>
-                  <Divider sx={{ mb: 2 }} />
-
-                  {sessionsError ? (
-                    <Alert severity="error" sx={{ mb: 2 }}>
-                      Failed to load sessions: {sessionsError.message}
-                    </Alert>
-                  ) : sessionsLoading ? (
-                    <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
-                      <DottedLoader />
-                    </Box>
-                  ) : !sessionsData?.data?.length ? (
-                    <Box sx={{ textAlign: 'center', py: 4 }}>
-                      <Typography variant="body2" color="text.secondary">
-                        No active sessions found for this identity
-                      </Typography>
-                    </Box>
-                  ) : (
-                    <>
-                      <SessionsTable
-                        key={sessionsData.headers?.etag || 'identity-sessions'} // Force re-render when data updates
-                        sessions={sessionsData.data}
-                        isLoading={false}
-                        isFetchingNextPage={false}
-                        searchQuery=""
-                        onSessionClick={handleSessionClick}
-                      />
-                      <Box sx={{ mt: 2, textAlign: 'center' }}>
-                        <Typography variant="body2" color="text.secondary">
-                          Showing {sessionsData.data.length} session(s) for this identity
-                        </Typography>
-                      </Box>
-                    </>
-                  )}
-                </CardContent>
-              </Card>
-            </Grid>
-
-            {/* Raw JSON */}
-            <Grid size={{ xs: 12 }}>
-              <Card elevation={0} sx={{ border: 1, borderColor: 'divider' }}>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    Raw Data
-                  </Typography>
-                  <Divider sx={{ mb: 2 }} />
+                {identity.metadata_public && Object.keys(identity.metadata_public).length > 0 ? (
                   <Box
                     sx={{
                       borderRadius: 1,
                       overflow: 'auto',
-                      maxHeight: '60vh',
+                      maxHeight: '400px',
                       background: theme.palette.background.default,
                     }}
                   >
@@ -387,88 +219,224 @@ export default function IdentityDetailPage() {
                       style={theme.palette.mode === 'dark' ? vs2015 : github}
                       customStyle={{
                         margin: 0,
-                        padding: '1.5rem',
+                        padding: '1rem',
                         fontSize: '0.875rem',
                         background: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f8f9fa',
                         borderRadius: 'var(--radius)',
-                        lineHeight: 1.5,
+                        lineHeight: 1.4,
                         border: `1px solid ${theme.palette.divider}`,
                       }}
-                      showLineNumbers={true}
-                      lineNumberStyle={{
-                        color: theme.palette.text.secondary,
-                        paddingRight: '1rem',
-                        minWidth: '2rem',
-                        userSelect: 'none',
-                      }}
+                      showLineNumbers={false}
                       wrapLongLines={true}
                     >
-                      {JSON.stringify(identity, null, 2)}
+                      {JSON.stringify(identity.metadata_public, null, 2)}
                     </SyntaxHighlighter>
                   </Box>
-                </CardContent>
-              </Card>
-            </Grid>
+                ) : (
+                  <Typography variant="body2" color="text.secondary">
+                    No public metadata available
+                  </Typography>
+                )}
+              </CardContent>
+            </Card>
           </Grid>
 
-          {/* Edit Modal */}
-          <IdentityEditModal open={editModalOpen} onClose={closeEditModal} identity={identity} onSuccess={handleEditSuccess} />
+          {/* Admin Metadata */}
+          <Grid size={{ xs: 12, md: 6 }}>
+            <Card elevation={0} sx={{ border: 1, borderColor: 'divider' }}>
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  Admin Metadata
+                </Typography>
+                <Divider sx={{ mb: 2 }} />
 
-          {/* Recovery Dialog */}
-          <IdentityRecoveryDialog open={recoveryDialogOpen} onClose={closeRecoveryDialog} identity={identity} />
+                {identity.metadata_admin && Object.keys(identity.metadata_admin).length > 0 ? (
+                  <Box
+                    sx={{
+                      borderRadius: 1,
+                      overflow: 'auto',
+                      maxHeight: '400px',
+                      background: theme.palette.background.default,
+                    }}
+                  >
+                    <SyntaxHighlighter
+                      language="json"
+                      style={theme.palette.mode === 'dark' ? vs2015 : github}
+                      customStyle={{
+                        margin: 0,
+                        padding: '1rem',
+                        fontSize: '0.875rem',
+                        background: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f8f9fa',
+                        borderRadius: 'var(--radius)',
+                        lineHeight: 1.4,
+                        border: `1px solid ${theme.palette.divider}`,
+                      }}
+                      showLineNumbers={false}
+                      wrapLongLines={true}
+                    >
+                      {JSON.stringify(identity.metadata_admin, null, 2)}
+                    </SyntaxHighlighter>
+                  </Box>
+                ) : (
+                  <Typography variant="body2" color="text.secondary">
+                    No admin metadata available
+                  </Typography>
+                )}
+              </CardContent>
+            </Card>
+          </Grid>
 
-          {/* Delete Dialog */}
-          <IdentityDeleteDialog
-            open={deleteDialogOpen}
-            onClose={closeDeleteDialog}
-            identity={identity}
-            onSuccess={handleDeleteSuccess}
-          />
+          {/* Sessions Section */}
+          <Grid size={{ xs: 12 }}>
+            <Card elevation={0} sx={{ border: 1, borderColor: 'divider' }}>
+              <CardContent>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Person color="primary" />
+                    <Typography variant="h6">Sessions</Typography>
+                  </Box>
+                  <Box sx={{ display: 'flex', gap: 1 }}>
+                    <Tooltip title="Refresh Sessions">
+                      <IconButton onClick={() => refetchSessions()} size="small">
+                        <Refresh />
+                      </IconButton>
+                    </Tooltip>
+                    <Button
+                      variant="danger"
+                      size="small"
+                      startIcon={<DeleteSweep />}
+                      onClick={handleDeleteAllSessions}
+                      disabled={deleteSessionsMutation.isPending || sessionsLoading || !sessionsData?.data?.length}
+                    >
+                      Delete All Sessions
+                    </Button>
+                  </Box>
+                </Box>
+                <Divider sx={{ mb: 2 }} />
 
-          {/* Delete All Sessions Dialog */}
-          <Dialog
-            open={deleteSessionsDialogOpen}
-            onClose={closeDeleteSessionsDialog}
-            title="Delete All Sessions"
-            maxWidth="sm"
-          >
-            <Alert severity="warning" style={{ marginBottom: '1rem' }}>
-              This action will revoke all active sessions for this identity. The user will be logged out from all devices.
+                {sessionsError ? (
+                  <Alert severity="error" sx={{ mb: 2 }}>
+                    Failed to load sessions: {sessionsError.message}
+                  </Alert>
+                ) : sessionsLoading ? (
+                  <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+                    <DottedLoader />
+                  </Box>
+                ) : !sessionsData?.data?.length ? (
+                  <Box sx={{ textAlign: 'center', py: 4 }}>
+                    <Typography variant="body2" color="text.secondary">
+                      No active sessions found for this identity
+                    </Typography>
+                  </Box>
+                ) : (
+                  <>
+                    <SessionsTable
+                      key={sessionsData.headers?.etag || 'identity-sessions'} // Force re-render when data updates
+                      sessions={sessionsData.data}
+                      isLoading={false}
+                      isFetchingNextPage={false}
+                      searchQuery=""
+                      onSessionClick={handleSessionClick}
+                    />
+                    <Box sx={{ mt: 2, textAlign: 'center' }}>
+                      <Typography variant="body2" color="text.secondary">
+                        Showing {sessionsData.data.length} session(s) for this identity
+                      </Typography>
+                    </Box>
+                  </>
+                )}
+              </CardContent>
+            </Card>
+          </Grid>
+
+          {/* Raw JSON */}
+          <Grid size={{ xs: 12 }}>
+            <Card elevation={0} sx={{ border: 1, borderColor: 'divider' }}>
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  Raw Data
+                </Typography>
+                <Divider sx={{ mb: 2 }} />
+                <Box
+                  sx={{
+                    borderRadius: 1,
+                    overflow: 'auto',
+                    maxHeight: '60vh',
+                    background: theme.palette.background.default,
+                  }}
+                >
+                  <SyntaxHighlighter
+                    language="json"
+                    style={theme.palette.mode === 'dark' ? vs2015 : github}
+                    customStyle={{
+                      margin: 0,
+                      padding: '1.5rem',
+                      fontSize: '0.875rem',
+                      background: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f8f9fa',
+                      borderRadius: 'var(--radius)',
+                      lineHeight: 1.5,
+                      border: `1px solid ${theme.palette.divider}`,
+                    }}
+                    showLineNumbers={true}
+                    lineNumberStyle={{
+                      color: theme.palette.text.secondary,
+                      paddingRight: '1rem',
+                      minWidth: '2rem',
+                      userSelect: 'none',
+                    }}
+                    wrapLongLines={true}
+                  >
+                    {JSON.stringify(identity, null, 2)}
+                  </SyntaxHighlighter>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+
+        {/* Edit Modal */}
+        <IdentityEditModal open={editModalOpen} onClose={closeEditModal} identity={identity} onSuccess={handleEditSuccess} />
+
+        {/* Recovery Dialog */}
+        <IdentityRecoveryDialog open={recoveryDialogOpen} onClose={closeRecoveryDialog} identity={identity} />
+
+        {/* Delete Dialog */}
+        <IdentityDeleteDialog open={deleteDialogOpen} onClose={closeDeleteDialog} identity={identity} onSuccess={handleDeleteSuccess} />
+
+        {/* Delete All Sessions Dialog */}
+        <Dialog open={deleteSessionsDialogOpen} onClose={closeDeleteSessionsDialog} title="Delete All Sessions" maxWidth="sm">
+          <Alert severity="warning" style={{ marginBottom: '1rem' }}>
+            This action will revoke all active sessions for this identity. The user will be logged out from all devices.
+          </Alert>
+          <Typography variant="body">Are you sure you want to delete all sessions for this identity? This action cannot be undone.</Typography>
+          {deleteSessionsMutation.error && (
+            <Alert severity="error" style={{ marginTop: '1rem' }}>
+              Failed to delete sessions: {deleteSessionsMutation.error.message}
             </Alert>
-            <Typography variant="body">Are you sure you want to delete all sessions for this identity? This action cannot be undone.</Typography>
-            {deleteSessionsMutation.error && (
-              <Alert severity="error" style={{ marginTop: '1rem' }}>
-                Failed to delete sessions: {deleteSessionsMutation.error.message}
-              </Alert>
-            )}
-            <DialogActions>
-              <ActionBar
-                align="right"
-                primaryAction={{
-                  label: deleteSessionsMutation.isPending ? 'Deleting...' : 'Delete All Sessions',
-                  onClick: handleDeleteAllSessionsConfirm,
-                  disabled: deleteSessionsMutation.isPending
-                }}
-                secondaryActions={[
-                  {
-                    label: 'Cancel',
-                    onClick: closeDeleteSessionsDialog
-                  }
-                ]}
-              />
-            </DialogActions>
-          </Dialog>
-
-          {/* Session Detail Dialog */}
-          {selectedSessionId && (
-            <SessionDetailDialog
-              open={true}
-              onClose={handleSessionDialogClose}
-              sessionId={selectedSessionId}
-              onSessionUpdated={handleSessionUpdated}
-            />
           )}
-        </Box>
-      </ProtectedPage>
-    );
-  }
+          <DialogActions>
+            <ActionBar
+              align="right"
+              primaryAction={{
+                label: deleteSessionsMutation.isPending ? 'Deleting...' : 'Delete All Sessions',
+                onClick: handleDeleteAllSessionsConfirm,
+                disabled: deleteSessionsMutation.isPending,
+              }}
+              secondaryActions={[
+                {
+                  label: 'Cancel',
+                  onClick: closeDeleteSessionsDialog,
+                },
+              ]}
+            />
+          </DialogActions>
+        </Dialog>
+
+        {/* Session Detail Dialog */}
+        {selectedSessionId && (
+          <SessionDetailDialog open={true} onClose={handleSessionDialogClose} sessionId={selectedSessionId} onSessionUpdated={handleSessionUpdated} />
+        )}
+      </Box>
+    </ProtectedPage>
+  );
+}

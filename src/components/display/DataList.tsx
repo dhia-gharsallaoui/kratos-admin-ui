@@ -11,12 +11,7 @@ export interface DataListProps {
   spacing?: number;
 }
 
-export function DataList({
-  items,
-  orientation = 'vertical',
-  dividers = false,
-  spacing = 2,
-}: DataListProps) {
+export function DataList({ items, orientation = 'vertical', dividers = false, spacing = 2 }: DataListProps) {
   return (
     <Box
       sx={{

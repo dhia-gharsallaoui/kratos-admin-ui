@@ -17,13 +17,7 @@ const sizeMap = {
   large: 64,
 };
 
-export const Spinner: React.FC<SpinnerProps> = ({
-  variant = 'ring',
-  size = 'medium',
-  color,
-  sx = {},
-  ...props
-}) => {
+export const Spinner: React.FC<SpinnerProps> = ({ variant = 'ring', size = 'medium', color, sx = {}, ...props }) => {
   const theme = useExtendedTheme();
   const defaultColor = color || theme.gradient.colors.primary;
   const spinnerSize = sizeMap[size];
@@ -49,24 +43,12 @@ export const Spinner: React.FC<SpinnerProps> = ({
 
   // Button loading - small inline spinner
   if (variant === 'button') {
-    return (
-      <CircularProgress
-        size={16}
-        sx={{ color: color || 'inherit', ...sx }}
-        {...props}
-      />
-    );
+    return <CircularProgress size={16} sx={{ color: color || 'inherit', ...sx }} {...props} />;
   }
 
   // Inline loading - small spinner without container
   if (variant === 'inline') {
-    return (
-      <CircularProgress
-        size={20}
-        sx={{ color: defaultColor, ...sx }}
-        {...props}
-      />
-    );
+    return <CircularProgress size={20} sx={{ color: defaultColor, ...sx }} {...props} />;
   }
 
   // Overlay loading - covers content with backdrop

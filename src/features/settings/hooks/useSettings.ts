@@ -123,7 +123,7 @@ export const useSettingsStore = create<SettingsStoreState>()(
         const defaultEndpoints = await fetchServerDefaults();
         set({
           kratosEndpoints: defaultEndpoints.kratos,
-          hydraEndpoints: defaultEndpoints.hydra
+          hydraEndpoints: defaultEndpoints.hydra,
         });
 
         // Set cookies for middleware to read

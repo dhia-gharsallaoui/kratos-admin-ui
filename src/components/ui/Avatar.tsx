@@ -8,10 +8,8 @@ const StyledAvatar = styled(MuiAvatar)(({ theme }) => ({
   transition: 'all 0.3s ease',
 }));
 
-export const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
-  (props, ref) => {
-    return <StyledAvatar ref={ref} {...props} />;
-  }
-);
+export const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>((props, ref) => {
+  return <StyledAvatar ref={ref} {...props} />;
+});
 
 Avatar.displayName = 'Avatar';

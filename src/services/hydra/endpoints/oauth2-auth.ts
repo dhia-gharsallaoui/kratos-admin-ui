@@ -32,14 +32,11 @@ export async function getOAuth2ConsentRequest(challenge: string) {
   }
 }
 
-export async function acceptOAuth2ConsentRequest(
-  challenge: string,
-  body: AcceptOAuth2ConsentRequest
-) {
+export async function acceptOAuth2ConsentRequest(challenge: string, body: AcceptOAuth2ConsentRequest) {
   try {
     const response = await getAdminOAuth2Api().acceptOAuth2ConsentRequest({
       consentChallenge: challenge,
-      acceptOAuth2ConsentRequest: body
+      acceptOAuth2ConsentRequest: body,
     });
     return { data: response.data };
   } catch (error) {
@@ -48,14 +45,11 @@ export async function acceptOAuth2ConsentRequest(
   }
 }
 
-export async function rejectOAuth2ConsentRequest(
-  challenge: string,
-  body: RejectOAuth2Request
-) {
+export async function rejectOAuth2ConsentRequest(challenge: string, body: RejectOAuth2Request) {
   try {
     const response = await getAdminOAuth2Api().rejectOAuth2ConsentRequest({
       consentChallenge: challenge,
-      rejectOAuth2Request: body
+      rejectOAuth2Request: body,
     });
     return { data: response.data };
   } catch (error) {
@@ -75,14 +69,11 @@ export async function getOAuth2LoginRequest(challenge: string) {
   }
 }
 
-export async function acceptOAuth2LoginRequest(
-  challenge: string,
-  body: AcceptOAuth2LoginRequest
-) {
+export async function acceptOAuth2LoginRequest(challenge: string, body: AcceptOAuth2LoginRequest) {
   try {
     const response = await getAdminOAuth2Api().acceptOAuth2LoginRequest({
       loginChallenge: challenge,
-      acceptOAuth2LoginRequest: body
+      acceptOAuth2LoginRequest: body,
     });
     return { data: response.data };
   } catch (error) {
@@ -91,14 +82,11 @@ export async function acceptOAuth2LoginRequest(
   }
 }
 
-export async function rejectOAuth2LoginRequest(
-  challenge: string,
-  body: RejectOAuth2Request
-) {
+export async function rejectOAuth2LoginRequest(challenge: string, body: RejectOAuth2Request) {
   try {
     const response = await getAdminOAuth2Api().rejectOAuth2LoginRequest({
       loginChallenge: challenge,
-      rejectOAuth2Request: body
+      rejectOAuth2Request: body,
     });
     return { data: response.data };
   } catch (error) {
@@ -150,7 +138,7 @@ export async function listOAuth2ConsentSessions(params: ListConsentSessionsParam
       pageSize: params.page_size,
       pageToken: params.page_token,
       subject: params.subject,
-      loginSessionId: params.login_session_id
+      loginSessionId: params.login_session_id,
     });
 
     return {
@@ -162,16 +150,12 @@ export async function listOAuth2ConsentSessions(params: ListConsentSessionsParam
   }
 }
 
-export async function revokeOAuth2ConsentSessions(
-  subject: string,
-  client?: string,
-  all?: boolean
-) {
+export async function revokeOAuth2ConsentSessions(subject: string, client?: string, all?: boolean) {
   try {
     const response = await getAdminOAuth2Api().revokeOAuth2ConsentSessions({
       subject,
       client,
-      all
+      all,
     });
     return { data: response.data };
   } catch (error) {

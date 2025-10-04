@@ -54,35 +54,25 @@ const StyledListItemIcon = styled(MuiListItemIcon)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-export const List = React.forwardRef<HTMLUListElement, ListProps>(
-  (props, ref) => {
-    return <StyledList ref={ref} {...props} />;
-  }
-);
+export const List = React.forwardRef<HTMLUListElement, ListProps>((props, ref) => {
+  return <StyledList ref={ref} {...props} />;
+});
 
-export const ListItem = React.forwardRef<HTMLLIElement, ListItemProps>(
-  (props, ref) => {
-    return <StyledListItem ref={ref} {...props} />;
-  }
-);
+export const ListItem = React.forwardRef<HTMLLIElement, ListItemProps>((props, ref) => {
+  return <StyledListItem ref={ref} {...props} />;
+});
 
-export const ListItemButton = React.forwardRef<HTMLDivElement, ListItemButtonProps>(
-  (props, ref) => {
-    return <StyledListItemButton ref={ref} {...props} />;
-  }
-);
+export const ListItemButton = React.forwardRef<HTMLDivElement, ListItemButtonProps>((props, ref) => {
+  return <StyledListItemButton ref={ref} {...props} />;
+});
 
-export const ListItemText = React.forwardRef<HTMLDivElement, ListItemTextProps>(
-  (props, ref) => {
-    return <StyledListItemText ref={ref} {...props} />;
-  }
-);
+export const ListItemText = React.forwardRef<HTMLDivElement, ListItemTextProps>((props, ref) => {
+  return <StyledListItemText ref={ref} {...props} />;
+});
 
-export const ListItemIcon = React.forwardRef<HTMLDivElement, ListItemIconProps>(
-  (props, ref) => {
-    return <StyledListItemIcon ref={ref} {...props} />;
-  }
-);
+export const ListItemIcon = React.forwardRef<HTMLDivElement, ListItemIconProps>((props, ref) => {
+  return <StyledListItemIcon ref={ref} {...props} />;
+});
 
 List.displayName = 'List';
 ListItem.displayName = 'ListItem';

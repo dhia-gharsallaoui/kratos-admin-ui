@@ -1,17 +1,5 @@
 import React from 'react';
-import {
-  Box,
-  Card,
-  CardContent,
-  Skeleton,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-} from '@mui/material';
+import { Box, Card, CardContent, Skeleton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
 interface LoadingSkeletonProps {
   variant?: 'table' | 'card' | 'list' | 'page';
@@ -20,12 +8,7 @@ interface LoadingSkeletonProps {
   height?: number;
 }
 
-export const LoadingSkeleton: React.FC<LoadingSkeletonProps> = ({
-  variant = 'table',
-  rows = 5,
-  columns = 4,
-  height = 400,
-}) => {
+export const LoadingSkeleton: React.FC<LoadingSkeletonProps> = ({ variant = 'table', rows = 5, columns = 4, height = 400 }) => {
   const renderTableSkeleton = () => (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
       <TableContainer sx={{ maxHeight: height }}>

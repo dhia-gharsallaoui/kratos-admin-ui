@@ -25,11 +25,7 @@ const SchemaList: React.FC<SchemaListProps> = ({ schemas, loading, selectedSchem
   if (schemas.length === 0) {
     return (
       <Card>
-        <EmptyState
-          icon={SchemaIcon}
-          title="No schemas found"
-          description="No identity schemas are currently configured"
-        />
+        <EmptyState icon={SchemaIcon} title="No schemas found" description="No identity schemas are currently configured" />
       </Card>
     );
   }

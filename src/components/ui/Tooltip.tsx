@@ -10,26 +10,24 @@ export interface TooltipProps extends Omit<MuiTooltipProps, 'enterDelay' | 'titl
   title?: string;
 }
 
-const StyledTooltip = styled(({ className, ...props }: MuiTooltipProps) => (
-  <MuiTooltip {...props} classes={{ popper: className }} />
-))(({ theme }) => ({
-  '& .MuiTooltip-tooltip': {
-    backgroundColor: theme.palette.mode === 'dark' ? 'rgba(97, 97, 97, 0.95)' : 'rgba(33, 33, 33, 0.95)',
-    color: '#ffffff',
-    fontSize: '0.875rem',
-    padding: '8px 12px',
-    borderRadius: '6px',
-    maxWidth: 300,
-    fontWeight: 500,
-  },
-  '& .MuiTooltip-arrow': {
-    color: theme.palette.mode === 'dark' ? 'rgba(97, 97, 97, 0.95)' : 'rgba(33, 33, 33, 0.95)',
-  },
-}));
+const StyledTooltip = styled(({ className, ...props }: MuiTooltipProps) => <MuiTooltip {...props} classes={{ popper: className }} />)(
+  ({ theme }) => ({
+    '& .MuiTooltip-tooltip': {
+      backgroundColor: theme.palette.mode === 'dark' ? 'rgba(97, 97, 97, 0.95)' : 'rgba(33, 33, 33, 0.95)',
+      color: '#ffffff',
+      fontSize: '0.875rem',
+      padding: '8px 12px',
+      borderRadius: '6px',
+      maxWidth: 300,
+      fontWeight: 500,
+    },
+    '& .MuiTooltip-arrow': {
+      color: theme.palette.mode === 'dark' ? 'rgba(97, 97, 97, 0.95)' : 'rgba(33, 33, 33, 0.95)',
+    },
+  })
+);
 
-const InfoTooltip = styled(({ className, ...props }: MuiTooltipProps) => (
-  <MuiTooltip {...props} classes={{ popper: className }} />
-))(({ theme }) => ({
+const InfoTooltip = styled(({ className, ...props }: MuiTooltipProps) => <MuiTooltip {...props} classes={{ popper: className }} />)(({ theme }) => ({
   '& .MuiTooltip-tooltip': {
     backgroundColor: alpha.primary[95],
     color: '#ffffff',
@@ -45,9 +43,7 @@ const InfoTooltip = styled(({ className, ...props }: MuiTooltipProps) => (
   },
 }));
 
-const HelpTooltip = styled(({ className, ...props }: MuiTooltipProps) => (
-  <MuiTooltip {...props} classes={{ popper: className }} />
-))(({ theme }) => ({
+const HelpTooltip = styled(({ className, ...props }: MuiTooltipProps) => <MuiTooltip {...props} classes={{ popper: className }} />)(({ theme }) => ({
   '& .MuiTooltip-tooltip': {
     backgroundColor: theme.palette.mode === 'dark' ? '#424242' : '#ffffff',
     color: theme.palette.text.primary,
@@ -74,19 +70,10 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
       long: 800,
     };
 
-    const TooltipComponent =
-      variant === 'info' ? InfoTooltip :
-      variant === 'help' ? HelpTooltip :
-      StyledTooltip;
+    const TooltipComponent = variant === 'info' ? InfoTooltip : variant === 'help' ? HelpTooltip : StyledTooltip;
 
     return (
-      <TooltipComponent
-        ref={ref}
-        enterDelay={delayMap[delay]}
-        arrow
-        title={content || props.title}
-        {...props}
-      >
+      <TooltipComponent ref={ref} enterDelay={delayMap[delay]} arrow title={content || props.title} {...props}>
         {children}
       </TooltipComponent>
     );

@@ -58,11 +58,7 @@ export function SectionCard({
                 </Typography>
               )}
             </Box>
-            {headerActions && (
-              <Box sx={{ display: 'flex', gap: 1, flexShrink: 0 }}>
-                {headerActions}
-              </Box>
-            )}
+            {headerActions && <Box sx={{ display: 'flex', gap: 1, flexShrink: 0 }}>{headerActions}</Box>}
           </Box>
         )}
 

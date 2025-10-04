@@ -87,32 +87,15 @@ const StyledChip = styled(MuiChip, {
 
 const customChipVariants: CustomChipVariant[] = ['gradient', 'status', 'role', 'tag'];
 
-export const Chip = React.forwardRef<HTMLDivElement, ChipProps>(
-  ({ variant = 'tag', status, ...props }, ref) => {
-    const isCustomVariant = customChipVariants.includes(variant as CustomChipVariant);
+export const Chip = React.forwardRef<HTMLDivElement, ChipProps>(({ variant = 'tag', status, ...props }, ref) => {
+  const isCustomVariant = customChipVariants.includes(variant as CustomChipVariant);
 
-    if (isCustomVariant) {
-      return (
-        <StyledChip
-          ref={ref}
-          $variant={variant as CustomChipVariant}
-          $status={status}
-          size="small"
-          {...props}
-        />
-      );
-    }
-
-    // Use MUI variant directly
-    return (
-      <MuiChip
-        ref={ref}
-        variant={variant as MuiChipProps['variant']}
-        size="small"
-        {...props}
-      />
-    );
+  if (isCustomVariant) {
+    return <StyledChip ref={ref} $variant={variant as CustomChipVariant} $status={status} size="small" {...props} />;
   }
-);
+
+  // Use MUI variant directly
+  return <MuiChip ref={ref} variant={variant as MuiChipProps['variant']} size="small" {...props} />;
+});
 
 Chip.displayName = 'Chip';

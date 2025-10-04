@@ -13,7 +13,7 @@ import {
   Group,
   Public as PublicIcon,
   Lock as LockIcon,
-  VpnKey as VpnKeyIcon
+  VpnKey as VpnKeyIcon,
 } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { ProtectedPage, PageHeader, SectionCard, ActionBar } from '@/components/layout';
@@ -123,18 +123,9 @@ export default function OAuth2ClientsPage() {
       renderCell: (params: GridRenderCellParams) => (
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
           {params.value?.slice(0, 2).map((grantType: string) => (
-            <Chip
-              key={grantType}
-              variant="tag"
-              label={grantType.replace('_', ' ')}
-            />
+            <Chip key={grantType} variant="tag" label={grantType.replace('_', ' ')} />
           ))}
-          {params.value?.length > 2 && (
-            <Chip
-              variant="gradient"
-              label={`+${params.value.length - 2}`}
-            />
-          )}
+          {params.value?.length > 2 && <Chip variant="gradient" label={`+${params.value.length - 2}`} />}
         </Box>
       ),
     },
@@ -146,18 +137,9 @@ export default function OAuth2ClientsPage() {
       renderCell: (params: GridRenderCellParams) => (
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
           {params.value?.slice(0, 3).map((scope: string) => (
-            <Chip
-              key={scope}
-              variant="role"
-              label={scope}
-            />
+            <Chip key={scope} variant="role" label={scope} />
           ))}
-          {params.value?.length > 3 && (
-            <Chip
-              variant="gradient"
-              label={`+${params.value.length - 3}`}
-            />
-          )}
+          {params.value?.length > 3 && <Chip variant="gradient" label={`+${params.value.length - 3}`} />}
         </Box>
       ),
     },
@@ -167,23 +149,14 @@ export default function OAuth2ClientsPage() {
       width: 120,
       renderCell: (params: GridRenderCellParams) => {
         const clientType = getClientType(params.row as OAuth2Client);
-        return (
-          <Chip
-            variant={clientType === 'confidential' ? 'gradient' : 'tag'}
-            label={clientType}
-          />
-        );
+        return <Chip variant={clientType === 'confidential' ? 'gradient' : 'tag'} label={clientType} />;
       },
     },
     {
       field: 'createdDate',
       headerName: 'Created',
       width: 120,
-      renderCell: (params: GridRenderCellParams) => (
-        <Typography variant="label">
-          {params.value || 'Unknown'}
-        </Typography>
-      ),
+      renderCell: (params: GridRenderCellParams) => <Typography variant="label">{params.value || 'Unknown'}</Typography>,
     },
     {
       field: 'actions',
@@ -191,10 +164,7 @@ export default function OAuth2ClientsPage() {
       width: 80,
       sortable: false,
       renderCell: (params: GridRenderCellParams) => (
-        <IconButton
-          size="small"
-          onClick={(event) => handleMenuClick(event, params.row.id)}
-        >
+        <IconButton size="small" onClick={(event) => handleMenuClick(event, params.row.id)}>
           <MoreVertIcon />
         </IconButton>
       ),
@@ -219,145 +189,113 @@ export default function OAuth2ClientsPage() {
           }
         />
 
-      {/* Stats Cards */}
-      <Grid container spacing={3} sx={{ mb: 3 }}>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard
-            title="Total Clients"
-            value={clientsData?.totalCount || 0}
-            icon={Group}
-            colorVariant="primary"
-          />
+        {/* Stats Cards */}
+        <Grid container spacing={3} sx={{ mb: 3 }}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <StatCard title="Total Clients" value={clientsData?.totalCount || 0} icon={Group} colorVariant="primary" />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <StatCard title="Public Clients" value={clients.filter((c) => !c.client_secret).length} icon={PublicIcon} colorVariant="blue" />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <StatCard title="Confidential Clients" value={clients.filter((c) => !!c.client_secret).length} icon={LockIcon} colorVariant="purple" />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <StatCard
+              title="Auth Code Flow"
+              value={clients.filter((c) => c.grant_types?.includes('authorization_code')).length}
+              icon={VpnKeyIcon}
+              colorVariant="success"
+            />
+          </Grid>
         </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard
-            title="Public Clients"
-            value={clients.filter(c => !c.client_secret).length}
-            icon={PublicIcon}
-            colorVariant="blue"
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard
-            title="Confidential Clients"
-            value={clients.filter(c => !!c.client_secret).length}
-            icon={LockIcon}
-            colorVariant="purple"
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard
-            title="Auth Code Flow"
-            value={clients.filter(c => c.grant_types?.includes('authorization_code')).length}
-            icon={VpnKeyIcon}
-            colorVariant="success"
-          />
-        </Grid>
-      </Grid>
 
-      {/* Search */}
-      <SectionCard sx={{ mb: 3 }}>
-        <SearchBar
-          value={searchTerm}
-          onChange={setSearchTerm}
-          placeholder="Search clients by name, ID, or owner..."
-        />
-      </SectionCard>
+        {/* Search */}
+        <SectionCard sx={{ mb: 3 }}>
+          <SearchBar value={searchTerm} onChange={setSearchTerm} placeholder="Search clients by name, ID, or owner..." />
+        </SectionCard>
 
-      {/* Error Display */}
-      {error && (
-        <Box sx={{ mb: 3 }}>
-          <ErrorState
-            variant="inline"
-            message={`Failed to load OAuth2 clients: ${error.message}`}
-          />
-        </Box>
-      )}
+        {/* Error Display */}
+        {error && (
+          <Box sx={{ mb: 3 }}>
+            <ErrorState variant="inline" message={`Failed to load OAuth2 clients: ${error.message}`} />
+          </Box>
+        )}
 
-      {/* Data Grid */}
-      <Card variant="bordered">
-        <DataGrid
-          rows={filteredRows}
-          columns={columns}
-          loading={isLoading}
-          autoHeight
-          disableRowSelectionOnClick
-          onRowClick={(params) => router.push(`/oauth2-clients/${params.row.id}`)}
-          sx={{
-            border: 'none',
-            '& .MuiDataGrid-columnHeaders': {
-              background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
-              borderBottom: '2px solid rgba(102, 126, 234, 0.2)',
-              fontWeight: 700,
-            },
-            '& .MuiDataGrid-row': {
-              transition: 'all 0.2s ease',
-              '&:hover': {
-                backgroundColor: 'rgba(102, 126, 234, 0.08)',
-                cursor: 'pointer',
-                transform: 'scale(1.001)',
+        {/* Data Grid */}
+        <Card variant="bordered">
+          <DataGrid
+            rows={filteredRows}
+            columns={columns}
+            loading={isLoading}
+            autoHeight
+            disableRowSelectionOnClick
+            onRowClick={(params) => router.push(`/oauth2-clients/${params.row.id}`)}
+            sx={{
+              border: 'none',
+              '& .MuiDataGrid-columnHeaders': {
+                background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
+                borderBottom: '2px solid rgba(102, 126, 234, 0.2)',
+                fontWeight: 700,
               },
-            },
-            '& .MuiDataGrid-cell': {
-              borderColor: 'rgba(102, 126, 234, 0.08)',
-            },
-          }}
-          initialState={{
-            pagination: {
-              paginationModel: { pageSize: 25 },
-            },
-          }}
-          pageSizeOptions={[10, 25, 50, 100]}
-        />
-      </Card>
-
-      {/* Context Menu */}
-      <Menu
-        anchorEl={menuAnchor}
-        open={Boolean(menuAnchor)}
-        onClose={handleMenuClose}
-      >
-        <MenuItem icon={<ViewIcon fontSize="small" />} onClick={() => selectedClient && handleView(selectedClient)}>
-          View Details
-        </MenuItem>
-        <MenuItem icon={<EditIcon fontSize="small" />} onClick={() => selectedClient && handleEdit(selectedClient)}>
-          Edit Client
-        </MenuItem>
-        <MenuItem icon={<DeleteIcon fontSize="small" />} onClick={() => selectedClient && handleDeleteClick(selectedClient)}>
-          Delete Client
-        </MenuItem>
-      </Menu>
-
-      {/* Delete Confirmation Dialog */}
-      <Dialog
-        open={deleteDialogOpen}
-        onClose={handleDeleteCancel}
-        title="Delete OAuth2 Client"
-      >
-        <DialogContent>
-          <Typography variant="body">
-            Are you sure you want to delete this OAuth2 client? This action cannot be undone.
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <ActionBar
-            align="right"
-            primaryAction={{
-              label: 'Delete',
-              onClick: handleDeleteConfirm,
-              loading: deleteClientMutation.isPending,
-              disabled: deleteClientMutation.isPending,
+              '& .MuiDataGrid-row': {
+                transition: 'all 0.2s ease',
+                '&:hover': {
+                  backgroundColor: 'rgba(102, 126, 234, 0.08)',
+                  cursor: 'pointer',
+                  transform: 'scale(1.001)',
+                },
+              },
+              '& .MuiDataGrid-cell': {
+                borderColor: 'rgba(102, 126, 234, 0.08)',
+              },
             }}
-            secondaryActions={[
-              {
-                label: 'Cancel',
-                onClick: handleDeleteCancel,
-                variant: 'outlined',
+            initialState={{
+              pagination: {
+                paginationModel: { pageSize: 25 },
               },
-            ]}
+            }}
+            pageSizeOptions={[10, 25, 50, 100]}
           />
-        </DialogActions>
-      </Dialog>
+        </Card>
+
+        {/* Context Menu */}
+        <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={handleMenuClose}>
+          <MenuItem icon={<ViewIcon fontSize="small" />} onClick={() => selectedClient && handleView(selectedClient)}>
+            View Details
+          </MenuItem>
+          <MenuItem icon={<EditIcon fontSize="small" />} onClick={() => selectedClient && handleEdit(selectedClient)}>
+            Edit Client
+          </MenuItem>
+          <MenuItem icon={<DeleteIcon fontSize="small" />} onClick={() => selectedClient && handleDeleteClick(selectedClient)}>
+            Delete Client
+          </MenuItem>
+        </Menu>
+
+        {/* Delete Confirmation Dialog */}
+        <Dialog open={deleteDialogOpen} onClose={handleDeleteCancel} title="Delete OAuth2 Client">
+          <DialogContent>
+            <Typography variant="body">Are you sure you want to delete this OAuth2 client? This action cannot be undone.</Typography>
+          </DialogContent>
+          <DialogActions>
+            <ActionBar
+              align="right"
+              primaryAction={{
+                label: 'Delete',
+                onClick: handleDeleteConfirm,
+                loading: deleteClientMutation.isPending,
+                disabled: deleteClientMutation.isPending,
+              }}
+              secondaryActions={[
+                {
+                  label: 'Cancel',
+                  onClick: handleDeleteCancel,
+                  variant: 'outlined',
+                },
+              ]}
+            />
+          </DialogActions>
+        </Dialog>
       </Box>
     </ProtectedPage>
   );

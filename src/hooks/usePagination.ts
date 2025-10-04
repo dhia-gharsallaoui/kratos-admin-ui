@@ -19,17 +19,11 @@ export interface UsePaginationReturn<T> {
  * @param initialPageSize - Initial page size (default: 10)
  * @returns Object with pagination state and control functions
  */
-export function usePagination<T>(
-  data: T[],
-  initialPageSize = 10
-): UsePaginationReturn<T> {
+export function usePagination<T>(data: T[], initialPageSize = 10): UsePaginationReturn<T> {
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSizeState] = useState(initialPageSize);
 
-  const totalPages = useMemo(
-    () => Math.ceil(data.length / pageSize),
-    [data.length, pageSize]
-  );
+  const totalPages = useMemo(() => Math.ceil(data.length / pageSize), [data.length, pageSize]);
 
   const paginatedData = useMemo(() => {
     const start = currentPage * pageSize;

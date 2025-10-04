@@ -10,10 +10,8 @@ const StyledDialogTitle = styled(MuiDialogTitle)(({ theme }) => ({
   fontWeight: 600,
 }));
 
-export const DialogTitle = React.forwardRef<HTMLDivElement, DialogTitleProps>(
-  (props, ref) => {
-    return <StyledDialogTitle ref={ref} {...props} />;
-  }
-);
+export const DialogTitle = React.forwardRef<HTMLDivElement, DialogTitleProps>((props, ref) => {
+  return <StyledDialogTitle ref={ref} {...props} />;
+});
 
 DialogTitle.displayName = 'DialogTitle';

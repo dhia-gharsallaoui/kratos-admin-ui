@@ -57,10 +57,10 @@ class Logger {
       // Browser console styling
       const colors: Record<LogLevel, string> = {
         [LogLevel.DEBUG]: 'color: #6b7280', // gray
-        [LogLevel.INFO]: 'color: #3b82f6',  // blue
-        [LogLevel.WARN]: 'color: #f59e0b',  // yellow
+        [LogLevel.INFO]: 'color: #3b82f6', // blue
+        [LogLevel.WARN]: 'color: #f59e0b', // yellow
         [LogLevel.ERROR]: 'color: #ef4444', // red
-        [LogLevel.NONE]: 'color: #000000',  // black
+        [LogLevel.NONE]: 'color: #000000', // black
       };
 
       formattedMessage = `%c${timestamp ? `${timestamp} ` : ''}${prefix}${levelName}: ${message}`;

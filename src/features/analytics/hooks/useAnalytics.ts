@@ -198,13 +198,13 @@ export const useHydraAnalytics = () => {
         const clients = Array.isArray(clientsResponse.data) ? clientsResponse.data : [];
 
         // Count public vs confidential clients
-        const publicClients = clients.filter(client => client.token_endpoint_auth_method === 'none').length;
+        const publicClients = clients.filter((client) => client.token_endpoint_auth_method === 'none').length;
         const confidentialClients = clients.length - publicClients;
 
         // Group by grant types
         const grantTypeGroups: Record<string, number> = {};
-        clients.forEach(client => {
-          client.grant_types?.forEach(grantType => {
+        clients.forEach((client) => {
+          client.grant_types?.forEach((grantType) => {
             grantTypeGroups[grantType] = (grantTypeGroups[grantType] || 0) + 1;
           });
         });

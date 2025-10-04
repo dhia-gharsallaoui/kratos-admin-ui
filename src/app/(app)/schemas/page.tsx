@@ -1,19 +1,26 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import {
-  Box,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from '@/components/ui';
+import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@/components/ui';
 import { TablePagination } from '@mui/material';
 import { Code, Description, Refresh, MoreVert, Close, Schema } from '@mui/icons-material';
-import { Button, Card, CardContent, Chip, Dialog, DialogActions, DialogContent, DialogTitle, EmptyState, ErrorState, IconButton, LoadingState, SearchBar, Tooltip, Typography } from '@/components/ui';
+import {
+  Button,
+  Card,
+  CardContent,
+  Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  EmptyState,
+  ErrorState,
+  IconButton,
+  LoadingState,
+  SearchBar,
+  Tooltip,
+  Typography,
+} from '@/components/ui';
 import { AdminLayout, PageHeader } from '@/components/layout';
 import { getIdentitySchema } from '@/services/kratos';
 import { useSchemas } from '@/features/schemas/hooks';
@@ -73,7 +80,7 @@ export default function SchemasPage() {
     const layoutContainer = document.querySelector('main');
     const appBar = document.querySelector('header');
     const drawer = document.querySelector('.MuiDrawer-root');
-    
+
     if (schemaDialogOpen) {
       if (layoutContainer) layoutContainer.setAttribute('inert', '');
       if (appBar) appBar.setAttribute('inert', '');
@@ -83,7 +90,7 @@ export default function SchemasPage() {
       if (appBar) appBar.removeAttribute('inert');
       if (drawer) drawer.removeAttribute('inert');
     }
-    
+
     return () => {
       if (layoutContainer) layoutContainer.removeAttribute('inert');
       if (appBar) appBar.removeAttribute('inert');
@@ -182,11 +189,7 @@ export default function SchemasPage() {
                   All Schemas
                 </Typography>
                 <Box sx={{ width: { xs: '100%', sm: '300px' } }}>
-                  <SearchBar
-                    value={searchQuery}
-                    onChange={setSearchQuery}
-                    placeholder="Search schemas..."
-                  />
+                  <SearchBar value={searchQuery} onChange={setSearchQuery} placeholder="Search schemas..." />
                 </Box>
               </Box>
 
@@ -254,16 +257,10 @@ export default function SchemasPage() {
                               </TableCell>
                               <TableCell sx={{ fontWeight: 500 }}>{getSchemaTitle(schema)}</TableCell>
                               <TableCell>
-                                <Chip
-                                  variant="gradient"
-                                  label={schema.schema.type || 'unknown'}
-                                />
+                                <Chip variant="gradient" label={schema.schema.type || 'unknown'} />
                               </TableCell>
                               <TableCell>
-                                <Chip
-                                  variant="tag"
-                                  label={`${getPropertiesCount(schema)} trait(s)`}
-                                />
+                                <Chip variant="tag" label={`${getPropertiesCount(schema)} trait(s)`} />
                               </TableCell>
                               <TableCell>
                                 <Button

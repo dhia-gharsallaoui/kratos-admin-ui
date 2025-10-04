@@ -40,14 +40,12 @@ const StyledIconButton = styled(MuiIconButton, {
   };
 });
 
-export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
-  ({ variant = 'default', children, ...props }, ref) => {
-    return (
-      <StyledIconButton ref={ref} $variant={variant} {...props}>
-        {children}
-      </StyledIconButton>
-    );
-  }
-);
+export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(({ variant = 'default', children, ...props }, ref) => {
+  return (
+    <StyledIconButton ref={ref} $variant={variant} {...props}>
+      {children}
+    </StyledIconButton>
+  );
+});
 
 IconButton.displayName = 'IconButton';

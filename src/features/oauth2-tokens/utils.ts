@@ -39,8 +39,8 @@ export function enhanceTokenDetails(token: IntrospectedOAuth2Token, tokenPreview
   return {
     ...token,
     tokenPreview,
-    formattedScopes: token.scope ? token.scope.split(' ').filter(s => s.trim()) : [],
-    formattedAudience: Array.isArray(token.aud) ? token.aud : (token.aud ? [token.aud] : []),
+    formattedScopes: token.scope ? token.scope.split(' ').filter((s) => s.trim()) : [],
+    formattedAudience: Array.isArray(token.aud) ? token.aud : token.aud ? [token.aud] : [],
     issuedAtFormatted: token.iat ? formatTimestamp(token.iat) : undefined,
     expiresAtFormatted: token.exp ? formatTimestamp(token.exp) : undefined,
     tokenTypeFormatted: getTokenTypeDisplayName(token.token_type),
@@ -105,11 +105,11 @@ function calculateExpiryPercentage(iat?: number, exp?: number): number | undefin
 // Get token type display name
 export function getTokenTypeDisplayName(tokenType?: string): string {
   const displayNames: Record<string, string> = {
-    'access_token': 'Access Token',
-    'refresh_token': 'Refresh Token',
-    'id_token': 'ID Token',
-    'bearer': 'Bearer Token',
-    'jwt': 'JWT Token',
+    access_token: 'Access Token',
+    refresh_token: 'Refresh Token',
+    id_token: 'ID Token',
+    bearer: 'Bearer Token',
+    jwt: 'JWT Token',
   };
   return displayNames[tokenType || ''] || tokenType || 'Unknown';
 }
@@ -118,7 +118,7 @@ export function getTokenTypeDisplayName(tokenType?: string): string {
 export function getTokenStatusInfo(token: IntrospectedOAuth2Token): {
   status: TokenStatus;
   displayName: string;
-  color: 'success' | 'warning' | 'error' | 'info'
+  color: 'success' | 'warning' | 'error' | 'info';
 } {
   const now = Math.floor(Date.now() / 1000);
   const isExpired = token.exp ? token.exp < now : false;
@@ -293,5 +293,5 @@ export function isTokenExpiringSoon(exp?: number, thresholdHours = 24): boolean 
   const now = Math.floor(Date.now() / 1000);
   const timeToExpiry = exp - now;
 
-  return timeToExpiry > 0 && timeToExpiry <= (thresholdHours * 3600);
+  return timeToExpiry > 0 && timeToExpiry <= thresholdHours * 3600;
 }

@@ -10,10 +10,8 @@ const StyledDrawer = styled(MuiDrawer)(({ theme }) => ({
   },
 }));
 
-export const Drawer = React.forwardRef<HTMLDivElement, DrawerProps>(
-  (props, ref) => {
-    return <StyledDrawer ref={ref} {...props} />;
-  }
-);
+export const Drawer = React.forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
+  return <StyledDrawer ref={ref} {...props} />;
+});
 
 Drawer.displayName = 'Drawer';

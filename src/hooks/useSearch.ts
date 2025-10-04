@@ -7,11 +7,7 @@ import { useMemo } from 'react';
  * @param searchTerm - Current search query
  * @returns Filtered array based on search term
  */
-export function useSearch<T extends Record<string, any>>(
-  data: T[],
-  searchFields: (keyof T)[],
-  searchTerm: string
-): T[] {
+export function useSearch<T extends Record<string, any>>(data: T[], searchFields: (keyof T)[], searchTerm: string): T[] {
   return useMemo(() => {
     if (!searchTerm.trim()) return data;
 

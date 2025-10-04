@@ -99,12 +99,7 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
           )}
 
           {title && (
-            <Typography
-              variant="h6"
-              fontWeight={600}
-              gutterBottom
-              sx={{ color: colors.text }}
-            >
+            <Typography variant="h6" fontWeight={600} gutterBottom sx={{ color: colors.text }}>
               {title}
             </Typography>
           )}
@@ -114,12 +109,7 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
           </Typography>
 
           {onRetry && (
-            <Button
-              variant="outlined"
-              startIcon={<Refresh />}
-              onClick={onRetry}
-              fullWidth
-            >
+            <Button variant="outlined" startIcon={<Refresh />} onClick={onRetry} fullWidth>
               {retryText}
             </Button>
           )}
@@ -141,18 +131,11 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
-          {showIcon && (
-            <Box sx={{ color: colors.text, mt: 0.5 }}>{getIcon()}</Box>
-          )}
+          {showIcon && <Box sx={{ color: colors.text, mt: 0.5 }}>{getIcon()}</Box>}
 
           <Box sx={{ flex: 1 }}>
             {title && (
-              <Typography
-                variant="subtitle1"
-                fontWeight={600}
-                gutterBottom
-                sx={{ color: colors.text }}
-              >
+              <Typography variant="subtitle1" fontWeight={600} gutterBottom sx={{ color: colors.text }}>
                 {title}
               </Typography>
             )}
@@ -163,12 +146,7 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
 
             {onRetry && (
               <Box sx={{ mt: 2 }}>
-                <Button
-                  variant="outlined"
-                  size="small"
-                  startIcon={<Refresh />}
-                  onClick={onRetry}
-                >
+                <Button variant="outlined" size="small" startIcon={<Refresh />} onClick={onRetry}>
                   {retryText}
                 </Button>
               </Box>
@@ -197,11 +175,7 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
 
       <Box sx={{ flex: 1 }}>
         {title && (
-          <Typography
-            variant="subtitle2"
-            fontWeight={600}
-            sx={{ color: colors.text, mb: 0.5 }}
-          >
+          <Typography variant="subtitle2" fontWeight={600} sx={{ color: colors.text, mb: 0.5 }}>
             {title}
           </Typography>
         )}
@@ -211,12 +185,7 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
       </Box>
 
       {onRetry && (
-        <Button
-          variant="outlined"
-          size="small"
-          startIcon={<Refresh />}
-          onClick={onRetry}
-        >
+        <Button variant="outlined" size="small" startIcon={<Refresh />} onClick={onRetry}>
           {retryText}
         </Button>
       )}

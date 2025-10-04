@@ -12,15 +12,7 @@ export interface PageHeaderProps extends Omit<BoxProps, 'title' | 'ref'> {
   icon?: React.ReactNode;
 }
 
-export const PageHeader = React.forwardRef<HTMLDivElement, PageHeaderProps>(({
-  title,
-  subtitle,
-  actions,
-  breadcrumbs,
-  icon,
-  sx,
-  ...rest
-}, ref) => {
+export const PageHeader = React.forwardRef<HTMLDivElement, PageHeaderProps>(({ title, subtitle, actions, breadcrumbs, icon, sx, ...rest }, ref) => {
   return (
     <Box
       ref={ref}
@@ -66,7 +58,9 @@ export const PageHeader = React.forwardRef<HTMLDivElement, PageHeaderProps>(({
                     {crumb.label}
                   </Typography>
                   {index < breadcrumbs.length - 1 && (
-                    <Typography variant="label" color="secondary">/</Typography>
+                    <Typography variant="label" color="secondary">
+                      /
+                    </Typography>
                   )}
                 </React.Fragment>
               ))}
@@ -80,15 +74,7 @@ export const PageHeader = React.forwardRef<HTMLDivElement, PageHeaderProps>(({
             title
           )}
           {subtitle && (
-            <Box sx={{ mt: 0.5 }}>
-              {typeof subtitle === 'string' ? (
-                <Typography variant="subheading">
-                  {subtitle}
-                </Typography>
-              ) : (
-                subtitle
-              )}
-            </Box>
+            <Box sx={{ mt: 0.5 }}>{typeof subtitle === 'string' ? <Typography variant="subheading">{subtitle}</Typography> : subtitle}</Box>
           )}
         </Box>
       </Box>

@@ -41,7 +41,7 @@ export async function listOAuth2Clients(params: ListOAuth2ClientsParams = {}) {
       pageSize: params.page_size,
       pageToken: params.page_token,
       clientName: params.client_name,
-      owner: params.owner
+      owner: params.owner,
     });
 
     return {
@@ -80,7 +80,7 @@ export async function updateOAuth2Client(clientId: string, clientData: UpdateOAu
   try {
     const response = await getAdminOAuth2Api().setOAuth2Client({
       id: clientId,
-      oAuth2Client: clientData
+      oAuth2Client: clientData,
     });
     return { data: response.data };
   } catch (error) {
@@ -97,8 +97,8 @@ export async function patchOAuth2Client(clientId: string, clientData: Partial<Cr
       jsonPatch: Object.entries(clientData).map(([key, value]) => ({
         op: 'replace',
         path: `/${key}`,
-        value
-      }))
+        value,
+      })),
     });
     return { data: response.data };
   } catch (error) {

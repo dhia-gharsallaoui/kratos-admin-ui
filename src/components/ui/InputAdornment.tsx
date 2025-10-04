@@ -3,10 +3,8 @@ import { InputAdornment as MuiInputAdornment, InputAdornmentProps as MuiInputAdo
 
 export interface InputAdornmentProps extends MuiInputAdornmentProps {}
 
-export const InputAdornment = React.forwardRef<HTMLDivElement, InputAdornmentProps>(
-  (props, ref) => {
-    return <MuiInputAdornment ref={ref} {...props} />;
-  }
-);
+export const InputAdornment = React.forwardRef<HTMLDivElement, InputAdornmentProps>((props, ref) => {
+  return <MuiInputAdornment ref={ref} {...props} />;
+});
 
 InputAdornment.displayName = 'InputAdornment';

@@ -1,6 +1,22 @@
 import React from 'react';
 import { Close, Mail, Sms, Person, Schedule, Info, ExpandMore, CheckCircle, Cancel, Error } from '@mui/icons-material';
-import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Card, CardContent, Chip, Dialog, DialogContent, DialogTitle, Grid, IconButton, Spinner, Typography } from '@/components/ui';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Alert,
+  Box,
+  Card,
+  CardContent,
+  Chip,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Grid,
+  IconButton,
+  Spinner,
+  Typography,
+} from '@/components/ui';
 import { useMessage } from '../hooks';
 import { CourierMessageStatus } from '@/services/kratos/endpoints/courier';
 import { formatDate } from '@/lib/date-utils';
@@ -60,7 +76,6 @@ export const MessageDetailDialog: React.FC<MessageDetailDialogProps> = ({ open, 
     }
   };
 
-
   if (isLoading) {
     return (
       <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
@@ -76,17 +91,16 @@ export const MessageDetailDialog: React.FC<MessageDetailDialogProps> = ({ open, 
       <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
         <DialogTitle>
           <Box display="flex" alignItems="center" justifyContent="space-between">
-            <Typography variant="heading" size="lg">Message Details</Typography>
+            <Typography variant="heading" size="lg">
+              Message Details
+            </Typography>
             <IconButton onClick={onClose} variant="action" size="small">
               <Close />
             </IconButton>
           </Box>
         </DialogTitle>
         <DialogContent>
-          <ErrorState
-            variant="inline"
-            message={`Failed to load message details: ${fetchError?.message || 'Unknown error'}`}
-          />
+          <ErrorState variant="inline" message={`Failed to load message details: ${fetchError?.message || 'Unknown error'}`} />
         </DialogContent>
       </Dialog>
     );
@@ -98,7 +112,9 @@ export const MessageDetailDialog: React.FC<MessageDetailDialogProps> = ({ open, 
         <Box display="flex" alignItems="center" justifyContent="space-between">
           <Box display="flex" alignItems="center" gap={1}>
             {getMessageTypeIcon(message.type)}
-            <Typography variant="heading" size="lg">Message Details</Typography>
+            <Typography variant="heading" size="lg">
+              Message Details
+            </Typography>
           </Box>
           <IconButton onClick={onClose} variant="action" size="small">
             <Close />
@@ -114,7 +130,9 @@ export const MessageDetailDialog: React.FC<MessageDetailDialogProps> = ({ open, 
               <CardContent>
                 <Box display="flex" alignItems="center" gap={1} mb={2}>
                   <Info color="primary" />
-                  <Typography variant="heading" size="lg">Basic Information</Typography>
+                  <Typography variant="heading" size="lg">
+                    Basic Information
+                  </Typography>
                 </Box>
 
                 <Grid container spacing={2}>
@@ -178,9 +196,7 @@ export const MessageDetailDialog: React.FC<MessageDetailDialogProps> = ({ open, 
                     <Typography variant="label" color="text.secondary">
                       Template Type
                     </Typography>
-                    <Typography variant="code">
-                      {message.template_type || 'Unknown'}
-                    </Typography>
+                    <Typography variant="code">{message.template_type || 'Unknown'}</Typography>
                   </Grid>
 
                   <Grid size={{ xs: 12, sm: 6 }}>
@@ -200,7 +216,9 @@ export const MessageDetailDialog: React.FC<MessageDetailDialogProps> = ({ open, 
               <CardContent>
                 <Box display="flex" alignItems="center" gap={1} mb={2}>
                   <Person color="primary" />
-                  <Typography variant="heading" size="lg">Recipient Information</Typography>
+                  <Typography variant="heading" size="lg">
+                    Recipient Information
+                  </Typography>
                 </Box>
 
                 <Typography variant="label" color="text.secondary">
@@ -277,11 +295,7 @@ export const MessageDetailDialog: React.FC<MessageDetailDialogProps> = ({ open, 
                               <Typography variant="label" color="text.secondary">
                                 Status
                               </Typography>
-                              <Chip
-                                label={dispatch.status}
-                                variant="status"
-                                status={dispatch.status === 'failed' ? 'inactive' : 'active'}
-                              />
+                              <Chip label={dispatch.status} variant="status" status={dispatch.status === 'failed' ? 'inactive' : 'active'} />
                             </Grid>
 
                             <Grid size={{ xs: 12, sm: 6 }}>

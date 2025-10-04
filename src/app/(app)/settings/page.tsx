@@ -31,7 +31,14 @@ import {
 import { PageHeader } from '@/components/layout';
 import { useForm, Controller } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-import { useKratosEndpoints, useHydraEndpoints, useSetKratosEndpoints, useSetHydraEndpoints, useResetSettings, useIsValidUrl } from '@/features/settings/hooks/useSettings';
+import {
+  useKratosEndpoints,
+  useHydraEndpoints,
+  useSetKratosEndpoints,
+  useSetHydraEndpoints,
+  useResetSettings,
+  useIsValidUrl,
+} from '@/features/settings/hooks/useSettings';
 import { useTheme } from '@/providers/ThemeProvider';
 
 const DRAWER_WIDTH = 280;
@@ -53,7 +60,7 @@ export default function SettingsPage() {
   const [activeSection, setActiveSection] = useState<SettingsSection>('general');
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const { theme: currentTheme, toggleTheme } = useTheme();
-  
+
   // Kratos settings
   const kratosEndpoints = useKratosEndpoints();
   const setKratosEndpoints = useSetKratosEndpoints();
@@ -79,8 +86,16 @@ export default function SettingsPage() {
     },
   });
 
-  const { handleSubmit: handleKratosSubmit, control: kratosControl, formState: { errors: kratosErrors, isDirty: kratosIsDirty } } = kratosForm;
-  const { handleSubmit: handleHydraSubmit, control: hydraControl, formState: { errors: hydraErrors, isDirty: hydraIsDirty } } = hydraForm;
+  const {
+    handleSubmit: handleKratosSubmit,
+    control: kratosControl,
+    formState: { errors: kratosErrors, isDirty: kratosIsDirty },
+  } = kratosForm;
+  const {
+    handleSubmit: handleHydraSubmit,
+    control: hydraControl,
+    formState: { errors: hydraErrors, isDirty: hydraIsDirty },
+  } = hydraForm;
 
   useEffect(() => {
     kratosForm.reset({
@@ -180,11 +195,7 @@ export default function SettingsPage() {
         </FormLabel>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <Typography variant="body">Light</Typography>
-          <Switch
-            checked={currentTheme === 'dark'}
-            onChange={handleThemeChange}
-            color="primary"
-          />
+          <Switch checked={currentTheme === 'dark'} onChange={handleThemeChange} color="primary" />
           <Typography variant="body">Dark</Typography>
         </Box>
         <Typography variant="body" color="secondary" style={{ fontSize: '0.875rem', marginTop: '0.5rem' }}>
@@ -298,8 +309,8 @@ export default function SettingsPage() {
     <Paper sx={{ p: 4 }}>
       <Alert severity="info" style={{ marginBottom: '1.5rem' }}>
         <Typography variant="body">
-          <strong>Note:</strong> These are the real Hydra endpoint URLs that the application will proxy to. Settings are stored in your
-          browser&apos;s local storage and take effect immediately.
+          <strong>Note:</strong> These are the real Hydra endpoint URLs that the application will proxy to. Settings are stored in your browser&apos;s
+          local storage and take effect immediately.
         </Typography>
       </Alert>
 
@@ -427,81 +438,79 @@ export default function SettingsPage() {
           }}
         >
           <Box sx={{ p: 3, borderBottom: '1px solid', borderColor: 'divider' }}>
-            <Typography variant="heading" level="h3">Sections</Typography>
+            <Typography variant="heading" level="h3">
+              Sections
+            </Typography>
             <Typography variant="body" color="secondary">
               Configure application preferences
             </Typography>
           </Box>
-        
-        <List sx={{ pt: 0 }}>
-          {settingsMenuItems.map((item) => (
-            <ListItem key={item.id} disablePadding>
-              <ListItemButton
-                selected={activeSection === item.id}
-                onClick={() => setActiveSection(item.id)}
-                sx={{
-                  py: 2,
-                  '&.Mui-selected': {
-                    bgcolor: 'primary.main',
-                    color: 'primary.contrastText',
-                    '&:hover': {
-                      bgcolor: 'primary.dark',
-                    },
-                    '& .MuiListItemIcon-root': {
+
+          <List sx={{ pt: 0 }}>
+            {settingsMenuItems.map((item) => (
+              <ListItem key={item.id} disablePadding>
+                <ListItemButton
+                  selected={activeSection === item.id}
+                  onClick={() => setActiveSection(item.id)}
+                  sx={{
+                    py: 2,
+                    '&.Mui-selected': {
+                      bgcolor: 'primary.main',
                       color: 'primary.contrastText',
+                      '&:hover': {
+                        bgcolor: 'primary.dark',
+                      },
+                      '& .MuiListItemIcon-root': {
+                        color: 'primary.contrastText',
+                      },
                     },
-                  },
-                }}
-              >
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText 
-                  primary={item.label}
-                  secondary={item.description}
-                  secondaryTypographyProps={{
-                    sx: {
-                      color: activeSection === item.id ? 'primary.contrastText' : 'text.secondary',
-                      opacity: activeSection === item.id ? 0.8 : 1,
-                    }
                   }}
-                />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
+                >
+                  <ListItemIcon>{item.icon}</ListItemIcon>
+                  <ListItemText
+                    primary={item.label}
+                    secondary={item.description}
+                    secondaryTypographyProps={{
+                      sx: {
+                        color: activeSection === item.id ? 'primary.contrastText' : 'text.secondary',
+                        opacity: activeSection === item.id ? 0.8 : 1,
+                      },
+                    }}
+                  />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        </Drawer>
 
-      {/* Main Content */}
-      <Box sx={{ flexGrow: 1, p: 4, overflow: 'auto' }}>
-        <Box sx={{ maxWidth: 800 }}>
-          <Typography variant="heading" level="h1">
-            {settingsMenuItems.find(item => item.id === activeSection)?.label}
-          </Typography>
-          <Typography variant="body" color="secondary" style={{ display: 'block', marginBottom: '2rem' }}>
-            {settingsMenuItems.find(item => item.id === activeSection)?.description}
-          </Typography>
+        {/* Main Content */}
+        <Box sx={{ flexGrow: 1, p: 4, overflow: 'auto' }}>
+          <Box sx={{ maxWidth: 800 }}>
+            <Typography variant="heading" level="h1">
+              {settingsMenuItems.find((item) => item.id === activeSection)?.label}
+            </Typography>
+            <Typography variant="body" color="secondary" style={{ display: 'block', marginBottom: '2rem' }}>
+              {settingsMenuItems.find((item) => item.id === activeSection)?.description}
+            </Typography>
 
-          {activeSection === 'general' && renderGeneralSettings()}
-          {activeSection === 'kratos' && renderKratosSettings()}
-          {activeSection === 'hydra' && renderHydraSettings()}
+            {activeSection === 'general' && renderGeneralSettings()}
+            {activeSection === 'kratos' && renderKratosSettings()}
+            {activeSection === 'hydra' && renderHydraSettings()}
+          </Box>
         </Box>
-      </Box>
 
-      {/* Success Snackbar */}
-      <Snackbar
-        open={showSuccessMessage}
-        autoHideDuration={3000}
-        onClose={() => setShowSuccessMessage(false)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-      >
-        <Alert
+        {/* Success Snackbar */}
+        <Snackbar
+          open={showSuccessMessage}
+          autoHideDuration={3000}
           onClose={() => setShowSuccessMessage(false)}
-          severity="success"
-          style={{ width: '100%' }}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         >
-          <CheckCircleIcon style={{ marginRight: '0.5rem' }} fontSize="inherit" />
-          Settings saved successfully!
-        </Alert>
-      </Snackbar>
+          <Alert onClose={() => setShowSuccessMessage(false)} severity="success" style={{ width: '100%' }}>
+            <CheckCircleIcon style={{ marginRight: '0.5rem' }} fontSize="inherit" />
+            Settings saved successfully!
+          </Alert>
+        </Snackbar>
       </Box>
     </Box>
   );

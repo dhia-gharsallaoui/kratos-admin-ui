@@ -1,15 +1,21 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import {
-  Box,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-} from '@/components/ui';
+import { Box, FormControl, InputLabel, MenuItem, Select } from '@/components/ui';
 import { Refresh, Close, ExpandMore, Email } from '@mui/icons-material';
-import { Button, Card, CardContent, EmptyState, ErrorState, IconButton, LoadingState, SearchBar, Spinner, Tooltip, Typography } from '@/components/ui';
+import {
+  Button,
+  Card,
+  CardContent,
+  EmptyState,
+  ErrorState,
+  IconButton,
+  LoadingState,
+  SearchBar,
+  Spinner,
+  Tooltip,
+  Typography,
+} from '@/components/ui';
 import { AdminLayout, PageHeader } from '@/components/layout';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import { UserRole } from '@/features/auth';
@@ -120,11 +126,7 @@ export default function MessagesPage() {
               {/* Filters */}
               <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap' }}>
                 <Box sx={{ minWidth: '300px' }}>
-                  <SearchBar
-                    value={searchQuery}
-                    onChange={setSearchQuery}
-                    placeholder="Search messages (recipient, subject, ID, template...)..."
-                  />
+                  <SearchBar value={searchQuery} onChange={setSearchQuery} placeholder="Search messages (recipient, subject, ID, template...)..." />
                 </Box>
 
                 <FormControl size="small" sx={{ minWidth: '150px' }}>
@@ -155,11 +157,7 @@ export default function MessagesPage() {
                 <LoadingState variant="section" message="Loading messages..." />
               ) : (
                 <>
-                  <MessagesTable
-                    messages={messages}
-                    isLoading={isLoading}
-                    onMessageClick={handleMessageClick}
-                  />
+                  <MessagesTable messages={messages} isLoading={isLoading} onMessageClick={handleMessageClick} />
 
                   {/* Loading/pagination controls for search mode */}
                   {isSearching && hasNextPage && (
@@ -167,9 +165,7 @@ export default function MessagesPage() {
                       {searchQuery_.isAutoSearching ? (
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                           <Spinner variant="inline" />
-                          <Typography variant="subheading">
-                            Searching for more messages...
-                          </Typography>
+                          <Typography variant="subheading">Searching for more messages...</Typography>
                         </Box>
                       ) : (
                         <Button onClick={() => searchQuery_.loadMoreMatches()} variant="outlined" startIcon={<ExpandMore />}>

@@ -1,16 +1,6 @@
 import React, { ReactNode, useState } from 'react';
-import {
-  CssBaseline,
-  useMediaQuery,
-  useTheme as useMuiTheme,
-} from '@mui/material';
-import {
-  AppBar,
-  Avatar,
-  Divider,
-  Drawer,
-  Toolbar,
-} from '@/components/ui';
+import { CssBaseline, useMediaQuery, useTheme as useMuiTheme } from '@mui/material';
+import { AppBar, Avatar, Divider, Drawer, Toolbar } from '@/components/ui';
 import {
   Dashboard,
   Person,
@@ -29,19 +19,7 @@ import {
   VpnKey,
   Token,
 } from '@mui/icons-material';
-import {
-  Box,
-  Typography,
-  IconButton,
-  Menu,
-  MenuItem,
-  Tooltip,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-} from '@/components/ui';
+import { Box, Typography, IconButton, Menu, MenuItem, Tooltip, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@/components/ui';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useTheme } from '@/providers/ThemeProvider';
@@ -122,12 +100,12 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         >
           <Toolbar sx={{ justifyContent: 'space-between' }}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <IconButton 
-                color="inherit" 
-                aria-label="toggle drawer" 
-                onClick={handleDrawerToggle} 
-                edge="start" 
-                sx={{ 
+              <IconButton
+                color="inherit"
+                aria-label="toggle drawer"
+                onClick={handleDrawerToggle}
+                edge="start"
+                sx={{
                   mr: 2,
                   background: 'rgba(255,255,255,0.1)',
                   '&:hover': {
@@ -268,7 +246,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                   <Person fontSize="small" sx={{ mr: 1.5, color: gradientColors.primary }} />
                   Profile
                 </MenuItem>
-                <MenuItem 
+                <MenuItem
                   onClick={handleLogout}
                   sx={{
                     py: 1.5,
@@ -295,9 +273,8 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
               width: drawerWidth,
               boxSizing: 'border-box',
               transition: 'transform 0.3s ease, background 0.3s ease',
-              background: currentTheme === 'dark'
-                ? 'linear-gradient(180deg, #1e1e1e 0%, #1a1a1a 100%)'
-                : 'linear-gradient(180deg, #ffffff 0%, #f8f9ff 100%)',
+              background:
+                currentTheme === 'dark' ? 'linear-gradient(180deg, #1e1e1e 0%, #1a1a1a 100%)' : 'linear-gradient(180deg, #ffffff 0%, #f8f9ff 100%)',
               borderRight: `1px solid ${currentTheme === 'dark' ? alpha.primary[20] : alpha.primary[10]}`,
               overflowX: 'hidden',
             },
@@ -309,9 +286,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
               alignItems: 'center',
               justifyContent: 'space-between',
               px: 2,
-              background: currentTheme === 'dark'
-                ? gradients.subtle
-                : gradients.subtle,
+              background: currentTheme === 'dark' ? gradients.subtle : gradients.subtle,
             }}
           >
             <Typography
@@ -366,20 +341,18 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                         },
                       },
                       '&:hover': {
-                        background: isActive
-                          ? gradients.reversed
-                          : currentTheme === 'dark'
-                            ? alpha.primary[20]
-                            : alpha.primary[10],
+                        background: isActive ? gradients.reversed : currentTheme === 'dark' ? alpha.primary[20] : alpha.primary[10],
                         transform: 'translateX(4px)',
                       },
                     }}
                   >
-                    <ListItemIcon sx={{
-                      minWidth: 40,
-                      color: isActive ? 'white' : gradientColors.primary,
-                      transition: 'all 0.3s ease',
-                    }}>
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 40,
+                        color: isActive ? 'white' : gradientColors.primary,
+                        transition: 'all 0.3s ease',
+                      }}
+                    >
                       {item.icon}
                     </ListItemIcon>
                     <ListItemText
@@ -397,7 +370,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
           <Divider sx={{ borderColor: currentTheme === 'dark' ? alpha.primary[30] : alpha.primary[10] }} />
           <List sx={{ px: 1.5, py: 2 }}>
             <ListItem disablePadding>
-              <ListItemButton 
+              <ListItemButton
                 onClick={handleLogout}
                 sx={{
                   borderRadius: 2,
@@ -412,7 +385,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                 <ListItemIcon sx={{ minWidth: 40, color: '#f5576c' }}>
                   <Logout />
                 </ListItemIcon>
-                <ListItemText 
+                <ListItemText
                   primary="Logout"
                   primaryTypographyProps={{
                     fontWeight: 500,
@@ -430,9 +403,8 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
             flexDirection: 'column',
             width: '100%',
             minHeight: '100vh',
-            background: currentTheme === 'dark'
-              ? 'linear-gradient(180deg, #121212 0%, #0a0a0a 100%)'
-              : 'linear-gradient(180deg, #f5f7fa 0%, #e9ecef 100%)',
+            background:
+              currentTheme === 'dark' ? 'linear-gradient(180deg, #121212 0%, #0a0a0a 100%)' : 'linear-gradient(180deg, #f5f7fa 0%, #e9ecef 100%)',
             transition: 'background 0.3s ease',
           }}
         >

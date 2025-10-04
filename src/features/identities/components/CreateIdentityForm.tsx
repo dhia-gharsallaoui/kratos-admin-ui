@@ -422,19 +422,25 @@ const CreateIdentityForm: React.FC<CreateIdentityFormProps> = ({ onSuccess, onCa
   const countryOptions = React.useMemo(() => getCountryOptions(), []);
 
   // Custom widgets for better form experience
-  const widgets = React.useMemo(() => ({
-    tel: TelWidget,
-    TextWidget: TextWidget,
-    text: TextWidget,
-    email: TextWidget,
-  }), []);
+  const widgets = React.useMemo(
+    () => ({
+      tel: TelWidget,
+      TextWidget: TextWidget,
+      text: TextWidget,
+      email: TextWidget,
+    }),
+    []
+  );
 
   // Custom templates for Material-UI styling
-  const templates = React.useMemo(() => ({
-    FieldTemplate: FieldTemplate,
-    ObjectFieldTemplate: ObjectFieldTemplate,
-    SubmitButton: SubmitButton,
-  }), []);
+  const templates = React.useMemo(
+    () => ({
+      FieldTemplate: FieldTemplate,
+      ObjectFieldTemplate: ObjectFieldTemplate,
+      SubmitButton: SubmitButton,
+    }),
+    []
+  );
 
   // Convert Kratos schema to RJSF schema
   const convertKratosSchemaToRJSF = (kratosSchema: any): RJSFSchema => {

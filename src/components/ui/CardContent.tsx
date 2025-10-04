@@ -11,10 +11,8 @@ const StyledCardContent = styled(MuiCardContent)(({ theme }) => ({
   },
 }));
 
-export const CardContent = React.forwardRef<HTMLDivElement, CardContentProps>(
-  (props, ref) => {
-    return <StyledCardContent ref={ref} {...props} />;
-  }
-);
+export const CardContent = React.forwardRef<HTMLDivElement, CardContentProps>((props, ref) => {
+  return <StyledCardContent ref={ref} {...props} />;
+});
 
 CardContent.displayName = 'CardContent';

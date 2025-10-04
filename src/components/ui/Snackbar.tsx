@@ -13,10 +13,8 @@ const StyledSnackbar = styled(MuiSnackbar)(({ theme }) => ({
   },
 }));
 
-export const Snackbar = React.forwardRef<HTMLDivElement, SnackbarProps>(
-  (props, ref) => {
-    return <StyledSnackbar ref={ref} {...props} />;
-  }
-);
+export const Snackbar = React.forwardRef<HTMLDivElement, SnackbarProps>((props, ref) => {
+  return <StyledSnackbar ref={ref} {...props} />;
+});
 
 Snackbar.displayName = 'Snackbar';

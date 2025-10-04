@@ -10,13 +10,7 @@ interface MetricCardProps {
   color: string;
 }
 
-export const MetricCard: React.FC<MetricCardProps> = ({
-  title,
-  value,
-  subtitle,
-  icon: Icon,
-  color,
-}) => {
+export const MetricCard: React.FC<MetricCardProps> = ({ title, value, subtitle, icon: Icon, color }) => {
   return (
     <Card
       elevation={0}

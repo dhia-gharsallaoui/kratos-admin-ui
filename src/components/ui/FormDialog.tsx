@@ -1,16 +1,5 @@
 import React, { ReactNode } from 'react';
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  Typography,
-  Box,
-  Alert,
-  IconButton,
-  CircularProgress,
-} from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Box, Alert, IconButton, CircularProgress } from '@mui/material';
 import { Close } from '@mui/icons-material';
 
 export interface FormDialogAction {
@@ -102,12 +91,7 @@ export const FormDialog: React.FC<FormDialogProps> = ({
             {title}
           </Typography>
           {showCloseIcon && (
-            <IconButton
-              onClick={onClose}
-              disabled={loading}
-              size="small"
-              sx={{ ml: 1 }}
-            >
+            <IconButton onClick={onClose} disabled={loading} size="small" sx={{ ml: 1 }}>
               <Close />
             </IconButton>
           )}
@@ -146,13 +130,7 @@ export const FormDialog: React.FC<FormDialogProps> = ({
               variant={action.variant || 'text'}
               color={action.color || 'primary'}
               disabled={action.disabled || loading}
-              startIcon={
-                action.loading ? (
-                  <CircularProgress size={16} />
-                ) : (
-                  action.startIcon
-                )
-              }
+              startIcon={action.loading ? <CircularProgress size={16} /> : action.startIcon}
               endIcon={action.endIcon}
             >
               {action.loading ? 'Loading...' : action.label}

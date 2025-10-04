@@ -1,8 +1,4 @@
-import {
-  OAuth2ConsentRequest,
-  OAuth2LoginRequest,
-  OAuth2LogoutRequest,
-} from '@/services/hydra';
+import { OAuth2ConsentRequest, OAuth2LoginRequest, OAuth2LogoutRequest } from '@/services/hydra';
 import {
   OAuth2AuthFlowTableRow,
   OAuth2ConsentRequestDetails,
@@ -71,7 +67,7 @@ export function transformLogoutRequestForTable(request: OAuth2LogoutRequest): OA
 export function enhanceConsentRequestDetails(request: OAuth2ConsentRequest): OAuth2ConsentRequestDetails {
   return {
     ...request,
-    displayScopes: request.requested_scope?.map(scope => transformScopeToScopeInfo(scope)),
+    displayScopes: request.requested_scope?.map((scope) => transformScopeToScopeInfo(scope)),
     clientInfo: {
       name: request.client?.client_name,
       logoUri: request.client?.logo_uri,
@@ -110,32 +106,32 @@ export function enhanceLoginRequestDetails(request: OAuth2LoginRequest): OAuth2L
 // Transform scope string to scope info
 export function transformScopeToScopeInfo(scope: string): ScopeInfo {
   const scopeDescriptions: Record<string, { displayName: string; description: string; required: boolean }> = {
-    'openid': {
+    openid: {
       displayName: 'OpenID Connect',
       description: 'Access to your OpenID Connect profile information',
       required: true,
     },
-    'profile': {
+    profile: {
       displayName: 'Profile Information',
       description: 'Access to your basic profile information (name, picture, etc.)',
       required: false,
     },
-    'email': {
+    email: {
       displayName: 'Email Address',
       description: 'Access to your email address',
       required: false,
     },
-    'address': {
+    address: {
       displayName: 'Address Information',
       description: 'Access to your address information',
       required: false,
     },
-    'phone': {
+    phone: {
       displayName: 'Phone Number',
       description: 'Access to your phone number',
       required: false,
     },
-    'offline_access': {
+    offline_access: {
       displayName: 'Offline Access',
       description: 'Access to your data when you are not actively using the application',
       required: false,

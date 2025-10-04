@@ -8,10 +8,8 @@ const StyledContainer = styled(MuiContainer)(({ theme }) => ({
   // Keep MUI defaults, optionally add custom styling
 }));
 
-export const Container = React.forwardRef<HTMLDivElement, ContainerProps>(
-  (props, ref) => {
-    return <StyledContainer ref={ref} {...props} />;
-  }
-);
+export const Container = React.forwardRef<HTMLDivElement, ContainerProps>((props, ref) => {
+  return <StyledContainer ref={ref} {...props} />;
+});
 
 Container.displayName = 'Container';

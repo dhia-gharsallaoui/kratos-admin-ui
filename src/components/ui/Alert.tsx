@@ -44,18 +44,8 @@ const StyledAlert = styled(MuiAlert, {
   };
 });
 
-export const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
-  ({ variant = 'inline', muiVariant, severity, ...props }, ref) => {
-    return (
-      <StyledAlert
-        ref={ref}
-        severity={severity}
-        variant={muiVariant}
-        $variant={variant}
-        {...props}
-      />
-    );
-  }
-);
+export const Alert = React.forwardRef<HTMLDivElement, AlertProps>(({ variant = 'inline', muiVariant, severity, ...props }, ref) => {
+  return <StyledAlert ref={ref} severity={severity} variant={muiVariant} $variant={variant} {...props} />;
+});
 
 Alert.displayName = 'Alert';

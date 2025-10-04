@@ -19,10 +19,8 @@ const StyledOutlinedInput = styled(MuiOutlinedInput)(({ theme }) => ({
   },
 }));
 
-export const OutlinedInput = React.forwardRef<HTMLDivElement, OutlinedInputProps>(
-  (props, ref) => {
-    return <StyledOutlinedInput ref={ref} {...props} />;
-  }
-);
+export const OutlinedInput = React.forwardRef<HTMLDivElement, OutlinedInputProps>((props, ref) => {
+  return <StyledOutlinedInput ref={ref} {...props} />;
+});
 
 OutlinedInput.displayName = 'OutlinedInput';

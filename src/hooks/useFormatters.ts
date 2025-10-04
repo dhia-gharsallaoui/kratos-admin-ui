@@ -17,10 +17,7 @@ export interface UseFormattersReturn {
  * @returns Object with various formatting functions
  */
 export function useFormatters(locale = 'en-US'): UseFormattersReturn {
-  const dateFormatter = useMemo(
-    () => new Intl.DateTimeFormat(locale),
-    [locale]
-  );
+  const dateFormatter = useMemo(() => new Intl.DateTimeFormat(locale), [locale]);
 
   const dateTimeFormatter = useMemo(
     () =>
@@ -34,10 +31,7 @@ export function useFormatters(locale = 'en-US'): UseFormattersReturn {
     [locale]
   );
 
-  const numberFormatter = useMemo(
-    () => new Intl.NumberFormat(locale),
-    [locale]
-  );
+  const numberFormatter = useMemo(() => new Intl.NumberFormat(locale), [locale]);
 
   const formatDate = useCallback(
     (date: string | Date, options?: Intl.DateTimeFormatOptions) => {
@@ -116,16 +110,13 @@ export function useFormatters(locale = 'en-US'): UseFormattersReturn {
     [locale]
   );
 
-  const formatPercentage = useCallback(
-    (value: number, decimals = 0) => {
-      try {
-        return `${value.toFixed(decimals)}%`;
-      } catch {
-        return `${value}%`;
-      }
-    },
-    []
-  );
+  const formatPercentage = useCallback((value: number, decimals = 0) => {
+    try {
+      return `${value.toFixed(decimals)}%`;
+    } catch {
+      return `${value}%`;
+    }
+  }, []);
 
   const formatDuration = useCallback((minutes: number) => {
     if (minutes < 60) {

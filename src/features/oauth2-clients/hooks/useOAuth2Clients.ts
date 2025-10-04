@@ -33,11 +33,7 @@ export function useOAuth2Clients(params: ListOAuth2ClientsParams = {}) {
 }
 
 // Hook to get all OAuth2 clients (with pagination handling)
-export function useAllOAuth2Clients(options?: {
-  maxPages?: number;
-  pageSize?: number;
-  enabled?: boolean;
-}) {
+export function useAllOAuth2Clients(options?: { maxPages?: number; pageSize?: number; enabled?: boolean }) {
   const { enabled = true, ...fetchOptions } = options || {};
 
   return useQuery({
@@ -77,8 +73,7 @@ export function useUpdateOAuth2Client() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ clientId, clientData }: { clientId: string; clientData: UpdateOAuth2ClientRequest }) =>
-      updateOAuth2Client(clientId, clientData),
+    mutationFn: ({ clientId, clientData }: { clientId: string; clientData: UpdateOAuth2ClientRequest }) => updateOAuth2Client(clientId, clientData),
     onSuccess: (data, variables) => {
       // Update the specific client in cache
       queryClient.setQueryData(oauth2ClientsKeys.detail(variables.clientId), data);
@@ -120,26 +115,26 @@ export function useOAuth2ClientStats(enabled = true) {
       const stats = {
         totalClients: clients.length,
         activeClients: clients.length, // Assuming all fetched clients are active
-        publicClients: clients.filter(c => !c.client_secret).length,
-        confidentialClients: clients.filter(c => !!c.client_secret).length,
+        publicClients: clients.filter((c) => !c.client_secret).length,
+        confidentialClients: clients.filter((c) => !!c.client_secret).length,
         grantTypeDistribution: {} as Record<string, number>,
         scopeDistribution: {} as Record<string, number>,
       };
 
       // Calculate grant type distribution
-      clients.forEach(client => {
+      clients.forEach((client) => {
         if (client.grant_types) {
-          client.grant_types.forEach(grantType => {
+          client.grant_types.forEach((grantType) => {
             stats.grantTypeDistribution[grantType] = (stats.grantTypeDistribution[grantType] || 0) + 1;
           });
         }
       });
 
       // Calculate scope distribution
-      clients.forEach(client => {
+      clients.forEach((client) => {
         if (client.scope) {
           const scopes = client.scope.split(' ');
-          scopes.forEach(scope => {
+          scopes.forEach((scope) => {
             if (scope.trim()) {
               stats.scopeDistribution[scope.trim()] = (stats.scopeDistribution[scope.trim()] || 0) + 1;
             }
@@ -166,29 +161,28 @@ export function useFilteredOAuth2Clients(filters: OAuth2ClientFilters) {
     // Apply search filter
     if (filters.search) {
       const searchLower = filters.search.toLowerCase();
-      filtered = filtered.filter(client =>
-        client.client_name?.toLowerCase().includes(searchLower) ||
-        client.client_id?.toLowerCase().includes(searchLower) ||
-        client.owner?.toLowerCase().includes(searchLower)
+      filtered = filtered.filter(
+        (client) =>
+          client.client_name?.toLowerCase().includes(searchLower) ||
+          client.client_id?.toLowerCase().includes(searchLower) ||
+          client.owner?.toLowerCase().includes(searchLower)
       );
     }
 
     // Apply owner filter
     if (filters.owner) {
-      filtered = filtered.filter(client => client.owner === filters.owner);
+      filtered = filtered.filter((client) => client.owner === filters.owner);
     }
 
     // Apply grant type filter
     if (filters.grant_type) {
-      filtered = filtered.filter(client =>
-        client.grant_types?.includes(filters.grant_type!)
-      );
+      filtered = filtered.filter((client) => client.grant_types?.includes(filters.grant_type!));
     }
 
     // Apply date filters
     if (filters.created_after) {
       const afterDate = new Date(filters.created_after);
-      filtered = filtered.filter(client => {
+      filtered = filtered.filter((client) => {
         if (!client.created_at) return false;
         return new Date(client.created_at) >= afterDate;
       });
@@ -196,7 +190,7 @@ export function useFilteredOAuth2Clients(filters: OAuth2ClientFilters) {
 
     if (filters.created_before) {
       const beforeDate = new Date(filters.created_before);
-      filtered = filtered.filter(client => {
+      filtered = filtered.filter((client) => {
         if (!client.created_at) return false;
         return new Date(client.created_at) <= beforeDate;
       });

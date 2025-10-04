@@ -8,10 +8,8 @@ const StyledFormControlLabel = styled(MuiFormControlLabel)(({ theme }) => ({
   // Keep MUI defaults
 }));
 
-export const FormControlLabel = React.forwardRef<HTMLLabelElement, FormControlLabelProps>(
-  (props, ref) => {
-    return <StyledFormControlLabel ref={ref} {...props} />;
-  }
-);
+export const FormControlLabel = React.forwardRef<HTMLLabelElement, FormControlLabelProps>((props, ref) => {
+  return <StyledFormControlLabel ref={ref} {...props} />;
+});
 
 FormControlLabel.displayName = 'FormControlLabel';

@@ -5,15 +5,7 @@ import { useUser, useLogout } from '@/features/auth';
 import { UserRole } from '@/features/auth';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import {
-  Box,
-  Typography,
-  IconButton,
-  Menu,
-  MenuItem,
-  Tooltip,
-  Chip,
-} from '@/components/ui';
+import { Box, Typography, IconButton, Menu, MenuItem, Tooltip, Chip } from '@/components/ui';
 
 interface HeaderProps {
   onSidebarToggle: () => void;
@@ -118,11 +110,7 @@ export function Header({ onSidebarToggle }: HeaderProps) {
                 <Typography variant="body" size="sm" sx={{ display: 'block', color: 'text.secondary' }}>
                   {user.email}
                 </Typography>
-                <Chip
-                  variant={user.role === UserRole.ADMIN ? 'role' : 'tag'}
-                  label={user.role}
-                  sx={{ mt: 1 }}
-                />
+                <Chip variant={user.role === UserRole.ADMIN ? 'role' : 'tag'} label={user.role} sx={{ mt: 1 }} />
               </Box>
             )}
             <Divider />

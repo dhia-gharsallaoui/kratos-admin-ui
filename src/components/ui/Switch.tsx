@@ -8,10 +8,8 @@ const StyledSwitch = styled(MuiSwitch)(({ theme }) => ({
   // Add gradient color theming if desired
 }));
 
-export const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
-  (props, ref) => {
-    return <StyledSwitch ref={ref} {...props} />;
-  }
-);
+export const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>((props, ref) => {
+  return <StyledSwitch ref={ref} {...props} />;
+});
 
 Switch.displayName = 'Switch';

@@ -8,10 +8,8 @@ const StyledFormLabel = styled(MuiFormLabel)(({ theme }) => ({
   fontWeight: 500,
 }));
 
-export const FormLabel = React.forwardRef<HTMLLabelElement, FormLabelProps>(
-  (props, ref) => {
-    return <StyledFormLabel ref={ref} {...props} />;
-  }
-);
+export const FormLabel = React.forwardRef<HTMLLabelElement, FormLabelProps>((props, ref) => {
+  return <StyledFormLabel ref={ref} {...props} />;
+});
 
 FormLabel.displayName = 'FormLabel';

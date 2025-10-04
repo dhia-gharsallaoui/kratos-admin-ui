@@ -86,38 +86,30 @@ const StyledTypography = styled(MuiTypography, {
 
 const customVariants: CustomVariant[] = ['heading', 'subheading', 'body', 'label', 'code', 'gradient'];
 
-export const Typography = React.forwardRef<HTMLElement, TypographyProps>(
-  ({ variant = 'body', size = 'md', level, children, ...props }, ref) => {
-    const isCustomVariant = customVariants.includes(variant as CustomVariant);
+export const Typography = React.forwardRef<HTMLElement, TypographyProps>(({ variant = 'body', size = 'md', level, children, ...props }, ref) => {
+  const isCustomVariant = customVariants.includes(variant as CustomVariant);
 
-    // Determine styling variant
-    const styleVariant: CustomVariant = isCustomVariant ? (variant as CustomVariant) : 'body';
+  // Determine styling variant
+  const styleVariant: CustomVariant = isCustomVariant ? (variant as CustomVariant) : 'body';
 
-    // Determine MUI variant for semantic HTML
-    const getMuiVariant = (): MuiTypographyProps['variant'] => {
-      // If it's already a MUI variant, use it directly
-      if (!isCustomVariant) return variant as MuiTypographyProps['variant'];
+  // Determine MUI variant for semantic HTML
+  const getMuiVariant = (): MuiTypographyProps['variant'] => {
+    // If it's already a MUI variant, use it directly
+    if (!isCustomVariant) return variant as MuiTypographyProps['variant'];
 
-      if (variant === 'heading' && level) return level;
-      if (variant === 'heading') return 'h6';
-      if (variant === 'subheading') return 'subtitle1';
-      if (variant === 'label') return 'subtitle2';
-      if (variant === 'code') return 'body2';
-      return 'body1';
-    };
+    if (variant === 'heading' && level) return level;
+    if (variant === 'heading') return 'h6';
+    if (variant === 'subheading') return 'subtitle1';
+    if (variant === 'label') return 'subtitle2';
+    if (variant === 'code') return 'body2';
+    return 'body1';
+  };
 
-    return (
-      <StyledTypography
-        ref={ref}
-        variant={getMuiVariant()}
-        $variant={styleVariant}
-        $size={size}
-        {...props}
-      >
-        {children}
-      </StyledTypography>
-    );
-  }
-);
+  return (
+    <StyledTypography ref={ref} variant={getMuiVariant()} $variant={styleVariant} $size={size} {...props}>
+      {children}
+    </StyledTypography>
+  );
+});
 
 Typography.displayName = 'Typography';

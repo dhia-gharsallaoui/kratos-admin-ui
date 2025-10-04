@@ -52,103 +52,90 @@ const getMessageTypeIcon = (type: string) => {
   }
 };
 
-export const MessagesTable: React.FC<MessagesTableProps> = React.memo(({
-  messages,
-  isLoading,
-  onMessageClick
-}) => {
-  const columns: DataTableColumn[] = useMemo(() => [
-    {
-      field: 'type',
-      headerName: 'Type',
-      minWidth: 120,
-      renderCell: (value: string) => (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          {getMessageTypeIcon(value)}
-          <Typography variant="body" sx={{ textTransform: 'capitalize' }}>
+export const MessagesTable: React.FC<MessagesTableProps> = React.memo(({ messages, isLoading, onMessageClick }) => {
+  const columns: DataTableColumn[] = useMemo(
+    () => [
+      {
+        field: 'type',
+        headerName: 'Type',
+        minWidth: 120,
+        renderCell: (value: string) => (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            {getMessageTypeIcon(value)}
+            <Typography variant="body" sx={{ textTransform: 'capitalize' }}>
+              {value}
+            </Typography>
+          </Box>
+        ),
+      },
+      {
+        field: 'recipient',
+        headerName: 'Recipient',
+        minWidth: 200,
+        maxWidth: 250,
+        renderCell: (value: string) => (
+          <Typography
+            variant="body"
+            sx={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
             {value}
           </Typography>
-        </Box>
-      ),
-    },
-    {
-      field: 'recipient',
-      headerName: 'Recipient',
-      minWidth: 200,
-      maxWidth: 250,
-      renderCell: (value: string) => (
-        <Typography
-          variant="body"
-          sx={{
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          {value}
-        </Typography>
-      ),
-    },
-    {
-      field: 'subject',
-      headerName: 'Subject',
-      minWidth: 250,
-      maxWidth: 300,
-      renderCell: (value: string) => (
-        <Typography
-          variant="body"
-          sx={{
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          {value || 'No subject'}
-        </Typography>
-      ),
-    },
-    {
-      field: 'status',
-      headerName: 'Status',
-      minWidth: 150,
-      renderCell: (value: CourierMessageStatus) => (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          {getStatusIcon(value)}
-          <StatusBadge
-            status={value === 'sent' ? 'active' : value === 'queued' ? 'pending' : 'inactive'}
-            label={value}
-            showIcon={false}
-          />
-        </Box>
-      ),
-    },
-    {
-      field: 'template_type',
-      headerName: 'Template',
-      minWidth: 160,
-      renderCell: (value: string) => (
-        <Typography variant="code">
-          {value || 'Unknown'}
-        </Typography>
-      ),
-    },
-    {
-      field: 'created_at',
-      headerName: 'Created',
-      minWidth: 180,
-      renderCell: (value: string) => (
-        <Typography variant="body">{formatDate(value)}</Typography>
-      ),
-    },
-    {
-      field: 'send_count',
-      headerName: 'Send Count',
-      minWidth: 120,
-      renderCell: (value: number) => (
-        <Typography variant="body">{value || 0}</Typography>
-      ),
-    },
-  ], []);
+        ),
+      },
+      {
+        field: 'subject',
+        headerName: 'Subject',
+        minWidth: 250,
+        maxWidth: 300,
+        renderCell: (value: string) => (
+          <Typography
+            variant="body"
+            sx={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {value || 'No subject'}
+          </Typography>
+        ),
+      },
+      {
+        field: 'status',
+        headerName: 'Status',
+        minWidth: 150,
+        renderCell: (value: CourierMessageStatus) => (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            {getStatusIcon(value)}
+            <StatusBadge status={value === 'sent' ? 'active' : value === 'queued' ? 'pending' : 'inactive'} label={value} showIcon={false} />
+          </Box>
+        ),
+      },
+      {
+        field: 'template_type',
+        headerName: 'Template',
+        minWidth: 160,
+        renderCell: (value: string) => <Typography variant="code">{value || 'Unknown'}</Typography>,
+      },
+      {
+        field: 'created_at',
+        headerName: 'Created',
+        minWidth: 180,
+        renderCell: (value: string) => <Typography variant="body">{formatDate(value)}</Typography>,
+      },
+      {
+        field: 'send_count',
+        headerName: 'Send Count',
+        minWidth: 120,
+        renderCell: (value: number) => <Typography variant="body">{value || 0}</Typography>,
+      },
+    ],
+    []
+  );
 
   const handleRowClick = (message: any) => {
     onMessageClick?.(message.id);

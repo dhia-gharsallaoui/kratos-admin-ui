@@ -13,13 +13,7 @@ export interface InfoPanelProps {
   columns?: 1 | 2 | 3;
 }
 
-export function InfoPanel({
-  title,
-  items,
-  actions,
-  variant = 'bordered',
-  columns = 1,
-}: InfoPanelProps) {
+export function InfoPanel({ title, items, actions, variant = 'bordered', columns = 1 }: InfoPanelProps) {
   const variantStyles = {
     bordered: {
       border: '1px solid',

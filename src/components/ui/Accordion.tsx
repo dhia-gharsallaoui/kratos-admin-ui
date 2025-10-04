@@ -44,23 +44,17 @@ const StyledAccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   borderTop: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
 }));
 
-export const Accordion = React.forwardRef<HTMLDivElement, AccordionProps>(
-  (props, ref) => {
-    return <StyledAccordion ref={ref} {...props} />;
-  }
-);
+export const Accordion = React.forwardRef<HTMLDivElement, AccordionProps>((props, ref) => {
+  return <StyledAccordion ref={ref} {...props} />;
+});
 
-export const AccordionSummary = React.forwardRef<HTMLDivElement, AccordionSummaryProps>(
-  (props, ref) => {
-    return <StyledAccordionSummary ref={ref} {...props} />;
-  }
-);
+export const AccordionSummary = React.forwardRef<HTMLDivElement, AccordionSummaryProps>((props, ref) => {
+  return <StyledAccordionSummary ref={ref} {...props} />;
+});
 
-export const AccordionDetails = React.forwardRef<HTMLDivElement, AccordionDetailsProps>(
-  (props, ref) => {
-    return <StyledAccordionDetails ref={ref} {...props} />;
-  }
-);
+export const AccordionDetails = React.forwardRef<HTMLDivElement, AccordionDetailsProps>((props, ref) => {
+  return <StyledAccordionDetails ref={ref} {...props} />;
+});
 
 Accordion.displayName = 'Accordion';
 AccordionSummary.displayName = 'AccordionSummary';
