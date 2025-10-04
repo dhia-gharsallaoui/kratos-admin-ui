@@ -48,6 +48,7 @@ import { useTheme } from '@/providers/ThemeProvider';
 import { useUser, useLogout } from '@/features/auth/hooks/useAuth';
 import { UserRole } from '@/features/auth';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
+import { gradientColors, gradients, alpha } from '@/theme';
 
 const drawerWidth = 240;
 
@@ -113,7 +114,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
           sx={{
             width: { xs: '100%', sm: open ? `calc(100% - ${drawerWidth}px)` : '100%' },
             ml: { xs: 0, sm: open ? `${drawerWidth}px` : 0 },
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            background: gradients.normal,
             backdropFilter: 'blur(20px)',
             boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
             transition: 'width 0.3s ease, margin-left 0.3s ease',
@@ -216,12 +217,12 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                   },
                 }}
               >
-                <Avatar 
-                  sx={{ 
-                    width: 36, 
-                    height: 36, 
+                <Avatar
+                  sx={{
+                    width: 36,
+                    height: 36,
                     bgcolor: 'rgba(255,255,255,0.9)',
-                    color: '#667eea',
+                    color: gradientColors.primary,
                     fontWeight: 700,
                     border: '2px solid rgba(255,255,255,0.5)',
                   }}
@@ -260,11 +261,11 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                   sx={{
                     py: 1.5,
                     '&:hover': {
-                      background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
+                      background: gradients.subtle,
                     },
                   }}
                 >
-                  <Person fontSize="small" sx={{ mr: 1.5, color: '#667eea' }} />
+                  <Person fontSize="small" sx={{ mr: 1.5, color: gradientColors.primary }} />
                   Profile
                 </MenuItem>
                 <MenuItem 
@@ -297,7 +298,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
               background: currentTheme === 'dark'
                 ? 'linear-gradient(180deg, #1e1e1e 0%, #1a1a1a 100%)'
                 : 'linear-gradient(180deg, #ffffff 0%, #f8f9ff 100%)',
-              borderRight: `1px solid rgba(102, 126, 234, ${currentTheme === 'dark' ? '0.2' : '0.1'})`,
+              borderRight: `1px solid ${currentTheme === 'dark' ? alpha.primary[20] : alpha.primary[10]}`,
               overflowX: 'hidden',
             },
           }}
@@ -309,8 +310,8 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
               justifyContent: 'space-between',
               px: 2,
               background: currentTheme === 'dark'
-                ? 'linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%)'
-                : 'linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%)',
+                ? gradients.subtle
+                : gradients.subtle,
             }}
           >
             <Typography
@@ -318,7 +319,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
               size="lg"
               sx={{
                 fontWeight: 800,
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                background: gradients.text,
                 backgroundClip: 'text',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
@@ -330,16 +331,16 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
               variant="action"
               onClick={handleDrawerToggle}
               sx={{
-                background: 'rgba(102, 126, 234, 0.1)',
+                background: alpha.primary[10],
                 '&:hover': {
-                  background: 'rgba(102, 126, 234, 0.2)',
+                  background: alpha.primary[20],
                 },
               }}
             >
               {open ? <ChevronLeft /> : <ChevronRight />}
             </IconButton>
           </Toolbar>
-          <Divider sx={{ borderColor: currentTheme === 'dark' ? 'rgba(102, 126, 234, 0.3)' : 'rgba(102, 126, 234, 0.1)' }} />
+          <Divider sx={{ borderColor: currentTheme === 'dark' ? alpha.primary[30] : alpha.primary[10] }} />
           <List sx={{ px: 1.5, py: 2 }}>
             {filteredMenuItems.map((item) => {
               const isActive = pathname === item.path;
@@ -354,11 +355,11 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                       py: 1.5,
                       transition: 'all 0.3s ease',
                       '&.Mui-selected': {
-                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                        background: gradients.normal,
                         color: 'white',
-                        boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)',
+                        boxShadow: `0 4px 15px ${alpha.primary[30]}`,
                         '&:hover': {
-                          background: 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)',
+                          background: gradients.reversed,
                         },
                         '& .MuiListItemIcon-root': {
                           color: 'white',
@@ -366,17 +367,17 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                       },
                       '&:hover': {
                         background: isActive
-                          ? 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)'
+                          ? gradients.reversed
                           : currentTheme === 'dark'
-                            ? 'rgba(102, 126, 234, 0.2)'
-                            : 'rgba(102, 126, 234, 0.08)',
+                            ? alpha.primary[20]
+                            : alpha.primary[10],
                         transform: 'translateX(4px)',
                       },
                     }}
                   >
                     <ListItemIcon sx={{
                       minWidth: 40,
-                      color: isActive ? 'white' : '#667eea',
+                      color: isActive ? 'white' : gradientColors.primary,
                       transition: 'all 0.3s ease',
                     }}>
                       {item.icon}
@@ -393,7 +394,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
             })}
           </List>
           <Box sx={{ flexGrow: 1 }} />
-          <Divider sx={{ borderColor: currentTheme === 'dark' ? 'rgba(102, 126, 234, 0.3)' : 'rgba(102, 126, 234, 0.1)' }} />
+          <Divider sx={{ borderColor: currentTheme === 'dark' ? alpha.primary[30] : alpha.primary[10] }} />
           <List sx={{ px: 1.5, py: 2 }}>
             <ListItem disablePadding>
               <ListItemButton 

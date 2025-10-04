@@ -12,6 +12,7 @@ import { PieChart } from '@mui/x-charts/PieChart';
 import { LineChart } from '@mui/x-charts/LineChart';
 import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
 import { useFormatters } from '@/hooks';
+import { gradientColors, themeColors } from '@/theme';
 
 export default function Dashboard() {
   const { identity, session, system, hydra, isLoading, isError, refetchAll } = useAnalytics();
@@ -205,7 +206,7 @@ export default function Dashboard() {
                   series={[
                     {
                       data: identityValues,
-                      color: '#0075ff',
+                      color: themeColors.info,
                       area: true,
                       curve: 'monotoneX',
                     },
@@ -273,7 +274,7 @@ export default function Dashboard() {
                   series={[
                     {
                       data: sessionValues,
-                      color: '#009688',
+                      color: themeColors.success,
                       curve: 'monotoneX',
                     },
                   ]}
@@ -314,7 +315,7 @@ export default function Dashboard() {
                       [`& .${gaugeClasses.valueText}`]: {
                         fontSize: 56,
                         fontWeight: 700,
-                        fill: '#667eea',
+                        fill: gradientColors.primary,
                       },
                       [`& .${gaugeClasses.valueArc}`]: {
                         fill: 'url(#gradient)',
@@ -326,8 +327,8 @@ export default function Dashboard() {
                   >
                     <defs>
                       <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#667eea" />
-                        <stop offset="100%" stopColor="#764ba2" />
+                        <stop offset="0%" stopColor={gradientColors.primary} />
+                        <stop offset="100%" stopColor={gradientColors.secondary} />
                       </linearGradient>
                     </defs>
                   </Gauge>

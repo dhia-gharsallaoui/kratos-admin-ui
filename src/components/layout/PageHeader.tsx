@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Box, Typography, type BoxProps } from '@/components/ui';
+import { gradients } from '@/theme';
 
 export interface PageHeaderProps extends Omit<BoxProps, 'title' | 'ref'> {
   title: string | React.ReactNode;
@@ -38,7 +39,7 @@ export const PageHeader = React.forwardRef<HTMLDivElement, PageHeaderProps>(({
         {icon && (
           <Box
             sx={{
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              background: gradients.normal,
               borderRadius: 2,
               p: 1.5,
               display: 'flex',
