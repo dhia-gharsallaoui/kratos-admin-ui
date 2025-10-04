@@ -217,7 +217,7 @@ const TelWidget: React.FC<WidgetProps> = ({ id, value, onChange, onBlur, onFocus
         sx={{
           '& .MuiInputLabel-root': {
             '& .MuiInputLabel-asterisk': {
-              color: '#f44336',
+              color: 'error.main',
             },
           },
           '& .MuiOutlinedInput-root': {
@@ -231,11 +231,11 @@ const TelWidget: React.FC<WidgetProps> = ({ id, value, onChange, onBlur, onFocus
               borderWidth: '1px',
             },
             '&.Mui-focused fieldset': {
-              borderColor: isValid === false ? '#f44336' : 'primary.main',
+              borderColor: isValid === false ? 'error.main' : 'primary.main',
               borderWidth: '2px',
             },
             '&.Mui-error fieldset': {
-              borderColor: '#f44336',
+              borderColor: 'error.main',
             },
           },
         }}
@@ -330,7 +330,7 @@ const TextWidget: React.FC<WidgetProps> = ({ id, value, onChange, onBlur, onFocu
         mb: 2,
         '& .MuiInputLabel-root': {
           '& .MuiInputLabel-asterisk': {
-            color: '#f44336',
+            color: 'error.main',
           },
         },
         '& .MuiOutlinedInput-root': {

@@ -220,7 +220,7 @@ export default function OAuth2ClientsPage() {
             title="Total Clients"
             value={clientsData?.totalCount || 0}
             icon={Group}
-            iconColor="#667eea"
+            colorVariant="primary"
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
@@ -228,7 +228,7 @@ export default function OAuth2ClientsPage() {
             title="Public Clients"
             value={clients.filter(c => !c.client_secret).length}
             icon={PublicIcon}
-            iconColor="#74b9ff"
+            colorVariant="blue"
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
@@ -236,7 +236,7 @@ export default function OAuth2ClientsPage() {
             title="Confidential Clients"
             value={clients.filter(c => !!c.client_secret).length}
             icon={LockIcon}
-            iconColor="#a29bfe"
+            colorVariant="purple"
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
@@ -244,7 +244,7 @@ export default function OAuth2ClientsPage() {
             title="Auth Code Flow"
             value={clients.filter(c => c.grant_types?.includes('authorization_code')).length}
             icon={VpnKeyIcon}
-            iconColor="#00b894"
+            colorVariant="success"
           />
         </Grid>
       </Grid>

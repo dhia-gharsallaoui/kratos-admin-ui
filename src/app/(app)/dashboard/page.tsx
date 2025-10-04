@@ -93,7 +93,7 @@ export default function Dashboard() {
                 value={formatNumber(identity.data?.totalIdentities || 0)}
                 subtitle={`+${identity.data?.newIdentitiesLast30Days || 0} in last 30 days`}
                 icon={Group}
-                iconColor="#667eea"
+                colorVariant="primary"
               />
             </Grid>
 
@@ -103,7 +103,7 @@ export default function Dashboard() {
                 value={formatNumber(session.data?.activeSessions || 0)}
                 subtitle={`${session.data?.sessionsLast7Days || 0} in last 7 days`}
                 icon={Security}
-                iconColor="#764ba2"
+                colorVariant="secondary"
               />
             </Grid>
 
@@ -113,7 +113,7 @@ export default function Dashboard() {
                 value={formatDuration(session.data?.averageSessionDuration || 0)}
                 subtitle="Average duration"
                 icon={Schedule}
-                iconColor="#00b894"
+                colorVariant="success"
               />
             </Grid>
 
@@ -131,7 +131,7 @@ export default function Dashboard() {
                 }%`}
                 subtitle="Email verified users"
                 icon={Schema}
-                iconColor="#e17055"
+                colorVariant="error"
               />
             </Grid>
 
@@ -141,7 +141,7 @@ export default function Dashboard() {
                 value={formatNumber(system.data?.totalSchemas || 0)}
                 subtitle="Total schemas configured"
                 icon={Schema}
-                iconColor="#0984e3"
+                colorVariant="info"
               />
             </Grid>
 
@@ -151,7 +151,7 @@ export default function Dashboard() {
                 value={system.data?.systemHealth === 'healthy' ? '✓' : system.data?.systemHealth || '?'}
                 subtitle={system.data?.systemHealth || 'Unknown'}
                 icon={HealthAndSafety}
-                iconColor="#00b894"
+                colorVariant="success"
               />
             </Grid>
 
@@ -162,7 +162,7 @@ export default function Dashboard() {
                 value={formatNumber(hydra.data?.totalClients || 0)}
                 subtitle={`${hydra.data?.publicClients || 0} public, ${hydra.data?.confidentialClients || 0} confidential`}
                 icon={Apps}
-                iconColor="#fdcb6e"
+                colorVariant="warning"
               />
             </Grid>
 
@@ -172,7 +172,7 @@ export default function Dashboard() {
                 value={hydra.data?.clientsByGrantType.length || 0}
                 subtitle="Different grant types in use"
                 icon={VpnKey}
-                iconColor="#a29bfe"
+                colorVariant="purple"
               />
             </Grid>
 
@@ -182,7 +182,7 @@ export default function Dashboard() {
                 value={hydra.data?.systemHealth === 'healthy' ? '✓' : hydra.data?.systemHealth === 'error' ? '✗' : '?'}
                 subtitle={hydra.data?.systemHealth || 'Unknown'}
                 icon={Cloud}
-                iconColor="#74b9ff"
+                colorVariant="blue"
               />
             </Grid>
           </Grid>

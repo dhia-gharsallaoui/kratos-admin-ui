@@ -6,6 +6,17 @@ export const gradientColors = {
   secondary: '#764ba2',
 };
 
+// Additional theme colors for UI components
+export const themeColors = {
+  success: '#00b894',
+  warning: '#fdcb6e',
+  error: '#e17055',
+  info: '#0984e3',
+  purple: '#a29bfe',
+  orange: '#ff9800',
+  blue: '#74b9ff',
+};
+
 // Gradient utilities
 export const gradients = {
   normal: `linear-gradient(135deg, ${gradientColors.primary} 0%, ${gradientColors.secondary} 100%)`,
@@ -49,5 +60,6 @@ export const useExtendedTheme = () => {
       alpha,
       shadows,
     },
+    colors: themeColors,
   };
 };
