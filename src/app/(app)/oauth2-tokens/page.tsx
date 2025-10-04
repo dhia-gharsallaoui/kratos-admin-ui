@@ -47,6 +47,7 @@ import {
 } from '@mui/icons-material';
 import { EmptyState, ErrorState } from '@/components/feedback';
 import { ActionBar } from '@/components/layout';
+import { gradientColors, themeColors } from '@/theme';
 
 export default function OAuth2TokensPage() {
   const [activeTab, setActiveTab] = useState(0);
@@ -274,7 +275,7 @@ export default function OAuth2TokensPage() {
             title="Introspected Tokens"
             value={tokenStats?.totalTokens || 0}
             icon={ReceiptIcon}
-            color="#667eea"
+            color={gradientColors.primary}
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
@@ -282,7 +283,7 @@ export default function OAuth2TokensPage() {
             title="Active Tokens"
             value={tokenStats?.activeTokens || 0}
             icon={CheckCircle}
-            color="#00b894"
+            color={themeColors.success}
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
@@ -290,7 +291,7 @@ export default function OAuth2TokensPage() {
             title="Expired Tokens"
             value={tokenStats?.expiredTokens || 0}
             icon={ErrorIcon}
-            color="#e17055"
+            color={themeColors.error}
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
@@ -298,7 +299,7 @@ export default function OAuth2TokensPage() {
             title="Expiring in 24h"
             value={tokenStats?.tokensExpiringIn24h || 0}
             icon={ScheduleIcon}
-            color="#fdcb6e"
+            color={themeColors.warning}
           />
         </Grid>
       </Grid>

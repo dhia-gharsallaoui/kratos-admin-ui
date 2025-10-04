@@ -15,40 +15,6 @@ export const PAGINATION = {
 } as const;
 
 /**
- * Brand colors used throughout the application
- */
-export const BRAND_COLORS = {
-  /** Primary gradient start color */
-  PRIMARY_START: '#667eea',
-  /** Primary gradient end color */
-  PRIMARY_END: '#764ba2',
-  /** Secondary gradient color */
-  SECONDARY: '#f093fb',
-  /** Accent blue color */
-  ACCENT_BLUE: '#4facfe',
-  /** Accent cyan color */
-  ACCENT_CYAN: '#00f2fe',
-  /** Chart primary color */
-  CHART_PRIMARY: '#0075ff',
-  /** Chart secondary color */
-  CHART_SECONDARY: '#009688',
-} as const;
-
-/**
- * Common gradients used in the UI
- */
-export const GRADIENTS = {
-  /** Primary gradient (purple) */
-  PRIMARY: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-  /** Primary gradient reversed */
-  PRIMARY_REVERSE: 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)',
-  /** Full rainbow gradient */
-  RAINBOW: 'linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%)',
-  /** Data grid header gradient */
-  TABLE_HEADER: 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
-} as const;
-
-/**
  * Timing constants for animations and delays
  */
 export const TIMING = {

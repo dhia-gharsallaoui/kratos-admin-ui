@@ -3,7 +3,7 @@
 import React from 'react';
 import { Card, CardContent, Box, Typography, Skeleton } from '@/components/ui';
 import { TrendingUp, TrendingDown } from '@mui/icons-material';
-import { gradientColors } from '@/theme';
+import { gradientColors, themeColors } from '@/theme';
 
 export interface StatCardProps {
   title: string;
@@ -23,15 +23,15 @@ export interface StatCardProps {
 
 // Color mapping using theme colors
 const colorMap: Record<string, string> = {
-  primary: gradientColors.primary,      // #667eea
-  secondary: gradientColors.secondary,  // #764ba2
-  success: '#00b894',
-  warning: '#fdcb6e',
-  error: '#e17055',
-  info: '#0984e3',
-  purple: '#a29bfe',
-  orange: '#ff9800',
-  blue: '#74b9ff',
+  primary: gradientColors.primary,
+  secondary: gradientColors.secondary,
+  success: themeColors.success,
+  warning: themeColors.warning,
+  error: themeColors.error,
+  info: themeColors.info,
+  purple: themeColors.purple,
+  orange: themeColors.orange,
+  blue: themeColors.blue,
 };
 
 export function StatCard({

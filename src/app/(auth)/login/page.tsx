@@ -25,6 +25,7 @@ import {
 import { Visibility, VisibilityOff, AdminPanelSettings, RemoveRedEye } from '@mui/icons-material';
 import { useLogin } from '@/features/auth/hooks/useAuth';
 import { USERS, UserRole } from '@/features/auth';
+import { gradientColors, gradients, alpha } from '@/theme';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
@@ -76,7 +77,7 @@ export default function LoginPage() {
     <Box
       sx={{
         minHeight: '100vh',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%)',
+        background: `linear-gradient(135deg, ${gradientColors.primary} 0%, ${gradientColors.secondary} 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%)`,
         backgroundSize: '400% 400%',
         animation: 'gradient 15s ease infinite',
         display: 'flex',
@@ -145,7 +146,7 @@ export default function LoginPage() {
             gutterBottom
             sx={{
               fontWeight: 800,
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              background: gradients.text,
               backgroundClip: 'text',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
@@ -201,17 +202,17 @@ export default function LoginPage() {
               type="submit" 
               fullWidth 
               variant="contained" 
-              sx={{ 
-                mt: 3, 
-                mb: 2, 
+              sx={{
+                mt: 3,
+                mb: 2,
                 py: 1.8,
                 fontSize: '1.1rem',
                 fontWeight: 600,
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                background: gradients.normal,
                 boxShadow: '0 4px 15px 0 rgba(116, 75, 162, 0.4)',
                 transition: 'all 0.3s ease',
                 '&:hover': {
-                  background: 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)',
+                  background: gradients.reversed,
                   boxShadow: '0 6px 20px 0 rgba(116, 75, 162, 0.6)',
                   transform: 'translateY(-2px)',
                 },
@@ -238,18 +239,18 @@ export default function LoginPage() {
                   elevation={0}
                   sx={{
                     cursor: 'pointer',
-                    background: user.role === UserRole.ADMIN 
-                      ? 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)'
+                    background: user.role === UserRole.ADMIN
+                      ? gradients.subtle
                       : 'linear-gradient(135deg, rgba(240, 147, 251, 0.1) 0%, rgba(79, 172, 254, 0.1) 100%)',
                     border: '2px solid',
-                    borderColor: user.role === UserRole.ADMIN ? 'rgba(102, 126, 234, 0.3)' : 'rgba(240, 147, 251, 0.3)',
+                    borderColor: user.role === UserRole.ADMIN ? alpha.primary[30] : 'rgba(240, 147, 251, 0.3)',
                     borderRadius: 3,
                     transition: 'all 0.3s ease',
-                    '&:hover': { 
-                      borderColor: user.role === UserRole.ADMIN ? '#667eea' : '#f093fb',
+                    '&:hover': {
+                      borderColor: user.role === UserRole.ADMIN ? gradientColors.primary : '#f093fb',
                       transform: 'translateY(-4px)',
-                      boxShadow: user.role === UserRole.ADMIN 
-                        ? '0 8px 24px rgba(102, 126, 234, 0.3)'
+                      boxShadow: user.role === UserRole.ADMIN
+                        ? `0 8px 24px ${alpha.primary[30]}`
                         : '0 8px 24px rgba(240, 147, 251, 0.3)',
                     },
                   }}
@@ -258,37 +259,37 @@ export default function LoginPage() {
                   <CardContent sx={{ p: 2.5 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5 }}>
                       {user.role === UserRole.ADMIN ? (
-                        <AdminPanelSettings 
-                          sx={{ 
-                            mr: 1.5, 
+                        <AdminPanelSettings
+                          sx={{
+                            mr: 1.5,
                             fontSize: 28,
-                            color: '#667eea',
-                          }} 
+                            color: gradientColors.primary,
+                          }}
                         />
                       ) : (
-                        <RemoveRedEye 
-                          sx={{ 
-                            mr: 1.5, 
+                        <RemoveRedEye
+                          sx={{
+                            mr: 1.5,
                             fontSize: 28,
                             color: '#f093fb',
-                          }} 
+                          }}
                         />
                       )}
                       <Typography variant="h6" sx={{ fontWeight: 700 }}>
                         {user.displayName}
                       </Typography>
                     </Box>
-                    <Chip 
-                      label={user.role} 
-                      size="small" 
-                      sx={{ 
+                    <Chip
+                      label={user.role}
+                      size="small"
+                      sx={{
                         mb: 1.5,
                         fontWeight: 600,
-                        background: user.role === UserRole.ADMIN 
-                          ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+                        background: user.role === UserRole.ADMIN
+                          ? gradients.normal
                           : 'linear-gradient(135deg, #f093fb 0%, #4facfe 100%)',
                         color: 'white',
-                      }} 
+                      }}
                     />
                     <Typography variant="body2" sx={{ mb: 0.5, color: 'text.primary' }}>
                       Username: <strong>{user.username}</strong>
