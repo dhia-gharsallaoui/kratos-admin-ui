@@ -1,12 +1,11 @@
 'use client';
 
-import { Box, Grid, Alert, IconButton, Tooltip, Typography } from '@/components/ui';
-import { Refresh, TrendingUp, Group, Security, Schedule, Schema, HealthAndSafety, VpnKey, Cloud, Apps } from '@mui/icons-material';
+import { Grid, IconButton, Tooltip, Typography, Box } from '@/components/ui';
+import { Refresh, Group, Security, Schedule, Schema, HealthAndSafety, VpnKey, Cloud, Apps } from '@mui/icons-material';
 import { ProtectedPage, PageHeader } from '@/components/layout';
+import { StatCard, LoadingState, ErrorState } from '@/components';
 import { UserRole } from '@/features/auth';
 import { useAnalytics } from '@/features/analytics/hooks';
-import { Spinner } from '@/components/ui/Spinner';
-import { MetricCard } from '@/components/ui/MetricCard';
 import { ChartCard } from '@/components/ui/ChartCard';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { LineChart } from '@mui/x-charts/LineChart';
@@ -49,9 +48,7 @@ export default function Dashboard() {
   if (isLoading) {
     return (
       <ProtectedPage requiredRole={UserRole.VIEWER}>
-        <Box display="flex" justifyContent="center" alignItems="center" height="400px">
-          <Spinner variant="ring" size="large" />
-        </Box>
+        <LoadingState variant="page" message="Loading analytics data..." />
       </ProtectedPage>
     );
   }
@@ -60,9 +57,14 @@ export default function Dashboard() {
     return (
       <ProtectedPage requiredRole={UserRole.VIEWER}>
         <Box sx={{ p: 3 }}>
-          <Alert severity="error">
-            Failed to load analytics data. Please try refreshing the page.
-          </Alert>
+          <ErrorState
+            variant="inline"
+            message="Failed to load analytics data. Please try refreshing the page."
+            action={{
+              label: 'Retry',
+              onClick: refetchAll,
+            }}
+          />
         </Box>
       </ProtectedPage>
     );
@@ -86,37 +88,37 @@ export default function Dashboard() {
           {/* Key Metrics Cards */}
           <Grid container spacing={3} sx={{ mb: 4 }}>
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <MetricCard
+              <StatCard
                 title="Total Users"
                 value={formatNumber(identity.data?.totalIdentities || 0)}
                 subtitle={`+${identity.data?.newIdentitiesLast30Days || 0} in last 30 days`}
                 icon={Group}
-                color="#667eea"
+                iconColor="#667eea"
               />
             </Grid>
 
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <MetricCard
+              <StatCard
                 title="Active Sessions"
                 value={formatNumber(session.data?.activeSessions || 0)}
                 subtitle={`${session.data?.sessionsLast7Days || 0} in last 7 days`}
                 icon={Security}
-                color="#764ba2"
+                iconColor="#764ba2"
               />
             </Grid>
 
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <MetricCard
+              <StatCard
                 title="Avg Session"
                 value={formatDuration(session.data?.averageSessionDuration || 0)}
                 subtitle="Average duration"
                 icon={Schedule}
-                color="#00b894"
+                iconColor="#00b894"
               />
             </Grid>
 
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <MetricCard
+              <StatCard
                 title="Verification Rate"
                 value={`${
                   identity.data
@@ -128,59 +130,59 @@ export default function Dashboard() {
                     : 0
                 }%`}
                 subtitle="Email verified users"
-                icon={TrendingUp}
-                color="#e17055"
+                icon={Schema}
+                iconColor="#e17055"
               />
             </Grid>
 
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <MetricCard
+              <StatCard
                 title="Identity Schemas"
                 value={formatNumber(system.data?.totalSchemas || 0)}
                 subtitle="Total schemas configured"
                 icon={Schema}
-                color="#0984e3"
+                iconColor="#0984e3"
               />
             </Grid>
 
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <MetricCard
+              <StatCard
                 title="Kratos Health"
                 value={system.data?.systemHealth === 'healthy' ? '✓' : system.data?.systemHealth || '?'}
                 subtitle={system.data?.systemHealth || 'Unknown'}
                 icon={HealthAndSafety}
-                color="#00b894"
+                iconColor="#00b894"
               />
             </Grid>
 
             {/* Hydra Metrics */}
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <MetricCard
+              <StatCard
                 title="OAuth2 Clients"
                 value={formatNumber(hydra.data?.totalClients || 0)}
                 subtitle={`${hydra.data?.publicClients || 0} public, ${hydra.data?.confidentialClients || 0} confidential`}
                 icon={Apps}
-                color="#fdcb6e"
+                iconColor="#fdcb6e"
               />
             </Grid>
 
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <MetricCard
+              <StatCard
                 title="Grant Types"
                 value={hydra.data?.clientsByGrantType.length || 0}
                 subtitle="Different grant types in use"
                 icon={VpnKey}
-                color="#a29bfe"
+                iconColor="#a29bfe"
               />
             </Grid>
 
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <MetricCard
+              <StatCard
                 title="Hydra Health"
                 value={hydra.data?.systemHealth === 'healthy' ? '✓' : hydra.data?.systemHealth === 'error' ? '✗' : '?'}
                 subtitle={hydra.data?.systemHealth || 'Unknown'}
                 icon={Cloud}
-                color="#74b9ff"
+                iconColor="#74b9ff"
               />
             </Grid>
           </Grid>

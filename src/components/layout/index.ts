@@ -6,3 +6,4 @@ export { SectionCard, type SectionCardProps } from './SectionCard';
 export { ProtectedPage, type ProtectedPageProps } from './ProtectedPage';
 export { FlexBox, type FlexBoxProps } from './FlexBox';
 export { Section, type SectionProps } from './Section';
+export { ActionBar, type ActionBarProps } from './ActionBar';

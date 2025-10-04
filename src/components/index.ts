@@ -1,7 +1,17 @@
-// Layout components
-export { default as AdminLayout } from './layout/AdminLayout';
-export { default as Footer } from './layout/Footer';
+// UI Components (Base)
+export * from './ui';
 
-// Navigation components
-export { default as Header } from './navigation/Header';
-export { default as Sidebar } from './navigation/Sidebar';
+// Layout Components
+export * from './layout';
+
+// Navigation Components
+export * from './navigation';
+
+// Display Components
+export * from './display';
+
+// Feedback Components
+export * from './feedback';
+
+// Form Components
+export * from './forms';

@@ -1,8 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Box, Grid } from '@/components/ui';
-import { Alert, Button, Card, CardContent, Chip, Dialog, DialogActions, DialogContent, IconButton, Menu, MenuItem, TextField, Typography } from '@/components/ui';
+import { Box, Grid, Card, Chip, Dialog, DialogActions, DialogContent, IconButton, Menu, MenuItem, Typography } from '@/components/ui';
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import {
   Add as AddIcon,
@@ -11,19 +10,18 @@ import {
   Delete as DeleteIcon,
   Visibility as ViewIcon,
   Apps as AppsIcon,
-} from '@mui/icons-material';
-import { useRouter } from 'next/navigation';
-import { ProtectedPage, PageHeader, SectionCard } from '@/components/layout';
-import { useAllOAuth2Clients, useDeleteOAuth2Client } from '@/features/oauth2-clients';
-import { transformOAuth2ClientForTable, formatClientId, getClientType } from '@/features/oauth2-clients';
-import { OAuth2Client } from '@/services/hydra';
-import { MetricCard } from '@/components/ui/MetricCard';
-import {
   Group,
   Public as PublicIcon,
   Lock as LockIcon,
   VpnKey as VpnKeyIcon
 } from '@mui/icons-material';
+import { useRouter } from 'next/navigation';
+import { ProtectedPage, PageHeader, SectionCard, ActionBar } from '@/components/layout';
+import { StatCard, ErrorState } from '@/components';
+import { SearchBar } from '@/components/forms';
+import { useAllOAuth2Clients, useDeleteOAuth2Client } from '@/features/oauth2-clients';
+import { transformOAuth2ClientForTable, formatClientId, getClientType } from '@/features/oauth2-clients';
+import { OAuth2Client } from '@/services/hydra';
 
 export default function OAuth2ClientsPage() {
   const router = useRouter();
@@ -205,69 +203,69 @@ export default function OAuth2ClientsPage() {
           subtitle="Manage OAuth2 client applications and their configurations"
           icon={<AppsIcon sx={{ fontSize: 32, color: 'white' }} />}
           actions={
-            <Button
-              variant="primary"
-              startIcon={<AddIcon />}
-              onClick={() => router.push('/oauth2-clients/create')}
-            >
-              Create Client
-            </Button>
+            <ActionBar
+              primaryAction={{
+                label: 'Create Client',
+                icon: <AddIcon />,
+                onClick: () => router.push('/oauth2-clients/create'),
+              }}
+            />
           }
         />
 
       {/* Stats Cards */}
       <Grid container spacing={3} sx={{ mb: 3 }}>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <MetricCard
+          <StatCard
             title="Total Clients"
             value={clientsData?.totalCount || 0}
             icon={Group}
-            color="#667eea"
+            iconColor="#667eea"
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <MetricCard
+          <StatCard
             title="Public Clients"
             value={clients.filter(c => !c.client_secret).length}
             icon={PublicIcon}
-            color="#74b9ff"
+            iconColor="#74b9ff"
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <MetricCard
+          <StatCard
             title="Confidential Clients"
             value={clients.filter(c => !!c.client_secret).length}
             icon={LockIcon}
-            color="#a29bfe"
+            iconColor="#a29bfe"
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <MetricCard
+          <StatCard
             title="Auth Code Flow"
             value={clients.filter(c => c.grant_types?.includes('authorization_code')).length}
             icon={VpnKeyIcon}
-            color="#00b894"
+            iconColor="#00b894"
           />
         </Grid>
       </Grid>
 
       {/* Search */}
       <SectionCard sx={{ mb: 3 }}>
-        <TextField
-          variant="search"
-          fullWidth
-          placeholder="Search clients by name, ID, or owner..."
+        <SearchBar
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          onClear={() => setSearchTerm('')}
+          onChange={setSearchTerm}
+          placeholder="Search clients by name, ID, or owner..."
         />
       </SectionCard>
 
       {/* Error Display */}
       {error && (
-        <Alert variant="inline" severity="error" sx={{ mb: 3 }}>
-          Failed to load OAuth2 clients: {error.message}
-        </Alert>
+        <Box sx={{ mb: 3 }}>
+          <ErrorState
+            variant="inline"
+            message={`Failed to load OAuth2 clients: ${error.message}`}
+          />
+        </Box>
       )}
 
       {/* Data Grid */}
@@ -336,14 +334,22 @@ export default function OAuth2ClientsPage() {
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDeleteCancel} variant="outlined">Cancel</Button>
-          <Button
-            onClick={handleDeleteConfirm}
-            variant="danger"
-            disabled={deleteClientMutation.isPending}
-          >
-            {deleteClientMutation.isPending ? 'Deleting...' : 'Delete'}
-          </Button>
+          <ActionBar
+            align="right"
+            primaryAction={{
+              label: 'Delete',
+              onClick: handleDeleteConfirm,
+              loading: deleteClientMutation.isPending,
+              disabled: deleteClientMutation.isPending,
+            }}
+            secondaryActions={[
+              {
+                label: 'Cancel',
+                onClick: handleDeleteCancel,
+                variant: 'outlined',
+              },
+            ]}
+          />
         </DialogActions>
       </Dialog>
       </Box>
