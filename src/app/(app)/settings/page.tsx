@@ -18,7 +18,7 @@ import {
   Snackbar,
   Switch,
 } from '@/components/ui';
-import { Alert, Button, IconButton, TextField, Tooltip, Typography } from '@/components/ui';
+import { ActionBar, Alert, Button, IconButton, TextField, Tooltip, Typography } from '@/components/ui';
 import {
   Settings as SettingsIcon,
   RestartAlt as ResetIcon,
@@ -273,20 +273,22 @@ export default function SettingsPage() {
           </Grid>
         </Grid>
 
-        <Box sx={{ display: 'flex', gap: 2, mt: 4, justifyContent: 'flex-end' }}>
-          <Button onClick={handleKratosReset} variant="outlined">
-            <ResetIcon style={{ marginRight: '0.5rem' }} />
-            Reset to Defaults
-          </Button>
-          <Button
-            type="submit"
-            variant="primary"
-            disabled={!kratosIsDirty}
-          >
-            <SaveIcon style={{ marginRight: '0.5rem' }} />
-            Save Changes
-          </Button>
-        </Box>
+        <ActionBar
+          primaryAction={{
+            label: 'Save Changes',
+            onClick: handleKratosSubmit(handleKratosSave),
+            icon: <SaveIcon />,
+            disabled: !kratosIsDirty,
+          }}
+          secondaryActions={[
+            {
+              label: 'Reset to Defaults',
+              onClick: handleKratosReset,
+              icon: <ResetIcon />,
+              variant: 'outlined',
+            },
+          ]}
+        />
       </Box>
     </Paper>
   );
@@ -371,20 +373,22 @@ export default function SettingsPage() {
           </Grid>
         </Grid>
 
-        <Box sx={{ display: 'flex', gap: 2, mt: 4, justifyContent: 'flex-end' }}>
-          <Button onClick={handleHydraReset} variant="outlined">
-            <ResetIcon style={{ marginRight: '0.5rem' }} />
-            Reset to Defaults
-          </Button>
-          <Button
-            type="submit"
-            variant="primary"
-            disabled={!hydraIsDirty}
-          >
-            <SaveIcon style={{ marginRight: '0.5rem' }} />
-            Save Changes
-          </Button>
-        </Box>
+        <ActionBar
+          primaryAction={{
+            label: 'Save Changes',
+            onClick: handleHydraSubmit(handleHydraSave),
+            icon: <SaveIcon />,
+            disabled: !hydraIsDirty,
+          }}
+          secondaryActions={[
+            {
+              label: 'Reset to Defaults',
+              onClick: handleHydraReset,
+              icon: <ResetIcon />,
+              variant: 'outlined',
+            },
+          ]}
+        />
       </Box>
     </Paper>
   );

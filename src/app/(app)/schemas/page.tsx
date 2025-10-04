@@ -13,7 +13,7 @@ import {
 } from '@/components/ui';
 import { TablePagination } from '@mui/material';
 import { Code, Description, Refresh, MoreVert, Close } from '@mui/icons-material';
-import { Button, Card, CardContent, Chip, Dialog, DialogActions, DialogContent, DialogTitle, ErrorDisplay, IconButton, Spinner, TextField, Tooltip, Typography } from '@/components/ui';
+import { Button, Card, CardContent, Chip, Dialog, DialogActions, DialogContent, DialogTitle, EmptyState, ErrorState, IconButton, LoadingState, SearchBar, Tooltip, Typography } from '@/components/ui';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { getIdentitySchema } from '@/services/kratos';
 import { useSchemas } from '@/features/schemas/hooks';
@@ -196,27 +196,21 @@ export default function SchemasPage() {
                 <Typography variant="heading" size="lg">
                   All Schemas
                 </Typography>
-                <TextField
-                  variant="search"
-                  placeholder="Search schemas..."
-                  size="small"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onClear={() => setSearchQuery('')}
-                  sx={{ width: { xs: '100%', sm: '300px' } }}
-                />
+                <Box sx={{ width: { xs: '100%', sm: '300px' } }}>
+                  <SearchBar
+                    value={searchQuery}
+                    onChange={setSearchQuery}
+                    placeholder="Search schemas..."
+                  />
+                </Box>
               </Box>
 
               {isLoading ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
-                  <Spinner variant="page" />
-                </Box>
+                <LoadingState variant="section" message="Loading schemas..." />
               ) : error ? (
-                <ErrorDisplay
-                  variant="card"
-                  title="Failed to Load Schemas"
+                <ErrorState
                   message="Unable to fetch identity schemas. Please check your connection and try again."
-                  onRetry={refetch}
+                  action={{ label: 'Retry', onClick: refetch }}
                 />
               ) : (
                 <>
@@ -243,40 +237,11 @@ export default function SchemasPage() {
                         {filteredSchemas.length === 0 ? (
                           <TableRow>
                             <TableCell colSpan={5} align="center" sx={{ py: 4 }}>
-                              <Box
-                                sx={{
-                                  display: 'flex',
-                                  flexDirection: 'column',
-                                  alignItems: 'center',
-                                  gap: 1,
-                                }}
-                              >
-                                <Description
-                                  sx={{
-                                    fontSize: 40,
-                                    color: 'var(--muted-foreground)',
-                                    opacity: 0.5,
-                                  }}
-                                />
-                                <Typography variant="heading" size="lg">No schemas found</Typography>
-                                <Typography variant="subheading">
-                                  {searchQuery ? 'Try a different search term' : 'No schemas are currently configured'}
-                                </Typography>
-                              </Box>
-                              {schemasResponse && (
-                                <Box sx={{ mt: 2 }}>
-                                  <Typography variant="caption">Debug: Raw Response</Typography>
-                                  <pre
-                                    style={{
-                                      fontSize: '0.7rem',
-                                      maxHeight: '100px',
-                                      overflow: 'auto',
-                                    }}
-                                  >
-                                    {JSON.stringify(schemasResponse, null, 2)}
-                                  </pre>
-                                </Box>
-                              )}
+                              <EmptyState
+                                icon={Description}
+                                title="No schemas found"
+                                description={searchQuery ? 'Try a different search term' : 'No schemas are currently configured'}
+                              />
                             </TableCell>
                           </TableRow>
                         ) : (
@@ -385,9 +350,7 @@ export default function SchemasPage() {
           >
             <DialogContent dividers sx={{ p: 0 }}>
               {schemaLoading ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
-                  <Spinner variant="page" />
-                </Box>
+                <LoadingState variant="section" message="Loading schema details..." />
               ) : schemaContent ? (
                 <Box
                   sx={{

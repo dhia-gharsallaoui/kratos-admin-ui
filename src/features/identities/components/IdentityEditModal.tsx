@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Identity } from '@ory/kratos-client';
-import { Alert, Box, Button, Chip, Dialog, DialogActions, DialogContent, DottedLoader, Grid, TextField, Typography } from '@/components/ui';
+import { ActionBar, Alert, Box, Button, Chip, Dialog, DialogActions, DialogContent, DottedLoader, Grid, TextField, Typography } from '@/components/ui';
 import { useUpdateIdentity } from '../hooks/useIdentities';
 import { formatDate } from '@/lib/date-utils';
 import { uiLogger } from '@/lib/logger';
@@ -249,17 +249,22 @@ export const IdentityEditModal: React.FC<IdentityEditModalProps> = ({ open, onCl
       </DialogContent>
 
       <DialogActions sx={{ p: 3, pt: 1 }}>
-        <Button onClick={handleClose} disabled={updateIdentityMutation.isPending} variant="outlined">
-          Cancel
-        </Button>
-        <Button
-          onClick={handleSubmit(onSubmit)}
-          variant="primary"
-          disabled={updateIdentityMutation.isPending || !isDirty}
-          startIcon={updateIdentityMutation.isPending ? <DottedLoader variant="inline" size={16} /> : undefined}
-        >
-          {updateIdentityMutation.isPending ? 'Saving...' : 'Save Changes'}
-        </Button>
+        <ActionBar
+          primaryAction={{
+            label: 'Save Changes',
+            onClick: handleSubmit(onSubmit),
+            loading: updateIdentityMutation.isPending,
+            disabled: !isDirty,
+          }}
+          secondaryActions={[
+            {
+              label: 'Cancel',
+              onClick: handleClose,
+              variant: 'outlined',
+              disabled: updateIdentityMutation.isPending,
+            },
+          ]}
+        />
       </DialogActions>
     </Dialog>
   );
