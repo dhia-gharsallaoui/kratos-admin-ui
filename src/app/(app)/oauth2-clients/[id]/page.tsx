@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, use } from 'react';
+import { use, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { Box, Divider, Grid, List, ListItem, ListItemText, Paper, Skeleton } from '@/components/ui';
 import { Alert, Button, Card, CardContent, Chip, Dialog, DialogActions, DialogContent, IconButton, Menu, MenuItem, Tooltip, Typography } from '@/components/ui';
@@ -21,6 +21,7 @@ import { LoadingState, ErrorState } from '@/components/feedback';
 import { StatusBadge } from '@/components';
 import { useOAuth2Client, useDeleteOAuth2Client } from '@/features/oauth2-clients';
 import { getClientType, getGrantTypeDisplayName, getResponseTypeDisplayName } from '@/features/oauth2-clients';
+import { useCopyToClipboard, useDialog, useFormatters } from '@/hooks';
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -30,14 +31,15 @@ export default function OAuth2ClientDetailPage({ params }: Props) {
   const resolvedParams = use(params);
   const router = useRouter();
   const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [copiedField, setCopiedField] = useState<string | null>(null);
+  const { copy, copiedField } = useCopyToClipboard();
+  const { isOpen: deleteDialogOpen, open: openDeleteDialog, close: closeDeleteDialog } = useDialog();
+  const { formatDateTime } = useFormatters();
 
   const { data: clientResponse, isLoading, error } = useOAuth2Client(resolvedParams.id);
   const deleteClientMutation = useDeleteOAuth2Client();
 
   const client = clientResponse?.data;
-  const clientType = client ? getClientType(client) : null;
+  const clientType = useMemo(() => client ? getClientType(client) : null, [client]);
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
     setMenuAnchor(event.currentTarget);
@@ -53,7 +55,7 @@ export default function OAuth2ClientDetailPage({ params }: Props) {
   };
 
   const handleDeleteClick = () => {
-    setDeleteDialogOpen(true);
+    openDeleteDialog();
     handleMenuClose();
   };
 
@@ -66,23 +68,13 @@ export default function OAuth2ClientDetailPage({ params }: Props) {
     }
   };
 
-  const handleDeleteCancel = () => {
-    setDeleteDialogOpen(false);
-  };
-
   const copyToClipboard = async (text: string, fieldName: string) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopiedField(fieldName);
-      setTimeout(() => setCopiedField(null), 2000);
-    } catch (error) {
-      console.error('Failed to copy:', error);
-    }
+    await copy(text, fieldName);
   };
 
   const formatTimestamp = (timestamp?: string) => {
     if (!timestamp) return 'Unknown';
-    return new Date(timestamp).toLocaleString();
+    return formatDateTime(timestamp);
   };
 
   if (error) {
@@ -484,7 +476,7 @@ export default function OAuth2ClientDetailPage({ params }: Props) {
       {/* Delete Confirmation Dialog */}
       <Dialog
         open={deleteDialogOpen}
-        onClose={handleDeleteCancel}
+        onClose={closeDeleteDialog}
         title="Delete OAuth2 Client"
       >
         <DialogContent>
@@ -504,7 +496,7 @@ export default function OAuth2ClientDetailPage({ params }: Props) {
             secondaryActions={[
               {
                 label: 'Cancel',
-                onClick: handleDeleteCancel
+                onClick: closeDeleteDialog
               }
             ]}
           />

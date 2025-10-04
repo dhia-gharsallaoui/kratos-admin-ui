@@ -1,6 +1,7 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { Box, Divider } from '@/components/ui';
 import { ArrowBack, Edit, Delete, Refresh, Link as LinkIcon, DeleteSweep, Person } from '@mui/icons-material';
 import { Alert, Button, Card, CardContent, Chip, Dialog, DialogActions, DottedLoader, Grid, IconButton, Tooltip, Typography } from '@/components/ui';
@@ -16,22 +17,23 @@ import { IdentityRecoveryDialog } from '@/features/identities/components/Identit
 import { SessionsTable } from '@/features/sessions/components/SessionsTable';
 import { SessionDetailDialog } from '@/features/sessions/components/SessionDetailDialog';
 import { useIdentitySessions, useDeleteIdentitySessions } from '@/features/sessions/hooks';
-import { useState } from 'react';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { github, vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { useTheme } from '@mui/material/styles';
 import { formatDate } from '@/lib/date-utils';
+import { useDialog } from '@/hooks';
 
 export default function IdentityDetailPage() {
   const theme = useTheme();
   const params = useParams();
   const router = useRouter();
   const identityId = params.id as string;
-  const [editModalOpen, setEditModalOpen] = useState(false);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [recoveryDialogOpen, setRecoveryDialogOpen] = useState(false);
-  const [deleteSessionsDialogOpen, setDeleteSessionsDialogOpen] = useState(false);
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
+
+  const { isOpen: editModalOpen, open: openEditModal, close: closeEditModal } = useDialog();
+  const { isOpen: deleteDialogOpen, open: openDeleteDialog, close: closeDeleteDialog } = useDialog();
+  const { isOpen: recoveryDialogOpen, open: openRecoveryDialog, close: closeRecoveryDialog } = useDialog();
+  const { isOpen: deleteSessionsDialogOpen, open: openDeleteSessionsDialog, close: closeDeleteSessionsDialog } = useDialog();
 
   const { data: identity, isLoading, isError, error: _, refetch } = useIdentity(identityId);
 
@@ -44,7 +46,7 @@ export default function IdentityDetailPage() {
   };
 
   const handleEdit = () => {
-    setEditModalOpen(true);
+    openEditModal();
   };
 
   const handleEditSuccess = () => {
@@ -52,7 +54,7 @@ export default function IdentityDetailPage() {
   };
 
   const handleDelete = () => {
-    setDeleteDialogOpen(true);
+    openDeleteDialog();
   };
 
   const handleDeleteSuccess = () => {
@@ -61,17 +63,17 @@ export default function IdentityDetailPage() {
   };
 
   const handleRecover = () => {
-    setRecoveryDialogOpen(true);
+    openRecoveryDialog();
   };
 
   const handleDeleteAllSessions = () => {
-    setDeleteSessionsDialogOpen(true);
+    openDeleteSessionsDialog();
   };
 
   const handleDeleteAllSessionsConfirm = () => {
     deleteSessionsMutation.mutate(identityId, {
       onSuccess: () => {
-        setDeleteSessionsDialogOpen(false);
+        closeDeleteSessionsDialog();
       },
     });
   };
@@ -114,7 +116,7 @@ export default function IdentityDetailPage() {
     );
   }
 
-  const traits = identity.traits as any;
+  const traits = identity.traits as Record<string, unknown>;
 
   return (
     <ProtectedPage requiredRole={UserRole.ADMIN}>
@@ -410,15 +412,15 @@ export default function IdentityDetailPage() {
           </Grid>
 
           {/* Edit Modal */}
-          <IdentityEditModal open={editModalOpen} onClose={() => setEditModalOpen(false)} identity={identity} onSuccess={handleEditSuccess} />
+          <IdentityEditModal open={editModalOpen} onClose={closeEditModal} identity={identity} onSuccess={handleEditSuccess} />
 
           {/* Recovery Dialog */}
-          <IdentityRecoveryDialog open={recoveryDialogOpen} onClose={() => setRecoveryDialogOpen(false)} identity={identity} />
+          <IdentityRecoveryDialog open={recoveryDialogOpen} onClose={closeRecoveryDialog} identity={identity} />
 
           {/* Delete Dialog */}
           <IdentityDeleteDialog
             open={deleteDialogOpen}
-            onClose={() => setDeleteDialogOpen(false)}
+            onClose={closeDeleteDialog}
             identity={identity}
             onSuccess={handleDeleteSuccess}
           />
@@ -426,7 +428,7 @@ export default function IdentityDetailPage() {
           {/* Delete All Sessions Dialog */}
           <Dialog
             open={deleteSessionsDialogOpen}
-            onClose={() => setDeleteSessionsDialogOpen(false)}
+            onClose={closeDeleteSessionsDialog}
             title="Delete All Sessions"
             maxWidth="sm"
           >
@@ -450,7 +452,7 @@ export default function IdentityDetailPage() {
                 secondaryActions={[
                   {
                     label: 'Cancel',
-                    onClick: () => setDeleteSessionsDialogOpen(false)
+                    onClick: closeDeleteSessionsDialog
                   }
                 ]}
               />

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Box, Grid, Card, Chip, Dialog, DialogActions, DialogContent, IconButton, Menu, MenuItem, Typography } from '@/components/ui';
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import {
@@ -22,28 +22,34 @@ import { SearchBar } from '@/components/forms';
 import { useAllOAuth2Clients, useDeleteOAuth2Client } from '@/features/oauth2-clients';
 import { transformOAuth2ClientForTable, formatClientId, getClientType } from '@/features/oauth2-clients';
 import { OAuth2Client } from '@/services/hydra';
+import { useDialog } from '@/hooks';
 
 export default function OAuth2ClientsPage() {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedClient, setSelectedClient] = useState<string | null>(null);
   const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [clientToDelete, setClientToDelete] = useState<string | null>(null);
+  const { isOpen: deleteDialogOpen, open: openDeleteDialog, close: closeDeleteDialog } = useDialog();
 
   // Hooks
   const { data: clientsData, isLoading, error } = useAllOAuth2Clients();
   const deleteClientMutation = useDeleteOAuth2Client();
 
   // Transform data for display
-  const clients = clientsData?.clients || [];
-  const tableRows = clients.map(transformOAuth2ClientForTable);
+  const clients = useMemo(() => clientsData?.clients || [], [clientsData]);
+  const tableRows = useMemo(() => clients.map(transformOAuth2ClientForTable), [clients]);
 
   // Filter clients based on search
-  const filteredRows = tableRows.filter(row =>
-    row.displayName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    row.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    row.owner?.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredRows = useMemo(
+    () =>
+      tableRows.filter(
+        (row) =>
+          row.displayName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          row.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          row.owner?.toLowerCase().includes(searchTerm.toLowerCase())
+      ),
+    [tableRows, searchTerm]
   );
 
   // Handle menu actions
@@ -70,7 +76,7 @@ export default function OAuth2ClientsPage() {
 
   const handleDeleteClick = (clientId: string) => {
     setClientToDelete(clientId);
-    setDeleteDialogOpen(true);
+    openDeleteDialog();
     handleMenuClose();
   };
 
@@ -79,7 +85,7 @@ export default function OAuth2ClientsPage() {
 
     try {
       await deleteClientMutation.mutateAsync(clientToDelete);
-      setDeleteDialogOpen(false);
+      closeDeleteDialog();
       setClientToDelete(null);
     } catch (error) {
       console.error('Failed to delete client:', error);
@@ -87,7 +93,7 @@ export default function OAuth2ClientsPage() {
   };
 
   const handleDeleteCancel = () => {
-    setDeleteDialogOpen(false);
+    closeDeleteDialog();
     setClientToDelete(null);
   };
 
