@@ -8,13 +8,14 @@ import {
   LogoutOutlined,
   MailOutlined,
   Apps,
-  VpnKey,
-  Token,
+  ChevronLeft,
 } from '@mui/icons-material';
-import { Divider, Drawer } from '@/components/ui';
+import { Divider, Drawer, Toolbar, IconButton } from '@/components/ui';
 import { useLogout, useUser } from '@/features/auth';
 import { UserRole } from '@/features/auth';
 import { Box, Typography, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@/components/ui';
+import { useTheme } from '@/providers/ThemeProvider';
+import { gradientColors, gradients, alpha } from '@/theme';
 
 interface NavItem {
   title: string;
@@ -63,12 +64,13 @@ const hydraNavItems: NavItem[] = [
     icon: <Apps />,
     // requiredRole: UserRole.ADMIN, // Temporarily removed for testing
   },
-  {
-    title: 'OAuth2 Tokens',
-    path: '/oauth2-tokens',
-    icon: <Token />,
-    // requiredRole: UserRole.ADMIN, // Temporarily removed for testing
-  },
+  // OAuth2 Tokens - Disabled for now, will be implemented later
+  // {
+  //   title: 'OAuth2 Tokens',
+  //   path: '/oauth2-tokens',
+  //   icon: <Token />,
+  //   // requiredRole: UserRole.ADMIN,
+  // },
 ];
 
 interface SidebarProps {
@@ -80,6 +82,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
   const pathname = usePathname();
   const logout = useLogout();
   const user = useUser();
+  const { theme: currentTheme } = useTheme();
 
   const isActive = (path: string) => {
     return pathname === path || pathname?.startsWith(`${path}/`);
@@ -101,127 +104,137 @@ export function Sidebar({ open, onClose }: SidebarProps) {
 
   return (
     <Drawer
-      variant="permanent"
-      open={true}
+      variant="persistent"
+      open={open}
+      onClose={onClose}
       sx={{
-        width: 280,
+        width: open ? 280 : 0,
         flexShrink: 0,
         '& .MuiDrawer-paper': {
           width: 280,
           boxSizing: 'border-box',
-          border: 'none',
-          backgroundColor: '#f9fafc',
-          borderRight: '1px solid #e6e8f0',
+          transition: 'transform 0.3s ease, background 0.3s ease',
+          background:
+            currentTheme === 'dark' ? 'linear-gradient(180deg, #1e1e1e 0%, #1a1a1a 100%)' : 'linear-gradient(180deg, #ffffff 0%, #f8f9ff 100%)',
+          borderRight: `1px solid ${currentTheme === 'dark' ? alpha.primary[20] : alpha.primary[10]}`,
+          overflowX: 'hidden',
         },
       }}
     >
-      <Box sx={{ px: 2, py: 3 }}>
-        <Typography variant="heading" size="xl" sx={{ fontWeight: 'bold', ml: 1 }}>
+      <Toolbar
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          px: 2,
+          background: currentTheme === 'dark' ? gradients.subtle : gradients.subtle,
+        }}
+      >
+        <Typography
+          variant="heading"
+          size="lg"
+          sx={{
+            fontWeight: 800,
+            background: gradients.text,
+            backgroundClip: 'text',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}
+        >
           Ory Admin
         </Typography>
-      </Box>
-      <Divider />
-      <Box sx={{ flexGrow: 1, py: 2 }}>
-        {/* Kratos Section */}
-        <Box sx={{ mb: 2 }}>
-          <Typography
-            variant="label"
-            sx={{ px: 2, color: 'text.secondary', fontWeight: 'bold', textTransform: 'uppercase', fontSize: '0.75rem', display: 'block' }}
-          >
-            Kratos (Identity)
-          </Typography>
-          <List>
-            {filteredMainNavItems.map((item) => (
-              <ListItem key={item.title} disablePadding>
-                <ListItemButton
-                  component={Link}
-                  href={item.path}
-                  selected={isActive(item.path)}
-                  sx={{
-                    py: 1.5,
-                    borderRadius: 1,
-                    mx: 1,
-                    '&.Mui-selected': {
-                      backgroundColor: 'primary.50',
-                      color: 'primary.main',
-                      '&:hover': {
-                        backgroundColor: 'primary.100',
-                      },
-                      '& .MuiListItemIcon-root': {
-                        color: 'primary.main',
-                      },
+        <IconButton
+          variant="action"
+          onClick={onClose}
+          sx={{
+            background: alpha.primary[10],
+            '&:hover': {
+              background: alpha.primary[20],
+            },
+          }}
+        >
+          <ChevronLeft />
+        </IconButton>
+      </Toolbar>
+      <Divider sx={{ borderColor: currentTheme === 'dark' ? alpha.primary[30] : alpha.primary[10] }} />
+      <List sx={{ px: 1.5, py: 2 }}>
+        {[...filteredMainNavItems, ...filteredHydraNavItems].map((item) => {
+          const active = isActive(item.path);
+          return (
+            <ListItem key={item.title} disablePadding sx={{ mb: 0.5 }}>
+              <ListItemButton
+                component={Link}
+                href={item.path}
+                selected={active}
+                sx={{
+                  borderRadius: 2,
+                  py: 1.5,
+                  transition: 'all 0.3s ease',
+                  '&.Mui-selected': {
+                    background: gradients.normal,
+                    color: 'white',
+                    boxShadow: `0 4px 15px ${alpha.primary[30]}`,
+                    '&:hover': {
+                      background: gradients.reversed,
                     },
+                    '& .MuiListItemIcon-root': {
+                      color: 'white',
+                    },
+                  },
+                  '&:hover': {
+                    background: active ? gradients.reversed : currentTheme === 'dark' ? alpha.primary[20] : alpha.primary[10],
+                    transform: 'translateX(4px)',
+                  },
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 40,
+                    color: active ? 'white' : gradientColors.primary,
+                    transition: 'all 0.3s ease',
                   }}
                 >
-                  <ListItemIcon>{item.icon}</ListItemIcon>
-                  <ListItemText primary={item.title} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-        </Box>
-
-        {/* Hydra Section */}
-        {filteredHydraNavItems.length > 0 && (
-          <Box sx={{ mb: 2 }}>
-            <Typography
-              variant="label"
-              sx={{ px: 2, color: 'text.secondary', fontWeight: 'bold', textTransform: 'uppercase', fontSize: '0.75rem', display: 'block' }}
-            >
-              Hydra (OAuth2)
-            </Typography>
-            <List>
-              {filteredHydraNavItems.map((item) => (
-                <ListItem key={item.title} disablePadding>
-                  <ListItemButton
-                    component={Link}
-                    href={item.path}
-                    selected={isActive(item.path)}
-                    sx={{
-                      py: 1.5,
-                      borderRadius: 1,
-                      mx: 1,
-                      '&.Mui-selected': {
-                        backgroundColor: 'primary.50',
-                        color: 'primary.main',
-                        '&:hover': {
-                          backgroundColor: 'primary.100',
-                        },
-                        '& .MuiListItemIcon-root': {
-                          color: 'primary.main',
-                        },
-                      },
-                    }}
-                  >
-                    <ListItemIcon>{item.icon}</ListItemIcon>
-                    <ListItemText primary={item.title} />
-                  </ListItemButton>
-                </ListItem>
-              ))}
-            </List>
-          </Box>
-        )}
-      </Box>
-      <Box sx={{ mb: 2 }}>
-        <List>
-          <ListItem disablePadding>
-            <ListItemButton
-              onClick={logout}
-              sx={{
-                py: 1.5,
-                borderRadius: 1,
-                mx: 1,
-                color: 'grey.700',
+                  {item.icon}
+                </ListItemIcon>
+                <ListItemText
+                  primary={item.title}
+                  primaryTypographyProps={{
+                    fontWeight: active ? 600 : 500,
+                  }}
+                />
+              </ListItemButton>
+            </ListItem>
+          );
+        })}
+      </List>
+      <Box sx={{ flexGrow: 1 }} />
+      <Divider sx={{ borderColor: currentTheme === 'dark' ? alpha.primary[30] : alpha.primary[10] }} />
+      <List sx={{ px: 1.5, py: 2 }}>
+        <ListItem disablePadding>
+          <ListItemButton
+            onClick={logout}
+            sx={{
+              borderRadius: 2,
+              py: 1.5,
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                background: 'linear-gradient(135deg, rgba(245, 87, 108, 0.1) 0%, rgba(240, 147, 251, 0.1) 100%)',
+                transform: 'translateX(4px)',
+              },
+            }}
+          >
+            <ListItemIcon sx={{ minWidth: 40, color: '#f5576c' }}>
+              <LogoutOutlined />
+            </ListItemIcon>
+            <ListItemText
+              primary="Logout"
+              primaryTypographyProps={{
+                fontWeight: 500,
               }}
-            >
-              <ListItemIcon>
-                <LogoutOutlined />
-              </ListItemIcon>
-              <ListItemText primary="Logout" />
-            </ListItemButton>
-          </ListItem>
-        </List>
-      </Box>
+            />
+          </ListItemButton>
+        </ListItem>
+      </List>
     </Drawer>
   );
 }
