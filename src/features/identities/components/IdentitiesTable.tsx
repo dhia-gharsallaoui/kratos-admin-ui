@@ -245,15 +245,6 @@ const IdentitiesTable: React.FC = React.memo(() => {
 
   return (
     <Box>
-      <Box mb={3}>
-        <Typography variant="heading" size="3xl" gutterBottom>
-          Identities
-        </Typography>
-        <Typography variant="subheading">
-          Manage user identities in your Kratos instance.
-        </Typography>
-      </Box>
-
       <DataTable
         data={displayedIdentities}
         columns={columns}
