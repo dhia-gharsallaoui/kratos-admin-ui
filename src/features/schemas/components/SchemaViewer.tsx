@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Box, Card, CardContent, Chip, Skeleton, Typography } from '@/components/ui';
+import { Box, Card, CardContent, Chip, LoadingState, Typography } from '@/components/ui';
 import { IdentitySchemaContainer } from '@ory/kratos-client';
 import { formatSchemaForDisplay, extractSchemaFields } from '../utils';
 
@@ -14,11 +14,7 @@ const SchemaViewer: React.FC<SchemaViewerProps> = ({ schema, loading = false }) 
   if (loading) {
     return (
       <Card>
-        <CardContent>
-          <Skeleton variant="text" width="60%" height={32} />
-          <Skeleton variant="text" width="80%" height={24} sx={{ mt: 1 }} />
-          <Skeleton variant="rectangular" width="100%" height={200} sx={{ mt: 2 }} />
-        </CardContent>
+        <LoadingState variant="section" message="Loading schema details..." />
       </Card>
     );
   }

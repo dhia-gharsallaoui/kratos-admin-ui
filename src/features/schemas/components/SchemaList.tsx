@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Schema as SchemaIcon } from '@mui/icons-material';
-import { Box, Card, Chip, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Skeleton, Typography } from '@/components/ui';
+import { Box, Card, Chip, EmptyState, List, ListItem, ListItemButton, ListItemIcon, ListItemText, LoadingState, Typography } from '@/components/ui';
 import { IdentitySchemaContainer } from '@ory/kratos-client';
 import { formatSchemaForDisplay } from '../utils';
 
@@ -17,16 +17,7 @@ const SchemaList: React.FC<SchemaListProps> = ({ schemas, loading, selectedSchem
   if (loading) {
     return (
       <Card>
-        <List>
-          {Array.from({ length: 3 }).map((_, index) => (
-            <ListItem key={index}>
-              <ListItemIcon>
-                <Skeleton variant="circular" width={24} height={24} />
-              </ListItemIcon>
-              <ListItemText primary={<Skeleton width="60%" />} secondary={<Skeleton width="80%" />} />
-            </ListItem>
-          ))}
-        </List>
+        <LoadingState variant="section" message="Loading schemas..." />
       </Card>
     );
   }
@@ -34,11 +25,11 @@ const SchemaList: React.FC<SchemaListProps> = ({ schemas, loading, selectedSchem
   if (schemas.length === 0) {
     return (
       <Card>
-        <Box sx={{ p: 3, textAlign: 'center' }}>
-          <Typography variant="body" color="text.secondary">
-            No schemas found
-          </Typography>
-        </Box>
+        <EmptyState
+          icon={SchemaIcon}
+          title="No schemas found"
+          description="No identity schemas are currently configured"
+        />
       </Card>
     );
   }

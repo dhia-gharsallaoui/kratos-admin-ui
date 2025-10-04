@@ -9,7 +9,7 @@ import {
   Select,
 } from '@/components/ui';
 import { Refresh, Close, ExpandMore } from '@mui/icons-material';
-import { Button, Card, CardContent, ErrorDisplay, IconButton, Spinner, TextField, Tooltip, Typography } from '@/components/ui';
+import { Button, Card, CardContent, EmptyState, ErrorState, IconButton, LoadingState, SearchBar, Spinner, Tooltip, Typography } from '@/components/ui';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import { UserRole } from '@/features/auth';
@@ -132,15 +132,13 @@ export default function MessagesPage() {
             <CardContent>
               {/* Filters */}
               <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap' }}>
-                <TextField
-                  variant="search"
-                  placeholder="Search messages (recipient, subject, ID, template...)..."
-                  size="small"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onClear={() => setSearchQuery('')}
-                  sx={{ minWidth: '300px' }}
-                />
+                <Box sx={{ minWidth: '300px' }}>
+                  <SearchBar
+                    value={searchQuery}
+                    onChange={setSearchQuery}
+                    placeholder="Search messages (recipient, subject, ID, template...)..."
+                  />
+                </Box>
 
                 <FormControl size="small" sx={{ minWidth: '150px' }}>
                   <InputLabel>Status</InputLabel>
@@ -162,16 +160,12 @@ export default function MessagesPage() {
 
               {/* Messages Table */}
               {isError ? (
-                <ErrorDisplay
-                  variant="card"
-                  title="Failed to Load Messages"
+                <ErrorState
                   message={error?.message || 'Unable to fetch messages. Please check your connection and try again.'}
-                  onRetry={refetch}
+                  action={{ label: 'Retry', onClick: refetch }}
                 />
               ) : isLoading ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
-                  <Spinner variant="page" />
-                </Box>
+                <LoadingState variant="section" message="Loading messages..." />
               ) : (
                 <>
                   <MessagesTable

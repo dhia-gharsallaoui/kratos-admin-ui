@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
+  ActionBar,
   Alert,
   Autocomplete,
   Box,
@@ -463,7 +464,7 @@ export default function CreateOAuth2ClientPage() {
 
           {/* Submit Actions */}
           <Grid size={{ xs: 12 }}>
-            <Paper elevation={0} sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: 1, borderColor: 'divider' }}>
+            <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
               <Button variant="outlined" onClick={() => router.back()}>
                 Cancel
               </Button>
@@ -471,11 +472,10 @@ export default function CreateOAuth2ClientPage() {
                 type="submit"
                 variant="primary"
                 disabled={createClientMutation.isPending}
-                sx={{ minWidth: 120 }}
               >
                 {createClientMutation.isPending ? 'Creating...' : 'Create Client'}
               </Button>
-            </Paper>
+            </Box>
           </Grid>
         </Grid>
       </form>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Close, ContentCopy, Link as LinkIcon } from '@mui/icons-material';
-import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DottedLoader, IconButton, InputAdornment, Snackbar, TextField, Typography } from '@/components/ui';
+import { ActionBar, Alert, Box, Button, Dialog, DialogActions, DialogContent, DottedLoader, IconButton, InputAdornment, Snackbar, TextField, Typography } from '@/components/ui';
 import { Identity } from '@ory/kratos-client';
 import { createRecoveryLink } from '@/services/kratos';
 
@@ -143,14 +143,25 @@ export const IdentityRecoveryDialog: React.FC<IdentityRecoveryDialogProps> = ({ 
         </DialogContent>
 
         <DialogActions sx={{ p: 3, borderTop: '1px solid var(--border)' }}>
-          <Button onClick={handleClose} variant="outlined">
-            Close
-          </Button>
-          {!recoveryLink && (
-            <Button onClick={handleGenerateRecoveryLink} variant="primary" disabled={loading} startIcon={<LinkIcon />}>
-              {loading ? 'Generating...' : 'Generate Recovery Link'}
-            </Button>
-          )}
+          <ActionBar
+            primaryAction={
+              !recoveryLink
+                ? {
+                    label: 'Generate Recovery Link',
+                    onClick: handleGenerateRecoveryLink,
+                    icon: <LinkIcon />,
+                    loading: loading,
+                  }
+                : undefined
+            }
+            secondaryActions={[
+              {
+                label: 'Close',
+                onClick: handleClose,
+                variant: 'outlined',
+              },
+            ]}
+          />
         </DialogActions>
       </Dialog>
 
