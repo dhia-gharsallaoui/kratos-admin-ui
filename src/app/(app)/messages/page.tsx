@@ -8,9 +8,9 @@ import {
   MenuItem,
   Select,
 } from '@/components/ui';
-import { Refresh, Close, ExpandMore } from '@mui/icons-material';
+import { Refresh, Close, ExpandMore, Email } from '@mui/icons-material';
 import { Button, Card, CardContent, EmptyState, ErrorState, IconButton, LoadingState, SearchBar, Spinner, Tooltip, Typography } from '@/components/ui';
-import { AdminLayout } from '@/components/layout/AdminLayout';
+import { AdminLayout, PageHeader } from '@/components/layout';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import { UserRole } from '@/features/auth';
 import { useMessagesPaginated, useMessagesWithSearch } from '@/features/messages/hooks';
@@ -102,31 +102,18 @@ export default function MessagesPage() {
     <ProtectedRoute requiredRole={UserRole.ADMIN}>
       <AdminLayout>
         <Box sx={{ p: 3 }}>
-          {/* Header */}
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              mb: 4,
-              flexDirection: { xs: 'column', sm: 'row' },
-              gap: 2,
-            }}
-          >
-            <Box>
-              <Typography variant="heading" size="3xl">
-                Messages
-              </Typography>
-              <Typography variant="subheading">
-                Monitor email and SMS messages sent through Kratos
-              </Typography>
-            </Box>
-            <Tooltip title="Refresh">
-              <IconButton variant="action" onClick={() => refetch()}>
-                <Refresh />
-              </IconButton>
-            </Tooltip>
-          </Box>
+          <PageHeader
+            title="Messages"
+            subtitle="Monitor email and SMS messages sent through Kratos"
+            icon={<Email sx={{ fontSize: 32, color: 'white' }} />}
+            actions={
+              <Tooltip title="Refresh">
+                <IconButton variant="action" onClick={() => refetch()}>
+                  <Refresh />
+                </IconButton>
+              </Tooltip>
+            }
+          />
 
           <Card variant="bordered" sx={{ mb: 4 }}>
             <CardContent>

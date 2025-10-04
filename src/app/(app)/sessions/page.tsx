@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { Box, Card, CardContent, IconButton, Tooltip, Typography, Button } from '@/components/ui';
-import { Refresh, ExpandMore } from '@mui/icons-material';
-import { AdminLayout } from '@/components/layout/AdminLayout';
+import { Refresh, ExpandMore, Security } from '@mui/icons-material';
+import { AdminLayout, PageHeader } from '@/components/layout';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import { SearchBar, ErrorState, LoadingState } from '@/components';
 import { UserRole } from '@/features/auth';
@@ -93,31 +93,19 @@ export default function SessionsPage() {
   return (
     <ProtectedRoute requiredRole={UserRole.ADMIN}>
       <AdminLayout>
-        <Box>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              mb: 4,
-              flexDirection: { xs: 'column', sm: 'row' },
-              gap: 2,
-            }}
-          >
-            <Box>
-              <Typography variant="heading" size="3xl">
-                Active Sessions
-              </Typography>
-              <Typography variant="subheading">
-                Monitor and manage user sessions across your system
-              </Typography>
-            </Box>
-            <Tooltip title="Refresh">
-              <IconButton variant="action" onClick={() => refetch()}>
-                <Refresh />
-              </IconButton>
-            </Tooltip>
-          </Box>
+        <Box sx={{ p: 3 }}>
+          <PageHeader
+            title="Active Sessions"
+            subtitle="Monitor and manage user sessions across your system"
+            icon={<Security sx={{ fontSize: 32, color: 'white' }} />}
+            actions={
+              <Tooltip title="Refresh">
+                <IconButton variant="action" onClick={() => refetch()}>
+                  <Refresh />
+                </IconButton>
+              </Tooltip>
+            }
+          />
 
           <Card variant="bordered" sx={{ mb: 4 }}>
             <CardContent>
