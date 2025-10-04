@@ -2,7 +2,7 @@
 
 import { useMemo, useCallback } from 'react';
 import { Grid, IconButton, Tooltip, Typography, Box } from '@/components/ui';
-import { Refresh, Group, Security, Schedule, Schema, HealthAndSafety, VpnKey, Cloud, Apps } from '@mui/icons-material';
+import { Refresh, Group, Security, Schedule, Schema, HealthAndSafety, VpnKey, Cloud, Apps, Settings } from '@mui/icons-material';
 import { ProtectedPage, PageHeader } from '@/components/layout';
 import { StatCard, LoadingState, ErrorState } from '@/components';
 import { UserRole } from '@/features/auth';
@@ -13,10 +13,13 @@ import { LineChart } from '@mui/x-charts/LineChart';
 import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
 import { useFormatters } from '@/hooks';
 import { gradientColors, themeColors } from '@/theme';
+import { parseError } from '@/utils/errors';
+import { useRouter } from 'next/navigation';
 
 export default function Dashboard() {
   const { identity, session, system, hydra, isLoading, isError, refetchAll } = useAnalytics();
   const { formatNumber, formatDuration } = useFormatters();
+  const router = useRouter();
 
   const sessionDays = useMemo(
     () =>
@@ -59,16 +62,35 @@ export default function Dashboard() {
   }
 
   if (isError) {
+    // Get the first error from any of the analytics queries
+    const firstError = identity.error || session.error || system.error || hydra.error;
+    const parsedError = parseError(firstError);
+
     return (
       <ProtectedPage requiredRole={UserRole.VIEWER}>
         <Box sx={{ p: 3 }}>
           <ErrorState
-            variant="inline"
-            message="Failed to load analytics data. Please try refreshing the page."
-            action={{
-              label: 'Retry',
-              onClick: refetchAll,
-            }}
+            variant="page"
+            title={parsedError.title}
+            message={parsedError.message}
+            action={
+              parsedError.canRetry
+                ? {
+                    label: 'Retry',
+                    onClick: refetchAll,
+                    icon: <Refresh />,
+                  }
+                : undefined
+            }
+            secondaryAction={
+              parsedError.suggestSettings
+                ? {
+                    label: 'Check Settings',
+                    onClick: () => router.push('/settings'),
+                    icon: <Settings />,
+                  }
+                : undefined
+            }
           />
         </Box>
       </ProtectedPage>
