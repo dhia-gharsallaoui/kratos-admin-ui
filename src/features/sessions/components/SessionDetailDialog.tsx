@@ -4,6 +4,9 @@ import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, Card
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getSession, disableSession, extendSession } from '../../../services/kratos/endpoints/sessions';
 import { formatDate } from '@/lib/date-utils';
+import { LoadingState, ErrorState } from '@/components/feedback';
+import { StatusBadge } from '@/components';
+import { ActionBar } from '@/components/layout';
 
 interface SessionDetailDialogProps {
   open: boolean;
@@ -105,9 +108,7 @@ export const SessionDetailDialog: React.FC<SessionDetailDialogProps> = React.mem
     return (
       <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
         <DialogContent>
-          <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
-            <Spinner variant="page" />
-          </Box>
+          <LoadingState variant="section" />
         </DialogContent>
       </Dialog>
     );
@@ -125,7 +126,10 @@ export const SessionDetailDialog: React.FC<SessionDetailDialogProps> = React.mem
           </Box>
         </DialogTitle>
         <DialogContent>
-          <Alert variant="inline" severity="error">Failed to load session details: {fetchError?.message || 'Unknown error'}</Alert>
+          <ErrorState
+            variant="inline"
+            message={`Failed to load session details: ${fetchError?.message || 'Unknown error'}`}
+          />
         </DialogContent>
       </Dialog>
     );
@@ -177,10 +181,10 @@ export const SessionDetailDialog: React.FC<SessionDetailDialogProps> = React.mem
                     <Typography variant="label" color="text.secondary">
                       Status
                     </Typography>
-                    <Chip
-                      label={session.active ? 'Active' : 'Inactive'}
-                      variant="status"
+                    <StatusBadge
                       status={session.active ? 'active' : 'inactive'}
+                      label={session.active ? 'Active' : 'Inactive'}
+                      showIcon
                     />
                   </Grid>
 
@@ -362,27 +366,25 @@ export const SessionDetailDialog: React.FC<SessionDetailDialogProps> = React.mem
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={onClose} variant="outlined">Close</Button>
-
-        {session.active && !isExpired && (
-          <Button
-            onClick={handleExtendSession}
-            disabled={actionLoading === 'extend'}
-            startIcon={actionLoading === 'extend' ? <Spinner variant="inline" size="small" /> : <Update />}
-            variant="outlined"
-          >
-            Extend Session
-          </Button>
-        )}
-
-        <Button
-          onClick={handleRevokeSession}
-          disabled={actionLoading === 'delete'}
-          startIcon={actionLoading === 'delete' ? <Spinner variant="inline" size="small" /> : <Delete />}
-          variant="danger"
-        >
-          Revoke Session
-        </Button>
+        <ActionBar
+          align="right"
+          primaryAction={{
+            label: actionLoading === 'delete' ? 'Revoking...' : 'Revoke Session',
+            onClick: handleRevokeSession,
+            disabled: actionLoading === 'delete'
+          }}
+          secondaryActions={[
+            ...(session.active && !isExpired ? [{
+              label: actionLoading === 'extend' ? 'Extending...' : 'Extend Session',
+              onClick: handleExtendSession,
+              disabled: actionLoading === 'extend'
+            }] : []),
+            {
+              label: 'Close',
+              onClick: onClose
+            }
+          ]}
+        />
       </DialogActions>
     </Dialog>
   );

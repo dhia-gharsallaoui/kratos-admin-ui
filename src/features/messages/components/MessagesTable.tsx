@@ -3,6 +3,7 @@ import { Mail, Sms, CheckCircle, Schedule, Cancel, Error as ErrorIcon } from '@m
 import { Box, Chip, DataTable, DataTableColumn, Typography } from '@/components/ui';
 import { CourierMessageStatus } from '@/services/kratos/endpoints/courier';
 import { formatDate } from '@/lib/date-utils';
+import { StatusBadge } from '@/components';
 
 interface MessagesTableProps {
   messages: any[];
@@ -113,10 +114,10 @@ export const MessagesTable: React.FC<MessagesTableProps> = React.memo(({
       renderCell: (value: CourierMessageStatus) => (
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           {getStatusIcon(value)}
-          <Chip
-            label={value}
-            variant="status"
+          <StatusBadge
             status={value === 'sent' ? 'active' : value === 'queued' ? 'pending' : 'inactive'}
+            label={value}
+            showIcon={false}
           />
         </Box>
       ),

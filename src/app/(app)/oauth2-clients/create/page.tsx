@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  ActionBar,
   Alert,
   Autocomplete,
   Box,
@@ -31,6 +30,7 @@ import {
   Apps as AppsIcon,
 } from '@mui/icons-material';
 import { AdminLayout } from '@/components/layout/AdminLayout';
+import { ActionBar } from '@/components/layout';
 import { useCreateOAuth2Client } from '@/features/oauth2-clients';
 import {
   getDefaultOAuth2ClientFormData,
@@ -464,18 +464,20 @@ export default function CreateOAuth2ClientPage() {
 
           {/* Submit Actions */}
           <Grid size={{ xs: 12 }}>
-            <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
-              <Button variant="outlined" onClick={() => router.back()}>
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                variant="primary"
-                disabled={createClientMutation.isPending}
-              >
-                {createClientMutation.isPending ? 'Creating...' : 'Create Client'}
-              </Button>
-            </Box>
+            <ActionBar
+              align="right"
+              primaryAction={{
+                label: createClientMutation.isPending ? 'Creating...' : 'Create Client',
+                onClick: () => {},
+                disabled: createClientMutation.isPending
+              }}
+              secondaryActions={[
+                {
+                  label: 'Cancel',
+                  onClick: () => router.back()
+                }
+              ]}
+            />
           </Grid>
         </Grid>
       </form>
