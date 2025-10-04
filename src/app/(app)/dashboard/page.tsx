@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo, useCallback } from 'react';
 import { Grid, IconButton, Tooltip, Typography, Box } from '@/components/ui';
 import { Refresh, Group, Security, Schedule, Schema, HealthAndSafety, VpnKey, Cloud, Apps } from '@mui/icons-material';
 import { ProtectedPage, PageHeader } from '@/components/layout';
@@ -10,40 +11,49 @@ import { ChartCard } from '@/components/ui/ChartCard';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { LineChart } from '@mui/x-charts/LineChart';
 import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
+import { useFormatters } from '@/hooks';
 
 export default function Dashboard() {
   const { identity, session, system, hydra, isLoading, isError, refetchAll } = useAnalytics();
+  const { formatNumber, formatDuration } = useFormatters();
 
-  const sessionDays =
-    session.data?.sessionsByDay?.map((item) =>
-      new Date(item.date).toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-      })
-    ) || [];
-  const sessionValues = session.data?.sessionsByDay?.map((item) => item.count) || [];
+  const sessionDays = useMemo(
+    () =>
+      session.data?.sessionsByDay?.map((item) =>
+        new Date(item.date).toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+        })
+      ) || [],
+    [session.data?.sessionsByDay]
+  );
 
-  const identityDays =
-    identity.data?.identitiesByDay?.map((item) =>
-      new Date(item.date).toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-      })
-    ) || [];
-  const identityValues = identity.data?.identitiesByDay?.map((item) => item.count) || [];
+  const sessionValues = useMemo(
+    () => session.data?.sessionsByDay?.map((item) => item.count) || [],
+    [session.data?.sessionsByDay]
+  );
 
-  const formatNumber = (num: number) => {
-    return new Intl.NumberFormat().format(num);
-  };
+  const identityDays = useMemo(
+    () =>
+      identity.data?.identitiesByDay?.map((item) =>
+        new Date(item.date).toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+        })
+      ) || [],
+    [identity.data?.identitiesByDay]
+  );
 
-  const formatDuration = (minutes: number) => {
-    if (minutes < 60) {
-      return `${minutes}m`;
-    }
-    const hours = Math.floor(minutes / 60);
-    const remainingMinutes = minutes % 60;
-    return `${hours}h ${remainingMinutes}m`;
-  };
+  const identityValues = useMemo(
+    () => identity.data?.identitiesByDay?.map((item) => item.count) || [],
+    [identity.data?.identitiesByDay]
+  );
+
+  const verificationRate = useMemo(() => {
+    if (!identity.data) return 0;
+    const { verified, unverified } = identity.data.verificationStatus;
+    return Math.round((verified / (verified + unverified)) * 100);
+  }, [identity.data]);
 
   if (isLoading) {
     return (
@@ -120,15 +130,7 @@ export default function Dashboard() {
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <StatCard
                 title="Verification Rate"
-                value={`${
-                  identity.data
-                    ? Math.round(
-                        (identity.data.verificationStatus.verified /
-                          (identity.data.verificationStatus.verified + identity.data.verificationStatus.unverified)) *
-                          100
-                      )
-                    : 0
-                }%`}
+                value={`${verificationRate}%`}
                 subtitle="Email verified users"
                 icon={Schema}
                 colorVariant="error"
@@ -301,15 +303,7 @@ export default function Dashboard() {
                   }}
                 >
                   <Gauge
-                    value={
-                      identity.data
-                        ? Math.round(
-                            (identity.data.verificationStatus.verified /
-                              (identity.data.verificationStatus.verified + identity.data.verificationStatus.unverified)) *
-                              100
-                          )
-                        : 0
-                    }
+                    value={verificationRate}
                     startAngle={-110}
                     endAngle={110}
                     width={280}
