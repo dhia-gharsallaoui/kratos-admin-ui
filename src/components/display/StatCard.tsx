@@ -3,13 +3,15 @@
 import React from 'react';
 import { Card, CardContent, Box, Typography, Skeleton } from '@/components/ui';
 import { TrendingUp, TrendingDown } from '@mui/icons-material';
+import { gradientColors } from '@/theme';
 
 export interface StatCardProps {
   title: string;
   value: string | number;
   subtitle?: string;
   icon?: React.ElementType;
-  iconColor?: string;
+  iconColor?: string; // Deprecated - use colorVariant instead
+  colorVariant?: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info' | 'purple' | 'orange' | 'blue';
   trend?: {
     value: number;
     label?: string;
@@ -19,16 +21,32 @@ export interface StatCardProps {
   variant?: 'default' | 'gradient' | 'outlined';
 }
 
+// Color mapping using theme colors
+const colorMap: Record<string, string> = {
+  primary: gradientColors.primary,      // #667eea
+  secondary: gradientColors.secondary,  // #764ba2
+  success: '#00b894',
+  warning: '#fdcb6e',
+  error: '#e17055',
+  info: '#0984e3',
+  purple: '#a29bfe',
+  orange: '#ff9800',
+  blue: '#74b9ff',
+};
+
 export function StatCard({
   title,
   value,
   subtitle,
   icon: Icon,
-  iconColor = '#667eea',
+  iconColor: iconColorProp,
+  colorVariant,
   trend,
   loading = false,
   variant = 'default',
 }: StatCardProps) {
+  // Use colorVariant if provided, otherwise fall back to iconColor prop or default primary
+  const iconColor = colorVariant ? colorMap[colorVariant] : (iconColorProp || gradientColors.primary);
   if (loading) {
     return (
       <Card
