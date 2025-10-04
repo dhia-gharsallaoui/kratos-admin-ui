@@ -4,6 +4,9 @@ import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Card, CardCo
 import { useMessage } from '../hooks';
 import { CourierMessageStatus } from '@/services/kratos/endpoints/courier';
 import { formatDate } from '@/lib/date-utils';
+import { LoadingState, ErrorState } from '@/components/feedback';
+import { StatusBadge } from '@/components';
+import { InfoPanel, DataList } from '@/components/display';
 
 interface MessageDetailDialogProps {
   open: boolean;
@@ -62,9 +65,7 @@ export const MessageDetailDialog: React.FC<MessageDetailDialogProps> = ({ open, 
     return (
       <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
         <DialogContent>
-          <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
-            <Spinner variant="page" />
-          </Box>
+          <LoadingState variant="section" />
         </DialogContent>
       </Dialog>
     );
@@ -82,7 +83,10 @@ export const MessageDetailDialog: React.FC<MessageDetailDialogProps> = ({ open, 
           </Box>
         </DialogTitle>
         <DialogContent>
-          <Alert variant="inline" severity="error">Failed to load message details: {fetchError?.message || 'Unknown error'}</Alert>
+          <ErrorState
+            variant="inline"
+            message={`Failed to load message details: ${fetchError?.message || 'Unknown error'}`}
+          />
         </DialogContent>
       </Dialog>
     );
@@ -141,7 +145,11 @@ export const MessageDetailDialog: React.FC<MessageDetailDialogProps> = ({ open, 
                     </Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                       {getStatusIcon(message.status)}
-                      <Chip label={message.status} color={getStatusColor(message.status) as any} size="small" sx={{ textTransform: 'capitalize' }} />
+                      <StatusBadge
+                        status={message.status === 'sent' ? 'active' : message.status === 'queued' ? 'pending' : 'inactive'}
+                        label={message.status}
+                        showIcon={false}
+                      />
                     </Box>
                   </Grid>
 

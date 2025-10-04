@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Box, Chip, DataTable, DataTableColumn, ErrorDisplay, Spinner, Tooltip, Typography } from '@/components/ui';
+import { Box, Chip, DataTable, DataTableColumn, Tooltip, Typography } from '@/components/ui';
+import { LoadingState, ErrorState, EmptyState } from '@/components/feedback';
 import { useIdentities, useIdentitiesSearch } from '@/features/identities/hooks';
 import { useSchemas } from '@/features/schemas/hooks';
 import { Identity } from '@ory/kratos-client';
@@ -229,20 +230,15 @@ const IdentitiesTable: React.FC = React.memo(() => {
   };
 
   if (isLoading && !baseIdentities.length) {
-    return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="400px">
-        <Spinner variant="page" />
-      </Box>
-    );
+    return <LoadingState variant="page" />;
   }
 
   if (isError) {
     return (
-      <ErrorDisplay
-        variant="centered"
-        title="Failed to Load Identities"
+      <ErrorState
+        variant="page"
         message={(error as any)?.message || 'Unable to fetch identities. Please check your connection and try again.'}
-        onRetry={refetch}
+        action={{ label: 'Retry', onClick: () => refetch() }}
       />
     );
   }

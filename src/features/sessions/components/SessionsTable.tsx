@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { Person, AccessTime, Warning } from '@mui/icons-material';
 import { Box, Chip, DataTable, DataTableColumn, Tooltip, Typography } from '@/components/ui';
 import { formatDate } from '@/lib/date-utils';
+import { StatusBadge } from '@/components';
 
 interface SessionsTableProps {
   sessions: any[];
@@ -88,10 +89,10 @@ export const SessionsTable: React.FC<SessionsTableProps> = React.memo(({
       headerName: 'Status',
       minWidth: 120,
       renderCell: (value: boolean) => (
-        <Chip
-          label={value ? 'Active' : 'Inactive'}
-          variant="status"
+        <StatusBadge
           status={value ? 'active' : 'inactive'}
+          label={value ? 'Active' : 'Inactive'}
+          showIcon
         />
       ),
     },

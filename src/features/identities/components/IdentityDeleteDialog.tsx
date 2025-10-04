@@ -3,6 +3,7 @@ import { Identity } from '@ory/kratos-client';
 import { Alert, Box, Chip, FormDialog, FormDialogAction, Typography } from '@/components/ui';
 import { useDeleteIdentity } from '../hooks/useIdentities';
 import { uiLogger } from '@/lib/logger';
+import { ActionBar } from '@/components/layout';
 
 interface IdentityDeleteDialogProps {
   open: boolean;
@@ -34,34 +35,12 @@ export const IdentityDeleteDialog: React.FC<IdentityDeleteDialogProps> = ({ open
       ? `${traits.name.first} ${traits.name.last}`
       : traits?.username || traits?.email || 'Unknown User';
 
-  const errorMessage = deleteIdentityMutation.isError
-    ? `Failed to delete identity: ${(deleteIdentityMutation.error as any)?.message || 'Unknown error'}`
-    : null;
-
-  const actions: FormDialogAction[] = [
-    {
-      label: 'Cancel',
-      onClick: onClose,
-      variant: 'text',
-      disabled: deleteIdentityMutation.isPending,
-    },
-    {
-      label: 'Delete Identity',
-      onClick: handleDelete,
-      variant: 'contained',
-      color: 'error',
-      loading: deleteIdentityMutation.isPending,
-    },
-  ];
-
   return (
     <FormDialog
       open={open}
       onClose={onClose}
       title="Delete Identity"
       titleColor="error.main"
-      actions={actions}
-      error={errorMessage}
       disableBackdropClick={deleteIdentityMutation.isPending}
     >
       <Box sx={{ mb: 3 }}>
@@ -112,6 +91,30 @@ export const IdentityDeleteDialog: React.FC<IdentityDeleteDialogProps> = ({ open
           <li>Delete all recovery addresses</li>
         </Box>
       </Alert>
+
+      {deleteIdentityMutation.isError && (
+        <Alert variant="inline" severity="error" sx={{ mt: 2 }}>
+          Failed to delete identity: {(deleteIdentityMutation.error as any)?.message || 'Unknown error'}
+        </Alert>
+      )}
+
+      <Box sx={{ mt: 3 }}>
+        <ActionBar
+          align="right"
+          primaryAction={{
+            label: deleteIdentityMutation.isPending ? 'Deleting...' : 'Delete Identity',
+            onClick: handleDelete,
+            disabled: deleteIdentityMutation.isPending
+          }}
+          secondaryActions={[
+            {
+              label: 'Cancel',
+              onClick: onClose,
+              disabled: deleteIdentityMutation.isPending
+            }
+          ]}
+        />
+      </Box>
     </FormDialog>
   );
 };

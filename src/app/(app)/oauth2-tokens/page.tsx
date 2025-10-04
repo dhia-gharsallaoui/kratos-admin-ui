@@ -9,7 +9,7 @@ import {
   Divider,
   Grid,
 } from '@/components/ui';
-import { Tab, Tabs } from '@mui/material';
+import { PageTabs } from '@/components/navigation';
 import { Alert, Button, Card, Chip, Dialog, DialogActions, DialogContent, IconButton, TextField, Typography } from '@/components/ui';
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import {
@@ -39,34 +39,14 @@ import {
 } from '@/features/oauth2-tokens';
 import type { IntrospectTokenFormData, TokenFormErrors } from '@/features/oauth2-tokens';
 import { MetricCard } from '@/components/ui/MetricCard';
-import { 
-  CheckCircle, 
-  Error as ErrorIcon, 
+import {
+  CheckCircle,
+  Error as ErrorIcon,
   Schedule as ScheduleIcon,
-  Receipt as ReceiptIcon 
+  Receipt as ReceiptIcon
 } from '@mui/icons-material';
-
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-}
-
-function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`oauth2-tokens-tabpanel-${index}`}
-      aria-labelledby={`oauth2-tokens-tab-${index}`}
-      {...other}
-    >
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
-    </div>
-  );
-}
+import { EmptyState, ErrorState } from '@/components/feedback';
+import { ActionBar } from '@/components/layout';
 
 export default function OAuth2TokensPage() {
   const [activeTab, setActiveTab] = useState(0);
@@ -325,14 +305,16 @@ export default function OAuth2TokensPage() {
 
       {/* Tabs */}
       <Card>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <Tabs value={activeTab} onChange={handleTabChange}>
-            <Tab label={`Introspect Token`} />
-            <Tab label={`Token List (${introspectedTokens.length})`} />
-          </Tabs>
-        </Box>
+        <PageTabs
+          value={activeTab.toString()}
+          onChange={(value) => handleTabChange({} as React.SyntheticEvent, parseInt(value))}
+          tabs={[
+            { label: 'Introspect Token', value: '0' },
+            { label: `Token List (${introspectedTokens.length})`, value: '1' }
+          ]}
+        />
 
-        <TabPanel value={activeTab} index={0}>
+        {activeTab === 0 && (<Box sx={{ p: 3 }}>
           <form onSubmit={handleIntrospectSubmit}>
             <Grid container spacing={3}>
               <Grid size={{ xs: 12 }}>
@@ -381,23 +363,20 @@ export default function OAuth2TokensPage() {
 
           {/* Error Display */}
           {introspectionError && (
-            <Alert severity="error" style={{ marginTop: '1rem' }}>
-              Failed to introspect token: {introspectionError.message}
-            </Alert>
+            <ErrorState
+              message={`Failed to introspect token: ${introspectionError.message}`}
+              variant="inline"
+            />
           )}
-        </TabPanel>
+        </Box>)}
 
-        <TabPanel value={activeTab} index={1}>
+        {activeTab === 1 && (<Box sx={{ p: 3 }}>
           {introspectedTokens.length === 0 ? (
-            <Box sx={{ textAlign: 'center', py: 4 }}>
-              <TokenIcon sx={{ fontSize: 64, color: 'text.secondary', mb: 2 }} />
-              <Typography variant="heading" level="h2" color="secondary">
-                No tokens introspected yet
-              </Typography>
-              <Typography variant="body" color="secondary">
-                Use the &quot;Introspect Token&quot; tab to analyze OAuth2 tokens
-              </Typography>
-            </Box>
+            <EmptyState
+              icon={TokenIcon}
+              title="No tokens introspected yet"
+              description='Use the "Introspect Token" tab to analyze OAuth2 tokens'
+            />
           ) : (
             <DataGrid
               rows={introspectedTokens}
@@ -419,7 +398,7 @@ export default function OAuth2TokensPage() {
               pageSizeOptions={[10, 25, 50]}
             />
           )}
-        </TabPanel>
+        </Box>)}
       </Card>
 
       {/* Token Details Dialog */}
@@ -586,18 +565,6 @@ export default function OAuth2TokensPage() {
         open={revokeDialogOpen}
         onClose={() => setRevokeDialogOpen(false)}
         title="Revoke Token"
-        actions={
-          <>
-            <Button onClick={() => setRevokeDialogOpen(false)} variant="outlined">Cancel</Button>
-            <Button
-              onClick={handleRevokeConfirm}
-              variant="danger"
-              disabled={revokeTokenMutation.isPending}
-            >
-              {revokeTokenMutation.isPending ? 'Revoking...' : 'Revoke Token'}
-            </Button>
-          </>
-        }
       >
         <Typography variant="body" style={{ marginBottom: '1rem' }}>
           Are you sure you want to revoke this token? This action cannot be undone
@@ -606,6 +573,22 @@ export default function OAuth2TokensPage() {
         <Typography variant="code" color="secondary">
           {revokeTokenValue}
         </Typography>
+        <DialogActions>
+          <ActionBar
+            align="right"
+            primaryAction={{
+              label: revokeTokenMutation.isPending ? 'Revoking...' : 'Revoke Token',
+              onClick: handleRevokeConfirm,
+              disabled: revokeTokenMutation.isPending
+            }}
+            secondaryActions={[
+              {
+                label: 'Cancel',
+                onClick: () => setRevokeDialogOpen(false)
+              }
+            ]}
+          />
+        </DialogActions>
       </Dialog>
 
       {/* Revoke Error Display */}

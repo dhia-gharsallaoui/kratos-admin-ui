@@ -15,8 +15,10 @@ import {
   Public as PublicIcon,
   Lock as LockIcon,
 } from '@mui/icons-material';
-import { ProtectedPage, PageHeader, SectionCard, FlexBox } from '@/components/layout';
-import { FieldDisplay } from '@/components/display';
+import { ProtectedPage, PageHeader, SectionCard, FlexBox, ActionBar } from '@/components/layout';
+import { FieldDisplay, InfoPanel, DataList } from '@/components/display';
+import { LoadingState, ErrorState } from '@/components/feedback';
+import { StatusBadge } from '@/components';
 import { useOAuth2Client, useDeleteOAuth2Client } from '@/features/oauth2-clients';
 import { getClientType, getGrantTypeDisplayName, getResponseTypeDisplayName } from '@/features/oauth2-clients';
 
@@ -87,9 +89,10 @@ export default function OAuth2ClientDetailPage({ params }: Props) {
     return (
       <ProtectedPage>
         <Box sx={{ p: 3 }}>
-          <Alert severity="error">
-            Failed to load client: {error.message}
-          </Alert>
+          <ErrorState
+            message={`Failed to load client: ${error.message}`}
+            variant="page"
+          />
         </Box>
       </ProtectedPage>
     );
@@ -107,7 +110,7 @@ export default function OAuth2ClientDetailPage({ params }: Props) {
           <AppsIcon sx={{ fontSize: 32, color: 'primary.main' }} />
           <Box>
             {isLoading ? (
-              <Skeleton width={300} height={40} />
+              <LoadingState variant="inline" />
             ) : (
               <>
                 <Typography variant="heading" level="h1">
@@ -129,10 +132,9 @@ export default function OAuth2ClientDetailPage({ params }: Props) {
                     </Tooltip>
                   )}
                   {clientType && (
-                    <Chip
+                    <StatusBadge
+                      status={clientType.toLowerCase() === 'public' ? 'active' : 'inactive'}
                       label={clientType}
-                      variant="tag"
-                      size="small"
                     />
                   )}
                 </Box>
@@ -492,14 +494,20 @@ export default function OAuth2ClientDetailPage({ params }: Props) {
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDeleteCancel}>Cancel</Button>
-          <Button
-            onClick={handleDeleteConfirm}
-            variant="danger"
-            disabled={deleteClientMutation.isPending}
-          >
-            {deleteClientMutation.isPending ? 'Deleting...' : 'Delete'}
-          </Button>
+          <ActionBar
+            align="right"
+            primaryAction={{
+              label: deleteClientMutation.isPending ? 'Deleting...' : 'Delete',
+              onClick: handleDeleteConfirm,
+              disabled: deleteClientMutation.isPending
+            }}
+            secondaryActions={[
+              {
+                label: 'Cancel',
+                onClick: handleDeleteCancel
+              }
+            ]}
+          />
         </DialogActions>
       </Dialog>
 

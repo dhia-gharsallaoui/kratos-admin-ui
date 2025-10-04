@@ -3,9 +3,11 @@
 import { useParams, useRouter } from 'next/navigation';
 import { Box, Divider } from '@/components/ui';
 import { ArrowBack, Edit, Delete, Refresh, Link as LinkIcon, DeleteSweep, Person } from '@mui/icons-material';
-import { Alert, Button, Card, CardContent, Chip, Dialog, DottedLoader, Grid, IconButton, Tooltip, Typography } from '@/components/ui';
-import { ProtectedPage, PageHeader, SectionCard, FlexBox } from '@/components/layout';
+import { Alert, Button, Card, CardContent, Chip, Dialog, DialogActions, DottedLoader, Grid, IconButton, Tooltip, Typography } from '@/components/ui';
+import { ProtectedPage, PageHeader, SectionCard, FlexBox, ActionBar } from '@/components/layout';
 import { FieldDisplay } from '@/components/display';
+import { LoadingState, ErrorState } from '@/components/feedback';
+import { StatusBadge } from '@/components';
 import { UserRole } from '@/features/auth';
 import { useIdentity } from '@/features/identities/hooks';
 import { IdentityEditModal } from '@/features/identities/components/IdentityEditModal';
@@ -89,9 +91,7 @@ export default function IdentityDetailPage() {
   if (isLoading) {
     return (
       <ProtectedPage requiredRole={UserRole.ADMIN}>
-        <Box display="flex" justifyContent="center" alignItems="center" height="400px">
-          <DottedLoader variant="page" />
-        </Box>
+        <LoadingState variant="page" />
       </ProtectedPage>
     );
   }
@@ -163,12 +163,15 @@ export default function IdentityDetailPage() {
             <Grid size={{ xs: 12, md: 6 }}>
               <SectionCard title="Basic Information">
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                  <FieldDisplay
-                    label="Status"
-                    value={identity.state || 'active'}
-                    valueType="chip"
-                    chipVariant="status"
-                  />
+                  <Box>
+                    <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                      Status
+                    </Typography>
+                    <StatusBadge
+                      status={identity.state === 'active' ? 'active' : 'inactive'}
+                      label={identity.state || 'active'}
+                    />
+                  </Box>
                   <FieldDisplay
                     label="Schema ID"
                     value={identity.schema_id}
@@ -426,14 +429,6 @@ export default function IdentityDetailPage() {
             onClose={() => setDeleteSessionsDialogOpen(false)}
             title="Delete All Sessions"
             maxWidth="sm"
-            actions={
-              <>
-                <Button variant="outlined" onClick={() => setDeleteSessionsDialogOpen(false)}>Cancel</Button>
-                <Button variant="danger" onClick={handleDeleteAllSessionsConfirm} disabled={deleteSessionsMutation.isPending}>
-                  {deleteSessionsMutation.isPending ? 'Deleting...' : 'Delete All Sessions'}
-                </Button>
-              </>
-            }
           >
             <Alert severity="warning" style={{ marginBottom: '1rem' }}>
               This action will revoke all active sessions for this identity. The user will be logged out from all devices.
@@ -444,6 +439,22 @@ export default function IdentityDetailPage() {
                 Failed to delete sessions: {deleteSessionsMutation.error.message}
               </Alert>
             )}
+            <DialogActions>
+              <ActionBar
+                align="right"
+                primaryAction={{
+                  label: deleteSessionsMutation.isPending ? 'Deleting...' : 'Delete All Sessions',
+                  onClick: handleDeleteAllSessionsConfirm,
+                  disabled: deleteSessionsMutation.isPending
+                }}
+                secondaryActions={[
+                  {
+                    label: 'Cancel',
+                    onClick: () => setDeleteSessionsDialogOpen(false)
+                  }
+                ]}
+              />
+            </DialogActions>
           </Dialog>
 
           {/* Session Detail Dialog */}
