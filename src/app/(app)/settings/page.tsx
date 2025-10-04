@@ -28,6 +28,7 @@ import {
   ArrowBack as ArrowBackIcon,
   CheckCircle as CheckCircleIcon,
 } from '@mui/icons-material';
+import { PageHeader } from '@/components/layout';
 import { useForm, Controller } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { useKratosEndpoints, useHydraEndpoints, useSetKratosEndpoints, useSetHydraEndpoints, useResetSettings, useIsValidUrl } from '@/features/settings/hooks/useSettings';
@@ -394,38 +395,43 @@ export default function SettingsPage() {
   );
 
   return (
-    <Box sx={{ display: 'flex', height: 'calc(100vh - 120px)' }}>
-      {/* Settings Menu Drawer */}
-      <Drawer
-        variant="permanent"
-        sx={{
-          width: DRAWER_WIDTH,
-          flexShrink: 0,
-          [`& .MuiDrawer-paper`]: {
+    <Box sx={{ p: 3 }}>
+      <PageHeader
+        title="Settings"
+        subtitle="Configure your Kratos and Hydra endpoints"
+        icon={<SettingsIcon sx={{ fontSize: 32, color: 'white' }} />}
+        actions={
+          <Tooltip content="Go back">
+            <IconButton variant="action" onClick={() => router.back()} aria-label="Go back">
+              <ArrowBackIcon />
+            </IconButton>
+          </Tooltip>
+        }
+      />
+      <Box sx={{ display: 'flex', height: 'calc(100vh - 240px)' }}>
+        {/* Settings Menu Drawer */}
+        <Drawer
+          variant="permanent"
+          sx={{
             width: DRAWER_WIDTH,
-            boxSizing: 'border-box',
-            position: 'relative',
-            height: '100%',
-            border: 'none',
-            borderRight: '1px solid',
-            borderColor: 'divider',
-          },
-        }}
-      >
-        <Box sx={{ p: 3, borderBottom: '1px solid', borderColor: 'divider' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-            <Tooltip content="Go back">
-              <IconButton size="small" onClick={() => router.back()} aria-label="Go back">
-                <ArrowBackIcon />
-              </IconButton>
-            </Tooltip>
-            <SettingsIcon />
-            <Typography variant="heading" level="h2">Settings</Typography>
+            flexShrink: 0,
+            [`& .MuiDrawer-paper`]: {
+              width: DRAWER_WIDTH,
+              boxSizing: 'border-box',
+              position: 'relative',
+              height: '100%',
+              border: 'none',
+              borderRight: '1px solid',
+              borderColor: 'divider',
+            },
+          }}
+        >
+          <Box sx={{ p: 3, borderBottom: '1px solid', borderColor: 'divider' }}>
+            <Typography variant="heading" level="h3">Sections</Typography>
+            <Typography variant="body" color="secondary">
+              Configure application preferences
+            </Typography>
           </Box>
-          <Typography variant="body" color="secondary">
-            Configure application preferences
-          </Typography>
-        </Box>
         
         <List sx={{ pt: 0 }}>
           {settingsMenuItems.map((item) => (
@@ -496,6 +502,7 @@ export default function SettingsPage() {
           Settings saved successfully!
         </Alert>
       </Snackbar>
+      </Box>
     </Box>
   );
 }

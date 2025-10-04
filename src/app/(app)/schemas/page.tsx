@@ -12,9 +12,9 @@ import {
   TableRow,
 } from '@/components/ui';
 import { TablePagination } from '@mui/material';
-import { Code, Description, Refresh, MoreVert, Close } from '@mui/icons-material';
+import { Code, Description, Refresh, MoreVert, Close, Schema } from '@mui/icons-material';
 import { Button, Card, CardContent, Chip, Dialog, DialogActions, DialogContent, DialogTitle, EmptyState, ErrorState, IconButton, LoadingState, SearchBar, Tooltip, Typography } from '@/components/ui';
-import { AdminLayout } from '@/components/layout/AdminLayout';
+import { AdminLayout, PageHeader } from '@/components/layout';
 import { getIdentitySchema } from '@/services/kratos';
 import { useSchemas } from '@/features/schemas/hooks';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
@@ -154,34 +154,19 @@ export default function SchemasPage() {
   return (
     <ProtectedRoute requiredRole={UserRole.VIEWER}>
       <AdminLayout>
-        <Box>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              mb: 4,
-              flexDirection: { xs: 'column', sm: 'row' },
-              gap: 2,
-            }}
-          >
-            <Box>
-              <Typography variant="gradient" size="3xl">
-                Identity Schemas
-              </Typography>
-              <Typography variant="subheading">
-                View and inspect your identity schemas and their properties
-              </Typography>
-            </Box>
-            <Tooltip title="Refresh">
-              <IconButton
-                variant="action"
-                onClick={() => refetch()}
-              >
-                <Refresh />
-              </IconButton>
-            </Tooltip>
-          </Box>
+        <Box sx={{ p: 3 }}>
+          <PageHeader
+            title="Identity Schemas"
+            subtitle="View and inspect your identity schemas and their properties"
+            icon={<Schema sx={{ fontSize: 32, color: 'white' }} />}
+            actions={
+              <Tooltip title="Refresh">
+                <IconButton variant="action" onClick={() => refetch()}>
+                  <Refresh />
+                </IconButton>
+              </Tooltip>
+            }
+          />
 
           <Card variant="bordered" sx={{ mb: 4 }}>
             <CardContent>

@@ -23,7 +23,7 @@ import {
   CheckCircle as CheckCircleIcon,
   Cancel as CancelIcon,
 } from '@mui/icons-material';
-import { AdminLayout } from '@/components/layout/AdminLayout';
+import { AdminLayout, PageHeader } from '@/components/layout';
 import {
   useTokenIntrospectionManager,
   useRevokeOAuth2Token,
@@ -246,27 +246,20 @@ export default function OAuth2TokensPage() {
   return (
     <AdminLayout>
       <Box sx={{ p: 3 }}>
-      {/* Header */}
-      <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <TokenIcon sx={{ fontSize: 32, color: 'primary.main' }} />
-          <Box>
-            <Typography variant="heading" level="h1">
-              OAuth2 Tokens
-            </Typography>
-            <Typography variant="body" color="secondary">
-              Introspect, validate, and manage OAuth2 tokens
-            </Typography>
-          </Box>
-        </Box>
-        <Button
-          variant="outlined"
-          onClick={clearAllIntrospections}
-          disabled={introspectedTokens.length === 0}
-        >
-          Clear All
-        </Button>
-      </Box>
+        <PageHeader
+          title="OAuth2 Access Tokens"
+          subtitle="Introspect and manage OAuth2 access tokens"
+          icon={<TokenIcon sx={{ fontSize: 32, color: 'white' }} />}
+          actions={
+            <Button
+              variant="outlined"
+              onClick={clearAllIntrospections}
+              disabled={introspectedTokens.length === 0}
+            >
+              Clear All
+            </Button>
+          }
+        />
 
       {/* Stats Cards */}
       <Grid container spacing={3} sx={{ mb: 3 }}>
