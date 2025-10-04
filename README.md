@@ -1,6 +1,6 @@
 # Kratos Admin UI
 
-A modern, responsive admin interface for [Ory Kratos](https://www.ory.sh/kratos/) identity management system. Built with Next.js 14, Material-UI v7, and TypeScript.
+A modern, responsive admin interface for [Ory Kratos](https://www.ory.sh/kratos/) identity management and [Ory Hydra](https://www.ory.sh/hydra/) OAuth2 server. Built with Next.js 15, custom UI components, and TypeScript.
 
 ## 🌐 Live Demo
 
@@ -79,10 +79,33 @@ Experience the admin interface live at: **[https://admin.ory.cloud-ctl.com](http
   - Theme switching (Light/Dark mode)
 
 - **⚙️ Settings & Configuration**: Flexible endpoint configuration system:
-  - Real-time Kratos endpoint configuration via UI
+  - Real-time Kratos and Hydra endpoint configuration via UI
   - URL validation and error handling
   - Persistent settings stored in browser localStorage
   - Reset to defaults functionality
+
+- **🔑 OAuth2 Client Management**: Complete OAuth2 client lifecycle management with Ory Hydra:
+  - **Browse OAuth2 Clients**: Searchable table with instant filtering and pagination
+  - **Client Details**: Comprehensive client view with all OAuth2 configuration:
+    - Basic information (client ID, name, type, URIs)
+    - OAuth2 configuration (grant types, response types, scopes)
+    - Redirect URIs and audience management
+    - Advanced settings (authentication methods, token configuration)
+    - Metadata and contact information
+  - **Create Clients**: Dynamic form for creating new OAuth2 clients with validation
+  - **Edit Clients**: Full client configuration editing with pre-populated forms
+  - **Delete Clients**: Safe deletion with confirmation dialogs
+  - **Copy to Clipboard**: Quick copy for client IDs and secrets
+
+- **🎫 OAuth2 Token Management**: OAuth2 access and refresh token monitoring:
+  - **Token Overview**: Real-time token tracking with auto-search capabilities
+  - **Token Details**: Comprehensive token information including:
+    - Token metadata (client ID, subject, scopes, expiry)
+    - Active status and token type
+    - Associated client information
+  - **Token Revocation**: Revoke individual or all tokens for a client
+  - **Advanced Search**: Filter by client ID, subject, and token status
+  - **Real-time Updates**: Live token status monitoring
 
 ## 📸 Screenshots
 
@@ -139,7 +162,8 @@ _Kratos endpoint configuration via the settings dialog with real-time validation
 
 ### 🎨 User Experience
 
-- **Modern UI**: Clean, professional interface with Material-UI v7 design system
+- **Modern Custom UI**: Completely reworked interface with custom-built components and gradient design system
+- **Consistent Layout**: PageHeader component with gradient backgrounds across all pages
 - **Interactive Charts**: MUI X Charts for analytics visualization with real-time data
 - **Advanced Search**: Multi-page auto-search with client-side filtering and debounced input
 - **Clickable Interfaces**: Intuitive row-based navigation without cluttered action buttons
@@ -147,27 +171,33 @@ _Kratos endpoint configuration via the settings dialog with real-time validation
 - **Real-time Dialogs**: Modal dialogs with comprehensive details and immediate actions
 - **Contextual Actions**: Smart action buttons that appear based on data availability
 - **Loading States**: Skeleton loaders and dotted progress indicators for better perceived performance
+- **Custom Hooks**: Reusable hooks for formatters, pagination, search, and clipboard operations
+- **Theme System**: Centralized color palette with gradients and alpha utilities
 - **Accessibility**: WCAG compliant components with keyboard navigation support
 - **Dark/Light Mode**: Seamless theme switching with persistent preferences
 
 ## 🛠️ Technology Stack
 
-- **Framework**: Next.js 14 (App Router)
-- **UI Library**: Material-UI v7 + MUI X Charts/DataGrid
+- **Framework**: Next.js 15 (App Router with async params)
+- **UI Components**: Custom-built components with MUI v7 base + MUI X Charts/DataGrid
 - **Forms**: React JSON Schema Form (RJSF) with custom Material-UI widgets
 - **Validation**: libphonenumber-js for international phone numbers
 - **State Management**: Zustand + TanStack Query
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS + Emotion
-- **API Client**: Ory Kratos Client (Identity, Session, Courier, Metadata APIs)
+- **Language**: TypeScript with strict type checking
+- **Styling**: Custom theme system with gradients + Tailwind CSS + Emotion
+- **API Clients**:
+  - Ory Kratos Client (Identity, Session, Courier, Metadata APIs)
+  - Ory Hydra Client (OAuth2 Clients, Tokens, OIDC APIs)
 - **Syntax Highlighting**: React Syntax Highlighter with theme support
 - **Authentication**: Custom auth system with persistent storage
 - **Search**: Advanced auto-search with multi-page fetching and client-side filtering
+- **Custom Hooks**: useFormatters, usePagination, useSearch, useCopyToClipboard, useDialog
 
 ## 📋 Prerequisites
 
 - Node.js 22+ and npm
 - Running Ory Kratos instance
+- Running Ory Hydra instance (optional, for OAuth2 features)
 - Docker (optional, for containerized deployment)
 
 ## 🚀 Quick Start
@@ -193,9 +223,11 @@ _Kratos endpoint configuration via the settings dialog with real-time validation
    # Create environment file
    cp .env.example .env.local
 
-   # Edit with your Kratos URLs
+   # Edit with your Kratos and Hydra URLs
    KRATOS_PUBLIC_URL=http://localhost:4433
    KRATOS_ADMIN_URL=http://localhost:4434
+   HYDRA_ADMIN_URL=http://localhost:4445
+   HYDRA_PUBLIC_URL=http://localhost:4444
    ```
 
 4. **Start development server**
@@ -224,6 +256,8 @@ docker pull dhiagharsallaoui/kratos-admin-ui:latest
 docker run -p 3000:3000 \
   -e KRATOS_PUBLIC_URL=http://localhost:4433 \
   -e KRATOS_ADMIN_URL=http://localhost:4434 \
+  -e HYDRA_ADMIN_URL=http://localhost:4445 \
+  -e HYDRA_PUBLIC_URL=http://localhost:4444 \
   dhiagharsallaoui/kratos-admin-ui:latest
 ```
 
@@ -239,14 +273,21 @@ services:
     environment:
       - KRATOS_PUBLIC_URL=http://kratos:4433
       - KRATOS_ADMIN_URL=http://kratos:4434
+      - HYDRA_ADMIN_URL=http://hydra:4445
+      - HYDRA_PUBLIC_URL=http://hydra:4444
     depends_on:
       - kratos
+      - hydra
     networks:
-      - kratos-network
+      - ory-network
 
   kratos:
     image: oryd/kratos:v1.0.0
     # ... your Kratos configuration
+
+  hydra:
+    image: oryd/hydra:v2.0.0
+    # ... your Hydra configuration
 ```
 
 **Development Setup:**
@@ -260,45 +301,65 @@ For a complete development environment with Kratos, check the [`dev/`](./dev) fo
 
 ```
 src/
-├── app/                    # Next.js App Router pages
-│   ├── (app)/             # Protected application routes
-│   │   ├── dashboard/     # Analytics dashboard with interactive charts
-│   │   ├── identities/    # Identity management with CRUD operations
-│   │   │   ├── [id]/     # Individual identity details with metadata
-│   │   │   └── create/   # Dynamic identity creation forms
-│   │   ├── sessions/     # Session monitoring and management
-│   │   ├── messages/     # Kratos courier message monitoring
-│   │   ├── schemas/      # Schema management and visualization
-│   │   └── profile/      # User profile and preferences
-│   └── (auth)/           # Authentication pages
-├── components/           # Shared UI components
-│   ├── layout/          # Layout components (AdminLayout, Sidebar)
-│   ├── navigation/      # Navigation and routing components
-│   └── ui/              # Reusable UI components (loaders, dialogs)
-├── features/            # Feature-based modules
-│   ├── analytics/       # Dashboard analytics and charts
-│   ├── auth/           # Authentication system and guards
-│   ├── identities/     # Identity management (CRUD, search, metadata)
-│   ├── sessions/       # Session management (monitoring, actions)
-│   ├── messages/       # Message monitoring and tracking
-│   └── schemas/        # Schema management and visualization
-├── services/           # API services layer
-│   └── kratos/         # Kratos API integration
-│       └── endpoints/  # API endpoints (identities, sessions, courier)
-├── providers/          # React context providers (Theme, Query, Auth)
-└── styles/             # Global styles and themes
+├── app/                     # Next.js App Router pages
+│   ├── (app)/              # Protected application routes
+│   │   ├── dashboard/      # Analytics dashboard with interactive charts
+│   │   ├── identities/     # Identity management with CRUD operations
+│   │   │   ├── [id]/      # Individual identity details with metadata
+│   │   │   └── create/    # Dynamic identity creation forms
+│   │   ├── sessions/      # Session monitoring and management
+│   │   ├── messages/      # Kratos courier message monitoring
+│   │   ├── schemas/       # Schema management and visualization
+│   │   ├── oauth2-clients/ # OAuth2 client management
+│   │   │   ├── [id]/      # Client details and edit pages
+│   │   │   │   └── edit/  # Edit OAuth2 client configuration
+│   │   │   └── create/    # Create new OAuth2 clients
+│   │   ├── oauth2-tokens/ # OAuth2 token management and monitoring
+│   │   ├── settings/      # Settings and endpoint configuration
+│   │   └── profile/       # User profile and preferences
+│   └── (auth)/            # Authentication pages
+├── components/            # Shared UI components
+│   ├── layout/           # Layout components (AdminLayout, PageHeader)
+│   ├── navigation/       # Navigation and routing components
+│   ├── display/          # Display components (StatCard, DataList)
+│   ├── feedback/         # Feedback components (EmptyState, ErrorState)
+│   └── ui/               # Reusable UI components (loaders, dialogs)
+├── features/             # Feature-based modules
+│   ├── analytics/        # Dashboard analytics and charts
+│   ├── auth/            # Authentication system and guards
+│   ├── identities/      # Identity management (CRUD, search, metadata)
+│   ├── sessions/        # Session management (monitoring, actions)
+│   ├── messages/        # Message monitoring and tracking
+│   ├── schemas/         # Schema management and visualization
+│   ├── oauth2-clients/  # OAuth2 client management (CRUD, validation)
+│   ├── oauth2-tokens/   # OAuth2 token management (monitoring, revocation)
+│   └── oauth2-auth/     # OAuth2 consent flow and authorization
+├── services/            # API services layer
+│   ├── kratos/          # Kratos API integration
+│   │   └── endpoints/   # API endpoints (identities, sessions, courier)
+│   └── hydra/           # Hydra API integration
+│       └── endpoints/   # API endpoints (oauth2-clients, tokens, oidc)
+├── hooks/               # Custom React hooks
+│   ├── useFormatters.ts  # Date, number, currency formatters
+│   ├── usePagination.ts  # Client-side pagination
+│   ├── useSearch.ts      # Client-side search/filtering
+│   ├── useCopyToClipboard.ts # Clipboard operations
+│   └── useDialog.ts      # Dialog state management
+├── providers/           # React context providers (Theme, Query, Auth)
+├── theme/               # Custom theme system with gradients
+└── styles/              # Global styles
 ```
 
 ## 🎛️ Configuration
 
-### Kratos Endpoint Configuration
+### Endpoint Configuration
 
-You can configure Kratos endpoints in two ways:
+You can configure Kratos and Hydra endpoints in two ways:
 
 #### 1. Via Settings Dialog (Recommended)
 
 - Click the settings icon (⚙️) in the application header
-- Enter your Kratos Public URL and Admin URL
+- Enter your Kratos Public URL, Kratos Admin URL, Hydra Admin URL, and Hydra Public URL
 - Settings are stored in browser localStorage and take effect immediately
 - Supports both localhost URLs and remote endpoints
 
@@ -308,6 +369,8 @@ You can configure Kratos endpoints in two ways:
 | ------------------- | --------------------- | ----------------------- |
 | `KRATOS_PUBLIC_URL` | Kratos public API URL | `http://localhost:4433` |
 | `KRATOS_ADMIN_URL`  | Kratos admin API URL  | `http://localhost:4434` |
+| `HYDRA_ADMIN_URL`   | Hydra admin API URL   | `http://localhost:4445` |
+| `HYDRA_PUBLIC_URL`  | Hydra public API URL  | `http://localhost:4444` |
 | `BASE_PATH`         | Application base path | `/`                     |
 | `NODE_ENV`          | Environment mode      | `development`           |
 
@@ -324,15 +387,24 @@ The application uses a mock authentication system with predefined users:
   - Username: `viewer`
   - Password: `viewer123`
 
-### Kratos Integration
+### Integration with Ory Services
 
-The application integrates with Kratos through multiple APIs:
+The application integrates with both Ory Kratos and Ory Hydra through multiple APIs:
+
+#### Kratos Integration
 
 - **Identity API**: Complete CRUD operations on user identities with trait management
 - **Session API**: Comprehensive session monitoring, extension, and revocation
 - **Courier API**: Email/SMS message tracking and delivery status monitoring
 - **Metadata API**: System metadata, health checks, and configuration
 - **Schema API**: Identity schema management and validation rules
+
+#### Hydra Integration
+
+- **OAuth2 Client API**: Complete CRUD operations on OAuth2 clients
+- **OAuth2 Token API**: Token management, revocation, and monitoring
+- **OAuth2 Authorization API**: Consent flow and authorization management
+- **OIDC API**: OpenID Connect discovery and configuration
 
 ## 📄 Available Pages & Routes
 
@@ -359,18 +431,38 @@ The application integrates with Kratos through multiple APIs:
   - Delivery status and error monitoring
   - Advanced filtering and search
 - **`/schemas`** - Identity schema management and visualization
+- **`/oauth2-clients`** - OAuth2 client management with:
+  - Client listing with search and pagination
+  - Client creation with validation
+  - Client details and configuration
+- **`/oauth2-clients/[id]`** - Detailed OAuth2 client view with:
+  - Complete client configuration
+  - Grant types and scopes
+  - Redirect URIs and metadata
+  - Edit and delete capabilities
+- **`/oauth2-clients/[id]/edit`** - Edit OAuth2 client configuration
+- **`/oauth2-clients/create`** - Create new OAuth2 client with dynamic form
+- **`/oauth2-tokens`** - OAuth2 token monitoring with:
+  - Access and refresh token tracking
+  - Token status and expiry monitoring
+  - Token revocation capabilities
+  - Client-based filtering
+- **`/settings`** - Kratos and Hydra endpoint configuration
 - **`/profile`** - User profile and account settings
 
 ### Key Features by Page
 
-| Page             | Search | Actions                         | Real-time | Auto-fetch |
-| ---------------- | ------ | ------------------------------- | --------- | ---------- |
-| Dashboard        | ❌     | ❌                              | ✅        | ✅         |
-| Identities       | ✅     | Edit, Delete, Recover           | ✅        | ✅         |
-| Identity Details | ❌     | Edit, Delete, Recover, Sessions | ✅        | ❌         |
-| Sessions         | ✅     | Extend, Revoke                  | ✅        | ✅         |
-| Messages         | ✅     | View Details                    | ✅        | ✅         |
-| Schemas          | ❌     | View Details                    | ❌        | ❌         |
+| Page                  | Search | Actions                         | Real-time | Auto-fetch |
+| --------------------- | ------ | ------------------------------- | --------- | ---------- |
+| Dashboard             | ❌     | ❌                              | ✅        | ✅         |
+| Identities            | ✅     | Edit, Delete, Recover           | ✅        | ✅         |
+| Identity Details      | ❌     | Edit, Delete, Recover, Sessions | ✅        | ❌         |
+| Sessions              | ✅     | Extend, Revoke                  | ✅        | ✅         |
+| Messages              | ✅     | View Details                    | ✅        | ✅         |
+| Schemas               | ❌     | View Details                    | ❌        | ❌         |
+| OAuth2 Clients        | ✅     | Create, Edit, Delete, Copy      | ✅        | ✅         |
+| OAuth2 Client Details | ❌     | Edit, Delete, Copy              | ✅        | ❌         |
+| OAuth2 Tokens         | ✅     | Revoke, Clear All               | ✅        | ✅         |
 
 ## 🔧 Development
 
@@ -475,10 +567,11 @@ The Docker image supports runtime configuration through environment variables, m
 
 ### Common Issues
 
-1. **Kratos Connection Failed**
-   - Use the settings dialog (⚙️ icon) to verify and update Kratos endpoint URLs
+1. **Kratos/Hydra Connection Failed**
+   - Use the settings dialog (⚙️ icon) to verify and update Kratos and Hydra endpoint URLs
    - Check network connectivity between services
-   - Ensure Kratos is running and accessible
+   - Ensure Kratos and Hydra are running and accessible
+   - Verify CORS settings if accessing from different domains
 
 2. **Authentication Issues**
    - Clear browser localStorage and try again
