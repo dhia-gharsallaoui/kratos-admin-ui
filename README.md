@@ -13,6 +13,7 @@ A modern admin interface for [Ory Kratos](https://www.ory.sh/kratos/) identity m
 ## Features
 
 ### Kratos Identity Management
+
 - **Dashboard**: Analytics with user growth, active sessions, verification rates, and system health metrics
 - **Identities**: Create, view, edit, and delete identities with schema-based forms and metadata management
 - **Sessions**: Monitor, extend, and revoke sessions with advanced search and filtering
@@ -20,10 +21,12 @@ A modern admin interface for [Ory Kratos](https://www.ory.sh/kratos/) identity m
 - **Schemas**: View and inspect identity schemas with JSON visualization
 
 ### Hydra OAuth2 Management
+
 - **OAuth2 Clients**: Full CRUD operations for OAuth2 clients with configuration management
 - **OAuth2 Tokens**: Monitor and revoke access/refresh tokens with client-based filtering
 
 ### User Interface
+
 - Modern custom UI with light/dark theme support
 - Real-time endpoint configuration for Kratos and Hydra
 - Advanced search and pagination across all data tables
@@ -31,12 +34,12 @@ A modern admin interface for [Ory Kratos](https://www.ory.sh/kratos/) identity m
 
 ## Screenshots
 
-| Dashboard | Identities | Sessions | Messages |
-|-----------|-----------|----------|----------|
+| Dashboard                            | Identities                           | Sessions                         | Messages                         |
+| ------------------------------------ | ------------------------------------ | -------------------------------- | -------------------------------- |
 | ![Dashboard](assets/dashboard-1.jpg) | ![Identities](assets/identities.jpg) | ![Sessions](assets/sessions.jpg) | ![Messages](assets/messages.jpg) |
 
-| Identity Details | Session Details | Schemas | Settings |
-|-----------------|-----------------|---------|----------|
+| Identity Details                 | Session Details                | Schemas                        | Settings                         |
+| -------------------------------- | ------------------------------ | ------------------------------ | -------------------------------- |
 | ![Identity](assets/identity.jpg) | ![Session](assets/session.jpg) | ![Schemas](assets/schemas.jpg) | ![Settings](assets/settings.jpg) |
 
 ## Technology Stack
@@ -71,6 +74,7 @@ npm run dev
 Access at [http://localhost:3000](http://localhost:3000)
 
 Default credentials:
+
 - Admin: `admin` / `admin123`
 - Viewer: `viewer` / `viewer123`
 
@@ -116,7 +120,6 @@ src/
 | `HYDRA_PUBLIC_URL`  | `http://localhost:4444` |
 
 Endpoints can also be configured via the settings dialog in the application.
-
 
 ## Development
 
