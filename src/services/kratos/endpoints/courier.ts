@@ -1,4 +1,5 @@
 import { getCourierApi } from '../client';
+import { withApiErrorHandling } from '@/utils/api-wrapper';
 
 export type CourierMessageStatus = 'queued' | 'sent' | 'processing' | 'abandoned';
 
@@ -13,19 +14,23 @@ export interface ListMessagesParams {
 export async function listMessages(params?: ListMessagesParams) {
   const { pageSize = 250, pageToken, status, recipient } = params || {};
 
-  const courierApi = getCourierApi();
-  return await courierApi.listCourierMessages({
-    pageSize,
-    pageToken,
-    status,
-    recipient,
-  });
+  return withApiErrorHandling(async () => {
+    const courierApi = getCourierApi();
+    return await courierApi.listCourierMessages({
+      pageSize,
+      pageToken,
+      status,
+      recipient,
+    });
+  }, 'Kratos');
 }
 
 // Get a specific message by ID
 export async function getMessage(id: string) {
-  const courierApi = getCourierApi();
-  return await courierApi.getCourierMessage({ id });
+  return withApiErrorHandling(async () => {
+    const courierApi = getCourierApi();
+    return await courierApi.getCourierMessage({ id });
+  }, 'Kratos');
 }
 
 // Get messages with pagination for UI display
@@ -48,8 +53,10 @@ export async function getMessagesPage(options?: {
     requestParams.pageToken = pageToken;
   }
 
-  const courierApi = getCourierApi();
-  const response = await courierApi.listCourierMessages(requestParams, { signal });
+  const response = await withApiErrorHandling(async () => {
+    const courierApi = getCourierApi();
+    return await courierApi.listCourierMessages(requestParams, { signal });
+  }, 'Kratos');
 
   // Extract next page token from Link header
   const linkHeader = response.headers?.link;

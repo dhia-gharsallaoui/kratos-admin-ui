@@ -1,6 +1,7 @@
 import { getAdminOAuth2Api, getPublicOAuth2Api } from '../client';
 import { IntrospectedOAuth2Token } from '@ory/hydra-client';
 import { apiLogger } from '@/lib/logger';
+import { withApiErrorHandling } from '@/utils/api-wrapper';
 
 // OAuth2 Token operations
 
@@ -26,36 +27,30 @@ export interface TokenExchangeRequest {
 
 // Introspect OAuth2 token
 export async function introspectOAuth2Token(tokenData: IntrospectTokenRequest) {
-  try {
+  return withApiErrorHandling(async () => {
     const response = await getAdminOAuth2Api().introspectOAuth2Token({
       token: tokenData.token,
       scope: tokenData.scope,
     });
     return { data: response.data };
-  } catch (error) {
-    apiLogger.logError(error, 'Error introspecting OAuth2 token');
-    throw error;
-  }
+  }, 'Hydra');
 }
 
 // Revoke OAuth2 token
 export async function revokeOAuth2Token(tokenData: RevokeTokenRequest) {
-  try {
+  return withApiErrorHandling(async () => {
     const response = await getPublicOAuth2Api().revokeOAuth2Token({
       token: tokenData.token,
       clientId: tokenData.client_id,
       clientSecret: tokenData.client_secret,
     });
     return { data: response.data };
-  } catch (error) {
-    apiLogger.logError(error, 'Error revoking OAuth2 token');
-    throw error;
-  }
+  }, 'Hydra');
 }
 
 // Exchange tokens (OAuth2 token endpoint)
 export async function exchangeOAuth2Token(tokenData: TokenExchangeRequest) {
-  try {
+  return withApiErrorHandling(async () => {
     const response = await getPublicOAuth2Api().oauth2TokenExchange({
       grantType: tokenData.grant_type,
       clientId: tokenData.client_id,
@@ -64,44 +59,30 @@ export async function exchangeOAuth2Token(tokenData: TokenExchangeRequest) {
       refreshToken: tokenData.refresh_token,
     });
     return { data: response.data };
-  } catch (error) {
-    apiLogger.logError(error, 'Error exchanging OAuth2 token');
-    throw error;
-  }
+  }, 'Hydra');
 }
 
 // Delete OAuth2 access tokens for a client
 export async function deleteOAuth2AccessTokens(clientId: string) {
-  try {
+  return withApiErrorHandling(async () => {
     const response = await getAdminOAuth2Api().deleteOAuth2Token({ clientId });
     return { data: response.data };
-  } catch (error) {
-    apiLogger.logError(error, `Error deleting OAuth2 access tokens for client ${clientId}`);
-    throw error;
-  }
+  }, 'Hydra');
 }
 
 // Flush inactive OAuth2 tokens (Note: This method may not be available in the official client)
 export async function flushInactiveOAuth2Tokens(notAfter?: string) {
-  try {
-    // This endpoint might not be available in the official Hydra client
-    // Check the official documentation for availability
-    throw new Error('Flush inactive tokens endpoint not available in official client');
-  } catch (error) {
-    apiLogger.logError(error, 'Error flushing inactive OAuth2 tokens');
-    throw error;
-  }
+  // This endpoint might not be available in the official Hydra client
+  // Check the official documentation for availability
+  throw new Error('Flush inactive tokens endpoint not available in official client');
 }
 
 // Get OAuth2 token metadata (if supported)
 export async function getOAuth2TokenMetadata(tokenId: string) {
-  try {
+  return withApiErrorHandling(async () => {
     // Note: This might not be available in the official client
     // Check the actual API for availability
     const response = await getAdminOAuth2Api().introspectOAuth2Token({ token: tokenId });
     return { data: response.data };
-  } catch (error) {
-    apiLogger.logError(error, `Error getting OAuth2 token metadata for ${tokenId}`);
-    throw error;
-  }
+  }, 'Hydra');
 }
