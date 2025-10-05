@@ -153,7 +153,7 @@ export default function LoginPage() {
               mb: 1,
             }}
           >
-            Ory Kratos Admin
+            Ory Admin
           </Typography>
           <Typography variant="body1" color="text.secondary" sx={{ mb: 4, fontWeight: 500 }}>
             Sign in to your account
