@@ -9,45 +9,60 @@ import {
 import { getAdminApi } from '../client';
 import { fetchAllPages, processPaginatedResponse } from '@/lib/pagination-utils';
 import { apiLogger } from '@/lib/logger';
+import { withApiErrorHandling } from '@/utils/api-wrapper';
 
 // Identity CRUD operations
 export async function listIdentities(params: IdentityApiListIdentitiesRequest = {}) {
-  const adminApi = getAdminApi();
-  return await adminApi.listIdentities(params);
+  return withApiErrorHandling(async () => {
+    const adminApi = getAdminApi();
+    return await adminApi.listIdentities(params);
+  }, 'Kratos');
 }
 
 export async function getIdentity(params: IdentityApiGetIdentityRequest) {
-  const adminApi = getAdminApi();
-  return await adminApi.getIdentity(params);
+  return withApiErrorHandling(async () => {
+    const adminApi = getAdminApi();
+    return await adminApi.getIdentity(params);
+  }, 'Kratos');
 }
 
 export async function createIdentity(params: IdentityApiCreateIdentityRequest) {
-  const adminApi = getAdminApi();
-  return await adminApi.createIdentity(params);
+  return withApiErrorHandling(async () => {
+    const adminApi = getAdminApi();
+    return await adminApi.createIdentity(params);
+  }, 'Kratos');
 }
 
 export async function patchIdentity(params: IdentityApiPatchIdentityRequest) {
-  const adminApi = getAdminApi();
-  return await adminApi.patchIdentity(params);
+  return withApiErrorHandling(async () => {
+    const adminApi = getAdminApi();
+    return await adminApi.patchIdentity(params);
+  }, 'Kratos');
 }
 
 export async function deleteIdentity(params: IdentityApiDeleteIdentityRequest) {
-  const adminApi = getAdminApi();
-  return await adminApi.deleteIdentity(params);
+  return withApiErrorHandling(async () => {
+    const adminApi = getAdminApi();
+    return await adminApi.deleteIdentity(params);
+  }, 'Kratos');
 }
 
 // Recovery operations
 export async function createRecoveryLinkForIdentity(params: IdentityApiCreateRecoveryLinkForIdentityRequest) {
-  const adminApi = getAdminApi();
-  return await adminApi.createRecoveryLinkForIdentity(params);
+  return withApiErrorHandling(async () => {
+    const adminApi = getAdminApi();
+    return await adminApi.createRecoveryLinkForIdentity(params);
+  }, 'Kratos');
 }
 
 // Simplified wrapper for easier use
 export async function createRecoveryLink(identityId: string) {
-  const adminApi = getAdminApi();
-  return await adminApi.createRecoveryLinkForIdentity({
-    createRecoveryLinkForIdentityBody: { identity_id: identityId },
-  });
+  return withApiErrorHandling(async () => {
+    const adminApi = getAdminApi();
+    return await adminApi.createRecoveryLinkForIdentity({
+      createRecoveryLinkForIdentityBody: { identity_id: identityId },
+    });
+  }, 'Kratos');
 }
 
 // Get all identities with automatic pagination handling
@@ -58,34 +73,29 @@ export async function getAllIdentities(options?: {
 }) {
   const { maxPages = 20, pageSize = 250, onProgress } = options || {};
 
-  try {
-    const allIdentities = await fetchAllPages(
-      async (pageToken) => {
-        const requestParams: any = { pageSize };
-        if (pageToken) {
-          requestParams.pageToken = pageToken;
-        }
-        const response = await listIdentities(requestParams);
-        return {
-          data: response.data,
-          headers: response.headers || {},
-        };
-      },
-      {
-        maxPages,
-        onProgress: onProgress ? (current: number) => onProgress(current, Math.ceil(current / pageSize)) : undefined,
-        stopOnError: false,
+  const allIdentities = await fetchAllPages(
+    async (pageToken) => {
+      const requestParams: any = { pageSize };
+      if (pageToken) {
+        requestParams.pageToken = pageToken;
       }
-    );
+      const response = await listIdentities(requestParams);
+      return {
+        data: response.data,
+        headers: response.headers || {},
+      };
+    },
+    {
+      maxPages,
+      onProgress: onProgress ? (current: number) => onProgress(current, Math.ceil(current / pageSize)) : undefined,
+      stopOnError: false,
+    }
+  );
 
-    return {
-      identities: allIdentities,
-      totalCount: allIdentities.length,
-      isComplete: true,
-      pagesFetched: Math.ceil(allIdentities.length / pageSize),
-    };
-  } catch (error) {
-    apiLogger.logError(error, 'Error fetching all identities');
-    throw error;
-  }
+  return {
+    identities: allIdentities,
+    totalCount: allIdentities.length,
+    isComplete: true,
+    pagesFetched: Math.ceil(allIdentities.length / pageSize),
+  };
 }

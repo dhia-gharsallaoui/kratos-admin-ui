@@ -1,15 +1,20 @@
 import { IdentityApiListIdentitySessionsRequest } from '@ory/kratos-client';
 import { getAdminApi } from '../client';
+import { withApiErrorHandling } from '@/utils/api-wrapper';
 
 // Session operations
 export async function listIdentitySessions(params: IdentityApiListIdentitySessionsRequest) {
-  const adminApi = getAdminApi();
-  return await adminApi.listIdentitySessions(params);
+  return withApiErrorHandling(async () => {
+    const adminApi = getAdminApi();
+    return await adminApi.listIdentitySessions(params);
+  }, 'Kratos');
 }
 
 export async function listSessions(active?: boolean) {
-  const adminApi = getAdminApi();
-  return await adminApi.listSessions({ expand: ['identity'], active });
+  return withApiErrorHandling(async () => {
+    const adminApi = getAdminApi();
+    return await adminApi.listSessions({ expand: ['identity'], active });
+  }, 'Kratos');
 }
 
 // Get sessions with pagination for UI display
@@ -26,8 +31,10 @@ export async function getSessionsPage(options?: { pageToken?: string; pageSize?:
     requestParams.pageToken = pageToken;
   }
 
-  const adminApi = getAdminApi();
-  const response = await adminApi.listSessions(requestParams, { signal });
+  const response = await withApiErrorHandling(async () => {
+    const adminApi = getAdminApi();
+    return await adminApi.listSessions(requestParams, { signal });
+  }, 'Kratos');
 
   // Extract next page token from Link header
   const linkHeader = response.headers?.link;
@@ -78,8 +85,10 @@ export async function getAllSessions(options?: {
         requestParams.pageToken = pageToken;
       }
 
-      const adminApi = getAdminApi();
-      const response = await adminApi.listSessions(requestParams);
+      const response = await withApiErrorHandling(async () => {
+        const adminApi = getAdminApi();
+        return await adminApi.listSessions(requestParams);
+      }, 'Kratos');
 
       console.log(`Sessions page ${pageCount + 1}: Got ${response.data.length} sessions`);
       allSessions = [...allSessions, ...response.data];
@@ -163,8 +172,10 @@ export async function getSessionsUntilDate(options?: {
         requestParams.pageToken = pageToken;
       }
 
-      const adminApi = getAdminApi();
-      const response = await adminApi.listSessions(requestParams);
+      const response = await withApiErrorHandling(async () => {
+        const adminApi = getAdminApi();
+        return await adminApi.listSessions(requestParams);
+      }, 'Kratos');
 
       console.log(`Sessions page ${pageCount + 1}: Got ${response.data.length} sessions`);
 
@@ -241,23 +252,31 @@ export async function getSessionsUntilDate(options?: {
 
 // Get detailed session information by ID
 export async function getSession(id: string, expand?: ('identity' | 'devices')[]) {
-  const adminApi = getAdminApi();
-  return await adminApi.getSession({ id, expand });
+  return withApiErrorHandling(async () => {
+    const adminApi = getAdminApi();
+    return await adminApi.getSession({ id, expand });
+  }, 'Kratos');
 }
 
 export async function disableSession(id: string) {
-  const adminApi = getAdminApi();
-  return await adminApi.disableSession({ id });
+  return withApiErrorHandling(async () => {
+    const adminApi = getAdminApi();
+    return await adminApi.disableSession({ id });
+  }, 'Kratos');
 }
 
 // Extend a session by ID
 export async function extendSession(id: string) {
-  const adminApi = getAdminApi();
-  return await adminApi.extendSession({ id });
+  return withApiErrorHandling(async () => {
+    const adminApi = getAdminApi();
+    return await adminApi.extendSession({ id });
+  }, 'Kratos');
 }
 
 // Delete all sessions for a specific identity
 export async function deleteIdentitySessions(identityId: string) {
-  const adminApi = getAdminApi();
-  return await adminApi.deleteIdentitySessions({ id: identityId });
+  return withApiErrorHandling(async () => {
+    const adminApi = getAdminApi();
+    return await adminApi.deleteIdentitySessions({ id: identityId });
+  }, 'Kratos');
 }
