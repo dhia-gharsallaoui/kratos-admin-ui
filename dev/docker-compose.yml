@@ -87,8 +87,88 @@ services:
     profiles:
       - init
 
+  # Initialize OAuth 2.0 clients
+  init-clients:
+    image: curlimages/curl:latest
+    depends_on:
+      - hydra
+    volumes:
+      - type: bind
+        source: ./init-clients.sh
+        target: /init-clients.sh
+    networks:
+      - intranet
+    command: sh /init-clients.sh
+    restart: 'no'
+    profiles:
+      - init
+
+  # Hydra SQLite Volume Permissions
+  hydra-sqlite-init:
+    image: busybox
+    volumes:
+      - hydra-sqlite:/mnt/sqlite
+    command: "chmod -R 777 /mnt/sqlite"
+
+  # Hydra Migration Service
+  hydra-migrate:
+    image: oryd/hydra:v2.3.0
+    environment:
+      - DSN=sqlite:///mnt/sqlite/db.sqlite?_fk=true&mode=rwc
+    command: migrate -c /etc/config/hydra/hydra.yml sql up -e --yes
+    volumes:
+      - type: volume
+        source: hydra-sqlite
+        target: /mnt/sqlite
+        read_only: false
+      - type: bind
+        source: ./hydra
+        target: /etc/config/hydra
+    restart: on-failure
+    networks:
+      - intranet
+    depends_on:
+      - hydra-sqlite-init
+
+  # Hydra Main Service
+  hydra:
+    image: oryd/hydra:v2.3.0
+    ports:
+      - '4444:4444' # Public port
+      - '4445:4445' # Admin port
+      - '5555:5555' # Port for hydra token user
+    command: serve -c /etc/config/hydra/hydra.yml all --dev
+    volumes:
+      - type: volume
+        source: hydra-sqlite
+        target: /mnt/sqlite
+        read_only: false
+      - type: bind
+        source: ./hydra
+        target: /etc/config/hydra
+    environment:
+      - DSN=sqlite:///mnt/sqlite/db.sqlite?_fk=true&mode=rwc
+    restart: unless-stopped
+    depends_on:
+      - hydra-migrate
+      - hydra-sqlite-init
+    networks:
+      - intranet
+
+  # Hydra Consent/Login UI
+  hydra-consent:
+    environment:
+      - HYDRA_ADMIN_URL=http://hydra:4445
+    image: oryd/hydra-login-consent-node:v2.3.0
+    ports:
+      - '3001:3000'
+    restart: unless-stopped
+    networks:
+      - intranet
+
 networks:
   intranet:
 
 volumes:
   kratos-sqlite:
+  hydra-sqlite:

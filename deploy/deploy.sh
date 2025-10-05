@@ -51,7 +51,18 @@ KRATOS_CIPHER_SECRET="fedcba0987654321fedcba0987654321"
 sed -i "s/KRATOS_COOKIE_SECRET=.*/KRATOS_COOKIE_SECRET=$KRATOS_COOKIE_SECRET/" .env.prod
 sed -i "s/KRATOS_CIPHER_SECRET=.*/KRATOS_CIPHER_SECRET=$KRATOS_CIPHER_SECRET/" .env.prod
 
-echo "✅ Secrets configured"
+echo "✅ Kratos secrets configured"
+
+# Set hardcoded Hydra secrets for demo (exactly 32 characters)
+echo "🔑 Setting Hydra secrets..."
+HYDRA_SYSTEM_SECRET="hydrasystem1234567890abcdefghijk"
+HYDRA_OIDC_SALT="hydraoidcsalt1234567890abcdefgh"
+
+# Update the env file
+sed -i "s/HYDRA_SYSTEM_SECRET=.*/HYDRA_SYSTEM_SECRET=$HYDRA_SYSTEM_SECRET/" .env.prod
+sed -i "s/HYDRA_OIDC_SALT=.*/HYDRA_OIDC_SALT=$HYDRA_OIDC_SALT/" .env.prod
+
+echo "✅ Hydra secrets configured"
 
 # Reload environment variables after secret generation
 echo "🔄 Reloading environment variables..."
@@ -63,6 +74,10 @@ cp .env.prod .env
 
 # Configuration is already set with hardcoded values
 echo "🔧 Using pre-configured Kratos settings..."
+
+# Setup Hydra configuration
+echo "🔧 Setting up Hydra configuration..."
+./setup-hydra-config.sh
 
 # Pull latest images
 echo "📦 Pulling latest images..."
@@ -76,6 +91,10 @@ docker compose up -d
 echo "🎭 Initializing demo identities..."
 docker compose --profile init up init-identities
 
+# Initialize OAuth 2.0 clients
+echo "🔐 Initializing OAuth 2.0 clients..."
+docker compose --profile init up init-clients
+
 echo ""
 echo "🎉 Deployment completed!"
 echo ""
@@ -83,13 +102,21 @@ echo "Your services are now running at:"
 echo "  Admin UI:        https://admin.$DOMAIN"
 echo "  Kratos Public:   https://kratos.$DOMAIN"
 echo "  Kratos Admin:    http://kratos:4434 (internal only)"
-echo "  Traefik:         https://traefik.$DOMAIN"
+echo "  Hydra Public:    https://hydra.$DOMAIN"
+echo "  Hydra Admin:     http://hydra:4445 (internal only)"
+echo "  Hydra Consent:   https://consent.$DOMAIN"
 echo "  Mail:            https://mail.$DOMAIN"
 echo ""
 echo "🎭 Demo accounts created:"
 echo "  Admin:    admin@$DOMAIN / admin123!"
 echo "  Customer: customer@example.com / customer123!"
 echo "  User:     user@example.com / user123!"
+echo ""
+echo "🔐 OAuth 2.0 Clients created:"
+echo "  web-app-client (secret: web-app-secret)"
+echo "  kratos-admin-ui (secret: kratos-admin-ui-secret)"
+echo "  test-client (secret: test-client-secret)"
+echo "  + 5 more clients (see init-clients.sh for details)"
 echo ""
 echo "📋 Next steps:"
 echo "1. Configure your DNS to point to this server"
