@@ -1,0 +1,22 @@
+serve:
+  cookies:
+    same_site_mode: Lax
+
+urls:
+  self:
+    issuer: https://hydra.${DOMAIN}
+  consent: https://consent.${DOMAIN}/consent
+  login: https://consent.${DOMAIN}/login
+  logout: https://consent.${DOMAIN}/logout
+
+secrets:
+  system:
+    - ${HYDRA_SYSTEM_SECRET}
+
+oidc:
+  subject_identifiers:
+    supported_types:
+      - pairwise
+      - public
+    pairwise:
+      salt: ${HYDRA_OIDC_SALT}
