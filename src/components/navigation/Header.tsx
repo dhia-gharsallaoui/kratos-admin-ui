@@ -55,7 +55,7 @@ export function Header({ onSidebarToggle }: HeaderProps) {
           <MenuIcon />
         </IconButton>
         <Typography variant="heading" size="lg" sx={{ display: { xs: 'none', sm: 'block' } }}>
-          Ory Kratos Admin
+          Ory Admin
         </Typography>
         <Box sx={{ flexGrow: 1 }} />
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
