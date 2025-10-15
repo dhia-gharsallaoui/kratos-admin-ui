@@ -16,7 +16,7 @@ export default function CreateOAuth2ClientPage() {
     const result = await createClientMutation.mutateAsync(requestData);
 
     if (result.data.client_id) {
-      router.push(`/oauth2-clients/${result.data.client_id}`);
+      router.push(`/clients/${result.data.client_id}`);
     }
   };
 

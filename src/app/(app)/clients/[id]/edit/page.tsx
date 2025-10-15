@@ -47,7 +47,7 @@ export default function EditOAuth2ClientPage({ params }: Props) {
       clientData: requestData,
     });
 
-    router.push(`/oauth2-clients/${resolvedParams.id}`);
+    router.push(`/clients/${resolvedParams.id}`);
   };
 
   if (error) {
