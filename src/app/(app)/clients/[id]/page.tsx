@@ -64,7 +64,7 @@ export default function OAuth2ClientDetailPage({ params }: Props) {
   };
 
   const handleEdit = () => {
-    router.push(`/oauth2-clients/${resolvedParams.id}/edit`);
+    router.push(`/clients/${resolvedParams.id}/edit`);
     handleMenuClose();
   };
 
@@ -76,7 +76,7 @@ export default function OAuth2ClientDetailPage({ params }: Props) {
   const handleDeleteConfirm = async () => {
     try {
       await deleteClientMutation.mutateAsync(resolvedParams.id);
-      router.push('/oauth2-clients');
+      router.push('/clients');
     } catch (error) {
       console.error('Failed to delete client:', error);
     }

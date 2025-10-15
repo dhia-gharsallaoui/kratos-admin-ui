@@ -60,14 +60,14 @@ const mainNavItems: NavItem[] = [
 const hydraNavItems: NavItem[] = [
   {
     title: 'OAuth2 Clients',
-    path: '/oauth2-clients',
+    path: '/clients',
     icon: <Apps />,
     // requiredRole: UserRole.ADMIN, // Temporarily removed for testing
   },
   // OAuth2 Tokens - Disabled for now, will be implemented later
   // {
   //   title: 'OAuth2 Tokens',
-  //   path: '/oauth2-tokens',
+  //   path: '/tokens',
   //   icon: <Token />,
   //   // requiredRole: UserRole.ADMIN,
   // },

@@ -65,12 +65,12 @@ export default function OAuth2ClientsPage() {
   };
 
   const handleView = (clientId: string) => {
-    router.push(`/oauth2-clients/${clientId}`);
+    router.push(`/clients/${clientId}`);
     handleMenuClose();
   };
 
   const handleEdit = (clientId: string) => {
-    router.push(`/oauth2-clients/${clientId}/edit`);
+    router.push(`/clients/${clientId}/edit`);
     handleMenuClose();
   };
 
@@ -183,7 +183,7 @@ export default function OAuth2ClientsPage() {
               primaryAction={{
                 label: 'Create Client',
                 icon: <AddIcon />,
-                onClick: () => router.push('/oauth2-clients/create'),
+                onClick: () => router.push('/clients/create'),
               }}
             />
           }
@@ -230,7 +230,7 @@ export default function OAuth2ClientsPage() {
             loading={isLoading}
             autoHeight
             disableRowSelectionOnClick
-            onRowClick={(params) => router.push(`/oauth2-clients/${params.row.id}`)}
+            onRowClick={(params) => router.push(`/clients/${params.row.id}`)}
             sx={{
               border: 'none',
               '& .MuiDataGrid-columnHeaders': {
