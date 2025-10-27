@@ -3,7 +3,14 @@ const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
   images: {
-    domains: ['localhost', 'kratos.local'],
+    remotePatterns: [
+      {
+        hostname: 'localhost',
+      },
+      {
+        hostname: 'kratos.local',
+      },
+    ],
   },
   experimental: {
     optimizePackageImports: ['@mui/material', '@mui/icons-material', '@mui/x-data-grid', '@mui/x-charts'],
