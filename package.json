@@ -26,7 +26,7 @@
     "@rjsf/core": "6.0.0-beta.11",
     "@rjsf/mui": "6.0.0-beta.12",
     "@rjsf/utils": "6.0.0-beta.11",
-    "@rjsf/validator-ajv8": "6.0.0-beta.11",
+    "@rjsf/validator-ajv8": "6.0.0-beta.22",
     "@tailwindcss/postcss": "^4.1.11",
     "@tanstack/react-query": "^5.81.5",
     "@tanstack/react-query-devtools": "^5.81.5",
