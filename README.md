@@ -1,6 +1,6 @@
 # Kratos Admin UI
 
-A modern admin interface for [Ory Kratos](https://www.ory.sh/kratos/) identity management and [Ory Hydra](https://www.ory.sh/hydra/) OAuth2 server. Built with Next.js 15, TypeScript, and custom UI components.
+A modern admin interface for [Ory Kratos](https://www.ory.sh/kratos/) identity management and [Ory Hydra](https://www.ory.sh/hydra/) OAuth2 server. Built with Next.js 16, TypeScript, and custom UI components.
 
 ## Live Demo
 
@@ -44,7 +44,7 @@ A modern admin interface for [Ory Kratos](https://www.ory.sh/kratos/) identity m
 
 ## Technology Stack
 
-- **Framework**: Next.js 15 with App Router
+- **Framework**: Next.js 16 with App Router
 - **UI**: Custom components with MUI v7, MUI X Charts/DataGrid
 - **Forms**: React JSON Schema Form (RJSF)
 - **State**: Zustand + TanStack Query
