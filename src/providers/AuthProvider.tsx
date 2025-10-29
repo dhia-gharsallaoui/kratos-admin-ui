@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useIsAuthenticated, useIsAuthLoading } from '@/features/auth/hooks/useAuth';
 import { Box, CircularProgress } from '@mui/material';
@@ -14,7 +14,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const isLoading = useIsAuthLoading();
   const router = useRouter();
   const pathname = usePathname();
-  const [isInitializing, setIsInitializing] = useState(true);
 
   useEffect(() => {
     // Wait for auth state to be loaded
@@ -28,14 +27,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
       if (isAuthenticated && pathname === '/login') {
         router.push('/dashboard');
       }
-
-      // Set initializing to false after initial auth check and redirects
-      setIsInitializing(false);
     }
   }, [isAuthenticated, pathname, router, isLoading]);
 
   // Show loading spinner during initialization
-  if (isLoading || isInitializing) {
+  if (isLoading) {
     return (
       <Box
         sx={{
