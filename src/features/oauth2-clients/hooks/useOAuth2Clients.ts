@@ -197,7 +197,7 @@ export function useFilteredOAuth2Clients(filters: OAuth2ClientFilters) {
     }
 
     return filtered;
-  }, [allClientsData?.clients, filters]);
+  }, [allClientsData, filters]);
 
   return {
     ...queryResult,

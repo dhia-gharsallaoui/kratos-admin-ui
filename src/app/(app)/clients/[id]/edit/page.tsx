@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useEffect, useState } from 'react';
+import { use, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { Box, IconButton, Typography } from '@/components/ui';
 import { ArrowBack as ArrowBackIcon, Apps as AppsIcon } from '@mui/icons-material';
@@ -22,7 +22,6 @@ interface Props {
 export default function EditOAuth2ClientPage({ params }: Props) {
   const resolvedParams = use(params);
   const router = useRouter();
-  const [initialFormData, setInitialFormData] = useState<OAuth2ClientFormData | null>(null);
 
   const { data: clientResponse, isLoading, error } = useOAuth2Client(resolvedParams.id);
   const updateClientMutation = useUpdateOAuth2Client();
@@ -30,11 +29,9 @@ export default function EditOAuth2ClientPage({ params }: Props) {
   const client = clientResponse?.data;
 
   // Initialize form data when client is loaded
-  useEffect(() => {
-    if (client && !initialFormData) {
-      setInitialFormData(transformOAuth2ClientToFormData(client));
-    }
-  }, [client, initialFormData]);
+  const initialFormData = useMemo(() => {
+    return client ? transformOAuth2ClientToFormData(client) : null;
+  }, [client]);
 
   const handleSubmit = async (formData: OAuth2ClientFormData) => {
     const requestData = {
