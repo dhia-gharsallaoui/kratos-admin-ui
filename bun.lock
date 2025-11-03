@@ -15,7 +15,7 @@
         "@ory/kratos-client": "^1.3.8",
         "@rjsf/core": "6.0.0-beta.11",
         "@rjsf/mui": "6.0.0-beta.12",
-        "@rjsf/utils": "6.0.0-beta.11",
+        "@rjsf/utils": "6.0.1",
         "@rjsf/validator-ajv8": "6.0.0-beta.11",
         "@tailwindcss/postcss": "^4.1.11",
         "@tanstack/react-query": "^5.81.5",
@@ -251,7 +251,7 @@
 
     "@rjsf/mui": ["@rjsf/mui@6.0.0-beta.12", "", { "peerDependencies": { "@emotion/react": "^11.7.0", "@emotion/styled": "^11.6.0", "@mui/icons-material": "^7.0.0", "@mui/material": "^7.0.0", "@rjsf/core": "^6.0.0-beta", "@rjsf/utils": "^6.0.0-beta", "react": ">=18" } }, "sha512-OLkSnzU5RJeEHe+kH4940VweXoBqD3N7on0CcvFbAXJ6E5t0BHZcqz/h2k3NUcX+gh8IKs4/icjXIQXQxIUKeQ=="],
 
-    "@rjsf/utils": ["@rjsf/utils@6.0.0-beta.11", "", { "dependencies": { "fast-uri": "^3.0.6", "json-schema-merge-allof": "^0.8.1", "jsonpointer": "^5.0.1", "lodash": "^4.17.21", "lodash-es": "^4.17.21", "nanoid": "^5.1.5", "react-is": "^18.2.0" }, "peerDependencies": { "react": ">=18" } }, "sha512-tQeyacweXmquRjPcXCVS1pMFfhamFSoqpczNi0zEvMbx+mfu2b6CgoRKi2Hm8KgFEafdVBF+6HLqs+0FnYhRlQ=="],
+    "@rjsf/utils": ["@rjsf/utils@6.0.1", "", { "dependencies": { "fast-uri": "^3.1.0", "json-schema-merge-allof": "^0.8.1", "jsonpointer": "^5.0.1", "lodash": "^4.17.21", "lodash-es": "^4.17.21", "react-is": "^18.3.1" }, "peerDependencies": { "react": ">=18" } }, "sha512-ystv5I87MmwjD5oybbHivMbULcpNp5jDQyB76rYv7G+Aqs/OdPJydtr2sm/40JkCAvXUgX+7eBZOKmUFk8A3lA=="],
 
     "@rjsf/validator-ajv8": ["@rjsf/validator-ajv8@6.0.0-beta.11", "", { "dependencies": { "ajv": "^8.12.0", "ajv-formats": "^2.1.1", "lodash": "^4.17.21", "lodash-es": "^4.17.21" }, "peerDependencies": { "@rjsf/utils": "^6.0.0-beta" } }, "sha512-gR8pbCsR91LiayDKdIz7d7m7A2ozUv9J+7Tpl5/qUQ69Q/NmnHo+cAiVW04/yvqzf1cbRwMgkc5pZyu01Uu1/w=="],
 
@@ -569,7 +569,7 @@
 
     "fast-levenshtein": ["fast-levenshtein@2.0.6", "", {}, "sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw=="],
 
-    "fast-uri": ["fast-uri@3.0.6", "", {}, "sha512-Atfo14OibSv5wAp4VWNsFYE1AchQRTv9cBGWET4pZWHzYshFSS9NQI6I57rdKn9croWVMbYFbLhJ+yJvmZIIHw=="],
+    "fast-uri": ["fast-uri@3.1.0", "", {}, "sha512-iPeeDKJSWf4IEOasVVrknXpaBV0IApz/gp7S2bb7Z4Lljbl2MGJRqInZiUrQwV16cpzw/D3S5j5Julj/gT52AA=="],
 
     "fastq": ["fastq@1.19.1", "", { "dependencies": { "reusify": "^1.0.4" } }, "sha512-GwLTyxkCXjXbxqIhTsMI2Nui8huMPtnxg7krajPJAjnEG/iiOS7i+zCtWGZR9G0NBKbXKh6X9m9UIsYX/N6vvQ=="],
 
@@ -1189,6 +1189,8 @@
 
     "which-builtin-type/which-typed-array": ["which-typed-array@1.1.18", "", { "dependencies": { "available-typed-arrays": "^1.0.7", "call-bind": "^1.0.8", "call-bound": "^1.0.3", "for-each": "^0.3.3", "gopd": "^1.2.0", "has-tostringtag": "^1.0.2" } }, "sha512-qEcY+KJYlWyLH9vNbsr6/5j59AXk5ni5aakf8ldzBvGde6Iz4sxZGkJyWSAueTG7QhOvNRYb1lDdFmL5Td0QKA=="],
 
+    "@rjsf/validator-ajv8/ajv/fast-uri": ["fast-uri@3.0.6", "", {}, "sha512-Atfo14OibSv5wAp4VWNsFYE1AchQRTv9cBGWET4pZWHzYshFSS9NQI6I57rdKn9croWVMbYFbLhJ+yJvmZIIHw=="],
+
     "@rjsf/validator-ajv8/ajv/json-schema-traverse": ["json-schema-traverse@1.0.0", "", {}, "sha512-NM8/P9n3XjXhIZn1lLhkFaACTOURQXjWhV4BA/RnOv8xvgqtqpAX9IO4mRQxSx1Rlo4tqzeqb0sOlruaOy3dug=="],
 
     "@types/d3-sankey/@types/d3-shape/@types/d3-path": ["@types/d3-path@1.0.11", "", {}, "sha512-4pQMp8ldf7UaB/gR8Fvvy69psNHkTpD/pVw3vmEi8iZAB9EPMBruB1JvHO4BIq9QkUUd2lV1F5YXpMNj7JPBpw=="],
@@ -1196,6 +1198,8 @@
     "@typescript-eslint/typescript-estree/fast-glob/glob-parent": ["glob-parent@5.1.2", "", { "dependencies": { "is-glob": "^4.0.1" } }, "sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow=="],
 
     "@typescript-eslint/typescript-estree/minimatch/brace-expansion": ["brace-expansion@2.0.2", "", { "dependencies": { "balanced-match": "^1.0.0" } }, "sha512-Jt0vHyM+jmUBqojB7E1NIYadt0vI0Qxjxd2TErW94wDz+E2LAm5vKMXXwg6ZZBTHPuUlDgQHKXvjGBdfcF1ZDQ=="],
+
+    "ajv-formats/ajv/fast-uri": ["fast-uri@3.0.6", "", {}, "sha512-Atfo14OibSv5wAp4VWNsFYE1AchQRTv9cBGWET4pZWHzYshFSS9NQI6I57rdKn9croWVMbYFbLhJ+yJvmZIIHw=="],
 
     "ajv-formats/ajv/json-schema-traverse": ["json-schema-traverse@1.0.0", "", {}, "sha512-NM8/P9n3XjXhIZn1lLhkFaACTOURQXjWhV4BA/RnOv8xvgqtqpAX9IO4mRQxSx1Rlo4tqzeqb0sOlruaOy3dug=="],
 
