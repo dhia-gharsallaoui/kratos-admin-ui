@@ -20,6 +20,7 @@ import { IdentitySchemaContainer } from '@ory/kratos-client';
 import {
   TelWidget,
   TextWidget,
+  SelectWidget,
   FieldTemplate,
   ObjectFieldTemplate,
   SubmitButton,
@@ -46,6 +47,7 @@ const CreateIdentityForm: React.FC<CreateIdentityFormProps> = ({ onSuccess, onCa
     () => ({
       tel: TelWidget,
       TextWidget: TextWidget,
+      SelectWidget: SelectWidget,
       text: TextWidget,
       email: TextWidget,
     }),
