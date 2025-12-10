@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { TextField as MuiTextField, useTheme } from '@mui/material';
-import { Autocomplete, Box, Typography } from '@/components/ui';
+import { TextField as MuiTextField, useTheme, MenuItem as MuiMenuItem } from '@mui/material';
+import { Autocomplete, Box, Typography, FormControl, InputLabel, Select as MuiSelect } from '@/components/ui';
 import { WidgetProps, FieldTemplateProps, ObjectFieldTemplateProps, SubmitButtonProps } from '@rjsf/utils';
 import parsePhoneNumber, { isValidPhoneNumber, getCountries, getCountryCallingCode, CountryCode } from 'libphonenumber-js';
 
@@ -339,6 +339,116 @@ export const TextWidget: React.FC<WidgetProps> = ({
         },
       }}
     />
+  );
+};
+
+// Custom SelectWidget with Material-UI styling for enum fields
+export const SelectWidget: React.FC<WidgetProps> = ({
+  id,
+  value,
+  onChange,
+  onBlur,
+  onFocus,
+  disabled,
+  readonly,
+  required,
+  options,
+  label,
+  placeholder,
+}) => {
+  const theme = useTheme();
+  const { enumOptions = [] } = options;
+  const [isValid, setIsValid] = React.useState<boolean | null>(null);
+
+  React.useEffect(() => {
+    if (value) {
+      setIsValid(true);
+    } else if (required) {
+      setIsValid(false);
+    } else {
+      setIsValid(null);
+    }
+  }, [value, required]);
+
+  const handleChange = (event: any) => {
+    const newValue = event.target.value;
+    onChange(newValue === '' ? undefined : newValue);
+    if (newValue) {
+      setIsValid(true);
+    } else if (required) {
+      setIsValid(false);
+    } else {
+      setIsValid(null);
+    }
+  };
+
+  const getBorderColor = () => {
+    if (isValid === true) return '#4caf50'; // Green for valid
+    if (isValid === false) return '#f44336'; // Red for invalid
+    return theme.palette.divider; // Theme-aware default
+  };
+
+  const getHoverBorderColor = () => {
+    if (isValid === true) return '#66bb6a'; // Lighter green on hover
+    if (isValid === false) return '#ef5350'; // Lighter red on hover
+    return theme.palette.text.primary; // Theme-aware hover
+  };
+
+  return (
+    <FormControl
+      fullWidth
+      required={required}
+      disabled={disabled}
+      sx={{
+        mb: 2,
+        '& .MuiInputLabel-root': {
+          '& .MuiInputLabel-asterisk': {
+            color: 'error.main',
+          },
+        },
+        '& .MuiOutlinedInput-root': {
+          '& fieldset': {
+            borderColor: getBorderColor(),
+            borderWidth: '1px',
+            transition: 'border-color 0.2s ease-in-out',
+          },
+          '&:hover fieldset': {
+            borderColor: getHoverBorderColor(),
+            borderWidth: '1px',
+          },
+          '&.Mui-focused fieldset': {
+            borderColor: isValid === false ? '#f44336' : 'primary.main',
+            borderWidth: '2px',
+          },
+        },
+      }}
+    >
+      <InputLabel id={`${id}-label`}>{required ? `${label} *` : label}</InputLabel>
+      <MuiSelect
+        id={id}
+        labelId={`${id}-label`}
+        label={required ? `${label} *` : label}
+        value={value || ''}
+        onChange={handleChange}
+        onBlur={onBlur && (() => onBlur(id, value))}
+        onFocus={onFocus && (() => onFocus(id, value))}
+        disabled={disabled}
+        readOnly={readonly}
+        size="small"
+        displayEmpty={!!placeholder}
+      >
+        {placeholder && (
+          <MuiMenuItem value="">
+            <em>{placeholder}</em>
+          </MuiMenuItem>
+        )}
+        {enumOptions.map((option: any) => (
+          <MuiMenuItem key={option.value} value={option.value}>
+            {option.label}
+          </MuiMenuItem>
+        ))}
+      </MuiSelect>
+    </FormControl>
   );
 };
 
