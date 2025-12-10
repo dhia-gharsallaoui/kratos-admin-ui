@@ -1,23 +1,28 @@
-import React, { useEffect } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import React, { useEffect, useState } from 'react';
 import { Identity } from '@ory/kratos-client';
-import {
-  ActionBar,
-  Alert,
-  Box,
-  Button,
-  Chip,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DottedLoader,
-  Grid,
-  TextField,
-  Typography,
-} from '@/components/ui';
+import { ActionBar, Alert, Box, Chip, Dialog, DialogActions, DialogContent, Spinner, Typography } from '@/components/ui';
+import Form from '@rjsf/mui';
+import validator from '@rjsf/validator-ajv8';
 import { useUpdateIdentity } from '../hooks/useIdentities';
-import { formatDate } from '@/lib/date-utils';
+import { useSchemas } from '@/features/schemas/hooks/useSchemas';
 import { uiLogger } from '@/lib/logger';
+import {
+  TelWidget,
+  TextWidget,
+  FieldTemplate,
+  ObjectFieldTemplate,
+  SubmitButton,
+  convertKratosSchemaToRJSF,
+  createUISchema,
+} from './shared-form-widgets';
+
+// Add custom format for tel to avoid validation warnings
+validator.ajv.addFormat('tel', {
+  type: 'string',
+  validate: (data: string) => {
+    return typeof data === 'string' && data.length > 0;
+  },
+});
 
 interface IdentityEditModalProps {
   open: boolean;
@@ -26,70 +31,61 @@ interface IdentityEditModalProps {
   onSuccess?: () => void;
 }
 
-interface IdentityEditForm {
-  email: string;
-  username: string;
-  firstName: string;
-  lastName: string;
-}
-
 export const IdentityEditModal: React.FC<IdentityEditModalProps> = ({ open, onClose, identity, onSuccess }) => {
   const updateIdentityMutation = useUpdateIdentity();
+  const { data: schemas, isLoading: schemasLoading } = useSchemas();
+  const [formData, setFormData] = useState<any>({});
+  const [formSchema, setFormSchema] = useState<any | null>(null);
 
-  const {
-    control,
-    handleSubmit,
-    reset,
-    formState: { errors, isDirty },
-  } = useForm<IdentityEditForm>({
-    defaultValues: {
-      email: '',
-      username: '',
-      firstName: '',
-      lastName: '',
-    },
-  });
+  // Custom widgets for better form experience
+  const widgets = React.useMemo(
+    () => ({
+      tel: TelWidget,
+      TextWidget: TextWidget,
+      text: TextWidget,
+      email: TextWidget,
+    }),
+    []
+  );
 
-  // Reset form when identity changes
+  // Custom templates for Material-UI styling
+  const templates = React.useMemo(
+    () => ({
+      FieldTemplate: FieldTemplate,
+      ObjectFieldTemplate: ObjectFieldTemplate,
+      SubmitButton: SubmitButton,
+    }),
+    []
+  );
+
+  // Initialize form data when identity changes
   useEffect(() => {
-    if (identity) {
-      const traits = identity.traits as any;
-      uiLogger.debug('Current identity traits structure:', traits);
-      reset({
-        email: traits?.email || '',
-        username: traits?.username || '',
-        firstName: traits?.name?.first || traits?.firstName || '',
-        lastName: traits?.name?.last || traits?.lastName || '',
-      });
+    if (identity && schemas) {
+      const schema = schemas.find((s) => s.id === identity.schema_id);
+      if (schema?.schema) {
+        const rjsfSchema = convertKratosSchemaToRJSF(schema.schema);
+        setFormSchema(rjsfSchema);
+        setFormData(identity.traits || {});
+        uiLogger.debug('Initialized form with identity traits:', identity.traits);
+      }
     }
-  }, [identity, reset]);
+  }, [identity, schemas]);
 
-  const onSubmit = async (data: IdentityEditForm) => {
+  const onSubmit = async (data: any) => {
     if (!identity) return;
+
+    const { formData: submitData } = data;
 
     try {
       uiLogger.debug('Submitting identity update:', {
         originalIdentity: identity,
-        formData: data,
+        formData: submitData,
       });
 
-      // Transform form data to match Kratos traits structure
-      const traits = {
-        email: data.email,
-        username: data.username,
-        name: {
-          first: data.firstName,
-          last: data.lastName,
-        },
-      };
-
-      uiLogger.debug('Transformed traits:', traits);
-
-      // Only update traits, not state
       await updateIdentityMutation.mutateAsync({
         id: identity.id,
         schemaId: identity.schema_id,
-        traits,
+        traits: submitData,
       });
 
       onSuccess?.();
@@ -101,7 +97,7 @@ export const IdentityEditModal: React.FC<IdentityEditModalProps> = ({ open, onCl
 
   const handleClose = () => {
     if (!updateIdentityMutation.isPending) {
-      reset();
+      setFormData({});
       onClose();
     }
   };
@@ -146,140 +142,71 @@ export const IdentityEditModal: React.FC<IdentityEditModalProps> = ({ open, onCl
           </Alert>
         )}
 
-        <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ mt: 2 }}>
-          <Grid container spacing={3}>
-            {/* Basic Information */}
-            <Grid size={{ xs: 12 }}>
-              <Typography variant="heading" size="lg" gutterBottom>
-                Basic Information
-              </Typography>
-            </Grid>
+        {schemasLoading && (
+          <Box display="flex" justifyContent="center" alignItems="center" height="300px">
+            <Spinner variant="ring" size="large" />
+          </Box>
+        )}
 
-            <Grid size={{ xs: 12, md: 6 }}>
-              <Controller
-                name="email"
-                control={control}
-                rules={{
-                  required: 'Email is required',
-                  pattern: {
-                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: 'Invalid email address',
-                  },
-                }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Email"
-                    type="email"
-                    fullWidth
-                    error={!!errors.email}
-                    helperText={errors.email?.message}
-                    disabled={updateIdentityMutation.isPending}
-                  />
-                )}
-              />
-            </Grid>
+        {!schemasLoading && formSchema && (
+          <Box
+            sx={{
+              mt: 2,
+              '& .rjsf': {
+                '& .field-string': { mb: 0 },
+                '& .field-object': { mb: 0 },
+                '& .form-group': { mb: 0 },
+                '& .control-label': { display: 'none' },
+                '& .field-description': { display: 'none' },
+                '& .help-block': { display: 'none' },
+              },
+            }}
+          >
+            <Form
+              schema={formSchema}
+              uiSchema={createUISchema(formSchema)}
+              formData={formData}
+              onChange={({ formData }) => setFormData(formData)}
+              onSubmit={onSubmit}
+              validator={validator}
+              widgets={widgets}
+              templates={templates}
+              disabled={updateIdentityMutation.isPending}
+              showErrorList={false}
+              noHtml5Validate
+              className="rjsf"
+            >
+              <DialogActions sx={{ p: 3, pt: 1 }}>
+                <ActionBar
+                  primaryAction={{
+                    label: 'Save Changes',
+                    onClick: () => {
+                      // Trigger form submission
+                      document.querySelector<HTMLFormElement>('.rjsf form')?.requestSubmit();
+                    },
+                    loading: updateIdentityMutation.isPending,
+                    disabled: false,
+                  }}
+                  secondaryActions={[
+                    {
+                      label: 'Cancel',
+                      onClick: handleClose,
+                      variant: 'outlined',
+                      disabled: updateIdentityMutation.isPending,
+                    },
+                  ]}
+                />
+              </DialogActions>
+            </Form>
+          </Box>
+        )}
 
-            <Grid size={{ xs: 12, md: 6 }}>
-              <Controller
-                name="username"
-                control={control}
-                rules={{
-                  required: 'Username is required',
-                  minLength: {
-                    value: 3,
-                    message: 'Username must be at least 3 characters',
-                  },
-                }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Username"
-                    fullWidth
-                    error={!!errors.username}
-                    helperText={errors.username?.message}
-                    disabled={updateIdentityMutation.isPending}
-                  />
-                )}
-              />
-            </Grid>
-
-            <Grid size={{ xs: 12, md: 6 }}>
-              <Controller
-                name="firstName"
-                control={control}
-                rules={{
-                  required: 'First name is required',
-                }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="First Name"
-                    fullWidth
-                    error={!!errors.firstName}
-                    helperText={errors.firstName?.message}
-                    disabled={updateIdentityMutation.isPending}
-                  />
-                )}
-              />
-            </Grid>
-
-            <Grid size={{ xs: 12, md: 6 }}>
-              <Controller
-                name="lastName"
-                control={control}
-                rules={{
-                  required: 'Last name is required',
-                }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Last Name"
-                    fullWidth
-                    error={!!errors.lastName}
-                    helperText={errors.lastName?.message}
-                    disabled={updateIdentityMutation.isPending}
-                  />
-                )}
-              />
-            </Grid>
-
-            {/* Read-only Information */}
-            <Grid size={{ xs: 12 }}>
-              <Typography variant="heading" size="lg" gutterBottom sx={{ mt: 2 }}>
-                Read-only Information
-              </Typography>
-            </Grid>
-
-            <Grid size={{ xs: 12, md: 6 }}>
-              <TextField label="Created At" value={formatDate(identity.created_at)} fullWidth disabled variant="readonly" />
-            </Grid>
-
-            <Grid size={{ xs: 12, md: 6 }}>
-              <TextField label="Updated At" value={formatDate(identity.updated_at)} fullWidth disabled variant="readonly" />
-            </Grid>
-          </Grid>
-        </Box>
+        {!schemasLoading && !formSchema && (
+          <Alert variant="inline" severity="warning" sx={{ mt: 2 }}>
+            Schema not found for this identity
+          </Alert>
+        )}
       </DialogContent>
-
-      <DialogActions sx={{ p: 3, pt: 1 }}>
-        <ActionBar
-          primaryAction={{
-            label: 'Save Changes',
-            onClick: handleSubmit(onSubmit),
-            loading: updateIdentityMutation.isPending,
-            disabled: !isDirty,
-          }}
-          secondaryActions={[
-            {
-              label: 'Cancel',
-              onClick: handleClose,
-              variant: 'outlined',
-              disabled: updateIdentityMutation.isPending,
-            },
-          ]}
-        />
-      </DialogActions>
     </Dialog>
   );
 };
