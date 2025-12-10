@@ -131,7 +131,7 @@ const IdentitiesTable: React.FC = React.memo(() => {
     });
   }, [baseIdentities, searchTerm, getSchemaName, getIdentifier]);
 
-  const shouldUseSearchResults = searchComplete && searchResults.length > clientFilteredIdentities.length;
+  const shouldUseSearchResults = searchComplete && isSearching;
   const displayedIdentities = shouldUseSearchResults ? searchResults : clientFilteredIdentities;
 
   // Define columns

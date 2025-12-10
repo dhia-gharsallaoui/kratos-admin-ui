@@ -71,9 +71,9 @@ loyalty_tiers="bronze silver gold platinum diamond"
 statuses="active inactive on_leave"
 customer_statuses="active suspended closed"
 
-echo "Creating 15 default (person) identities..."
+echo "Creating 150 default (person) identities..."
 i=1
-while [ $i -le 15 ]; do
+while [ $i -le 150 ]; do
   EMAIL=$(generate_email)
   FIRST_NAME=$(get_random_element "$first_names")
   LAST_NAME=$(get_random_element "$last_names")
@@ -124,9 +124,9 @@ while [ $i -le 15 ]; do
   sleep 0.1
 done
 
-echo "Creating 10 organizational identities..."
+echo "Creating 100 organizational identities..."
 i=1
-while [ $i -le 10 ]; do
+while [ $i -le 100 ]; do
   EMAIL=$(generate_email)
   EMPLOYEE_ID=$(generate_employee_id)
   FIRST_NAME=$(get_random_element "$first_names")
@@ -184,9 +184,9 @@ while [ $i -le 10 ]; do
   sleep 0.1
 done
 
-echo "Creating 12 customer identities..."
+echo "Creating 120 customer identities..."
 i=1
-while [ $i -le 12 ]; do
+while [ $i -le 120 ]; do
   EMAIL=$(generate_email)
   CUSTOMER_ID=$(generate_customer_id)
   FIRST_NAME=$(get_random_element "$first_names")
@@ -271,10 +271,10 @@ while [ $i -le 12 ]; do
 done
 
 echo "✅ Identity generation complete!"
-echo "   📊 15 person identities (70% verified)"
-echo "   👥 10 organizational identities (80% verified)" 
-echo "   🛒 12 customer identities (60% verified)"
-echo "   🎯 Total: 37 test identities created"
+echo "   📊 150 person identities (70% verified)"
+echo "   👥 100 organizational identities (80% verified)"
+echo "   🛒 120 customer identities (60% verified)"
+echo "   🎯 Total: 370 test identities created"
 
 # Create marker file to indicate completion
 touch /tmp/init-complete
