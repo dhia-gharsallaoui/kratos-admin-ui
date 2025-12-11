@@ -4,11 +4,13 @@ import { persist } from 'zustand/middleware';
 export interface KratosEndpoints {
   publicUrl: string;
   adminUrl: string;
+  apiKey?: string;
 }
 
 export interface HydraEndpoints {
   publicUrl: string;
   adminUrl: string;
+  apiKey?: string;
 }
 
 export interface SettingsStoreState {
@@ -106,6 +108,7 @@ export const useSettingsStore = create<SettingsStoreState>()(
         if (typeof document !== 'undefined') {
           document.cookie = `kratos-public-url=${encodeURIComponent(endpoints.publicUrl)}; path=/; SameSite=Strict`;
           document.cookie = `kratos-admin-url=${encodeURIComponent(endpoints.adminUrl)}; path=/; SameSite=Strict`;
+          document.cookie = `kratos-api-key=${endpoints.apiKey || ''}; path=/; SameSite=Strict`;
         }
       },
 
@@ -116,6 +119,7 @@ export const useSettingsStore = create<SettingsStoreState>()(
         if (typeof document !== 'undefined') {
           document.cookie = `hydra-public-url=${encodeURIComponent(endpoints.publicUrl)}; path=/; SameSite=Strict`;
           document.cookie = `hydra-admin-url=${encodeURIComponent(endpoints.adminUrl)}; path=/; SameSite=Strict`;
+          document.cookie = `hydra-api-key=${endpoints.apiKey || ''}; path=/; SameSite=Strict`;
         }
       },
 
