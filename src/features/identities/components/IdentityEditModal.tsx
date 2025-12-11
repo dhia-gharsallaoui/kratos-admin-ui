@@ -182,7 +182,7 @@ export const IdentityEditModal: React.FC<IdentityEditModalProps> = ({ open, onCl
                     label: 'Save Changes',
                     onClick: () => {
                       // Trigger form submission
-                      document.querySelector<HTMLFormElement>('.rjsf form')?.requestSubmit();
+                      document.querySelector<HTMLFormElement>('form.rjsf')?.requestSubmit();
                     },
                     loading: updateIdentityMutation.isPending,
                     disabled: false,
