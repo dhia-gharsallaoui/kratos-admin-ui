@@ -23,6 +23,9 @@ export async function checkKratosHealth(): Promise<{
     } else if (error.response?.status === 502) {
       errorMessage = 'Bad Gateway - Kratos admin URL may be incorrect';
     } else if (error.response?.status === 404) {
+      if (process.env.IS_ORY_NETWORK) { // Ory Network does not provide this endpoint
+        return { isHealthy: true };
+      }
       errorMessage = 'Endpoint not found - Kratos admin URL may be incorrect';
     } else if (error.message) {
       errorMessage = error.message;

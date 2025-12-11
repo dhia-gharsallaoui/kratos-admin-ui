@@ -120,8 +120,11 @@ src/
 | `HYDRA_ADMIN_URL`   | `http://localhost:4445` |
 | `HYDRA_PUBLIC_URL`  | `http://localhost:4444` |
 | `HYDRA_API_KEY`     | |
+| `IS_ORY_NETWORK`    | |
 
 API Keys are typically mandatory when accessing an Ory Network project.
+
+`IS_ORY_NETWORK` must be set (to any value) when using the Admin UI on Ory Network. Otherwise keep unset.
 
 Endpoints and API Keys can also be configured via the settings dialog in the application.
 
