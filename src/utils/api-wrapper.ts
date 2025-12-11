@@ -32,6 +32,13 @@ export async function withApiErrorHandling<T>(apiCall: () => Promise<T>, service
   try {
     return await apiCall();
   } catch (error: any) {
+    // Don't log or wrap canceled requests - they're expected when components unmount
+    const isCanceled = error?.name === 'CanceledError' || error?.code === 'ERR_CANCELED' || error?.name === 'AbortError';
+    if (isCanceled) {
+      // Re-throw as-is so React Query can handle it properly
+      throw error;
+    }
+
     // Log the error for debugging
     console.error(`[${serviceName}] API call failed:`, error);
 
