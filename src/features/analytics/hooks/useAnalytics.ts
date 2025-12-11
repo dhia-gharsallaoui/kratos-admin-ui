@@ -2,21 +2,36 @@ import { useQuery } from '@tanstack/react-query';
 import { getAllIdentities, getSessionsUntilDate, listIdentitySchemas, listSessions, checkKratosHealth } from '@/services/kratos';
 import { listOAuth2Clients, listOAuth2ConsentSessions, checkHydraHealth } from '@/services/hydra';
 import { IdentityAnalytics, SessionAnalytics, SystemAnalytics, HydraAnalytics } from '../types';
+import { useIsOryNetwork, useSettingsLoaded } from '@/features/settings/hooks/useSettings';
 
 // Health check hooks
-const useKratosHealthCheck = () => {
+const useKratosHealthCheck = (isOryNetwork: boolean, isSettingsLoaded: boolean) => {
   return useQuery({
     queryKey: ['health', 'kratos'],
-    queryFn: checkKratosHealth,
+    queryFn: async () => {
+      // Ory Network does not provide health check endpoints
+      if (isOryNetwork) {
+        return { isHealthy: true };
+      }
+      return checkKratosHealth();
+    },
+    enabled: isSettingsLoaded, // Wait for settings to load before checking health
     staleTime: 2 * 60 * 1000, // Cache for 2 minutes
     retry: 1, // Only retry once for health checks
   });
 };
 
-const useHydraHealthCheck = () => {
+const useHydraHealthCheck = (isOryNetwork: boolean, isSettingsLoaded: boolean) => {
   return useQuery({
     queryKey: ['health', 'hydra'],
-    queryFn: checkHydraHealth,
+    queryFn: async () => {
+      // Ory Network does not provide health check endpoints
+      if (isOryNetwork) {
+        return { isHealthy: true };
+      }
+      return checkHydraHealth();
+    },
+    enabled: isSettingsLoaded, // Wait for settings to load before checking health
     staleTime: 2 * 60 * 1000, // Cache for 2 minutes
     retry: 1, // Only retry once for health checks
   });
@@ -271,9 +286,13 @@ export const useHydraAnalytics = (isHydraHealthy: boolean) => {
 
 // Combined analytics hook
 export const useAnalytics = () => {
-  // Check health first
-  const kratosHealth = useKratosHealthCheck();
-  const hydraHealth = useHydraHealthCheck();
+  // Get Ory Network flag and settings loaded state
+  const isOryNetwork = useIsOryNetwork();
+  const isSettingsLoaded = useSettingsLoaded();
+
+  // Check health first (waits for settings to load)
+  const kratosHealth = useKratosHealthCheck(isOryNetwork, isSettingsLoaded);
+  const hydraHealth = useHydraHealthCheck(isOryNetwork, isSettingsLoaded);
 
   const isKratosHealthy = kratosHealth.data?.isHealthy ?? false;
   const isHydraHealthy = hydraHealth.data?.isHealthy ?? false;
