@@ -8,6 +8,7 @@ export async function GET() {
     kratosAdminUrl: process.env.KRATOS_ADMIN_URL || 'http://localhost:4434',
     hydraPublicUrl: process.env.HYDRA_PUBLIC_URL || 'http://localhost:4444',
     hydraAdminUrl: process.env.HYDRA_ADMIN_URL || 'http://localhost:4445',
+    isOryNetwork: process.env.IS_ORY_NETWORK === 'true',
   };
 
   return NextResponse.json(config);

@@ -4,16 +4,19 @@ import { persist } from 'zustand/middleware';
 export interface KratosEndpoints {
   publicUrl: string;
   adminUrl: string;
+  apiKey?: string;
 }
 
 export interface HydraEndpoints {
   publicUrl: string;
   adminUrl: string;
+  apiKey?: string;
 }
 
 export interface SettingsStoreState {
   kratosEndpoints: KratosEndpoints;
   hydraEndpoints: HydraEndpoints;
+  isOryNetwork: boolean;
   setKratosEndpoints: (endpoints: KratosEndpoints) => void;
   setHydraEndpoints: (endpoints: HydraEndpoints) => void;
   resetToDefaults: () => void;
@@ -22,9 +25,9 @@ export interface SettingsStoreState {
   loadDefaults: () => Promise<void>;
 }
 
-let serverDefaults: { kratos: KratosEndpoints; hydra: HydraEndpoints } | null = null;
+let serverDefaults: { kratos: KratosEndpoints; hydra: HydraEndpoints; isOryNetwork: boolean } | null = null;
 
-async function fetchServerDefaults(): Promise<{ kratos: KratosEndpoints; hydra: HydraEndpoints }> {
+async function fetchServerDefaults(): Promise<{ kratos: KratosEndpoints; hydra: HydraEndpoints; isOryNetwork: boolean }> {
   if (serverDefaults) {
     return serverDefaults;
   }
@@ -42,6 +45,7 @@ async function fetchServerDefaults(): Promise<{ kratos: KratosEndpoints; hydra: 
           publicUrl: config.hydraPublicUrl || 'http://localhost:4444',
           adminUrl: config.hydraAdminUrl || 'http://localhost:4445',
         },
+        isOryNetwork: config.isOryNetwork || false,
       };
       return serverDefaults;
     }
@@ -59,6 +63,7 @@ async function fetchServerDefaults(): Promise<{ kratos: KratosEndpoints; hydra: 
       publicUrl: 'http://localhost:4444',
       adminUrl: 'http://localhost:4445',
     },
+    isOryNetwork: false,
   };
   serverDefaults = fallback;
   return fallback;
@@ -80,6 +85,7 @@ export const useSettingsStore = create<SettingsStoreState>()(
     (set, get) => ({
       kratosEndpoints: INITIAL_KRATOS_ENDPOINTS,
       hydraEndpoints: INITIAL_HYDRA_ENDPOINTS,
+      isOryNetwork: false,
       isLoaded: false,
 
       loadDefaults: async () => {
@@ -87,6 +93,7 @@ export const useSettingsStore = create<SettingsStoreState>()(
         set({
           kratosEndpoints: defaults.kratos,
           hydraEndpoints: defaults.hydra,
+          isOryNetwork: defaults.isOryNetwork,
           isLoaded: true,
         });
 
@@ -106,6 +113,7 @@ export const useSettingsStore = create<SettingsStoreState>()(
         if (typeof document !== 'undefined') {
           document.cookie = `kratos-public-url=${encodeURIComponent(endpoints.publicUrl)}; path=/; SameSite=Strict`;
           document.cookie = `kratos-admin-url=${encodeURIComponent(endpoints.adminUrl)}; path=/; SameSite=Strict`;
+          document.cookie = `kratos-api-key=${endpoints.apiKey || ''}; path=/; SameSite=Strict`;
         }
       },
 
@@ -116,6 +124,7 @@ export const useSettingsStore = create<SettingsStoreState>()(
         if (typeof document !== 'undefined') {
           document.cookie = `hydra-public-url=${encodeURIComponent(endpoints.publicUrl)}; path=/; SameSite=Strict`;
           document.cookie = `hydra-admin-url=${encodeURIComponent(endpoints.adminUrl)}; path=/; SameSite=Strict`;
+          document.cookie = `hydra-api-key=${endpoints.apiKey || ''}; path=/; SameSite=Strict`;
         }
       },
 
@@ -149,10 +158,14 @@ export const useSettingsStore = create<SettingsStoreState>()(
       partialize: (state) => ({
         kratosEndpoints: state.kratosEndpoints,
         hydraEndpoints: state.hydraEndpoints,
+        isOryNetwork: state.isOryNetwork,
       }),
       onRehydrateStorage: () => (state) => {
         // When storage is rehydrated, check if we have stored endpoints
-        if (state?.kratosEndpoints && state?.hydraEndpoints) {
+        if (state?.kratosEndpoints?.publicUrl && state?.hydraEndpoints?.publicUrl) {
+          // Mark as loaded since we have valid persisted settings
+          useSettingsStore.setState({ isLoaded: true });
+
           // Set cookies for middleware to read
           if (typeof document !== 'undefined') {
             document.cookie = `kratos-public-url=${encodeURIComponent(state.kratosEndpoints.publicUrl)}; path=/; SameSite=Strict`;
@@ -172,6 +185,7 @@ export const useSettingsStore = create<SettingsStoreState>()(
 // Convenience hooks
 export const useKratosEndpoints = () => useSettingsStore((state) => state.kratosEndpoints);
 export const useHydraEndpoints = () => useSettingsStore((state) => state.hydraEndpoints);
+export const useIsOryNetwork = () => useSettingsStore((state) => state.isOryNetwork);
 export const useSetKratosEndpoints = () => useSettingsStore((state) => state.setKratosEndpoints);
 export const useSetHydraEndpoints = () => useSettingsStore((state) => state.setHydraEndpoints);
 export const useResetSettings = () => useSettingsStore((state) => state.resetToDefaults);

@@ -5,36 +5,65 @@ async function proxyToService(request: NextRequest, baseUrl: string, pathPrefix:
     const targetPath = request.nextUrl.pathname.replace(pathPrefix, '');
     const targetUrl = `${baseUrl}${targetPath}${request.nextUrl.search}`;
 
+    const requestHeaders = new Headers(request.headers);
+
+    ["x-forwarded", "x-real-ip"].forEach(prefix => {
+      for (const key of [...requestHeaders.keys()]) {
+        if (key.startsWith(prefix)) requestHeaders.delete(key);
+      }
+    });
+
+    ["host", "connection", "upgrade"].forEach(h => requestHeaders.delete(h));
+
+    let authorizationHeader = undefined
+    if (serviceName == 'Kratos') {
+      const kratosApiKey =
+            request.cookies.get('kratos-api-key')?.value ||
+            request.headers.get('x-kratos-api-key') ||
+            process.env.KRATOS_API_KEY ||
+            undefined;
+      if (kratosApiKey) {
+        authorizationHeader = `Bearer ${kratosApiKey}`
+      }
+    } else if (serviceName == 'Hydra') {
+      const hydraApiKey =
+            request.cookies.get('hydra-api-key')?.value ||
+            request.headers.get('x-hydra-api-key') ||
+            process.env.HYDRA_API_KEY ||
+            undefined;
+      if (hydraApiKey) {
+        authorizationHeader = `Bearer ${hydraApiKey}`
+      }
+    }
+    
+    if (authorizationHeader) {
+      requestHeaders.set("Authorization", authorizationHeader);
+    }
+    
     const response = await fetch(targetUrl, {
       method: request.method,
-      headers: Object.fromEntries(
-        Array.from(request.headers.entries()).filter(
-          ([key]) =>
-            // Forward relevant headers but exclude problematic ones
-            !key.startsWith('x-forwarded') && !key.startsWith('x-real-ip') && key !== 'host' && key !== 'connection' && key !== 'upgrade'
-        )
-      ),
+      headers: requestHeaders,
       body: request.method !== 'GET' && request.method !== 'HEAD' ? await request.arrayBuffer() : undefined,
     });
 
     // Handle different response types
     if (response.status === 204) {
-      const headers = new Headers();
+      const responseHeaders = new Headers();
       response.headers.forEach((value, key) => {
         if (key.toLowerCase() !== 'content-encoding' && key.toLowerCase() !== 'transfer-encoding') {
-          headers.set(key, value);
+          responseHeaders.set(key, value);
         }
       });
 
       return new NextResponse(null, {
         status: 204,
-        headers,
+        headers: responseHeaders,
       });
     }
 
     // Handle successful responses with content
     const responseBody = await response.arrayBuffer();
-    const headers = new Headers();
+    const responseHeaders = new Headers();
 
     // Copy response headers selectively to avoid Next.js Edge Runtime issues
     // The 'location' header from Ory Hydra's 201 responses causes "Invalid URL" TypeErrors
@@ -45,14 +74,14 @@ async function proxyToService(request: NextRequest, baseUrl: string, pathPrefix:
       const lowerKey = key.toLowerCase();
       // Only copy safe headers and custom x-* headers (excluding forwarding headers)
       if (safeHeaders.includes(lowerKey) || (lowerKey.startsWith('x-') && !lowerKey.startsWith('x-forwarded') && !lowerKey.startsWith('x-real-ip'))) {
-        headers.set(key, value);
+        responseHeaders.set(key, value);
       }
     });
 
     return new NextResponse(responseBody, {
       status: response.status,
       statusText: response.statusText,
-      headers,
+      headers: responseHeaders,
     });
   } catch (error) {
     console.error(`[Middleware] Failed to proxy ${request.nextUrl.pathname}:`, error);
