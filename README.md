@@ -124,7 +124,7 @@ src/
 
 API Keys are typically mandatory when accessing an Ory Network project.
 
-`IS_ORY_NETWORK` must be set (to any value) when using the Admin UI on Ory Network. Otherwise keep unset.
+`IS_ORY_NETWORK` must be set to `true` when using the Admin UI on Ory Network.
 
 Endpoints and API Keys can also be configured via the settings dialog in the application.
 
