@@ -116,10 +116,17 @@ src/
 | ------------------- | ----------------------- |
 | `KRATOS_PUBLIC_URL` | `http://localhost:4433` |
 | `KRATOS_ADMIN_URL`  | `http://localhost:4434` |
+| `KRATOS_API_KEY`    | |
 | `HYDRA_ADMIN_URL`   | `http://localhost:4445` |
 | `HYDRA_PUBLIC_URL`  | `http://localhost:4444` |
+| `HYDRA_API_KEY`     | |
+| `IS_ORY_NETWORK`    | |
 
-Endpoints can also be configured via the settings dialog in the application.
+API Keys are typically mandatory when accessing an Ory Network project.
+
+`IS_ORY_NETWORK` must be set to `true` when using the Admin UI on Ory Network.
+
+Endpoints and API Keys can also be configured via the settings dialog in the application.
 
 ## Development
 

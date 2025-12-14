@@ -19,11 +19,13 @@ import { useTheme } from '@/providers/ThemeProvider';
 interface KratosSettingsForm {
   publicUrl: string;
   adminUrl: string;
+  apiKey?: string;
 }
 
 interface HydraSettingsForm {
   publicUrl: string;
   adminUrl: string;
+  apiKey?: string;
 }
 
 export default function SettingsPage() {
@@ -71,6 +73,7 @@ export default function SettingsPage() {
     kratosForm.reset({
       publicUrl: kratosEndpoints.publicUrl,
       adminUrl: kratosEndpoints.adminUrl,
+      apiKey: kratosEndpoints.apiKey,
     });
   }, [kratosEndpoints, kratosForm]);
 
@@ -78,6 +81,7 @@ export default function SettingsPage() {
     hydraForm.reset({
       publicUrl: hydraEndpoints.publicUrl,
       adminUrl: hydraEndpoints.adminUrl,
+      apiKey: hydraEndpoints.apiKey,
     });
   }, [hydraEndpoints, hydraForm]);
 
@@ -86,6 +90,7 @@ export default function SettingsPage() {
       setKratosEndpoints({
         publicUrl: data.publicUrl.trim(),
         adminUrl: data.adminUrl.trim(),
+        apiKey: data.apiKey?.trim(),
       });
       setShowSuccessMessage(true);
     } catch (error) {
@@ -98,6 +103,7 @@ export default function SettingsPage() {
       setHydraEndpoints({
         publicUrl: data.publicUrl.trim(),
         adminUrl: data.adminUrl.trim(),
+        apiKey: data.apiKey?.trim(),
       });
       setShowSuccessMessage(true);
     } catch (error) {
@@ -221,6 +227,22 @@ export default function SettingsPage() {
                       )}
                     />
                   </Grid>
+
+                  <Grid size={{ xs: 12, md: 6 }}>
+                    <Controller
+                      name="apiKey"
+                      control={kratosControl}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          label="Kratos API Key"
+                          placeholder="ory_pat_xxx"
+                          fullWidth
+                          helperText={kratosErrors.apiKey?.message || 'Used to access Ory Network for instance'}
+                        />
+                      )}
+                    />
+                  </Grid>
                 </Grid>
 
                 <ActionBar
@@ -287,6 +309,22 @@ export default function SettingsPage() {
                           fullWidth
                           error={!!hydraErrors.adminUrl}
                           helperText={hydraErrors.adminUrl?.message || 'Used for OAuth2 client and flow management'}
+                        />
+                      )}
+                    />
+                  </Grid>
+
+                  <Grid size={{ xs: 12, md: 6 }}>
+                    <Controller
+                      name="apiKey"
+                      control={hydraControl}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          label="Hydra API Key"
+                          placeholder="ory_pat_xxx"
+                          fullWidth
+                          helperText={hydraErrors.apiKey?.message || 'Used to access Ory Network for instance'}
                         />
                       )}
                     />
