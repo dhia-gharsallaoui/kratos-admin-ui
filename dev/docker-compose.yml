@@ -108,7 +108,7 @@ services:
     image: busybox
     volumes:
       - hydra-sqlite:/mnt/sqlite
-    command: "chmod -R 777 /mnt/sqlite"
+    command: 'chmod -R 777 /mnt/sqlite'
 
   # Hydra Migration Service
   hydra-migrate:
