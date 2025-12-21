@@ -8,21 +8,18 @@ async function proxyToService(request: NextRequest, baseUrl: string, pathPrefix:
 
     const requestHeaders = new Headers(request.headers);
 
-    ["x-forwarded", "x-real-ip"].forEach(prefix => {
+    ['x-forwarded', 'x-real-ip'].forEach((prefix) => {
       for (const key of [...requestHeaders.keys()]) {
         if (key.startsWith(prefix)) requestHeaders.delete(key);
       }
     });
 
-    ["host", "connection", "upgrade"].forEach(h => requestHeaders.delete(h));
+    ['host', 'connection', 'upgrade'].forEach((h) => requestHeaders.delete(h));
 
     let authorizationHeader = undefined;
     if (serviceName == 'Kratos') {
       const kratosApiKeyEncrypted =
-        request.cookies.get('kratos-api-key')?.value ||
-        request.headers.get('x-kratos-api-key') ||
-        process.env.KRATOS_API_KEY ||
-        undefined;
+        request.cookies.get('kratos-api-key')?.value || request.headers.get('x-kratos-api-key') || process.env.KRATOS_API_KEY || undefined;
       if (kratosApiKeyEncrypted) {
         // Decrypt the API key (handles both encrypted and plain text values)
         const kratosApiKey = await decryptApiKey(kratosApiKeyEncrypted);
@@ -32,10 +29,7 @@ async function proxyToService(request: NextRequest, baseUrl: string, pathPrefix:
       }
     } else if (serviceName == 'Hydra') {
       const hydraApiKeyEncrypted =
-        request.cookies.get('hydra-api-key')?.value ||
-        request.headers.get('x-hydra-api-key') ||
-        process.env.HYDRA_API_KEY ||
-        undefined;
+        request.cookies.get('hydra-api-key')?.value || request.headers.get('x-hydra-api-key') || process.env.HYDRA_API_KEY || undefined;
       if (hydraApiKeyEncrypted) {
         // Decrypt the API key (handles both encrypted and plain text values)
         const hydraApiKey = await decryptApiKey(hydraApiKeyEncrypted);
@@ -44,11 +38,11 @@ async function proxyToService(request: NextRequest, baseUrl: string, pathPrefix:
         }
       }
     }
-    
+
     if (authorizationHeader) {
-      requestHeaders.set("Authorization", authorizationHeader);
+      requestHeaders.set('Authorization', authorizationHeader);
     }
-    
+
     const response = await fetch(targetUrl, {
       method: request.method,
       headers: requestHeaders,

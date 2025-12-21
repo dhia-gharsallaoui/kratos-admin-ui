@@ -116,11 +116,11 @@ src/
 | ------------------- | ----------------------- |
 | `KRATOS_PUBLIC_URL` | `http://localhost:4433` |
 | `KRATOS_ADMIN_URL`  | `http://localhost:4434` |
-| `KRATOS_API_KEY`    | |
+| `KRATOS_API_KEY`    |                         |
 | `HYDRA_ADMIN_URL`   | `http://localhost:4445` |
 | `HYDRA_PUBLIC_URL`  | `http://localhost:4444` |
-| `HYDRA_API_KEY`     | |
-| `IS_ORY_NETWORK`    | |
+| `HYDRA_API_KEY`     |                         |
+| `IS_ORY_NETWORK`    |                         |
 
 API Keys are typically mandatory when accessing an Ory Network project.
 
