@@ -120,7 +120,7 @@ async function proxyToService(request: NextRequest, baseUrl: string, pathPrefix:
 	}
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
 	const { pathname } = request.nextUrl;
 
 	// Handle Kratos public API proxying
