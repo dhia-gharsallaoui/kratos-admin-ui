@@ -11,6 +11,8 @@ import {
   useHydraEndpoints,
   useSetKratosEndpoints,
   useSetHydraEndpoints,
+  useIsOryNetwork,
+  useSetIsOryNetwork,
   useResetSettings,
   useIsValidUrl,
 } from '@/features/settings/hooks/useSettings';
@@ -31,6 +33,10 @@ interface HydraSettingsForm {
 export default function SettingsPage() {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const { theme: currentTheme, toggleTheme } = useTheme();
+
+  // Ory Network mode
+  const isOryNetwork = useIsOryNetwork();
+  const setIsOryNetwork = useSetIsOryNetwork();
 
   // Kratos settings
   const kratosEndpoints = useKratosEndpoints();
@@ -168,6 +174,38 @@ export default function SettingsPage() {
                   </Typography>
                 </Grid>
               </Grid>
+            </SectionCard>
+          </Grid>
+
+          {/* Connection Mode */}
+          <Grid size={{ xs: 12 }}>
+            <SectionCard
+              title={
+                <FlexBox align="center" gap={1}>
+                  <CloudIcon />
+                  <Typography variant="heading" size="lg">
+                    Connection Mode
+                  </Typography>
+                </FlexBox>
+              }
+            >
+              <FlexBox align="center" justify="space-between">
+                <Box>
+                  <Typography variant="label">Ory Network Mode</Typography>
+                  <Typography variant="body" color="secondary" sx={{ mt: 0.5 }}>
+                    Enable when connecting to Ory Network (managed service). This skips health checks that aren&apos;t available on Ory
+                    Network.
+                  </Typography>
+                </Box>
+                <Switch
+                  checked={isOryNetwork}
+                  onChange={(e) => {
+                    setIsOryNetwork(e.target.checked);
+                    setShowSuccessMessage(true);
+                  }}
+                  color="primary"
+                />
+              </FlexBox>
             </SectionCard>
           </Grid>
 
