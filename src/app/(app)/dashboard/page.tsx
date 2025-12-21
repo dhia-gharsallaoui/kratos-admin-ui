@@ -241,7 +241,7 @@ export default function Dashboard() {
                     data:
                       identity.data?.identitiesBySchema.map((item, index) => ({
                         id: index,
-                        label: item.schema,
+                        label: item.schema.length > 20 ? `${item.schema.slice(0, 20)}...` : item.schema,
                         value: item.count,
                       })) || [],
                     innerRadius: 40,
@@ -249,6 +249,10 @@ export default function Dashboard() {
                     paddingAngle: 3,
                     cornerRadius: 4,
                     highlightScope: { fade: 'global', highlight: 'item' },
+                    valueFormatter: (value, { dataIndex }) => {
+                      const schema = identity.data?.identitiesBySchema[dataIndex]?.schema || '';
+                      return `${schema}: ${value.value}`;
+                    },
                   },
                 ]}
                 height={350}
@@ -373,6 +377,10 @@ export default function Dashboard() {
                     paddingAngle: 3,
                     cornerRadius: 4,
                     highlightScope: { fade: 'global', highlight: 'item' },
+                    valueFormatter: (value, { dataIndex }) => {
+                      const labels = ['Public', 'Confidential'];
+                      return `${labels[dataIndex]}: ${value.value}`;
+                    },
                   },
                 ]}
                 height={350}
@@ -394,7 +402,7 @@ export default function Dashboard() {
                     data:
                       hydra.data?.clientsByGrantType.map((item, index) => ({
                         id: index,
-                        label: item.grantType,
+                        label: item.grantType.length > 20 ? `${item.grantType.slice(0, 20)}...` : item.grantType,
                         value: item.count,
                       })) || [],
                     innerRadius: 60,
@@ -402,6 +410,10 @@ export default function Dashboard() {
                     paddingAngle: 2,
                     cornerRadius: 4,
                     highlightScope: { fade: 'global', highlight: 'item' },
+                    valueFormatter: (value, { dataIndex }) => {
+                      const grantType = hydra.data?.clientsByGrantType[dataIndex]?.grantType || '';
+                      return `${grantType}: ${value.value}`;
+                    },
                   },
                 ]}
                 height={350}
