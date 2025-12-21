@@ -7,7 +7,7 @@ import { useIsOryNetwork, useSettingsLoaded } from '@/features/settings/hooks/us
 // Health check hooks
 const useKratosHealthCheck = (isOryNetwork: boolean, isSettingsLoaded: boolean) => {
   return useQuery({
-    queryKey: ['health', 'kratos'],
+    queryKey: ['health', 'kratos', isOryNetwork],
     queryFn: async () => {
       // Ory Network does not provide health check endpoints
       if (isOryNetwork) {
@@ -23,7 +23,7 @@ const useKratosHealthCheck = (isOryNetwork: boolean, isSettingsLoaded: boolean) 
 
 const useHydraHealthCheck = (isOryNetwork: boolean, isSettingsLoaded: boolean) => {
   return useQuery({
-    queryKey: ['health', 'hydra'],
+    queryKey: ['health', 'hydra', isOryNetwork],
     queryFn: async () => {
       // Ory Network does not provide health check endpoints
       if (isOryNetwork) {

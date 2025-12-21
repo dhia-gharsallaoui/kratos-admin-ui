@@ -19,6 +19,7 @@ export interface SettingsStoreState {
   isOryNetwork: boolean;
   setKratosEndpoints: (endpoints: KratosEndpoints) => void;
   setHydraEndpoints: (endpoints: HydraEndpoints) => void;
+  setIsOryNetwork: (value: boolean) => void;
   resetToDefaults: () => void;
   isValidUrl: (url: string) => boolean;
   isLoaded: boolean;
@@ -128,11 +129,16 @@ export const useSettingsStore = create<SettingsStoreState>()(
         }
       },
 
+      setIsOryNetwork: (value: boolean) => {
+        set({ isOryNetwork: value });
+      },
+
       resetToDefaults: async () => {
         const defaultEndpoints = await fetchServerDefaults();
         set({
           kratosEndpoints: defaultEndpoints.kratos,
           hydraEndpoints: defaultEndpoints.hydra,
+          isOryNetwork: defaultEndpoints.isOryNetwork,
         });
 
         // Set cookies for middleware to read
@@ -188,6 +194,7 @@ export const useHydraEndpoints = () => useSettingsStore((state) => state.hydraEn
 export const useIsOryNetwork = () => useSettingsStore((state) => state.isOryNetwork);
 export const useSetKratosEndpoints = () => useSettingsStore((state) => state.setKratosEndpoints);
 export const useSetHydraEndpoints = () => useSettingsStore((state) => state.setHydraEndpoints);
+export const useSetIsOryNetwork = () => useSettingsStore((state) => state.setIsOryNetwork);
 export const useResetSettings = () => useSettingsStore((state) => state.resetToDefaults);
 export const useIsValidUrl = () => useSettingsStore((state) => state.isValidUrl);
 export const useLoadDefaults = () => useSettingsStore((state) => state.loadDefaults);
