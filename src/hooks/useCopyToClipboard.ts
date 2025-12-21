@@ -1,9 +1,9 @@
-import { useState, useCallback } from 'react';
+import { useCallback, useState } from "react";
 
 export interface UseCopyToClipboardReturn {
-  copy: (text: string, label?: string) => Promise<void>;
-  copiedField: string | null;
-  isCopied: boolean;
+	copy: (text: string, label?: string) => Promise<void>;
+	copiedField: string | null;
+	isCopied: boolean;
 }
 
 /**
@@ -12,25 +12,25 @@ export interface UseCopyToClipboardReturn {
  * @returns Object with copy function and copied state
  */
 export function useCopyToClipboard(timeout = 2000): UseCopyToClipboardReturn {
-  const [copiedField, setCopiedField] = useState<string | null>(null);
+	const [copiedField, setCopiedField] = useState<string | null>(null);
 
-  const copy = useCallback(
-    async (text: string, label?: string) => {
-      try {
-        await navigator.clipboard.writeText(text);
-        setCopiedField(label || 'default');
-        setTimeout(() => setCopiedField(null), timeout);
-      } catch (error) {
-        console.error('Failed to copy to clipboard:', error);
-        throw error;
-      }
-    },
-    [timeout]
-  );
+	const copy = useCallback(
+		async (text: string, label?: string) => {
+			try {
+				await navigator.clipboard.writeText(text);
+				setCopiedField(label || "default");
+				setTimeout(() => setCopiedField(null), timeout);
+			} catch (error) {
+				console.error("Failed to copy to clipboard:", error);
+				throw error;
+			}
+		},
+		[timeout],
+	);
 
-  return {
-    copy,
-    copiedField,
-    isCopied: copiedField !== null,
-  };
+	return {
+		copy,
+		copiedField,
+		isCopied: copiedField !== null,
+	};
 }

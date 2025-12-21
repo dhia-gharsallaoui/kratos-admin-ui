@@ -1,9 +1,9 @@
-import { LoadingState } from '@/components/ui';
+import { LoadingState } from "@/components/ui";
 
 interface SessionsLoadingSkeletonProps {
-  rows?: number;
+	rows?: number;
 }
 
-export const SessionsLoadingSkeleton = ({ rows = 5 }: SessionsLoadingSkeletonProps) => {
-  return <LoadingState variant="section" message="Loading sessions..." />;
+export const SessionsLoadingSkeleton = ({ rows: _rows = 5 }: SessionsLoadingSkeletonProps) => {
+	return <LoadingState variant="section" message="Loading sessions..." />;
 };

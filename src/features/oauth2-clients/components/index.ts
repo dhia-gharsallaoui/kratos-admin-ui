@@ -1,1 +1,1 @@
-export { OAuth2ClientForm } from './OAuth2ClientForm';
+export { OAuth2ClientForm } from "./OAuth2ClientForm";

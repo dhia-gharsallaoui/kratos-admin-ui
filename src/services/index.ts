@@ -1,3 +1,4 @@
 // Export all services
-export * from './kratos';
-export * from './hydra';
+
+export * from "./hydra";
+export * from "./kratos";
