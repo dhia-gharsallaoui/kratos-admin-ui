@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Box, Container, Grid, Paper, Snackbar, Switch, Button } from '@/components/ui';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Box, Container, Grid, Paper, Snackbar, Switch, Button, IconButton, InputAdornment } from '@/components/ui';
 import { ActionBar, Alert, TextField, Typography } from '@/components/ui';
+import { Visibility, VisibilityOff, Edit as EditIcon } from '@mui/icons-material';
 import { Settings as SettingsIcon, RestartAlt as ResetIcon, Save as SaveIcon, Palette as PaletteIcon, Cloud as CloudIcon } from '@mui/icons-material';
 import { PageHeader, ProtectedPage, SectionCard, FlexBox } from '@/components/layout';
 import { useForm, Controller } from 'react-hook-form';
@@ -33,6 +34,12 @@ interface HydraSettingsForm {
 export default function SettingsPage() {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const { theme: currentTheme, toggleTheme } = useTheme();
+
+  // API key editing states
+  const [isEditingKratosApiKey, setIsEditingKratosApiKey] = useState(false);
+  const [isEditingHydraApiKey, setIsEditingHydraApiKey] = useState(false);
+  const [showKratosApiKey, setShowKratosApiKey] = useState(false);
+  const [showHydraApiKey, setShowHydraApiKey] = useState(false);
 
   // Ory Network mode
   const isOryNetwork = useIsOryNetwork();
@@ -93,11 +100,13 @@ export default function SettingsPage() {
 
   const handleKratosSave = async (data: KratosSettingsForm) => {
     try {
-      setKratosEndpoints({
+      await setKratosEndpoints({
         publicUrl: data.publicUrl.trim(),
         adminUrl: data.adminUrl.trim(),
-        apiKey: data.apiKey?.trim(),
+        apiKey: data.apiKey?.trim() || '',
       });
+      setIsEditingKratosApiKey(false);
+      setShowKratosApiKey(false);
       setShowSuccessMessage(true);
     } catch (error) {
       console.error('Failed to save Kratos settings:', error);
@@ -106,11 +115,13 @@ export default function SettingsPage() {
 
   const handleHydraSave = async (data: HydraSettingsForm) => {
     try {
-      setHydraEndpoints({
+      await setHydraEndpoints({
         publicUrl: data.publicUrl.trim(),
         adminUrl: data.adminUrl.trim(),
-        apiKey: data.apiKey?.trim(),
+        apiKey: data.apiKey?.trim() || '',
       });
+      setIsEditingHydraApiKey(false);
+      setShowHydraApiKey(false);
       setShowSuccessMessage(true);
     } catch (error) {
       console.error('Failed to save Hydra settings:', error);
@@ -267,19 +278,66 @@ export default function SettingsPage() {
                   </Grid>
 
                   <Grid size={{ xs: 12, md: 6 }}>
-                    <Controller
-                      name="apiKey"
-                      control={kratosControl}
-                      render={({ field }) => (
+                    {kratosEndpoints.apiKey && !isEditingKratosApiKey ? (
+                      <Box>
                         <TextField
-                          {...field}
+                          value="••••••••••••••••"
                           label="Kratos API Key"
-                          placeholder="ory_pat_xxx"
+                          disabled
                           fullWidth
-                          helperText={kratosErrors.apiKey?.message || 'Used to access Ory Network for instance'}
+                          helperText="API key is set and encrypted"
+                          slotProps={{
+                            input: {
+                              endAdornment: (
+                                <InputAdornment position="end">
+                                  <Button
+                                    size="small"
+                                    variant="outlined"
+                                    startIcon={<EditIcon />}
+                                    onClick={() => {
+                                      setIsEditingKratosApiKey(true);
+                                      kratosForm.setValue('apiKey', '');
+                                    }}
+                                  >
+                                    Update
+                                  </Button>
+                                </InputAdornment>
+                              ),
+                            },
+                          }}
                         />
-                      )}
-                    />
+                      </Box>
+                    ) : (
+                      <Controller
+                        name="apiKey"
+                        control={kratosControl}
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
+                            label="Kratos API Key"
+                            placeholder="ory_pat_xxx"
+                            fullWidth
+                            type={showKratosApiKey ? 'text' : 'password'}
+                            helperText={kratosErrors.apiKey?.message || 'Enter your API key - it will be encrypted'}
+                            slotProps={{
+                              input: {
+                                endAdornment: (
+                                  <InputAdornment position="end">
+                                    <IconButton
+                                      aria-label="toggle api key visibility"
+                                      onClick={() => setShowKratosApiKey(!showKratosApiKey)}
+                                      edge="end"
+                                    >
+                                      {showKratosApiKey ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                  </InputAdornment>
+                                ),
+                              },
+                            }}
+                          />
+                        )}
+                      />
+                    )}
                   </Grid>
                 </Grid>
 
@@ -288,7 +346,7 @@ export default function SettingsPage() {
                     label: 'Save Kratos Settings',
                     onClick: handleKratosSubmit(handleKratosSave),
                     icon: <SaveIcon />,
-                    disabled: !kratosIsDirty,
+                    disabled: !kratosIsDirty && !isEditingKratosApiKey,
                   }}
                 />
               </Box>
@@ -353,19 +411,66 @@ export default function SettingsPage() {
                   </Grid>
 
                   <Grid size={{ xs: 12, md: 6 }}>
-                    <Controller
-                      name="apiKey"
-                      control={hydraControl}
-                      render={({ field }) => (
+                    {hydraEndpoints.apiKey && !isEditingHydraApiKey ? (
+                      <Box>
                         <TextField
-                          {...field}
+                          value="••••••••••••••••"
                           label="Hydra API Key"
-                          placeholder="ory_pat_xxx"
+                          disabled
                           fullWidth
-                          helperText={hydraErrors.apiKey?.message || 'Used to access Ory Network for instance'}
+                          helperText="API key is set and encrypted"
+                          slotProps={{
+                            input: {
+                              endAdornment: (
+                                <InputAdornment position="end">
+                                  <Button
+                                    size="small"
+                                    variant="outlined"
+                                    startIcon={<EditIcon />}
+                                    onClick={() => {
+                                      setIsEditingHydraApiKey(true);
+                                      hydraForm.setValue('apiKey', '');
+                                    }}
+                                  >
+                                    Update
+                                  </Button>
+                                </InputAdornment>
+                              ),
+                            },
+                          }}
                         />
-                      )}
-                    />
+                      </Box>
+                    ) : (
+                      <Controller
+                        name="apiKey"
+                        control={hydraControl}
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
+                            label="Hydra API Key"
+                            placeholder="ory_pat_xxx"
+                            fullWidth
+                            type={showHydraApiKey ? 'text' : 'password'}
+                            helperText={hydraErrors.apiKey?.message || 'Enter your API key - it will be encrypted'}
+                            slotProps={{
+                              input: {
+                                endAdornment: (
+                                  <InputAdornment position="end">
+                                    <IconButton
+                                      aria-label="toggle api key visibility"
+                                      onClick={() => setShowHydraApiKey(!showHydraApiKey)}
+                                      edge="end"
+                                    >
+                                      {showHydraApiKey ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                  </InputAdornment>
+                                ),
+                              },
+                            }}
+                          />
+                        )}
+                      />
+                    )}
                   </Grid>
                 </Grid>
 
@@ -374,7 +479,7 @@ export default function SettingsPage() {
                     label: 'Save Hydra Settings',
                     onClick: handleHydraSubmit(handleHydraSave),
                     icon: <SaveIcon />,
-                    disabled: !hydraIsDirty,
+                    disabled: !hydraIsDirty && !isEditingHydraApiKey,
                   }}
                 />
               </Box>
