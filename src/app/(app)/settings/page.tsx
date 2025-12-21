@@ -1,12 +1,10 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
-import { Box, Container, Grid, Paper, Snackbar, Switch, Button, IconButton, InputAdornment } from '@/components/ui';
-import { ActionBar, Alert, TextField, Typography } from '@/components/ui';
-import { Visibility, VisibilityOff, Edit as EditIcon } from '@mui/icons-material';
-import { Settings as SettingsIcon, RestartAlt as ResetIcon, Save as SaveIcon, Palette as PaletteIcon, Cloud as CloudIcon } from '@mui/icons-material';
-import { PageHeader, ProtectedPage, SectionCard, FlexBox } from '@/components/layout';
-import { useForm, Controller } from 'react-hook-form';
+import React, { useState } from 'react';
+import { Container, Grid, Snackbar } from '@/components/ui';
+import { Alert } from '@/components/ui';
+import { Settings as SettingsIcon } from '@mui/icons-material';
+import { PageHeader, ProtectedPage } from '@/components/layout';
 import {
   useKratosEndpoints,
   useHydraEndpoints,
@@ -18,130 +16,60 @@ import {
   useIsValidUrl,
 } from '@/features/settings/hooks/useSettings';
 import { useTheme } from '@/providers/ThemeProvider';
-
-interface KratosSettingsForm {
-  publicUrl: string;
-  adminUrl: string;
-  apiKey?: string;
-}
-
-interface HydraSettingsForm {
-  publicUrl: string;
-  adminUrl: string;
-  apiKey?: string;
-}
+import { useServiceSettingsForm } from './hooks';
+import { AppearanceSection, ConnectionModeSection, ServiceConfigSection, ResetSection } from './components';
 
 export default function SettingsPage() {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const { theme: currentTheme, toggleTheme } = useTheme();
 
-  // API key editing states
-  const [isEditingKratosApiKey, setIsEditingKratosApiKey] = useState(false);
-  const [isEditingHydraApiKey, setIsEditingHydraApiKey] = useState(false);
-  const [showKratosApiKey, setShowKratosApiKey] = useState(false);
-  const [showHydraApiKey, setShowHydraApiKey] = useState(false);
-
-  // Ory Network mode
+  // Settings store hooks
   const isOryNetwork = useIsOryNetwork();
   const setIsOryNetwork = useSetIsOryNetwork();
-
-  // Kratos settings
   const kratosEndpoints = useKratosEndpoints();
   const setKratosEndpoints = useSetKratosEndpoints();
-
-  // Hydra settings
   const hydraEndpoints = useHydraEndpoints();
   const setHydraEndpoints = useSetHydraEndpoints();
-
   const resetSettings = useResetSettings();
   const isValidUrl = useIsValidUrl();
 
-  const kratosForm = useForm<KratosSettingsForm>({
-    defaultValues: {
-      publicUrl: kratosEndpoints.publicUrl,
-      adminUrl: kratosEndpoints.adminUrl,
-    },
+  // Success callback for all save operations
+  const showSuccess = () => setShowSuccessMessage(true);
+
+  // Form hooks for Kratos and Hydra
+  const kratosForm = useServiceSettingsForm({
+    endpoints: kratosEndpoints,
+    setEndpoints: setKratosEndpoints,
+    onSuccess: showSuccess,
   });
 
-  const hydraForm = useForm<HydraSettingsForm>({
-    defaultValues: {
-      publicUrl: hydraEndpoints.publicUrl,
-      adminUrl: hydraEndpoints.adminUrl,
-    },
+  const hydraForm = useServiceSettingsForm({
+    endpoints: hydraEndpoints,
+    setEndpoints: setHydraEndpoints,
+    onSuccess: showSuccess,
   });
 
-  const {
-    handleSubmit: handleKratosSubmit,
-    control: kratosControl,
-    formState: { errors: kratosErrors, isDirty: kratosIsDirty },
-  } = kratosForm;
-
-  const {
-    handleSubmit: handleHydraSubmit,
-    control: hydraControl,
-    formState: { errors: hydraErrors, isDirty: hydraIsDirty },
-  } = hydraForm;
-
-  useEffect(() => {
-    kratosForm.reset({
-      publicUrl: kratosEndpoints.publicUrl,
-      adminUrl: kratosEndpoints.adminUrl,
-      apiKey: kratosEndpoints.apiKey,
-    });
-  }, [kratosEndpoints, kratosForm]);
-
-  useEffect(() => {
-    hydraForm.reset({
-      publicUrl: hydraEndpoints.publicUrl,
-      adminUrl: hydraEndpoints.adminUrl,
-      apiKey: hydraEndpoints.apiKey,
-    });
-  }, [hydraEndpoints, hydraForm]);
-
-  const handleKratosSave = async (data: KratosSettingsForm) => {
-    try {
-      await setKratosEndpoints({
-        publicUrl: data.publicUrl.trim(),
-        adminUrl: data.adminUrl.trim(),
-        apiKey: data.apiKey?.trim() || '',
-      });
-      setIsEditingKratosApiKey(false);
-      setShowKratosApiKey(false);
-      setShowSuccessMessage(true);
-    } catch (error) {
-      console.error('Failed to save Kratos settings:', error);
-    }
-  };
-
-  const handleHydraSave = async (data: HydraSettingsForm) => {
-    try {
-      await setHydraEndpoints({
-        publicUrl: data.publicUrl.trim(),
-        adminUrl: data.adminUrl.trim(),
-        apiKey: data.apiKey?.trim() || '',
-      });
-      setIsEditingHydraApiKey(false);
-      setShowHydraApiKey(false);
-      setShowSuccessMessage(true);
-    } catch (error) {
-      console.error('Failed to save Hydra settings:', error);
-    }
-  };
-
-  const handleResetAll = async () => {
-    await resetSettings();
-    setShowSuccessMessage(true);
-  };
-
+  // URL validation
   const validateUrl = (value: string) => {
     if (!value.trim()) return 'URL is required';
     if (!isValidUrl(value.trim())) return 'Please enter a valid URL';
     return true;
   };
 
+  // Event handlers
   const handleThemeChange = () => {
     toggleTheme();
-    setShowSuccessMessage(true);
+    showSuccess();
+  };
+
+  const handleOryNetworkChange = (enabled: boolean) => {
+    setIsOryNetwork(enabled);
+    showSuccess();
+  };
+
+  const handleResetAll = async () => {
+    await resetSettings();
+    showSuccess();
   };
 
   return (
@@ -154,364 +82,48 @@ export default function SettingsPage() {
 
       <Container maxWidth="lg">
         <Grid container spacing={3}>
-          {/* Appearance Settings */}
           <Grid size={{ xs: 12 }}>
-            <SectionCard
-              title={
-                <FlexBox align="center" gap={1}>
-                  <PaletteIcon />
-                  <Typography variant="heading" size="lg">
-                    Appearance
-                  </Typography>
-                </FlexBox>
-              }
-            >
-              <Grid container spacing={2}>
-                <Grid size={{ xs: 12 }}>
-                  <FlexBox align="center" gap={2}>
-                    <Typography variant="label">Theme Preference</Typography>
-                    <FlexBox align="center" gap={1}>
-                      <Typography variant="body" color="secondary">
-                        Light
-                      </Typography>
-                      <Switch checked={currentTheme === 'dark'} onChange={handleThemeChange} color="primary" />
-                      <Typography variant="body" color="secondary">
-                        Dark
-                      </Typography>
-                    </FlexBox>
-                  </FlexBox>
-                  <Typography variant="body" color="secondary" sx={{ mt: 1, fontSize: '0.875rem' }}>
-                    Choose between light and dark theme. Your preference will be saved automatically.
-                  </Typography>
-                </Grid>
-              </Grid>
-            </SectionCard>
+            <AppearanceSection currentTheme={currentTheme} onThemeChange={handleThemeChange} />
           </Grid>
 
-          {/* Connection Mode */}
           <Grid size={{ xs: 12 }}>
-            <SectionCard
-              title={
-                <FlexBox align="center" gap={1}>
-                  <CloudIcon />
-                  <Typography variant="heading" size="lg">
-                    Connection Mode
-                  </Typography>
-                </FlexBox>
-              }
-            >
-              <FlexBox align="center" justify="space-between">
-                <Box>
-                  <Typography variant="label">Ory Network Mode</Typography>
-                  <Typography variant="body" color="secondary" sx={{ mt: 0.5 }}>
-                    Enable when connecting to Ory Network (managed service). This skips health checks that aren&apos;t available on Ory
-                    Network.
-                  </Typography>
-                </Box>
-                <Switch
-                  checked={isOryNetwork}
-                  onChange={(e) => {
-                    setIsOryNetwork(e.target.checked);
-                    setShowSuccessMessage(true);
-                  }}
-                  color="primary"
-                />
-              </FlexBox>
-            </SectionCard>
+            <ConnectionModeSection isOryNetwork={isOryNetwork} onOryNetworkChange={handleOryNetworkChange} />
           </Grid>
 
-          {/* Kratos Configuration */}
           <Grid size={{ xs: 12 }}>
-            <SectionCard
-              title={
-                <FlexBox align="center" gap={1}>
-                  <CloudIcon />
-                  <Typography variant="heading" size="lg">
-                    Ory Kratos Configuration
-                  </Typography>
-                </FlexBox>
-              }
-            >
-              <Alert severity="info" sx={{ mb: 3 }}>
-                <Typography variant="body">
-                  <strong>Note:</strong> These are the Kratos endpoint URLs that the application will use. Settings are stored in your browser&apos;s
-                  local storage and take effect immediately.
-                </Typography>
-              </Alert>
-
-              <Box component="form" onSubmit={handleKratosSubmit(handleKratosSave)}>
-                <Grid container spacing={3}>
-                  <Grid size={{ xs: 12, md: 6 }}>
-                    <Controller
-                      name="publicUrl"
-                      control={kratosControl}
-                      rules={{ validate: validateUrl }}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          label="Kratos Public URL"
-                          placeholder="http://localhost:4433"
-                          fullWidth
-                          error={!!kratosErrors.publicUrl}
-                          helperText={kratosErrors.publicUrl?.message || 'Used for public API calls'}
-                        />
-                      )}
-                    />
-                  </Grid>
-
-                  <Grid size={{ xs: 12, md: 6 }}>
-                    <Controller
-                      name="adminUrl"
-                      control={kratosControl}
-                      rules={{ validate: validateUrl }}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          label="Kratos Admin URL"
-                          placeholder="http://localhost:4434"
-                          fullWidth
-                          error={!!kratosErrors.adminUrl}
-                          helperText={kratosErrors.adminUrl?.message || 'Used for admin API calls'}
-                        />
-                      )}
-                    />
-                  </Grid>
-
-                  <Grid size={{ xs: 12, md: 6 }}>
-                    {kratosEndpoints.apiKey && !isEditingKratosApiKey ? (
-                      <Box>
-                        <TextField
-                          value="••••••••••••••••"
-                          label="Kratos API Key"
-                          disabled
-                          fullWidth
-                          helperText="API key is set and encrypted"
-                          slotProps={{
-                            input: {
-                              endAdornment: (
-                                <InputAdornment position="end">
-                                  <Button
-                                    size="small"
-                                    variant="outlined"
-                                    startIcon={<EditIcon />}
-                                    onClick={() => {
-                                      setIsEditingKratosApiKey(true);
-                                      kratosForm.setValue('apiKey', '');
-                                    }}
-                                  >
-                                    Update
-                                  </Button>
-                                </InputAdornment>
-                              ),
-                            },
-                          }}
-                        />
-                      </Box>
-                    ) : (
-                      <Controller
-                        name="apiKey"
-                        control={kratosControl}
-                        render={({ field }) => (
-                          <TextField
-                            {...field}
-                            label="Kratos API Key"
-                            placeholder="ory_pat_xxx"
-                            fullWidth
-                            type={showKratosApiKey ? 'text' : 'password'}
-                            helperText={kratosErrors.apiKey?.message || 'Enter your API key - it will be encrypted'}
-                            slotProps={{
-                              input: {
-                                endAdornment: (
-                                  <InputAdornment position="end">
-                                    <IconButton
-                                      aria-label="toggle api key visibility"
-                                      onClick={() => setShowKratosApiKey(!showKratosApiKey)}
-                                      edge="end"
-                                    >
-                                      {showKratosApiKey ? <VisibilityOff /> : <Visibility />}
-                                    </IconButton>
-                                  </InputAdornment>
-                                ),
-                              },
-                            }}
-                          />
-                        )}
-                      />
-                    )}
-                  </Grid>
-                </Grid>
-
-                <ActionBar
-                  primaryAction={{
-                    label: 'Save Kratos Settings',
-                    onClick: handleKratosSubmit(handleKratosSave),
-                    icon: <SaveIcon />,
-                    disabled: !kratosIsDirty && !isEditingKratosApiKey,
-                  }}
-                />
-              </Box>
-            </SectionCard>
+            <ServiceConfigSection
+              serviceName="Kratos"
+              form={kratosForm.form}
+              currentEndpoints={kratosEndpoints}
+              publicUrlPlaceholder="http://localhost:4433"
+              adminUrlPlaceholder="http://localhost:4434"
+              publicUrlHelperText="Used for public API calls"
+              adminUrlHelperText="Used for admin API calls"
+              onSave={kratosForm.handleSave}
+              validateUrl={validateUrl}
+              isEditingApiKey={kratosForm.isEditingApiKey}
+              onApiKeyEditStart={kratosForm.startEditingApiKey}
+            />
           </Grid>
 
-          {/* Hydra Configuration */}
           <Grid size={{ xs: 12 }}>
-            <SectionCard
-              title={
-                <FlexBox align="center" gap={1}>
-                  <CloudIcon />
-                  <Typography variant="heading" size="lg">
-                    Ory Hydra Configuration
-                  </Typography>
-                </FlexBox>
-              }
-            >
-              <Alert severity="info" sx={{ mb: 3 }}>
-                <Typography variant="body">
-                  <strong>Note:</strong> These are the Hydra endpoint URLs that the application will use. Settings are stored in your browser&apos;s
-                  local storage and take effect immediately.
-                </Typography>
-              </Alert>
-
-              <Box component="form" onSubmit={handleHydraSubmit(handleHydraSave)}>
-                <Grid container spacing={3}>
-                  <Grid size={{ xs: 12, md: 6 }}>
-                    <Controller
-                      name="publicUrl"
-                      control={hydraControl}
-                      rules={{ validate: validateUrl }}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          label="Hydra Public URL"
-                          placeholder="http://localhost:4444"
-                          fullWidth
-                          error={!!hydraErrors.publicUrl}
-                          helperText={hydraErrors.publicUrl?.message || 'Used for OAuth2/OIDC public endpoints'}
-                        />
-                      )}
-                    />
-                  </Grid>
-
-                  <Grid size={{ xs: 12, md: 6 }}>
-                    <Controller
-                      name="adminUrl"
-                      control={hydraControl}
-                      rules={{ validate: validateUrl }}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          label="Hydra Admin URL"
-                          placeholder="http://localhost:4445"
-                          fullWidth
-                          error={!!hydraErrors.adminUrl}
-                          helperText={hydraErrors.adminUrl?.message || 'Used for OAuth2 client and flow management'}
-                        />
-                      )}
-                    />
-                  </Grid>
-
-                  <Grid size={{ xs: 12, md: 6 }}>
-                    {hydraEndpoints.apiKey && !isEditingHydraApiKey ? (
-                      <Box>
-                        <TextField
-                          value="••••••••••••••••"
-                          label="Hydra API Key"
-                          disabled
-                          fullWidth
-                          helperText="API key is set and encrypted"
-                          slotProps={{
-                            input: {
-                              endAdornment: (
-                                <InputAdornment position="end">
-                                  <Button
-                                    size="small"
-                                    variant="outlined"
-                                    startIcon={<EditIcon />}
-                                    onClick={() => {
-                                      setIsEditingHydraApiKey(true);
-                                      hydraForm.setValue('apiKey', '');
-                                    }}
-                                  >
-                                    Update
-                                  </Button>
-                                </InputAdornment>
-                              ),
-                            },
-                          }}
-                        />
-                      </Box>
-                    ) : (
-                      <Controller
-                        name="apiKey"
-                        control={hydraControl}
-                        render={({ field }) => (
-                          <TextField
-                            {...field}
-                            label="Hydra API Key"
-                            placeholder="ory_pat_xxx"
-                            fullWidth
-                            type={showHydraApiKey ? 'text' : 'password'}
-                            helperText={hydraErrors.apiKey?.message || 'Enter your API key - it will be encrypted'}
-                            slotProps={{
-                              input: {
-                                endAdornment: (
-                                  <InputAdornment position="end">
-                                    <IconButton
-                                      aria-label="toggle api key visibility"
-                                      onClick={() => setShowHydraApiKey(!showHydraApiKey)}
-                                      edge="end"
-                                    >
-                                      {showHydraApiKey ? <VisibilityOff /> : <Visibility />}
-                                    </IconButton>
-                                  </InputAdornment>
-                                ),
-                              },
-                            }}
-                          />
-                        )}
-                      />
-                    )}
-                  </Grid>
-                </Grid>
-
-                <ActionBar
-                  primaryAction={{
-                    label: 'Save Hydra Settings',
-                    onClick: handleHydraSubmit(handleHydraSave),
-                    icon: <SaveIcon />,
-                    disabled: !hydraIsDirty && !isEditingHydraApiKey,
-                  }}
-                />
-              </Box>
-            </SectionCard>
+            <ServiceConfigSection
+              serviceName="Hydra"
+              form={hydraForm.form}
+              currentEndpoints={hydraEndpoints}
+              publicUrlPlaceholder="http://localhost:4444"
+              adminUrlPlaceholder="http://localhost:4445"
+              publicUrlHelperText="Used for OAuth2/OIDC public endpoints"
+              adminUrlHelperText="Used for OAuth2 client and flow management"
+              onSave={hydraForm.handleSave}
+              validateUrl={validateUrl}
+              isEditingApiKey={hydraForm.isEditingApiKey}
+              onApiKeyEditStart={hydraForm.startEditingApiKey}
+            />
           </Grid>
 
-          {/* Reset All Settings */}
           <Grid size={{ xs: 12 }}>
-            <Paper
-              elevation={0}
-              sx={{
-                p: 3,
-                border: '1px solid',
-                borderColor: 'error.main',
-                bgcolor: 'error.lighter',
-                borderRadius: 2,
-              }}
-            >
-              <FlexBox justify="space-between" align="center">
-                <Box>
-                  <Typography variant="heading" size="md" sx={{ mb: 0.5 }}>
-                    Reset All Settings
-                  </Typography>
-                  <Typography variant="body" color="secondary">
-                    Reset all settings to their default values. This will clear all custom endpoint configurations.
-                  </Typography>
-                </Box>
-                <Button variant="outlined" color="error" onClick={handleResetAll} startIcon={<ResetIcon />}>
-                  Reset to Defaults
-                </Button>
-              </FlexBox>
-            </Paper>
+            <ResetSection onReset={handleResetAll} />
           </Grid>
         </Grid>
       </Container>
