@@ -9,33 +9,33 @@
  * @returns Formatted date string or empty string if invalid
  */
 export const formatDate = (date: string | Date | null | undefined, options?: Intl.DateTimeFormatOptions): string => {
-  if (!date) {
-    return '';
-  }
+	if (!date) {
+		return "";
+	}
 
-  try {
-    const dateObj = typeof date === 'string' ? new Date(date) : date;
+	try {
+		const dateObj = typeof date === "string" ? new Date(date) : date;
 
-    // Check if date is valid
-    if (isNaN(dateObj.getTime())) {
-      return '';
-    }
+		// Check if date is valid
+		if (Number.isNaN(dateObj.getTime())) {
+			return "";
+		}
 
-    // Default options for consistent formatting
-    const defaultOptions: Intl.DateTimeFormatOptions = {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-    };
+		// Default options for consistent formatting
+		const defaultOptions: Intl.DateTimeFormatOptions = {
+			year: "numeric",
+			month: "short",
+			day: "numeric",
+			hour: "2-digit",
+			minute: "2-digit",
+			second: "2-digit",
+		};
 
-    return dateObj.toLocaleString(undefined, { ...defaultOptions, ...options });
-  } catch (error) {
-    console.warn('Error formatting date:', error);
-    return '';
-  }
+		return dateObj.toLocaleString(undefined, { ...defaultOptions, ...options });
+	} catch (error) {
+		console.warn("Error formatting date:", error);
+		return "";
+	}
 };
 
 /**
@@ -44,11 +44,11 @@ export const formatDate = (date: string | Date | null | undefined, options?: Int
  * @returns Formatted date string without time
  */
 export const formatDateOnly = (date: string | Date | null | undefined): string => {
-  return formatDate(date, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
+	return formatDate(date, {
+		year: "numeric",
+		month: "short",
+		day: "numeric",
+	});
 };
 
 /**
@@ -57,11 +57,11 @@ export const formatDateOnly = (date: string | Date | null | undefined): string =
  * @returns Formatted time string without date
  */
 export const formatTimeOnly = (date: string | Date | null | undefined): string => {
-  return formatDate(date, {
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  });
+	return formatDate(date, {
+		hour: "2-digit",
+		minute: "2-digit",
+		second: "2-digit",
+	});
 };
 
 /**
@@ -70,36 +70,36 @@ export const formatTimeOnly = (date: string | Date | null | undefined): string =
  * @returns Relative time string
  */
 export const formatRelativeTime = (date: string | Date | null | undefined): string => {
-  if (!date) {
-    return '';
-  }
+	if (!date) {
+		return "";
+	}
 
-  try {
-    const dateObj = typeof date === 'string' ? new Date(date) : date;
+	try {
+		const dateObj = typeof date === "string" ? new Date(date) : date;
 
-    if (isNaN(dateObj.getTime())) {
-      return '';
-    }
+		if (Number.isNaN(dateObj.getTime())) {
+			return "";
+		}
 
-    const now = new Date();
-    const diffMs = now.getTime() - dateObj.getTime();
-    const diffMinutes = Math.floor(diffMs / (1000 * 60));
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+		const now = new Date();
+		const diffMs = now.getTime() - dateObj.getTime();
+		const diffMinutes = Math.floor(diffMs / (1000 * 60));
+		const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+		const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-    if (diffMinutes < 1) {
-      return 'Just now';
-    } else if (diffMinutes < 60) {
-      return `${diffMinutes} minute${diffMinutes === 1 ? '' : 's'} ago`;
-    } else if (diffHours < 24) {
-      return `${diffHours} hour${diffHours === 1 ? '' : 's'} ago`;
-    } else if (diffDays < 30) {
-      return `${diffDays} day${diffDays === 1 ? '' : 's'} ago`;
-    } else {
-      return formatDate(date);
-    }
-  } catch (error) {
-    console.warn('Error formatting relative time:', error);
-    return formatDate(date);
-  }
+		if (diffMinutes < 1) {
+			return "Just now";
+		} else if (diffMinutes < 60) {
+			return `${diffMinutes} minute${diffMinutes === 1 ? "" : "s"} ago`;
+		} else if (diffHours < 24) {
+			return `${diffHours} hour${diffHours === 1 ? "" : "s"} ago`;
+		} else if (diffDays < 30) {
+			return `${diffDays} day${diffDays === 1 ? "" : "s"} ago`;
+		} else {
+			return formatDate(date);
+		}
+	} catch (error) {
+		console.warn("Error formatting relative time:", error);
+		return formatDate(date);
+	}
 };

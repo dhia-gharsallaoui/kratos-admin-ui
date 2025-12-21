@@ -6,16 +6,16 @@
  * @returns Formatted string
  */
 export function formatNumber(num: number): string {
-  if (num >= 1000000000) {
-    return (num / 1000000000).toFixed(1) + 'B';
-  }
-  if (num >= 1000000) {
-    return (num / 1000000).toFixed(1) + 'M';
-  }
-  if (num >= 1000) {
-    return (num / 1000).toFixed(1) + 'K';
-  }
-  return num.toString();
+	if (num >= 1000000000) {
+		return `${(num / 1000000000).toFixed(1)}B`;
+	}
+	if (num >= 1000000) {
+		return `${(num / 1000000).toFixed(1)}M`;
+	}
+	if (num >= 1000) {
+		return `${(num / 1000).toFixed(1)}K`;
+	}
+	return num.toString();
 }
 
 /**
@@ -25,8 +25,8 @@ export function formatNumber(num: number): string {
  * @returns Percentage change
  */
 export function calculatePercentageChange(current: number, previous: number): number {
-  if (previous === 0) return current > 0 ? 100 : 0;
-  return ((current - previous) / previous) * 100;
+	if (previous === 0) return current > 0 ? 100 : 0;
+	return ((current - previous) / previous) * 100;
 }
 
 /**
@@ -34,10 +34,10 @@ export function calculatePercentageChange(current: number, previous: number): nu
  * @param change Percentage change
  * @returns Color string
  */
-export function getTrendColor(change: number): 'success' | 'error' | 'info' {
-  if (change > 0) return 'success';
-  if (change < 0) return 'error';
-  return 'info';
+export function getTrendColor(change: number): "success" | "error" | "info" {
+	if (change > 0) return "success";
+	if (change < 0) return "error";
+	return "info";
 }
 
 /**
@@ -46,12 +46,12 @@ export function getTrendColor(change: number): 'success' | 'error' | 'info' {
  * @returns Formatted duration string
  */
 export function formatDuration(minutes: number): string {
-  if (minutes < 60) {
-    return `${Math.round(minutes)}m`;
-  }
-  const hours = Math.floor(minutes / 60);
-  const remainingMinutes = Math.round(minutes % 60);
-  return `${hours}h ${remainingMinutes}m`;
+	if (minutes < 60) {
+		return `${Math.round(minutes)}m`;
+	}
+	const hours = Math.floor(minutes / 60);
+	const remainingMinutes = Math.round(minutes % 60);
+	return `${hours}h ${remainingMinutes}m`;
 }
 
 /**
@@ -60,18 +60,18 @@ export function formatDuration(minutes: number): string {
  * @returns Array of color strings
  */
 export function generateChartColors(count: number): string[] {
-  const baseColors = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#00ff7f', '#ff69b4', '#87ceeb', '#dda0dd', '#98fb98', '#f0e68c'];
+	const baseColors = ["#8884d8", "#82ca9d", "#ffc658", "#ff7300", "#00ff7f", "#ff69b4", "#87ceeb", "#dda0dd", "#98fb98", "#f0e68c"];
 
-  if (count <= baseColors.length) {
-    return baseColors.slice(0, count);
-  }
+	if (count <= baseColors.length) {
+		return baseColors.slice(0, count);
+	}
 
-  // Generate additional colors if needed
-  const colors = [...baseColors];
-  while (colors.length < count) {
-    const hue = (colors.length * 137.5) % 360;
-    colors.push(`hsl(${hue}, 70%, 60%)`);
-  }
+	// Generate additional colors if needed
+	const colors = [...baseColors];
+	while (colors.length < count) {
+		const hue = (colors.length * 137.5) % 360;
+		colors.push(`hsl(${hue}, 70%, 60%)`);
+	}
 
-  return colors;
+	return colors;
 }

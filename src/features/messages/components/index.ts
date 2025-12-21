@@ -1,2 +1,2 @@
-export * from './MessageDetailDialog';
-export * from './MessagesTable';
+export * from "./MessageDetailDialog";
+export * from "./MessagesTable";

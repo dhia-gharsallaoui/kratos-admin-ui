@@ -1,21 +1,21 @@
-import { UserCredentials, AuthUser, UserRole } from './types';
+import { type AuthUser, type UserCredentials, UserRole } from "./types";
 
 // Mock user database
 export const USERS: UserCredentials[] = [
-  {
-    username: 'admin',
-    password: 'admin123',
-    role: UserRole.ADMIN,
-    displayName: 'Administrator',
-    email: 'admin@example.com',
-  },
-  {
-    username: 'viewer',
-    password: 'viewer123',
-    role: UserRole.VIEWER,
-    displayName: 'Viewer User',
-    email: 'viewer@example.com',
-  },
+	{
+		username: "admin",
+		password: "admin123",
+		role: UserRole.ADMIN,
+		displayName: "Administrator",
+		email: "admin@example.com",
+	},
+	{
+		username: "viewer",
+		password: "viewer123",
+		role: UserRole.VIEWER,
+		displayName: "Viewer User",
+		email: "viewer@example.com",
+	},
 ];
 
 /**
@@ -25,7 +25,7 @@ export const USERS: UserCredentials[] = [
  * @returns The user credentials if found, undefined otherwise
  */
 export const findUserByCredentials = (username: string, password: string): UserCredentials | undefined => {
-  return USERS.find((user) => user.username === username && user.password === password);
+	return USERS.find((user) => user.username === username && user.password === password);
 };
 
 /**
@@ -34,8 +34,8 @@ export const findUserByCredentials = (username: string, password: string): UserC
  * @returns Auth user object
  */
 export const toAuthUser = (credentials: UserCredentials): AuthUser => {
-  const { password, ...authUser } = credentials;
-  return authUser;
+	const { password, ...authUser } = credentials;
+	return authUser;
 };
 
 /**
@@ -44,7 +44,7 @@ export const toAuthUser = (credentials: UserCredentials): AuthUser => {
  * @returns True if user is admin
  */
 export const isAdmin = (user: AuthUser | null): boolean => {
-  return user?.role === 'admin';
+	return user?.role === "admin";
 };
 
 /**
@@ -53,5 +53,5 @@ export const isAdmin = (user: AuthUser | null): boolean => {
  * @returns True if user can view content
  */
 export const canView = (user: AuthUser | null): boolean => {
-  return user?.role === 'admin' || user?.role === 'viewer';
+	return user?.role === "admin" || user?.role === "viewer";
 };

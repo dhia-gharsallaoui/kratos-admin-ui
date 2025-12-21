@@ -1,11 +1,11 @@
 // Export components
-export { ProtectedRoute } from './components/ProtectedRoute';
+export { ProtectedRoute } from "./components/ProtectedRoute";
 
 // Export hooks
-export * from './hooks';
+export * from "./hooks";
 
 // Export types
-export * from './types';
+export * from "./types";
 
 // Export utilities
-export * from './utils';
+export * from "./utils";

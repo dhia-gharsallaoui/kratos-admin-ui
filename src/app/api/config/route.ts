@@ -5,10 +5,8 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
 	// Get API keys from env and encrypt them
-	const kratosApiKey =
-		process.env.KRATOS_API_KEY || process.env.ORY_API_KEY || "";
-	const hydraApiKey =
-		process.env.HYDRA_API_KEY || process.env.ORY_API_KEY || "";
+	const kratosApiKey = process.env.KRATOS_API_KEY || process.env.ORY_API_KEY || "";
+	const hydraApiKey = process.env.HYDRA_API_KEY || process.env.ORY_API_KEY || "";
 
 	const config = {
 		kratosPublicUrl: process.env.KRATOS_PUBLIC_URL || "http://localhost:4433",

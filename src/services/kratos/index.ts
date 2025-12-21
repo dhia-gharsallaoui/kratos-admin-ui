@@ -1,15 +1,14 @@
 // Export all service endpoints
-export * from './endpoints/identities';
-export * from './endpoints/sessions';
-export * from './endpoints/schemas';
-export * from './endpoints/health';
-export * from './endpoints/courier';
 
 // Export client utilities
-export { getAdminApi, getPublicApi, getMetadataApi } from './client';
-
+export { getAdminApi, getMetadataApi, getPublicApi } from "./client";
 // Export configuration utilities
-export * from './config';
+export * from "./config";
+export * from "./endpoints/courier";
+export * from "./endpoints/health";
+export * from "./endpoints/identities";
+export * from "./endpoints/schemas";
+export * from "./endpoints/sessions";
 
 // Export health check utilities
-export { checkKratosHealth } from './health';
+export { checkKratosHealth } from "./health";

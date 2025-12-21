@@ -1,2 +1,2 @@
 // Settings feature exports
-export * from './hooks/useSettings';
+export * from "./hooks/useSettings";

@@ -2,19 +2,19 @@
  * TypeScript declarations for custom theme extensions
  */
 
-import { PaletteColor, SimplePaletteColorOptions } from '@mui/material/styles';
+import type { PaletteColor, SimplePaletteColorOptions } from "@mui/material/styles";
 
 // Extend palette with gradient color
-declare module '@mui/material/styles' {
-  interface Palette {
-    gradient: PaletteColor & {
-      secondary: string;
-    };
-  }
+declare module "@mui/material/styles" {
+	interface Palette {
+		gradient: PaletteColor & {
+			secondary: string;
+		};
+	}
 
-  interface PaletteOptions {
-    gradient?: SimplePaletteColorOptions & {
-      secondary?: string;
-    };
-  }
+	interface PaletteOptions {
+		gradient?: SimplePaletteColorOptions & {
+			secondary?: string;
+		};
+	}
 }
