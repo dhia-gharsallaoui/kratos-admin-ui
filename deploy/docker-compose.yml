@@ -92,6 +92,7 @@ services:
       NEXT_PUBLIC_HYDRA_ADMIN_URL: http://hydra:4445
       NEXT_PUBLIC_APP_NAME: '${APP_NAME:-Kratos Admin UI}'
       NEXT_PUBLIC_APP_URL: https://admin.${DOMAIN}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
       NODE_ENV: production
     networks:
       - web
@@ -119,7 +120,7 @@ services:
     image: busybox
     volumes:
       - hydra-sqlite:/mnt/sqlite
-    command: "chmod -R 777 /mnt/sqlite"
+    command: 'chmod -R 777 /mnt/sqlite'
 
   # Hydra Migration Service
   hydra-migrate:

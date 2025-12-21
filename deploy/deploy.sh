@@ -53,6 +53,17 @@ sed -i "s/KRATOS_CIPHER_SECRET=.*/KRATOS_CIPHER_SECRET=$KRATOS_CIPHER_SECRET/" .
 
 echo "✅ Kratos secrets configured"
 
+# Set encryption key for Admin UI localStorage encryption
+echo "🔑 Setting encryption key for Admin UI..."
+ENCRYPTION_KEY=$(openssl rand -base64 32)
+sed -i "s/ENCRYPTION_KEY=.*/ENCRYPTION_KEY=$ENCRYPTION_KEY/" .env.prod
+# Add if not exists
+if ! grep -q "^ENCRYPTION_KEY=" .env.prod; then
+    echo "ENCRYPTION_KEY=$ENCRYPTION_KEY" >> .env.prod
+fi
+
+echo "✅ Encryption key configured"
+
 # Set hardcoded Hydra secrets for demo (exactly 32 characters)
 echo "🔑 Setting Hydra secrets..."
 HYDRA_SYSTEM_SECRET="hydrasystem1234567890abcdefghijk"
