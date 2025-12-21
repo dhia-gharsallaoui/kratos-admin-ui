@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { decryptApiKey } from '@/lib/crypto-edge';
 
 async function proxyToService(request: NextRequest, baseUrl: string, pathPrefix: string, serviceName: string): Promise<NextResponse> {
   try {
@@ -15,24 +16,32 @@ async function proxyToService(request: NextRequest, baseUrl: string, pathPrefix:
 
     ["host", "connection", "upgrade"].forEach(h => requestHeaders.delete(h));
 
-    let authorizationHeader = undefined
+    let authorizationHeader = undefined;
     if (serviceName == 'Kratos') {
-      const kratosApiKey =
-            request.cookies.get('kratos-api-key')?.value ||
-            request.headers.get('x-kratos-api-key') ||
-            process.env.KRATOS_API_KEY ||
-            undefined;
-      if (kratosApiKey) {
-        authorizationHeader = `Bearer ${kratosApiKey}`
+      const kratosApiKeyEncrypted =
+        request.cookies.get('kratos-api-key')?.value ||
+        request.headers.get('x-kratos-api-key') ||
+        process.env.KRATOS_API_KEY ||
+        undefined;
+      if (kratosApiKeyEncrypted) {
+        // Decrypt the API key (handles both encrypted and plain text values)
+        const kratosApiKey = await decryptApiKey(kratosApiKeyEncrypted);
+        if (kratosApiKey) {
+          authorizationHeader = `Bearer ${kratosApiKey}`;
+        }
       }
     } else if (serviceName == 'Hydra') {
-      const hydraApiKey =
-            request.cookies.get('hydra-api-key')?.value ||
-            request.headers.get('x-hydra-api-key') ||
-            process.env.HYDRA_API_KEY ||
-            undefined;
-      if (hydraApiKey) {
-        authorizationHeader = `Bearer ${hydraApiKey}`
+      const hydraApiKeyEncrypted =
+        request.cookies.get('hydra-api-key')?.value ||
+        request.headers.get('x-hydra-api-key') ||
+        process.env.HYDRA_API_KEY ||
+        undefined;
+      if (hydraApiKeyEncrypted) {
+        // Decrypt the API key (handles both encrypted and plain text values)
+        const hydraApiKey = await decryptApiKey(hydraApiKeyEncrypted);
+        if (hydraApiKey) {
+          authorizationHeader = `Bearer ${hydraApiKey}`;
+        }
       }
     }
     

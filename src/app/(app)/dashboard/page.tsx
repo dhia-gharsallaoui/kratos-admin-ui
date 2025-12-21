@@ -54,11 +54,7 @@ export default function Dashboard() {
   }, [identity.data]);
 
   if (isLoading) {
-    return (
-      <ProtectedPage requiredRole={UserRole.VIEWER}>
-        <LoadingState variant="page" message="Loading analytics data..." />
-      </ProtectedPage>
-    );
+    return <LoadingState variant="page" message="Loading analytics data..." />;
   }
 
   if (isError) {
