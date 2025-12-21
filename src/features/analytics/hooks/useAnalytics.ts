@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { getAllIdentities, getSessionsUntilDate, listIdentitySchemas, listSessions, checkKratosHealth } from '@/services/kratos';
-import { listOAuth2Clients, listOAuth2ConsentSessions, checkHydraHealth } from '@/services/hydra';
+import { listOAuth2Clients, checkHydraHealth } from '@/services/hydra';
 import { IdentityAnalytics, SessionAnalytics, SystemAnalytics, HydraAnalytics } from '../types';
 import { useIsOryNetwork, useSettingsLoaded } from '@/features/settings/hooks/useSettings';
 
@@ -303,8 +303,9 @@ export const useAnalytics = () => {
   const systemAnalytics = useSystemAnalytics(isKratosHealthy);
   const hydraAnalytics = useHydraAnalytics(isHydraHealthy);
 
-  // Determine loading state
+  // Determine loading state - include waiting for settings
   const isLoading =
+    !isSettingsLoaded ||
     kratosHealth.isLoading ||
     hydraHealth.isLoading ||
     (isKratosHealthy && (identityAnalytics.isLoading || sessionAnalytics.isLoading || systemAnalytics.isLoading)) ||
