@@ -46,7 +46,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.3.10",
-		"@types/node": "^24.0.8",
+		"@types/node": "^25.0.6",
 		"@types/react": "19.2.7",
 		"@types/react-dom": "19.2.3",
 		"@types/react-syntax-highlighter": "^15.5.13",
