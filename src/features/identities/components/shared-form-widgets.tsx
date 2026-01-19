@@ -462,19 +462,19 @@ export const FieldTemplate: React.FC<FieldTemplateProps> = ({ children, descript
 		<Box sx={{ mb: 2 }}>
 			{children}
 			{description && (
-				<Typography variant="label" sx={{ mt: 0.5, display: "block", opacity: 0.7 }}>
+				<Box component="span" sx={{ mt: 0.5, display: "block", opacity: 0.7, fontSize: "0.875rem" }}>
 					{description}
-				</Typography>
+				</Box>
 			)}
 			{errors && (
-				<Typography variant="label" sx={{ mt: 0.5, display: "block", color: "error.main" }}>
+				<Box component="span" sx={{ mt: 0.5, display: "block", color: "error.main", fontSize: "0.875rem" }}>
 					{errors}
-				</Typography>
+				</Box>
 			)}
 			{help && (
-				<Typography variant="label" sx={{ mt: 0.5, display: "block", opacity: 0.7 }}>
+				<Box component="span" sx={{ mt: 0.5, display: "block", opacity: 0.7, fontSize: "0.875rem" }}>
 					{help}
-				</Typography>
+				</Box>
 			)}
 		</Box>
 	);

@@ -2,7 +2,7 @@ import { Cancel, Save } from "@mui/icons-material";
 import Form from "@rjsf/mui";
 import validator from "@rjsf/validator-ajv8";
 import React, { useState } from "react";
-import { Alert, Box, Button, Card, FormControl, InputLabel, MenuItem, Select, Spinner, Typography } from "@/components/ui";
+import { Alert, Box, Button, Card, FormControl, InputLabel, MenuItem, Select, Spinner, Tooltip, Typography } from "@/components/ui";
 
 // Add custom format for tel to avoid validation warnings
 validator.ajv.addFormat("tel", {
@@ -142,7 +142,9 @@ const CreateIdentityForm: React.FC<CreateIdentityFormProps> = ({ onSuccess, onCa
 					>
 						{schemas?.map((schema: IdentitySchemaContainer) => (
 							<MenuItem key={schema.id} value={schema.id}>
-								{(schema.schema as any)?.title || schema.id}
+								<Tooltip title={`Schema ID: ${schema.id}`} placement="right">
+									<span style={{ display: "block", width: "100%" }}>{(schema.schema as any)?.title || schema.id}</span>
+								</Tooltip>
 							</MenuItem>
 						))}
 					</Select>
