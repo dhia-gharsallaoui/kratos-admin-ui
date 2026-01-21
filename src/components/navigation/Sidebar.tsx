@@ -12,6 +12,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Box, Divider, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar, Typography } from "@/components/ui";
 import { UserRole, useLogout, useUser } from "@/features/auth";
+import { useHydraEnabled } from "@/features/settings/hooks/useSettings";
 import { useTheme } from "@/providers/ThemeProvider";
 import { alpha, gradientColors, gradients } from "@/theme";
 
@@ -81,6 +82,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
 	const logout = useLogout();
 	const user = useUser();
 	const { theme: currentTheme } = useTheme();
+	const hydraEnabled = useHydraEnabled();
 
 	const isActive = (path: string) => {
 		return pathname === path || pathname?.startsWith(`${path}/`);
@@ -98,7 +100,8 @@ export function Sidebar({ open, onClose }: SidebarProps) {
 	};
 
 	const filteredMainNavItems = mainNavItems.filter((item) => hasRequiredRole(item.requiredRole));
-	const filteredHydraNavItems = hydraNavItems.filter((item) => hasRequiredRole(item.requiredRole));
+	// Only show Hydra nav items when Hydra is enabled
+	const filteredHydraNavItems = hydraEnabled ? hydraNavItems.filter((item) => hasRequiredRole(item.requiredRole)) : [];
 
 	return (
 		<Drawer

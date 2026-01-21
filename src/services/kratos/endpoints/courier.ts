@@ -1,7 +1,8 @@
+import type { CourierMessageStatus } from "@ory/kratos-client";
 import { withApiErrorHandling } from "@/utils/api-wrapper";
 import { getCourierApi } from "../client";
 
-export type CourierMessageStatus = "queued" | "sent" | "processing" | "abandoned";
+export type { CourierMessageStatus };
 
 export interface ListMessagesParams {
 	pageSize?: number;

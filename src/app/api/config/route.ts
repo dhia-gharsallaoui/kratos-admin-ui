@@ -8,6 +8,10 @@ export async function GET() {
 	const kratosApiKey = process.env.KRATOS_API_KEY || process.env.ORY_API_KEY || "";
 	const hydraApiKey = process.env.HYDRA_API_KEY || process.env.ORY_API_KEY || "";
 
+	// HYDRA_ENABLED defaults to true for backwards compatibility
+	// Set to "false" to disable Hydra integration
+	const hydraEnabled = process.env.HYDRA_ENABLED !== "false";
+
 	const config = {
 		kratosPublicUrl: process.env.KRATOS_PUBLIC_URL || "http://localhost:4433",
 		kratosAdminUrl: process.env.KRATOS_ADMIN_URL || "http://localhost:4434",
@@ -16,6 +20,7 @@ export async function GET() {
 		hydraAdminUrl: process.env.HYDRA_ADMIN_URL || "http://localhost:4445",
 		hydraApiKey: encryptApiKey(hydraApiKey),
 		isOryNetwork: process.env.IS_ORY_NETWORK === "true",
+		hydraEnabled,
 	};
 
 	return NextResponse.json(config);

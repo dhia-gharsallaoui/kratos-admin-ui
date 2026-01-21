@@ -6,6 +6,10 @@ export {
 	ConnectionModeSection,
 	type ConnectionModeSectionProps,
 } from "./ConnectionModeSection";
+export {
+	HydraIntegrationSection,
+	type HydraIntegrationSectionProps,
+} from "./HydraIntegrationSection";
 export { ResetSection, type ResetSectionProps } from "./ResetSection";
 export {
 	ServiceConfigSection,

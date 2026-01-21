@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useIsOryNetwork, useSettingsLoaded } from "@/features/settings/hooks/useSettings";
+import { useHydraEnabled, useIsOryNetwork, useSettingsLoaded } from "@/features/settings/hooks/useSettings";
 import { checkHydraHealth, listOAuth2Clients } from "@/services/hydra";
 import { checkKratosHealth, getAllIdentities, getSessionsUntilDate, listIdentitySchemas, listSessions } from "@/services/kratos";
 import type { HydraAnalytics, IdentityAnalytics, SessionAnalytics, SystemAnalytics } from "../types";
@@ -21,10 +21,14 @@ const useKratosHealthCheck = (isOryNetwork: boolean, isSettingsLoaded: boolean) 
 	});
 };
 
-const useHydraHealthCheck = (isOryNetwork: boolean, isSettingsLoaded: boolean) => {
+const useHydraHealthCheck = (isOryNetwork: boolean, isSettingsLoaded: boolean, hydraEnabled: boolean) => {
 	return useQuery({
-		queryKey: ["health", "hydra", isOryNetwork],
+		queryKey: ["health", "hydra", isOryNetwork, hydraEnabled],
 		queryFn: async () => {
+			// If Hydra is disabled, return as not healthy (but not an error)
+			if (!hydraEnabled) {
+				return { isHealthy: false, disabled: true };
+			}
 			// Ory Network does not provide health check endpoints
 			if (isOryNetwork) {
 				return { isHealthy: true };
@@ -286,16 +290,19 @@ export const useHydraAnalytics = (isHydraHealthy: boolean) => {
 
 // Combined analytics hook
 export const useAnalytics = () => {
-	// Get Ory Network flag and settings loaded state
+	// Get Ory Network flag, settings loaded state, and Hydra enabled flag
 	const isOryNetwork = useIsOryNetwork();
 	const isSettingsLoaded = useSettingsLoaded();
+	const hydraEnabled = useHydraEnabled();
 
 	// Check health first (waits for settings to load)
 	const kratosHealth = useKratosHealthCheck(isOryNetwork, isSettingsLoaded);
-	const hydraHealth = useHydraHealthCheck(isOryNetwork, isSettingsLoaded);
+	const hydraHealth = useHydraHealthCheck(isOryNetwork, isSettingsLoaded, hydraEnabled);
 
 	const isKratosHealthy = kratosHealth.data?.isHealthy ?? false;
 	const isHydraHealthy = hydraHealth.data?.isHealthy ?? false;
+	// Hydra is "available" if it's enabled AND healthy
+	const isHydraAvailable = hydraEnabled && isHydraHealthy;
 
 	// Only fetch analytics if services are healthy
 	const identityAnalytics = useIdentityAnalytics(isKratosHealthy);
@@ -304,32 +311,29 @@ export const useAnalytics = () => {
 	const hydraAnalytics = useHydraAnalytics(isHydraHealthy);
 
 	// Determine loading state - include waiting for settings
+	// Only include Hydra loading state if Hydra is enabled
 	const isLoading =
 		!isSettingsLoaded ||
 		kratosHealth.isLoading ||
-		hydraHealth.isLoading ||
+		(hydraEnabled && hydraHealth.isLoading) ||
 		(isKratosHealthy && (identityAnalytics.isLoading || sessionAnalytics.isLoading || systemAnalytics.isLoading)) ||
 		(isHydraHealthy && hydraAnalytics.isLoading);
 
-	// Determine error state - prioritize health check errors
+	// Determine error state - Hydra unhealthy is NOT a fatal error
+	// Only Kratos health issues are treated as fatal errors
 	const isError =
 		kratosHealth.isError ||
-		hydraHealth.isError ||
 		(!kratosHealth.data?.isHealthy && !kratosHealth.isLoading) ||
-		(!hydraHealth.data?.isHealthy && !hydraHealth.isLoading) ||
 		identityAnalytics.isError ||
 		sessionAnalytics.isError ||
-		systemAnalytics.isError ||
-		hydraAnalytics.isError;
+		systemAnalytics.isError;
 
-	// Get the first error (prioritize health check errors)
+	// Get the first error (prioritize Kratos health check errors)
 	let firstError: any = null;
 	if (!kratosHealth.data?.isHealthy && !kratosHealth.isLoading && kratosHealth.data?.error) {
 		firstError = new Error(kratosHealth.data.error);
-	} else if (!hydraHealth.data?.isHealthy && !hydraHealth.isLoading && hydraHealth.data?.error) {
-		firstError = new Error(hydraHealth.data.error);
 	} else {
-		firstError = identityAnalytics.error || sessionAnalytics.error || systemAnalytics.error || hydraAnalytics.error;
+		firstError = identityAnalytics.error || sessionAnalytics.error || systemAnalytics.error;
 	}
 
 	return {
@@ -342,16 +346,22 @@ export const useAnalytics = () => {
 			error: firstError || sessionAnalytics.error,
 		},
 		system: { ...systemAnalytics, error: firstError || systemAnalytics.error },
-		hydra: { ...hydraAnalytics, error: firstError || hydraAnalytics.error },
+		hydra: { ...hydraAnalytics, error: hydraAnalytics.error },
 		isLoading,
 		isError,
+		isHydraAvailable,
+		hydraEnabled,
 		refetchAll: () => {
 			kratosHealth.refetch();
-			hydraHealth.refetch();
+			if (hydraEnabled) {
+				hydraHealth.refetch();
+			}
 			identityAnalytics.refetch();
 			sessionAnalytics.refetch();
 			systemAnalytics.refetch();
-			hydraAnalytics.refetch();
+			if (isHydraHealthy) {
+				hydraAnalytics.refetch();
+			}
 		},
 	};
 };
