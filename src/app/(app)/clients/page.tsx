@@ -3,12 +3,14 @@
 import {
 	Add as AddIcon,
 	Apps as AppsIcon,
+	CloudOff as CloudOffIcon,
 	Delete as DeleteIcon,
 	Edit as EditIcon,
 	Group,
 	Lock as LockIcon,
 	MoreVert as MoreVertIcon,
 	Public as PublicIcon,
+	Settings as SettingsIcon,
 	Visibility as ViewIcon,
 	VpnKey as VpnKeyIcon,
 } from "@mui/icons-material";
@@ -18,8 +20,9 @@ import { useMemo, useState } from "react";
 import { ErrorState, StatCard } from "@/components";
 import { SearchBar } from "@/components/forms";
 import { ActionBar, PageHeader, ProtectedPage, SectionCard } from "@/components/layout";
-import { Box, Card, Chip, Dialog, DialogActions, DialogContent, Grid, IconButton, Menu, MenuItem, Typography } from "@/components/ui";
+import { Box, Card, Chip, Dialog, DialogActions, DialogContent, EmptyState, Grid, IconButton, Menu, MenuItem, Typography } from "@/components/ui";
 import { formatClientId, getClientType, transformOAuth2ClientForTable, useAllOAuth2Clients, useDeleteOAuth2Client } from "@/features/oauth2-clients";
+import { useHydraEnabled } from "@/features/settings/hooks/useSettings";
 import { useDialog } from "@/hooks";
 import type { OAuth2Client } from "@/services/hydra";
 
@@ -30,6 +33,9 @@ export default function OAuth2ClientsPage() {
 	const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
 	const [clientToDelete, setClientToDelete] = useState<string | null>(null);
 	const { isOpen: deleteDialogOpen, open: openDeleteDialog, close: closeDeleteDialog } = useDialog();
+
+	// Check if Hydra is enabled
+	const hydraEnabled = useHydraEnabled();
 
 	// Hooks
 	const { data: clientsData, isLoading, error } = useAllOAuth2Clients();
@@ -169,6 +175,33 @@ export default function OAuth2ClientsPage() {
 			),
 		},
 	];
+
+	// Show empty state when Hydra is disabled
+	if (!hydraEnabled) {
+		return (
+			<ProtectedPage>
+				<Box sx={{ p: 3 }}>
+					<PageHeader
+						title="OAuth2 Clients"
+						subtitle="Manage OAuth2 client applications and their configurations"
+						icon={<AppsIcon sx={{ fontSize: 32, color: "white" }} />}
+					/>
+					<Card variant="bordered" sx={{ mt: 3 }}>
+						<EmptyState
+							icon={CloudOffIcon}
+							title="Hydra Integration Disabled"
+							description="Hydra integration is currently disabled. Enable it in Settings to manage OAuth2 clients."
+							action={{
+								label: "Go to Settings",
+								onClick: () => router.push("/settings"),
+								icon: <SettingsIcon />,
+							}}
+						/>
+					</Card>
+				</Box>
+			</ProtectedPage>
+		);
+	}
 
 	return (
 		<ProtectedPage>

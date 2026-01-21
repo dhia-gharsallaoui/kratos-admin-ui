@@ -17,10 +17,12 @@ export interface SettingsStoreState {
 	kratosEndpoints: KratosEndpoints;
 	hydraEndpoints: HydraEndpoints;
 	isOryNetwork: boolean;
+	hydraEnabled: boolean;
 	isReady: boolean;
 	setKratosEndpoints: (endpoints: KratosEndpoints) => Promise<void>;
 	setHydraEndpoints: (endpoints: HydraEndpoints) => Promise<void>;
 	setIsOryNetwork: (value: boolean) => void;
+	setHydraEnabled: (value: boolean) => void;
 	resetToDefaults: () => Promise<void>;
 	isValidUrl: (url: string) => boolean;
 	initialize: () => Promise<void>;
@@ -62,6 +64,7 @@ async function fetchServerDefaults(): Promise<{
 	kratos: KratosEndpoints;
 	hydra: HydraEndpoints;
 	isOryNetwork: boolean;
+	hydraEnabled: boolean;
 }> {
 	try {
 		const response = await fetch("/api/config");
@@ -79,6 +82,7 @@ async function fetchServerDefaults(): Promise<{
 					apiKey: config.hydraApiKey || undefined,
 				},
 				isOryNetwork: config.isOryNetwork || false,
+				hydraEnabled: config.hydraEnabled ?? true,
 			};
 		}
 	} catch (error) {
@@ -96,6 +100,7 @@ async function fetchServerDefaults(): Promise<{
 			adminUrl: "http://localhost:4445",
 		},
 		isOryNetwork: false,
+		hydraEnabled: true,
 	};
 }
 
@@ -104,11 +109,13 @@ function readSettingsFromCookies(): {
 	kratos: KratosEndpoints;
 	hydra: HydraEndpoints;
 	isOryNetwork: boolean;
+	hydraEnabled: boolean;
 } | null {
 	const kratosPublicUrl = getCookie("kratos-public-url");
 	const kratosAdminUrl = getCookie("kratos-admin-url");
 	const hydraPublicUrl = getCookie("hydra-public-url");
 	const hydraAdminUrl = getCookie("hydra-admin-url");
+	const hydraEnabledCookie = getCookie("hydra-enabled");
 
 	// If we don't have the essential URLs, return null
 	if (!kratosPublicUrl || !kratosAdminUrl) {
@@ -127,11 +134,13 @@ function readSettingsFromCookies(): {
 			apiKey: getCookie("hydra-api-key") || undefined,
 		},
 		isOryNetwork: getCookie("is-ory-network") === "true",
+		// Default to true if cookie doesn't exist (for backwards compatibility)
+		hydraEnabled: hydraEnabledCookie !== "false",
 	};
 }
 
 // Write all settings to cookies
-function writeSettingsToCookies(settings: { kratos: KratosEndpoints; hydra: HydraEndpoints; isOryNetwork: boolean }) {
+function writeSettingsToCookies(settings: { kratos: KratosEndpoints; hydra: HydraEndpoints; isOryNetwork: boolean; hydraEnabled: boolean }) {
 	setCookie("kratos-public-url", settings.kratos.publicUrl);
 	setCookie("kratos-admin-url", settings.kratos.adminUrl);
 	setCookie("kratos-api-key", settings.kratos.apiKey || "");
@@ -139,6 +148,7 @@ function writeSettingsToCookies(settings: { kratos: KratosEndpoints; hydra: Hydr
 	setCookie("hydra-admin-url", settings.hydra.adminUrl);
 	setCookie("hydra-api-key", settings.hydra.apiKey || "");
 	setCookie("is-ory-network", settings.isOryNetwork ? "true" : "false");
+	setCookie("hydra-enabled", settings.hydraEnabled ? "true" : "false");
 }
 
 // Initial state - empty until initialized
@@ -156,6 +166,7 @@ export const useSettingsStore = create<SettingsStoreState>()((set, get) => ({
 	kratosEndpoints: INITIAL_KRATOS_ENDPOINTS,
 	hydraEndpoints: INITIAL_HYDRA_ENDPOINTS,
 	isOryNetwork: false,
+	hydraEnabled: true,
 	isReady: false,
 
 	initialize: async () => {
@@ -171,6 +182,7 @@ export const useSettingsStore = create<SettingsStoreState>()((set, get) => ({
 				kratosEndpoints: cookieSettings.kratos,
 				hydraEndpoints: cookieSettings.hydra,
 				isOryNetwork: cookieSettings.isOryNetwork,
+				hydraEnabled: cookieSettings.hydraEnabled,
 				isReady: true,
 			});
 			return;
@@ -187,6 +199,7 @@ export const useSettingsStore = create<SettingsStoreState>()((set, get) => ({
 			kratosEndpoints: defaults.kratos,
 			hydraEndpoints: defaults.hydra,
 			isOryNetwork: defaults.isOryNetwork,
+			hydraEnabled: defaults.hydraEnabled,
 			isReady: true,
 		});
 	},
@@ -230,6 +243,11 @@ export const useSettingsStore = create<SettingsStoreState>()((set, get) => ({
 		set({ isOryNetwork: value });
 	},
 
+	setHydraEnabled: (value: boolean) => {
+		setCookie("hydra-enabled", value ? "true" : "false");
+		set({ hydraEnabled: value });
+	},
+
 	resetToDefaults: async () => {
 		const defaults = await fetchServerDefaults();
 
@@ -241,6 +259,7 @@ export const useSettingsStore = create<SettingsStoreState>()((set, get) => ({
 			kratosEndpoints: defaults.kratos,
 			hydraEndpoints: defaults.hydra,
 			isOryNetwork: defaults.isOryNetwork,
+			hydraEnabled: defaults.hydraEnabled,
 		});
 	},
 
@@ -275,9 +294,11 @@ export const useSettingsReady = () => {
 export const useKratosEndpoints = () => useSettingsStore((state) => state.kratosEndpoints);
 export const useHydraEndpoints = () => useSettingsStore((state) => state.hydraEndpoints);
 export const useIsOryNetwork = () => useSettingsStore((state) => state.isOryNetwork);
+export const useHydraEnabled = () => useSettingsStore((state) => state.hydraEnabled);
 export const useSetKratosEndpoints = () => useSettingsStore((state) => state.setKratosEndpoints);
 export const useSetHydraEndpoints = () => useSettingsStore((state) => state.setHydraEndpoints);
 export const useSetIsOryNetwork = () => useSettingsStore((state) => state.setIsOryNetwork);
+export const useSetHydraEnabled = () => useSettingsStore((state) => state.setHydraEnabled);
 export const useResetSettings = () => useSettingsStore((state) => state.resetToDefaults);
 export const useIsValidUrl = () => useSettingsStore((state) => state.isValidUrl);
 

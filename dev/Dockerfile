@@ -1,15 +1,15 @@
-FROM node:22-alpine
+FROM oven/bun:1-alpine
 
 WORKDIR /app
 
 # Install system dependencies
 RUN apk --no-cache add curl git
 
-# Copy package files
-COPY package*.json ./
+# Copy package files and lockfile
+COPY package.json bun.lock ./
 
-# Install dependencies with legacy peer deps to resolve MUI version conflicts
-RUN npm ci --legacy-peer-deps
+# Install dependencies
+RUN bun install --frozen-lockfile
 
 # Copy source code
 COPY . .
@@ -18,4 +18,4 @@ COPY . .
 EXPOSE 3000
 
 # Start development server
-CMD ["npm", "run", "dev"]
+CMD ["bun", "run", "dev"]

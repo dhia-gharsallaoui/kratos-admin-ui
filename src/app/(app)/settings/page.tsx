@@ -5,17 +5,19 @@ import { useState } from "react";
 import { PageHeader, ProtectedPage } from "@/components/layout";
 import { Alert, Container, Grid, Snackbar } from "@/components/ui";
 import {
+	useHydraEnabled,
 	useHydraEndpoints,
 	useIsOryNetwork,
 	useIsValidUrl,
 	useKratosEndpoints,
 	useResetSettings,
+	useSetHydraEnabled,
 	useSetHydraEndpoints,
 	useSetIsOryNetwork,
 	useSetKratosEndpoints,
 } from "@/features/settings/hooks/useSettings";
 import { useTheme } from "@/providers/ThemeProvider";
-import { AppearanceSection, ConnectionModeSection, ResetSection, ServiceConfigSection } from "./components";
+import { AppearanceSection, ConnectionModeSection, HydraIntegrationSection, ResetSection, ServiceConfigSection } from "./components";
 import { useServiceSettingsForm } from "./hooks";
 
 export default function SettingsPage() {
@@ -25,6 +27,8 @@ export default function SettingsPage() {
 	// Settings store hooks
 	const isOryNetwork = useIsOryNetwork();
 	const setIsOryNetwork = useSetIsOryNetwork();
+	const hydraEnabled = useHydraEnabled();
+	const setHydraEnabled = useSetHydraEnabled();
 	const kratosEndpoints = useKratosEndpoints();
 	const setKratosEndpoints = useSetKratosEndpoints();
 	const hydraEndpoints = useHydraEndpoints();
@@ -66,6 +70,11 @@ export default function SettingsPage() {
 		showSuccess();
 	};
 
+	const handleHydraEnabledChange = (enabled: boolean) => {
+		setHydraEnabled(enabled);
+		showSuccess();
+	};
+
 	const handleResetAll = async () => {
 		await resetSettings();
 		showSuccess();
@@ -90,6 +99,10 @@ export default function SettingsPage() {
 					</Grid>
 
 					<Grid size={{ xs: 12 }}>
+						<HydraIntegrationSection hydraEnabled={hydraEnabled} onHydraEnabledChange={handleHydraEnabledChange} />
+					</Grid>
+
+					<Grid size={{ xs: 12 }}>
 						<ServiceConfigSection
 							serviceName="Kratos"
 							form={kratosForm.form}
@@ -105,21 +118,23 @@ export default function SettingsPage() {
 						/>
 					</Grid>
 
-					<Grid size={{ xs: 12 }}>
-						<ServiceConfigSection
-							serviceName="Hydra"
-							form={hydraForm.form}
-							currentEndpoints={hydraEndpoints}
-							publicUrlPlaceholder="http://localhost:4444"
-							adminUrlPlaceholder="http://localhost:4445"
-							publicUrlHelperText="Used for OAuth2/OIDC public endpoints"
-							adminUrlHelperText="Used for OAuth2 client and flow management"
-							onSave={hydraForm.handleSave}
-							validateUrl={validateUrl}
-							isEditingApiKey={hydraForm.isEditingApiKey}
-							onApiKeyEditStart={hydraForm.startEditingApiKey}
-						/>
-					</Grid>
+					{hydraEnabled && (
+						<Grid size={{ xs: 12 }}>
+							<ServiceConfigSection
+								serviceName="Hydra"
+								form={hydraForm.form}
+								currentEndpoints={hydraEndpoints}
+								publicUrlPlaceholder="http://localhost:4444"
+								adminUrlPlaceholder="http://localhost:4445"
+								publicUrlHelperText="Used for OAuth2/OIDC public endpoints"
+								adminUrlHelperText="Used for OAuth2 client and flow management"
+								onSave={hydraForm.handleSave}
+								validateUrl={validateUrl}
+								isEditingApiKey={hydraForm.isEditingApiKey}
+								onApiKeyEditStart={hydraForm.startEditingApiKey}
+							/>
+						</Grid>
+					)}
 
 					<Grid size={{ xs: 12 }}>
 						<ResetSection onReset={handleResetAll} />
