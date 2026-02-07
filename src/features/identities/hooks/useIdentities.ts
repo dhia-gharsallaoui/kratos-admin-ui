@@ -1,5 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createIdentity, createRecoveryLink, deleteIdentity, getIdentity, listIdentities, patchIdentity } from "@/services/kratos";
+import type { DeleteIdentityCredentialsTypeEnum } from "@/services/kratos";
+import {
+	createIdentity,
+	createRecoveryLink,
+	deleteIdentity,
+	deleteIdentityCredentials,
+	getIdentity,
+	listIdentities,
+	patchIdentity,
+} from "@/services/kratos";
 
 // Identity list hook with pagination
 export const useIdentities = (params?: { pageSize?: number; pageToken?: string }) => {
@@ -167,7 +176,10 @@ export const useIdentity = (id: string) => {
 	return useQuery({
 		queryKey: ["identity", id],
 		queryFn: async () => {
-			const { data } = await getIdentity({ id });
+			const { data } = await getIdentity({
+				id,
+				includeCredential: ["oidc", "totp", "lookup_secret", "webauthn", "passkey", "saml", "password"],
+			});
 			return data;
 		},
 		enabled: !!id,
@@ -267,6 +279,21 @@ export const useDeleteIdentity = () => {
 			queryClient.invalidateQueries({ queryKey: ["identities"] });
 			queryClient.invalidateQueries({ queryKey: ["identities-search"] });
 			queryClient.invalidateQueries({ queryKey: ["identities-total-count"] });
+		},
+	});
+};
+
+// Identity credential deletion mutation
+export const useDeleteIdentityCredentials = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: async ({ id, type, identifier }: { id: string; type: DeleteIdentityCredentialsTypeEnum; identifier?: string }) => {
+			await deleteIdentityCredentials({ id, type, identifier });
+			return { id, type };
+		},
+		onSuccess: (_, variables) => {
+			queryClient.invalidateQueries({ queryKey: ["identity", variables.id] });
 		},
 	});
 };

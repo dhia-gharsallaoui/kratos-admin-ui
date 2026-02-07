@@ -1,4 +1,5 @@
 import type {
+	DeleteIdentityCredentialsTypeEnum,
 	IdentityApiCreateIdentityRequest,
 	IdentityApiCreateRecoveryLinkForIdentityRequest,
 	IdentityApiDeleteIdentityRequest,
@@ -6,6 +7,9 @@ import type {
 	IdentityApiListIdentitiesRequest,
 	IdentityApiPatchIdentityRequest,
 } from "@ory/kratos-client";
+
+export type { DeleteIdentityCredentialsTypeEnum };
+
 import { fetchAllPages } from "@/lib/pagination-utils";
 import { withApiErrorHandling } from "@/utils/api-wrapper";
 import { getAdminApi } from "../client";
@@ -43,6 +47,13 @@ export async function deleteIdentity(params: IdentityApiDeleteIdentityRequest) {
 	return withApiErrorHandling(async () => {
 		const adminApi = getAdminApi();
 		return await adminApi.deleteIdentity(params);
+	}, "Kratos");
+}
+
+export async function deleteIdentityCredentials(params: { id: string; type: DeleteIdentityCredentialsTypeEnum; identifier?: string }) {
+	return withApiErrorHandling(async () => {
+		const adminApi = getAdminApi();
+		return await adminApi.deleteIdentityCredentials(params);
 	}, "Kratos");
 }
 

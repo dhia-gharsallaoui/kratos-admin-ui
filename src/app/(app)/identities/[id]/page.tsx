@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowBack, Block, CheckCircleOutline, Delete, DeleteSweep, Edit, Link as LinkIcon, Person, Refresh } from "@mui/icons-material";
+import { ArrowBack, Block, CheckCircleOutline, Delete, DeleteSweep, Edit, Key, Link as LinkIcon, Lock, Person, Refresh } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -16,6 +16,7 @@ import {
 	Button,
 	Card,
 	CardContent,
+	Chip,
 	Dialog,
 	DialogActions,
 	Divider,
@@ -26,6 +27,7 @@ import {
 	Typography,
 } from "@/components/ui";
 import { UserRole } from "@/features/auth";
+import { CredentialDeleteDialog } from "@/features/identities/components/CredentialDeleteDialog";
 import { IdentityDeleteDialog } from "@/features/identities/components/IdentityDeleteDialog";
 import { IdentityEditModal } from "@/features/identities/components/IdentityEditModal";
 import { IdentityRecoveryDialog } from "@/features/identities/components/IdentityRecoveryDialog";
@@ -36,6 +38,22 @@ import { useDeleteIdentitySessions, useIdentitySessions } from "@/features/sessi
 import { useDialog } from "@/hooks";
 import { formatDate } from "@/lib/date-utils";
 
+const CREDENTIAL_TYPE_LABELS: Record<string, string> = {
+	password: "Password",
+	oidc: "Social Sign-In (OIDC)",
+	totp: "TOTP (Authenticator App)",
+	lookup_secret: "Lookup Secrets (Backup Codes)",
+	webauthn: "WebAuthn (Security Key)",
+	passkey: "Passkey",
+	code: "Code",
+	profile: "Profile",
+	saml: "SAML",
+	link_recovery: "Recovery Link",
+	code_recovery: "Recovery Code",
+};
+
+const NON_DELETABLE_CREDENTIALS = new Set(["password", "passkey", "code"]);
+
 export default function IdentityDetailPage() {
 	const theme = useTheme();
 	const params = useParams();
@@ -43,6 +61,7 @@ export default function IdentityDetailPage() {
 	const identityId = params.id as string;
 	const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
 	const [pendingState, setPendingState] = useState<"active" | "inactive">("active");
+	const [credentialToDelete, setCredentialToDelete] = useState<{ type: string; identifier?: string } | null>(null);
 
 	const { isOpen: editModalOpen, open: openEditModal, close: closeEditModal } = useDialog();
 	const { isOpen: deleteDialogOpen, open: openDeleteDialog, close: closeDeleteDialog } = useDialog();
@@ -337,6 +356,141 @@ export default function IdentityDetailPage() {
 						</Card>
 					</Grid>
 
+					{/* Credentials Section */}
+					<Grid size={{ xs: 12 }}>
+						<Card elevation={0} sx={{ border: 1, borderColor: "divider" }}>
+							<CardContent>
+								<Box
+									sx={{
+										display: "flex",
+										justifyContent: "space-between",
+										alignItems: "center",
+										mb: 2,
+									}}
+								>
+									<Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+										<Key color="primary" />
+										<Typography variant="h6">Credentials</Typography>
+									</Box>
+								</Box>
+								<Divider sx={{ mb: 2 }} />
+
+								{identity.credentials && Object.keys(identity.credentials).length > 0 ? (
+									<Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+										{Object.entries(identity.credentials).flatMap(([type, credential]) => {
+											const needsIdentifier = type === "oidc" || type === "saml";
+											const identifiers = credential.identifiers || [];
+
+											// For OIDC/SAML, render one row per identifier
+											if (needsIdentifier && identifiers.length > 0) {
+												return identifiers.map((identifier) => (
+													<Box
+														key={`${type}-${identifier}`}
+														sx={{
+															display: "flex",
+															alignItems: "center",
+															justifyContent: "space-between",
+															p: 1.5,
+															border: 1,
+															borderColor: "divider",
+															borderRadius: 1,
+														}}
+													>
+														<Box sx={{ display: "flex", alignItems: "center", gap: 2, minWidth: 0, flex: 1 }}>
+															<Chip label={CREDENTIAL_TYPE_LABELS[type] || type} variant="tag" />
+															<Typography
+																variant="body2"
+																sx={{
+																	fontFamily: "monospace",
+																	fontSize: "0.8rem",
+																	overflow: "hidden",
+																	textOverflow: "ellipsis",
+																	whiteSpace: "nowrap",
+																}}
+															>
+																{identifier}
+															</Typography>
+															{credential.created_at && (
+																<Typography variant="body2" color="text.secondary" sx={{ whiteSpace: "nowrap", ml: "auto" }}>
+																	{formatDate(credential.created_at)}
+																</Typography>
+															)}
+														</Box>
+														<Tooltip content={`Delete ${CREDENTIAL_TYPE_LABELS[type] || type} credential`}>
+															<IconButton
+																size="small"
+																sx={{ ml: 1, color: "error.main" }}
+																onClick={() => setCredentialToDelete({ type, identifier })}
+															>
+																<Delete fontSize="small" />
+															</IconButton>
+														</Tooltip>
+													</Box>
+												));
+											}
+
+											// For other types, render one row per credential
+											return [
+												<Box
+													key={type}
+													sx={{
+														display: "flex",
+														alignItems: "center",
+														justifyContent: "space-between",
+														p: 1.5,
+														border: 1,
+														borderColor: "divider",
+														borderRadius: 1,
+													}}
+												>
+													<Box sx={{ display: "flex", alignItems: "center", gap: 2, minWidth: 0, flex: 1 }}>
+														<Chip label={CREDENTIAL_TYPE_LABELS[type] || type} variant="tag" />
+														{identifiers.length > 0 && (
+															<Typography
+																variant="body2"
+																sx={{
+																	fontFamily: "monospace",
+																	fontSize: "0.8rem",
+																	overflow: "hidden",
+																	textOverflow: "ellipsis",
+																	whiteSpace: "nowrap",
+																}}
+															>
+																{identifiers.join(", ")}
+															</Typography>
+														)}
+														{credential.created_at && (
+															<Typography variant="body2" color="text.secondary" sx={{ whiteSpace: "nowrap", ml: "auto" }}>
+																{formatDate(credential.created_at)}
+															</Typography>
+														)}
+													</Box>
+													{NON_DELETABLE_CREDENTIALS.has(type) ? (
+														<Tooltip content="Cannot be deleted via API">
+															<Lock sx={{ ml: 1, color: "text.disabled", fontSize: "1.2rem" }} />
+														</Tooltip>
+													) : (
+														<Tooltip content={`Delete ${CREDENTIAL_TYPE_LABELS[type] || type} credential`}>
+															<IconButton size="small" sx={{ ml: 1, color: "error.main" }} onClick={() => setCredentialToDelete({ type })}>
+																<Delete fontSize="small" />
+															</IconButton>
+														</Tooltip>
+													)}
+												</Box>,
+											];
+										})}
+									</Box>
+								) : (
+									<Box sx={{ textAlign: "center", py: 4 }}>
+										<Typography variant="body2" color="text.secondary">
+											No credentials found for this identity
+										</Typography>
+									</Box>
+								)}
+							</CardContent>
+						</Card>
+					</Grid>
+
 					{/* Sessions Section */}
 					<Grid size={{ xs: 12 }}>
 						<Card elevation={0} sx={{ border: 1, borderColor: "divider" }}>
@@ -460,6 +614,18 @@ export default function IdentityDetailPage() {
 
 				{/* Delete Dialog */}
 				<IdentityDeleteDialog open={deleteDialogOpen} onClose={closeDeleteDialog} identity={identity} onSuccess={handleDeleteSuccess} />
+
+				{/* Credential Delete Dialog */}
+				{credentialToDelete && (
+					<CredentialDeleteDialog
+						open={true}
+						onClose={() => setCredentialToDelete(null)}
+						identityId={identityId}
+						credentialType={credentialToDelete.type}
+						identifier={credentialToDelete.identifier}
+						onSuccess={() => refetch()}
+					/>
+				)}
 
 				{/* Delete All Sessions Dialog */}
 				<Dialog open={deleteSessionsDialogOpen} onClose={closeDeleteSessionsDialog} title="Delete All Sessions" maxWidth="sm">
