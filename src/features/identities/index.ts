@@ -1,4 +1,5 @@
 // Export components
+export { default as CredentialDeleteDialog } from "./components/CredentialDeleteDialog";
 export { default as IdentitiesTable } from "./components/IdentitiesTable";
 export { default as IdentityDeleteDialog } from "./components/IdentityDeleteDialog";
 export { default as IdentityEditModal } from "./components/IdentityEditModal";

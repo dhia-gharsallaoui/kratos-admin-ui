@@ -52,7 +52,9 @@ export async function withApiErrorHandling<T>(apiCall: () => Promise<T>, service
 			status = error.response.status;
 			message = `${serviceName} returned ${status}`;
 
-			if (error.response.data?.error?.message) {
+			if (error.response.data?.error?.reason) {
+				message = error.response.data.error.reason;
+			} else if (error.response.data?.error?.message) {
 				message = error.response.data.error.message;
 			} else if (error.response.data?.message) {
 				message = error.response.data.message;
