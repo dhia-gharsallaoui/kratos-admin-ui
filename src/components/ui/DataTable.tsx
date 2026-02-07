@@ -2,6 +2,7 @@ import { Add, Clear, NavigateBefore, NavigateNext, Refresh, Search } from "@mui/
 import {
 	Alert,
 	Box,
+	Checkbox,
 	CircularProgress,
 	FormControl,
 	InputAdornment,
@@ -81,6 +82,11 @@ export interface DataTableProps<T = any> {
 		onChange: (value: any) => void;
 	}>;
 
+	// Selection
+	selectable?: boolean;
+	selectedKeys?: Set<string>;
+	onSelectionChange?: (selectedKeys: Set<string>) => void;
+
 	// Styling
 	maxHeight?: number;
 	emptyMessage?: string;
@@ -113,6 +119,9 @@ export const DataTable = React.memo(
 		onAdd,
 		addButtonText = "Add",
 		filters = [],
+		selectable = false,
+		selectedKeys,
+		onSelectionChange,
 		maxHeight = 600,
 		emptyMessage = "No data available",
 		className,
@@ -177,6 +186,11 @@ export const DataTable = React.memo(
 				<Table>
 					<TableHead>
 						<TableRow>
+							{selectable && (
+								<TableCell padding="checkbox">
+									<Skeleton width={20} height={20} />
+								</TableCell>
+							)}
 							{columns.map((column) => (
 								<TableCell key={column.field} style={{ minWidth: column.minWidth }}>
 									<Skeleton width="60%" height={20} />
@@ -187,6 +201,11 @@ export const DataTable = React.memo(
 					<TableBody>
 						{Array.from({ length: pageSize }).map((_, index) => (
 							<TableRow key={index}>
+								{selectable && (
+									<TableCell padding="checkbox">
+										<Skeleton width={20} height={20} />
+									</TableCell>
+								)}
 								{columns.map((column) => (
 									<TableCell key={column.field}>
 										<Skeleton width="80%" height={20} />
@@ -212,6 +231,37 @@ export const DataTable = React.memo(
 
 			return value;
 		}, []);
+
+		const totalColumns = selectable ? columns.length + 1 : columns.length;
+
+		const allVisibleSelected =
+			selectable && filteredData.length > 0 && selectedKeys ? filteredData.every((row) => selectedKeys.has(row[keyField])) : false;
+
+		const someVisibleSelected =
+			selectable && selectedKeys ? filteredData.some((row) => selectedKeys.has(row[keyField])) && !allVisibleSelected : false;
+
+		const handleSelectAll = useCallback(() => {
+			if (!onSelectionChange) return;
+			if (allVisibleSelected) {
+				onSelectionChange(new Set());
+			} else {
+				onSelectionChange(new Set(filteredData.map((row) => row[keyField])));
+			}
+		}, [allVisibleSelected, filteredData, keyField, onSelectionChange]);
+
+		const handleSelectRow = useCallback(
+			(rowKey: string) => {
+				if (!onSelectionChange || !selectedKeys) return;
+				const next = new Set(selectedKeys);
+				if (next.has(rowKey)) {
+					next.delete(rowKey);
+				} else {
+					next.add(rowKey);
+				}
+				onSelectionChange(next);
+			},
+			[onSelectionChange, selectedKeys],
+		);
 
 		const hasActiveFilters = filters.some((filter) => filter.value) || debouncedSearchValue;
 
@@ -320,6 +370,23 @@ export const DataTable = React.memo(
 							<Table stickyHeader>
 								<TableHead>
 									<TableRow>
+										{selectable && (
+											<TableCell
+												padding="checkbox"
+												sx={{
+													backgroundColor: "background.paper",
+													borderBottom: 1,
+													borderColor: "divider",
+												}}
+											>
+												<Checkbox
+													indeterminate={someVisibleSelected}
+													checked={allVisibleSelected}
+													onChange={handleSelectAll}
+													inputProps={{ "aria-label": "select all" }}
+												/>
+											</TableCell>
+										)}
 										{columns.map((column) => (
 											<TableCell
 												key={column.field}
@@ -343,40 +410,60 @@ export const DataTable = React.memo(
 								<TableBody>
 									{filteredData.length === 0 ? (
 										<TableRow>
-											<TableCell colSpan={columns.length} align="center" sx={{ py: 4 }}>
+											<TableCell colSpan={totalColumns} align="center" sx={{ py: 4 }}>
 												{loading ? <CircularProgress size={24} /> : <Typography color="text.secondary">{emptyMessage}</Typography>}
 											</TableCell>
 										</TableRow>
 									) : (
-										filteredData.map((row, index) => (
-											<TableRow
-												key={row[keyField] || index}
-												onClick={() => onRowClick?.(row, index)}
-												sx={{
-													"&:hover": {
-														backgroundColor: "action.hover",
-														cursor: onRowClick ? "pointer" : "default",
-													},
-													"&:not(:last-child) td": {
-														borderBottom: 1,
-														borderColor: "divider",
-													},
-												}}
-											>
-												{columns.map((column) => (
-													<TableCell
-														key={column.field}
-														style={{
-															minWidth: column.minWidth,
-															maxWidth: column.maxWidth,
-															width: column.width,
-														}}
-													>
-														{renderCell(column, row, index)}
-													</TableCell>
-												))}
-											</TableRow>
-										))
+										filteredData.map((row, index) => {
+											const rowKey = row[keyField];
+											const isSelected = selectable && selectedKeys ? selectedKeys.has(rowKey) : false;
+											return (
+												<TableRow
+													key={rowKey || index}
+													onClick={() => onRowClick?.(row, index)}
+													selected={isSelected}
+													sx={{
+														"&:hover": {
+															backgroundColor: "action.hover",
+															cursor: onRowClick ? "pointer" : "default",
+														},
+														"&.Mui-selected": {
+															backgroundColor: "action.selected",
+															"&:hover": {
+																backgroundColor: "action.selected",
+															},
+														},
+														"&:not(:last-child) td": {
+															borderBottom: 1,
+															borderColor: "divider",
+														},
+													}}
+												>
+													{selectable && (
+														<TableCell padding="checkbox" onClick={(e) => e.stopPropagation()}>
+															<Checkbox
+																checked={isSelected}
+																onChange={() => handleSelectRow(rowKey)}
+																inputProps={{ "aria-label": `select row ${rowKey}` }}
+															/>
+														</TableCell>
+													)}
+													{columns.map((column) => (
+														<TableCell
+															key={column.field}
+															style={{
+																minWidth: column.minWidth,
+																maxWidth: column.maxWidth,
+																width: column.width,
+															}}
+														>
+															{renderCell(column, row, index)}
+														</TableCell>
+													))}
+												</TableRow>
+											);
+										})
 									)}
 								</TableBody>
 							</Table>

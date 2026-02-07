@@ -1,4 +1,5 @@
 // Export components
+export { default as BulkOperationDialog } from "./components/BulkOperationDialog";
 export { default as CredentialDeleteDialog } from "./components/CredentialDeleteDialog";
 export { default as IdentitiesTable } from "./components/IdentitiesTable";
 export { default as IdentityDeleteDialog } from "./components/IdentityDeleteDialog";

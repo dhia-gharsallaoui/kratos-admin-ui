@@ -1,11 +1,15 @@
+import { Block, CheckCircle, Clear, DeleteOutline, ExitToApp } from "@mui/icons-material";
 import type { Identity } from "@ory/kratos-client";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ErrorState, LoadingState } from "@/components/feedback";
-import { Box, Chip, DataTable, type DataTableColumn, Tooltip, Typography } from "@/components/ui";
+import { Box, Button, Chip, DataTable, type DataTableColumn, IconButton, Tooltip, Typography } from "@/components/ui";
 import { useIdentities, useIdentitiesSearch } from "@/features/identities/hooks";
 import { useSchemas } from "@/features/schemas/hooks";
 import { formatDate } from "@/lib/date-utils";
+import { BulkOperationDialog } from "./BulkOperationDialog";
+
+type BulkOpType = "delete" | "deleteSessions" | "activate" | "deactivate";
 
 const IdentitiesTable: React.FC = React.memo(() => {
 	const router = useRouter();
@@ -14,6 +18,8 @@ const IdentitiesTable: React.FC = React.memo(() => {
 	const [pageSize, _setPageSize] = useState(25);
 	const [pageToken, _setPageToken] = useState<string | undefined>(undefined);
 	const [_pageHistory, _setPageHistory] = useState<(string | undefined)[]>([undefined]);
+	const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+	const [bulkOperation, setBulkOperation] = useState<BulkOpType | null>(null);
 
 	// Debounce search term
 	useEffect(() => {
@@ -219,6 +225,10 @@ const IdentitiesTable: React.FC = React.memo(() => {
 		setSearchTerm(value);
 	};
 
+	const handleBulkSuccess = useCallback(() => {
+		setSelectedIds(new Set());
+	}, []);
+
 	if (isLoading && !baseIdentities.length) {
 		return <LoadingState variant="page" />;
 	}
@@ -235,11 +245,49 @@ const IdentitiesTable: React.FC = React.memo(() => {
 
 	return (
 		<Box>
+			{/* Bulk action toolbar */}
+			{selectedIds.size > 0 && (
+				<Box
+					sx={{
+						display: "flex",
+						alignItems: "center",
+						gap: 1,
+						mb: 2,
+						p: 1.5,
+						bgcolor: "action.selected",
+						borderRadius: 2,
+						flexWrap: "wrap",
+					}}
+				>
+					<Chip label={`${selectedIds.size} selected`} variant="tag" />
+					<Button variant="danger" size="small" startIcon={<DeleteOutline />} onClick={() => setBulkOperation("delete")}>
+						Delete
+					</Button>
+					<Button variant="outlined" size="small" startIcon={<ExitToApp />} onClick={() => setBulkOperation("deleteSessions")}>
+						Delete Sessions
+					</Button>
+					<Button variant="outlined" size="small" startIcon={<CheckCircle />} onClick={() => setBulkOperation("activate")}>
+						Activate
+					</Button>
+					<Button variant="outlined" size="small" startIcon={<Block />} onClick={() => setBulkOperation("deactivate")}>
+						Deactivate
+					</Button>
+					<Tooltip title="Clear selection">
+						<IconButton size="small" onClick={() => setSelectedIds(new Set())}>
+							<Clear />
+						</IconButton>
+					</Tooltip>
+				</Box>
+			)}
+
 			<DataTable
 				data={displayedIdentities}
 				columns={columns}
 				keyField="id"
 				loading={isLoading}
+				selectable={true}
+				selectedKeys={selectedIds}
+				onSelectionChange={setSelectedIds}
 				searchable={true}
 				searchValue={searchTerm}
 				onSearchChange={handleSearchChange}
@@ -260,6 +308,18 @@ const IdentitiesTable: React.FC = React.memo(() => {
 						: `Showing ${displayedIdentities.length} identities${hasMore ? " (more available)" : ""}`}
 				</Typography>
 			</Box>
+
+			{/* Bulk operation dialog */}
+			{bulkOperation && (
+				<BulkOperationDialog
+					open={!!bulkOperation}
+					onClose={() => setBulkOperation(null)}
+					operationType={bulkOperation}
+					identityIds={Array.from(selectedIds)}
+					identities={displayedIdentities}
+					onSuccess={handleBulkSuccess}
+				/>
+			)}
 		</Box>
 	);
 });
