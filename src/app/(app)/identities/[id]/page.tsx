@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowBack, Delete, DeleteSweep, Edit, Link as LinkIcon, Person, Refresh } from "@mui/icons-material";
+import { ArrowBack, Block, CheckCircleOutline, Delete, DeleteSweep, Edit, Link as LinkIcon, Person, Refresh } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -29,7 +29,7 @@ import { UserRole } from "@/features/auth";
 import { IdentityDeleteDialog } from "@/features/identities/components/IdentityDeleteDialog";
 import { IdentityEditModal } from "@/features/identities/components/IdentityEditModal";
 import { IdentityRecoveryDialog } from "@/features/identities/components/IdentityRecoveryDialog";
-import { useIdentity } from "@/features/identities/hooks";
+import { useIdentity, usePatchIdentity } from "@/features/identities/hooks";
 import { SessionDetailDialog } from "@/features/sessions/components/SessionDetailDialog";
 import { SessionsTable } from "@/features/sessions/components/SessionsTable";
 import { useDeleteIdentitySessions, useIdentitySessions } from "@/features/sessions/hooks";
@@ -42,13 +42,16 @@ export default function IdentityDetailPage() {
 	const router = useRouter();
 	const identityId = params.id as string;
 	const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
+	const [pendingState, setPendingState] = useState<"active" | "inactive">("active");
 
 	const { isOpen: editModalOpen, open: openEditModal, close: closeEditModal } = useDialog();
 	const { isOpen: deleteDialogOpen, open: openDeleteDialog, close: closeDeleteDialog } = useDialog();
 	const { isOpen: recoveryDialogOpen, open: openRecoveryDialog, close: closeRecoveryDialog } = useDialog();
 	const { isOpen: deleteSessionsDialogOpen, open: openDeleteSessionsDialog, close: closeDeleteSessionsDialog } = useDialog();
+	const { isOpen: stateDialogOpen, open: openStateDialog, close: closeStateDialog } = useDialog();
 
 	const { data: identity, isLoading, isError, error: _, refetch } = useIdentity(identityId);
+	const patchIdentityMutation = usePatchIdentity();
 
 	// Sessions hooks
 	const { data: sessionsData, isLoading: sessionsLoading, error: sessionsError, refetch: refetchSessions } = useIdentitySessions(identityId);
@@ -89,6 +92,24 @@ export default function IdentityDetailPage() {
 				closeDeleteSessionsDialog();
 			},
 		});
+	};
+
+	const handleStateToggle = () => {
+		const newState = identity?.state === "active" ? "inactive" : "active";
+		setPendingState(newState);
+		openStateDialog();
+	};
+
+	const handleStateToggleConfirm = () => {
+		patchIdentityMutation.mutate(
+			{ id: identityId, jsonPatch: [{ op: "replace" as const, path: "/state", value: pendingState }] },
+			{
+				onSuccess: () => {
+					closeStateDialog();
+					refetch();
+				},
+			},
+		);
 	};
 
 	const handleSessionClick = (sessionId: string) => {
@@ -164,6 +185,23 @@ export default function IdentityDetailPage() {
 							<Button variant="outlined" onClick={handleRecover}>
 								<LinkIcon style={{ marginRight: "0.5rem" }} />
 								Recover
+							</Button>
+							<Button
+								variant={identity.state === "active" ? "outlined" : "primary"}
+								onClick={handleStateToggle}
+								disabled={patchIdentityMutation.isPending}
+							>
+								{identity.state === "active" ? (
+									<>
+										<Block style={{ marginRight: "0.5rem" }} />
+										Deactivate
+									</>
+								) : (
+									<>
+										<CheckCircleOutline style={{ marginRight: "0.5rem" }} />
+										Activate
+									</>
+								)}
 							</Button>
 							<Button variant="danger" onClick={handleDelete}>
 								<Delete style={{ marginRight: "0.5rem" }} />
@@ -446,6 +484,42 @@ export default function IdentityDetailPage() {
 								{
 									label: "Cancel",
 									onClick: closeDeleteSessionsDialog,
+								},
+							]}
+						/>
+					</DialogActions>
+				</Dialog>
+
+				{/* State Toggle Confirmation Dialog */}
+				<Dialog
+					open={stateDialogOpen}
+					onClose={closeStateDialog}
+					title={pendingState === "active" ? "Activate Identity" : "Deactivate Identity"}
+					maxWidth="sm"
+				>
+					<Alert severity="warning" style={{ marginBottom: "1rem" }}>
+						{pendingState === "inactive"
+							? "Deactivating this identity will prevent the user from signing in. All active sessions will remain until they expire."
+							: "Activating this identity will allow the user to sign in again."}
+					</Alert>
+					<Typography variant="body">Are you sure you want to {pendingState === "active" ? "activate" : "deactivate"} this identity?</Typography>
+					{patchIdentityMutation.error && (
+						<Alert severity="error" style={{ marginTop: "1rem" }}>
+							Failed to update identity state: {patchIdentityMutation.error.message}
+						</Alert>
+					)}
+					<DialogActions>
+						<ActionBar
+							align="right"
+							primaryAction={{
+								label: patchIdentityMutation.isPending ? "Updating..." : pendingState === "active" ? "Activate" : "Deactivate",
+								onClick: handleStateToggleConfirm,
+								disabled: patchIdentityMutation.isPending,
+							}}
+							secondaryActions={[
+								{
+									label: "Cancel",
+									onClick: closeStateDialog,
 								},
 							]}
 						/>
