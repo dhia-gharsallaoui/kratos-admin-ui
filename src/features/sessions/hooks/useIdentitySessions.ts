@@ -1,5 +1,7 @@
+"use client";
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { deleteIdentitySessions, listIdentitySessions } from "@/services/kratos/endpoints/sessions";
+import { deleteIdentitySessions, listIdentitySessions } from "@/api/kratos/identities";
 
 // Hook to fetch sessions for a specific identity
 export const useIdentitySessions = (identityId: string, options?: { enabled?: boolean }) => {
@@ -7,12 +9,9 @@ export const useIdentitySessions = (identityId: string, options?: { enabled?: bo
 
 	return useQuery({
 		queryKey: ["identity-sessions", identityId],
-		queryFn: () =>
-			listIdentitySessions({
-				id: identityId,
-			}),
+		queryFn: () => listIdentitySessions(identityId),
 		enabled: enabled && !!identityId,
-		staleTime: 30000, // 30 seconds
+		staleTime: 30000,
 		refetchOnWindowFocus: false,
 		retry: 2,
 	});
@@ -25,11 +24,7 @@ export const useDeleteIdentitySessions = () => {
 	return useMutation({
 		mutationFn: (identityId: string) => deleteIdentitySessions(identityId),
 		onSuccess: (_, identityId) => {
-			// Invalidate identity sessions
-			queryClient.invalidateQueries({
-				queryKey: ["identity-sessions", identityId],
-			});
-			// Also invalidate general sessions list in case they're viewing that too
+			queryClient.invalidateQueries({ queryKey: ["identity-sessions", identityId] });
 			queryClient.invalidateQueries({ queryKey: ["sessions"] });
 		},
 	});

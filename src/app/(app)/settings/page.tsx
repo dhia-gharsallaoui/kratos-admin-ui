@@ -5,10 +5,12 @@ import { useState } from "react";
 import { PageHeader, ProtectedPage } from "@/components/layout";
 import { Alert, Container, Grid, Snackbar } from "@/components/ui";
 import {
+	useHydraApiKeyConfigured,
 	useHydraEnabled,
 	useHydraEndpoints,
 	useIsOryNetwork,
 	useIsValidUrl,
+	useKratosApiKeyConfigured,
 	useKratosEndpoints,
 	useResetSettings,
 	useSetHydraEnabled,
@@ -24,7 +26,6 @@ export default function SettingsPage() {
 	const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 	const { theme: currentTheme, toggleTheme } = useTheme();
 
-	// Settings store hooks
 	const isOryNetwork = useIsOryNetwork();
 	const setIsOryNetwork = useSetIsOryNetwork();
 	const hydraEnabled = useHydraEnabled();
@@ -35,11 +36,11 @@ export default function SettingsPage() {
 	const setHydraEndpoints = useSetHydraEndpoints();
 	const resetSettings = useResetSettings();
 	const isValidUrl = useIsValidUrl();
+	const kratosApiKeyConfigured = useKratosApiKeyConfigured();
+	const hydraApiKeyConfigured = useHydraApiKeyConfigured();
 
-	// Success callback for all save operations
 	const showSuccess = () => setShowSuccessMessage(true);
 
-	// Form hooks for Kratos and Hydra
 	const kratosForm = useServiceSettingsForm({
 		endpoints: kratosEndpoints,
 		setEndpoints: setKratosEndpoints,
@@ -52,14 +53,12 @@ export default function SettingsPage() {
 		onSuccess: showSuccess,
 	});
 
-	// URL validation
 	const validateUrl = (value: string) => {
 		if (!value.trim()) return "URL is required";
 		if (!isValidUrl(value.trim())) return "Please enter a valid URL";
 		return true;
 	};
 
-	// Event handlers
 	const handleThemeChange = () => {
 		toggleTheme();
 		showSuccess();
@@ -106,15 +105,13 @@ export default function SettingsPage() {
 						<ServiceConfigSection
 							serviceName="Kratos"
 							form={kratosForm.form}
-							currentEndpoints={kratosEndpoints}
 							publicUrlPlaceholder="http://localhost:4433"
 							adminUrlPlaceholder="http://localhost:4434"
 							publicUrlHelperText="Used for public API calls"
 							adminUrlHelperText="Used for admin API calls"
 							onSave={kratosForm.handleSave}
 							validateUrl={validateUrl}
-							isEditingApiKey={kratosForm.isEditingApiKey}
-							onApiKeyEditStart={kratosForm.startEditingApiKey}
+							apiKeyConfigured={kratosApiKeyConfigured}
 						/>
 					</Grid>
 
@@ -123,15 +120,13 @@ export default function SettingsPage() {
 							<ServiceConfigSection
 								serviceName="Hydra"
 								form={hydraForm.form}
-								currentEndpoints={hydraEndpoints}
 								publicUrlPlaceholder="http://localhost:4444"
 								adminUrlPlaceholder="http://localhost:4445"
 								publicUrlHelperText="Used for OAuth2/OIDC public endpoints"
 								adminUrlHelperText="Used for OAuth2 client and flow management"
 								onSave={hydraForm.handleSave}
 								validateUrl={validateUrl}
-								isEditingApiKey={hydraForm.isEditingApiKey}
-								onApiKeyEditStart={hydraForm.startEditingApiKey}
+								apiKeyConfigured={hydraApiKeyConfigured}
 							/>
 						</Grid>
 					)}

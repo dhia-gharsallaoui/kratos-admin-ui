@@ -1,4 +1,4 @@
-import type { OAuth2Client } from "@/services/hydra";
+import type { OAuth2Client } from "@ory/hydra-client";
 
 // UI-specific types for OAuth2 clients
 export interface OAuth2ClientFormData {

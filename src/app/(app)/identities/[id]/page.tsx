@@ -377,13 +377,13 @@ export default function IdentityDetailPage() {
 
 								{identity.credentials && Object.keys(identity.credentials).length > 0 ? (
 									<Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-										{Object.entries(identity.credentials).flatMap(([type, credential]) => {
+										{Object.entries(identity.credentials).flatMap(([type, credential]: [string, any]) => {
 											const needsIdentifier = type === "oidc" || type === "saml";
 											const identifiers = credential.identifiers || [];
 
 											// For OIDC/SAML, render one row per identifier
 											if (needsIdentifier && identifiers.length > 0) {
-												return identifiers.map((identifier) => (
+												return identifiers.map((identifier: string) => (
 													<Box
 														key={`${type}-${identifier}`}
 														sx={{
@@ -518,7 +518,7 @@ export default function IdentityDetailPage() {
 											size="small"
 											startIcon={<DeleteSweep />}
 											onClick={handleDeleteAllSessions}
-											disabled={deleteSessionsMutation.isPending || sessionsLoading || !sessionsData?.data?.length}
+											disabled={deleteSessionsMutation.isPending || sessionsLoading || !sessionsData?.sessions?.length}
 										>
 											Delete All Sessions
 										</Button>
@@ -534,7 +534,7 @@ export default function IdentityDetailPage() {
 									<Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
 										<DottedLoader />
 									</Box>
-								) : !sessionsData?.data?.length ? (
+								) : !sessionsData?.sessions?.length ? (
 									<Box sx={{ textAlign: "center", py: 4 }}>
 										<Typography variant="body2" color="text.secondary">
 											No active sessions found for this identity
@@ -543,8 +543,8 @@ export default function IdentityDetailPage() {
 								) : (
 									<>
 										<SessionsTable
-											key={sessionsData.headers?.etag || "identity-sessions"} // Force re-render when data updates
-											sessions={sessionsData.data}
+											key={"identity-sessions"}
+											sessions={sessionsData.sessions}
 											isLoading={false}
 											isFetchingNextPage={false}
 											searchQuery=""
@@ -552,7 +552,7 @@ export default function IdentityDetailPage() {
 										/>
 										<Box sx={{ mt: 2, textAlign: "center" }}>
 											<Typography variant="body2" color="text.secondary">
-												Showing {sessionsData.data.length} session(s) for this identity
+												Showing {sessionsData.sessions.length} session(s) for this identity
 											</Typography>
 										</Box>
 									</>

@@ -1,4 +1,4 @@
-import type { OAuth2ConsentRequest, OAuth2LoginRequest, OAuth2LogoutRequest } from "@/services/hydra";
+import type { OAuth2ConsentRequest, OAuth2LoginRequest, OAuth2LogoutRequest } from "@ory/hydra-client";
 import type {
 	AcceptConsentFormData,
 	AcceptLoginFormData,

@@ -15,6 +15,7 @@ import {
 	VpnKey as VpnKeyIcon,
 } from "@mui/icons-material";
 import { DataGrid, type GridColDef, type GridRenderCellParams } from "@mui/x-data-grid";
+import type { OAuth2Client } from "@ory/hydra-client";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { ErrorState, StatCard } from "@/components";
@@ -24,7 +25,6 @@ import { Box, Card, Chip, Dialog, DialogActions, DialogContent, EmptyState, Grid
 import { formatClientId, getClientType, transformOAuth2ClientForTable, useAllOAuth2Clients, useDeleteOAuth2Client } from "@/features/oauth2-clients";
 import { useHydraEnabled } from "@/features/settings/hooks/useSettings";
 import { useDialog } from "@/hooks";
-import type { OAuth2Client } from "@/services/hydra";
 
 export default function OAuth2ClientsPage() {
 	const router = useRouter();

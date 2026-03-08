@@ -1,4 +1,4 @@
-import type { OAuth2ConsentRequest, OAuth2LoginRequest } from "@/services/hydra";
+import type { OAuth2ConsentRequest, OAuth2LoginRequest } from "@ory/hydra-client";
 
 // UI-specific types for OAuth2 auth flows
 export interface OAuth2AuthFlowTableRow {

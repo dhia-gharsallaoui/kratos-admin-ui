@@ -1,6 +1,7 @@
 import { Close, Devices, ExpandMore, Info, Person, Security } from "@mui/icons-material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
+import { disableSession, extendSession, getSession } from "@/api/kratos/sessions";
 import { StatusBadge } from "@/components";
 import { ErrorState, LoadingState } from "@/components/feedback";
 import { ActionBar } from "@/components/layout";
@@ -22,7 +23,6 @@ import {
 	Typography,
 } from "@/components/ui";
 import { formatDate } from "@/lib/date-utils";
-import { disableSession, extendSession, getSession } from "../../../services/kratos/endpoints/sessions";
 
 interface SessionDetailDialogProps {
 	open: boolean;
@@ -48,7 +48,7 @@ export const SessionDetailDialog: React.FC<SessionDetailDialogProps> = React.mem
 		retry: 2,
 	});
 
-	const session = sessionData?.data;
+	const session = sessionData;
 
 	// Delete session mutation
 	const deleteMutation = useMutation({

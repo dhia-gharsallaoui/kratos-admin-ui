@@ -2,6 +2,7 @@
 
 import { Close, Email, ExpandMore, Refresh } from "@mui/icons-material";
 import { useEffect, useMemo, useState } from "react";
+import type { CourierMessageStatus } from "@/api/kratos/courier";
 import { AdminLayout, PageHeader } from "@/components/layout";
 import {
 	Box,
@@ -24,7 +25,6 @@ import { UserRole } from "@/features/auth";
 import { ProtectedRoute } from "@/features/auth/components/ProtectedRoute";
 import { MessageDetailDialog, MessagesTable } from "@/features/messages/components";
 import { useMessagesPaginated, useMessagesWithSearch } from "@/features/messages/hooks";
-import type { CourierMessageStatus } from "@/services/kratos/endpoints/courier";
 
 export default function MessagesPage() {
 	const [searchQuery, setSearchQuery] = useState("");

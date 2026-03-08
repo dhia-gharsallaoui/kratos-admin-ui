@@ -1,7 +1,9 @@
+"use client";
+
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { type AuthUser, UserRole } from "../types";
-import { findUserByCredentials, toAuthUser } from "../utils";
+import type { AuthUser } from "../types";
+import { UserRole } from "../types";
 
 // Define auth store interface
 interface AuthStoreState {
@@ -9,9 +11,10 @@ interface AuthStoreState {
 	isAuthenticated: boolean;
 	isLoading: boolean;
 	login: (username: string, password: string) => Promise<boolean>;
-	logout: () => void;
+	logout: () => Promise<void>;
 	hasPermission: (requiredRole: UserRole) => boolean;
 	setLoading: (isLoading: boolean) => void;
+	validateSession: () => Promise<void>;
 }
 
 // Create auth store with persistence
@@ -25,32 +28,69 @@ export const useAuthStore = create<AuthStoreState>()(
 			setLoading: (isLoading: boolean) => set({ isLoading }),
 
 			login: async (username: string, password: string) => {
-				// Find user from our config
-				const userRecord = findUserByCredentials(username, password);
+				try {
+					const response = await fetch("/api/auth/login", {
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ username, password }),
+					});
 
-				if (userRecord) {
-					const user = toAuthUser(userRecord);
+					if (!response.ok) {
+						return false;
+					}
+
+					const data = await response.json();
+					const user: AuthUser = {
+						username: data.user.username,
+						role: data.user.role as UserRole,
+						displayName: data.user.displayName,
+						email: data.user.email || "",
+					};
 					set({ user, isAuthenticated: true });
 					return true;
+				} catch {
+					return false;
 				}
-
-				return false;
 			},
 
-			logout: () => {
+			logout: async () => {
+				try {
+					await fetch("/api/auth/logout", { method: "POST" });
+				} catch {
+					// Ignore network errors during logout
+				}
 				set({ user: null, isAuthenticated: false });
 			},
 
 			hasPermission: (requiredRole: UserRole) => {
 				const { user } = get();
-
 				if (!user) return false;
-
-				// Admin can access everything
 				if (user.role === UserRole.ADMIN) return true;
-
-				// Check if user has the required role
 				return user.role === requiredRole;
+			},
+
+			validateSession: async () => {
+				try {
+					const response = await fetch("/api/auth/me");
+					if (response.ok) {
+						const data = await response.json();
+						set({
+							user: {
+								username: data.user.username,
+								role: data.user.role as UserRole,
+								displayName: data.user.displayName,
+								email: data.user.email || "",
+							},
+							isAuthenticated: true,
+							isLoading: false,
+						});
+					} else {
+						set({ user: null, isAuthenticated: false, isLoading: false });
+					}
+				} catch {
+					// If server is unreachable, keep existing localStorage state
+					set({ isLoading: false });
+				}
 			},
 		}),
 		{
@@ -60,22 +100,9 @@ export const useAuthStore = create<AuthStoreState>()(
 				isAuthenticated: state.isAuthenticated,
 			}),
 			onRehydrateStorage: () => (state) => {
-				// When storage is rehydrated, set loading to false
 				if (state) {
-					// Check if login should be disabled (for testing/screenshots)
-					const disableLogin = process.env.NEXT_PUBLIC_DISABLE_LOGIN === "true";
-
-					if (disableLogin && !state.isAuthenticated) {
-						// Auto-login as admin user
-						const adminUser = findUserByCredentials("admin", "admin123");
-						if (adminUser) {
-							const user = toAuthUser(adminUser);
-							state.user = user;
-							state.isAuthenticated = true;
-						}
-					}
-
-					state.setLoading(false);
+					// Validate server-side session after rehydration
+					state.validateSession();
 				}
 			},
 		},
@@ -91,5 +118,4 @@ export const useLogout = () => useAuthStore((state) => state.logout);
 export const useHasPermission = () => useAuthStore((state) => state.hasPermission);
 
 export type { AuthUser, UserCredentials } from "../types";
-// Re-export types for easier access
 export { UserRole } from "../types";

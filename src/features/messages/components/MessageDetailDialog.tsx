@@ -1,5 +1,6 @@
 import { Cancel, CheckCircle, Close, Error as ErrorIcon, ExpandMore, Info, Mail, Person, Schedule, Sms } from "@mui/icons-material";
 import type React from "react";
+import type { CourierMessageStatus } from "@/api/kratos/courier";
 import { StatusBadge } from "@/components";
 import { ErrorState, LoadingState } from "@/components/feedback";
 import {
@@ -20,7 +21,6 @@ import {
 	Typography,
 } from "@/components/ui";
 import { formatDate } from "@/lib/date-utils";
-import type { CourierMessageStatus } from "@/services/kratos/endpoints/courier";
 import { useMessage } from "../hooks";
 
 interface MessageDetailDialogProps {

@@ -8,35 +8,21 @@ import {
 	Public as PublicIcon,
 } from "@mui/icons-material";
 import { Controller, type UseFormReturn } from "react-hook-form";
-import { ApiKeyField } from "@/components/forms";
 import { FlexBox, SectionCard } from "@/components/layout";
 import { ActionBar, Alert, Box, Grid, Paper, TextField, Typography } from "@/components/ui";
 import { themeColors } from "@/theme";
-import type { ServiceEndpoints, ServiceEndpointsForm } from "../hooks";
+import type { ServiceEndpointsForm } from "../hooks";
 
 export interface ServiceConfigSectionProps {
-	/** Service name - determines labels and icons */
 	serviceName: "Kratos" | "Hydra";
-	/** React Hook Form instance */
 	form: UseFormReturn<ServiceEndpointsForm>;
-	/** Current endpoints (for checking if API key exists) */
-	currentEndpoints: ServiceEndpoints;
-	/** Placeholder for public URL field */
 	publicUrlPlaceholder: string;
-	/** Placeholder for admin URL field */
 	adminUrlPlaceholder: string;
-	/** Helper text for public URL field */
 	publicUrlHelperText: string;
-	/** Helper text for admin URL field */
 	adminUrlHelperText: string;
-	/** Form submission handler */
 	onSave: (data: ServiceEndpointsForm) => Promise<void>;
-	/** URL validation function */
 	validateUrl: (url: string) => string | true;
-	/** Whether API key is being edited */
-	isEditingApiKey: boolean;
-	/** Callback to start API key editing */
-	onApiKeyEditStart: () => void;
+	apiKeyConfigured: boolean;
 }
 
 const serviceConfig = {
@@ -55,15 +41,13 @@ const serviceConfig = {
 export function ServiceConfigSection({
 	serviceName,
 	form,
-	currentEndpoints,
 	publicUrlPlaceholder,
 	adminUrlPlaceholder,
 	publicUrlHelperText,
 	adminUrlHelperText,
 	onSave,
 	validateUrl,
-	isEditingApiKey,
-	onApiKeyEditStart,
+	apiKeyConfigured,
 }: ServiceConfigSectionProps) {
 	const {
 		handleSubmit,
@@ -139,13 +123,7 @@ export function ServiceConfigSection({
 												slotProps={{
 													input: {
 														startAdornment: (
-															<Box
-																sx={{
-																	mr: 1,
-																	display: "flex",
-																	color: "text.secondary",
-																}}
-															>
+															<Box sx={{ mr: 1, display: "flex", color: "text.secondary" }}>
 																<PublicIcon sx={{ fontSize: 18 }} />
 															</Box>
 														),
@@ -172,13 +150,7 @@ export function ServiceConfigSection({
 												slotProps={{
 													input: {
 														startAdornment: (
-															<Box
-																sx={{
-																	mr: 1,
-																	display: "flex",
-																	color: "text.secondary",
-																}}
-															>
+															<Box sx={{ mr: 1, display: "flex", color: "text.secondary" }}>
 																<AdminIcon sx={{ fontSize: 18 }} />
 															</Box>
 														),
@@ -192,7 +164,7 @@ export function ServiceConfigSection({
 						</Paper>
 					</Grid>
 
-					{/* Authentication Section */}
+					{/* Authentication Status (read-only) */}
 					<Grid size={{ xs: 12 }}>
 						<Paper
 							elevation={0}
@@ -204,53 +176,37 @@ export function ServiceConfigSection({
 								bgcolor: "background.default",
 							}}
 						>
-							<FlexBox align="center" gap={1} sx={{ mb: 2 }}>
+							<FlexBox align="center" gap={1}>
 								<ApiKeyIcon sx={{ fontSize: 18, color: "text.secondary" }} />
 								<Typography variant="label" sx={{ fontWeight: 600 }}>
-									Authentication
+									API Key
 								</Typography>
-								{currentEndpoints.apiKey?.trim() && (
-									<Box
+								<Box
+									sx={{
+										ml: "auto",
+										px: 1,
+										py: 0.25,
+										borderRadius: 1,
+										bgcolor: apiKeyConfigured ? `${themeColors.success}1a` : `${themeColors.warning}1a`,
+									}}
+								>
+									<Typography
 										sx={{
-											ml: "auto",
-											px: 1,
-											py: 0.25,
-											borderRadius: 1,
-											bgcolor: `${themeColors.success}1a`,
+											fontSize: "0.7rem",
+											color: apiKeyConfigured ? themeColors.success : themeColors.warning,
+											fontWeight: 600,
 										}}
 									>
-										<Typography
-											sx={{
-												fontSize: "0.7rem",
-												color: themeColors.success,
-												fontWeight: 600,
-											}}
-										>
-											CONFIGURED
-										</Typography>
-									</Box>
-								)}
+										{apiKeyConfigured ? "CONFIGURED" : "NOT SET"}
+									</Typography>
+								</Box>
 							</FlexBox>
-							<Grid container spacing={2}>
-								<Grid size={{ xs: 12, md: 6 }}>
-									<ApiKeyField
-										name="apiKey"
-										control={control}
-										label="API Key"
-										hasExistingKey={!!currentEndpoints.apiKey?.trim()}
-										isEditing={isEditingApiKey}
-										onEditStart={onApiKeyEditStart}
-										error={errors.apiKey?.message}
-									/>
-								</Grid>
-								<Grid size={{ xs: 12, md: 6 }}>
-									<Alert severity="info" sx={{ height: "100%" }}>
-										<Typography variant="body" sx={{ fontSize: "0.8rem" }}>
-											API keys are encrypted before storage. Required for Ory Network authentication.
-										</Typography>
-									</Alert>
-								</Grid>
-							</Grid>
+							<Alert severity="info" sx={{ mt: 1.5 }}>
+								<Typography variant="body" sx={{ fontSize: "0.8rem" }}>
+									API keys are configured via environment variables ({serviceName === "Kratos" ? "KRATOS_API_KEY" : "HYDRA_API_KEY"}). Required for
+									Ory Network authentication.
+								</Typography>
+							</Alert>
 						</Paper>
 					</Grid>
 				</Grid>
@@ -259,7 +215,7 @@ export function ServiceConfigSection({
 					primaryAction={{
 						label: isSubmitting ? "Saving..." : `Save ${serviceName} Settings`,
 						onClick: handleSubmit(onSave),
-						disabled: (!isDirty && !isEditingApiKey) || isSubmitting,
+						disabled: !isDirty || isSubmitting,
 					}}
 					align="right"
 				/>

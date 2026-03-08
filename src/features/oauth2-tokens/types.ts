@@ -1,4 +1,4 @@
-import type { IntrospectedOAuth2Token } from "@/services/hydra";
+import type { IntrospectedOAuth2Token } from "@ory/hydra-client";
 
 // UI-specific types for OAuth2 tokens
 export interface OAuth2TokenTableRow {

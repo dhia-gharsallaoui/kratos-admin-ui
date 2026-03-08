@@ -1,9 +1,9 @@
 import { Cancel, CheckCircle, Error as ErrorIcon, Mail, Schedule, Sms } from "@mui/icons-material";
 import React, { useMemo } from "react";
+import type { CourierMessageStatus } from "@/api/kratos/courier";
 import { StatusBadge } from "@/components";
 import { Box, DataTable, type DataTableColumn, Typography } from "@/components/ui";
 import { formatDate } from "@/lib/date-utils";
-import type { CourierMessageStatus } from "@/services/kratos/endpoints/courier";
 
 interface MessagesTableProps {
 	messages: any[];
