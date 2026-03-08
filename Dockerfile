@@ -25,7 +25,9 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 
-RUN chown -R nextjs:nodejs /app
+# Create writable data directory for runtime settings
+RUN mkdir -p /app/data && chown -R nextjs:nodejs /app
+
 USER nextjs
 
 EXPOSE 3000
