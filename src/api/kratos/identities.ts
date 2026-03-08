@@ -39,6 +39,19 @@ export async function createRecoveryLink(id: string) {
 	return apiClient<any>(`/api/kratos/identities/${id}/recovery-link`, { method: "POST" });
 }
 
+export interface SearchResult<T> {
+	identities?: T[];
+	sessions?: T[];
+	messages?: T[];
+	totalMatched: number;
+	hasMore?: boolean;
+	isSearchResult: boolean;
+}
+
+export async function searchIdentities(query: string, pageSize = 25) {
+	return apiClient<SearchResult<any>>("/api/kratos/identities/search", { params: { q: query, pageSize } });
+}
+
 export async function listIdentitySessions(id: string, params?: { pageSize?: number; pageToken?: string; active?: boolean }) {
 	return apiClient<{ sessions: any[] }>(`/api/kratos/identities/${id}/sessions`, { params });
 }

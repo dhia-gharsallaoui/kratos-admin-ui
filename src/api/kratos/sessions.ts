@@ -10,6 +10,12 @@ export async function listSessions(params?: { pageSize?: number; pageToken?: str
 	return apiClient<SessionsPage>("/api/kratos/sessions", { params });
 }
 
+export async function searchSessions(query: string, pageSize = 25) {
+	return apiClient<{ sessions: any[]; totalMatched: number; hasMore: boolean; isSearchResult: boolean }>("/api/kratos/sessions/search", {
+		params: { q: query, pageSize },
+	});
+}
+
 export async function getSession(id: string, expand?: string[]) {
 	return apiClient<any>(`/api/kratos/sessions/${id}`, {
 		params: expand ? { expand: expand.join(",") } : undefined,

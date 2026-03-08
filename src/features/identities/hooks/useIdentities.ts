@@ -9,6 +9,7 @@ import {
 	getIdentity,
 	listIdentities,
 	patchIdentity,
+	searchIdentities,
 } from "@/api/kratos/identities";
 
 // Identity list hook with pagination
@@ -32,7 +33,7 @@ export const useIdentities = (params?: { pageSize?: number; pageToken?: string }
 	});
 };
 
-// Multi-page search hook that fetches across pages until target count is reached
+// Server-side search hook — single request, no client-side multi-page scanning
 export const useIdentitiesSearch = (params?: { pageSize?: number; searchTerm?: string }) => {
 	const pageSize = params?.pageSize || 25;
 	const searchTerm = params?.searchTerm?.trim();
@@ -40,10 +41,8 @@ export const useIdentitiesSearch = (params?: { pageSize?: number; searchTerm?: s
 	return useQuery({
 		queryKey: ["identities-search", pageSize, searchTerm],
 		queryFn: async () => {
-			// If no search term, use regular pagination
 			if (!searchTerm) {
 				const data = await listIdentities({ pageSize });
-
 				return {
 					identities: data.identities,
 					nextPageToken: data.nextPageToken,
@@ -53,65 +52,16 @@ export const useIdentitiesSearch = (params?: { pageSize?: number; searchTerm?: s
 				};
 			}
 
-			// Multi-page search logic
-			let allIdentities: any[] = [];
-			let matchedIdentities: any[] = [];
-			let pageToken: string | undefined;
-			let hasMore = true;
-			let pageCount = 0;
-			const maxPages = 20;
-
-			while (matchedIdentities.length < pageSize && hasMore && pageCount < maxPages) {
-				const data = await listIdentities({ pageSize: 250, pageToken });
-
-				const pageIdentities = data.identities;
-
-				// Filter current page for matches
-				const pageMatches = pageIdentities.filter((identity: any) => {
-					const traits = identity.traits as any;
-					const email = String(traits?.email || "");
-					const username = String(traits?.username || "");
-					const firstName = String(traits?.first_name || traits?.firstName || "");
-					const lastName = String(traits?.last_name || traits?.lastName || "");
-					const name = String(traits?.name || "");
-					const id = String(identity.id || "");
-
-					const searchLower = searchTerm.toLowerCase();
-					return (
-						id.toLowerCase().includes(searchLower) ||
-						email.toLowerCase().includes(searchLower) ||
-						username.toLowerCase().includes(searchLower) ||
-						firstName.toLowerCase().includes(searchLower) ||
-						lastName.toLowerCase().includes(searchLower) ||
-						name.toLowerCase().includes(searchLower)
-					);
-				});
-
-				matchedIdentities = [...matchedIdentities, ...pageMatches];
-				allIdentities = [...allIdentities, ...pageIdentities];
-
-				hasMore = data.hasMore;
-				pageToken = data.nextPageToken || undefined;
-				pageCount++;
-
-				// Small delay between requests
-				if (hasMore && matchedIdentities.length < pageSize) {
-					await new Promise((resolve) => setTimeout(resolve, 100));
-				}
-			}
-
-			const finalResults = matchedIdentities.slice(0, pageSize);
-
+			const result = await searchIdentities(searchTerm, pageSize);
 			return {
-				identities: finalResults,
-				nextPageToken: matchedIdentities.length > pageSize ? "search-has-more" : null,
-				hasMore: matchedIdentities.length > pageSize || (hasMore && matchedIdentities.length === pageSize),
+				identities: result.identities || [],
+				nextPageToken: null,
+				hasMore: false,
 				isSearchResult: true,
-				totalFetched: allIdentities.length,
-				totalMatched: matchedIdentities.length,
+				totalFetched: result.totalMatched,
+				totalMatched: result.totalMatched,
 			};
 		},
-		enabled: true,
 		staleTime: 30 * 1000,
 	});
 };

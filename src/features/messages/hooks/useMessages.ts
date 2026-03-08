@@ -1,8 +1,7 @@
 "use client";
 
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import React from "react";
-import { type CourierMessageStatus, getMessage, listMessages } from "@/api/kratos/courier";
+import { type CourierMessageStatus, getMessage, listMessages, searchMessages } from "@/api/kratos/courier";
 
 export type { CourierMessageStatus };
 
@@ -43,90 +42,23 @@ export const useMessage = (messageId: string, options?: { enabled?: boolean }) =
 	});
 };
 
-// Auto-search hook
+// Server-side search — single request instead of client-side multi-page scanning
 export const useMessagesWithSearch = (searchQuery?: string, statusFilter?: CourierMessageStatus) => {
-	const timerRef = React.useRef<NodeJS.Timeout | null>(null);
-	const stopTimerRef = React.useRef<NodeJS.Timeout | null>(null);
-	const [isAutoSearching, setIsAutoSearching] = React.useState(false);
-	const [autoSearchTarget, setAutoSearchTarget] = React.useState(15);
-
-	const query = useInfiniteQuery({
+	const query = useQuery({
 		queryKey: ["messages", "search", searchQuery, statusFilter],
-		queryFn: async ({ pageParam }) => {
-			if (!searchQuery) {
-				return { messages: [], nextPageToken: null, hasMore: false };
-			}
-			return await listMessages({ pageSize: 250, pageToken: pageParam, status: statusFilter });
-		},
-		initialPageParam: undefined as string | undefined,
-		getNextPageParam: (lastPage) => lastPage.nextPageToken,
-		enabled: !!searchQuery,
+		queryFn: () => searchMessages(searchQuery!, 50, statusFilter),
+		enabled: !!searchQuery?.trim(),
 		staleTime: 60000,
 		refetchOnWindowFocus: false,
-		retry: (failureCount, error: any) => {
-			if (error?.name === "AbortError" || error?.code === "ERR_CANCELED") {
-				return false;
-			}
-			return failureCount < 2;
-		},
 	});
 
-	React.useEffect(() => {
-		if (timerRef.current) {
-			clearTimeout(timerRef.current);
-			timerRef.current = null;
-		}
-		if (stopTimerRef.current) {
-			clearTimeout(stopTimerRef.current);
-			stopTimerRef.current = null;
-		}
-
-		if (!searchQuery || !query.data || query.isFetchingNextPage || query.isLoading) {
-			return;
-		}
-
-		const allMessages = query.data.pages.flatMap((page) => page.messages);
-		const matches = allMessages.filter((message: any) => {
-			const searchLower = searchQuery.toLowerCase();
-			return (
-				message.recipient?.toLowerCase().includes(searchLower) ||
-				message.subject?.toLowerCase().includes(searchLower) ||
-				message.id?.toLowerCase().includes(searchLower) ||
-				message.template_type?.toLowerCase().includes(searchLower) ||
-				message.type?.toLowerCase().includes(searchLower)
-			);
-		});
-
-		if (matches.length < autoSearchTarget && query.hasNextPage) {
-			setIsAutoSearching(true);
-			timerRef.current = setTimeout(() => {
-				query.fetchNextPage();
-			}, 300);
-			return () => {
-				if (timerRef.current) {
-					clearTimeout(timerRef.current);
-					timerRef.current = null;
-				}
-			};
-		}
-		stopTimerRef.current = setTimeout(() => {
-			setIsAutoSearching(false);
-		}, 500);
-	}, [searchQuery, query.data, query.hasNextPage, query.isFetchingNextPage, query.isLoading, query.fetchNextPage, autoSearchTarget]);
-
-	React.useEffect(() => {
-		setAutoSearchTarget(15);
-	}, []);
-	React.useEffect(() => {
-		return () => {
-			if (timerRef.current) clearTimeout(timerRef.current);
-			if (stopTimerRef.current) clearTimeout(stopTimerRef.current);
-		};
-	}, []);
-
-	const loadMoreMatches = React.useCallback(() => {
-		setAutoSearchTarget((prev) => prev + 15);
-	}, []);
-
-	return { ...query, isAutoSearching, loadMoreMatches };
+	return {
+		...query,
+		data: query.data ? { pages: [{ messages: query.data.messages }] } : undefined,
+		isAutoSearching: false,
+		loadMoreMatches: () => {},
+		fetchNextPage: () => Promise.resolve({} as any),
+		hasNextPage: false,
+		isFetchingNextPage: false,
+	};
 };
