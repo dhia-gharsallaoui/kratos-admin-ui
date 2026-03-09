@@ -1,4 +1,4 @@
-import { errorResponse, getIntParam, getSearchParams, jsonResponse, withAuth } from "@/lib/api-helpers";
+import { errorResponse, getIntParam, getSearchParams, jsonResponse, withAdminAuth, withAuth } from "@/lib/api-helpers";
 import { deleteIdentitySessions, listIdentitySessions } from "@/services/kratos/endpoints/sessions";
 
 export const GET = withAuth(async (request, { params }) => {
@@ -16,7 +16,7 @@ export const GET = withAuth(async (request, { params }) => {
 	}
 });
 
-export const DELETE = withAuth(async (_request, { params }) => {
+export const DELETE = withAdminAuth(async (_request, { params }) => {
 	try {
 		const { id } = await params;
 		await deleteIdentitySessions(id);

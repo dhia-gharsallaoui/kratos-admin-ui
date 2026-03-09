@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ErrorState, LoadingState } from "@/components/feedback";
 import { Box, Button, Chip, DataTable, type DataTableColumn, IconButton, Tooltip, Typography } from "@/components/ui";
+import { isAdmin, useUser } from "@/features/auth";
 import { useIdentities, useIdentitiesSearch } from "@/features/identities/hooks";
 import { useSchemas } from "@/features/schemas/hooks";
 import { formatDate } from "@/lib/date-utils";
@@ -13,6 +14,8 @@ type BulkOpType = "delete" | "deleteSessions" | "activate" | "deactivate";
 
 const IdentitiesTable: React.FC = React.memo(() => {
 	const router = useRouter();
+	const user = useUser();
+	const userIsAdmin = isAdmin(user);
 	const [searchTerm, setSearchTerm] = useState("");
 	const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
 	const [pageSize, _setPageSize] = useState(25);
@@ -246,7 +249,7 @@ const IdentitiesTable: React.FC = React.memo(() => {
 	return (
 		<Box>
 			{/* Bulk action toolbar */}
-			{selectedIds.size > 0 && (
+			{userIsAdmin && selectedIds.size > 0 && (
 				<Box
 					sx={{
 						display: "flex",
@@ -285,7 +288,7 @@ const IdentitiesTable: React.FC = React.memo(() => {
 				columns={columns}
 				keyField="id"
 				loading={isLoading}
-				selectable={true}
+				selectable={userIsAdmin}
 				selectedKeys={selectedIds}
 				onSelectionChange={setSelectedIds}
 				searchable={true}
@@ -294,7 +297,7 @@ const IdentitiesTable: React.FC = React.memo(() => {
 				searchPlaceholder="Search identities (ID, identifier, schema, name)..."
 				onRowClick={handleRowClick}
 				onRefresh={handleRefresh}
-				onAdd={handleCreateNew}
+				onAdd={userIsAdmin ? handleCreateNew : undefined}
 				addButtonText="Create New"
 				emptyMessage="No identities found"
 				maxHeight={600}

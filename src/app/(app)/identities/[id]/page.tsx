@@ -26,7 +26,7 @@ import {
 	Tooltip,
 	Typography,
 } from "@/components/ui";
-import { UserRole } from "@/features/auth";
+import { isAdmin, UserRole, useUser } from "@/features/auth";
 import { CredentialDeleteDialog } from "@/features/identities/components/CredentialDeleteDialog";
 import { IdentityDeleteDialog } from "@/features/identities/components/IdentityDeleteDialog";
 import { IdentityEditModal } from "@/features/identities/components/IdentityEditModal";
@@ -68,6 +68,9 @@ export default function IdentityDetailPage() {
 	const { isOpen: recoveryDialogOpen, open: openRecoveryDialog, close: closeRecoveryDialog } = useDialog();
 	const { isOpen: deleteSessionsDialogOpen, open: openDeleteSessionsDialog, close: closeDeleteSessionsDialog } = useDialog();
 	const { isOpen: stateDialogOpen, open: openStateDialog, close: closeStateDialog } = useDialog();
+
+	const user = useUser();
+	const userIsAdmin = isAdmin(user);
 
 	const { data: identity, isLoading, isError, error: _, refetch } = useIdentity(identityId);
 	const patchIdentityMutation = usePatchIdentity();
@@ -145,7 +148,7 @@ export default function IdentityDetailPage() {
 
 	if (isLoading) {
 		return (
-			<ProtectedPage requiredRole={UserRole.ADMIN}>
+			<ProtectedPage requiredRole={UserRole.VIEWER}>
 				<LoadingState variant="page" />
 			</ProtectedPage>
 		);
@@ -153,7 +156,7 @@ export default function IdentityDetailPage() {
 
 	if (isError || !identity) {
 		return (
-			<ProtectedPage requiredRole={UserRole.ADMIN}>
+			<ProtectedPage requiredRole={UserRole.VIEWER}>
 				<Box sx={{ p: 3 }}>
 					<Typography variant="heading" level="h1" color="error">
 						Identity Not Found
@@ -172,7 +175,7 @@ export default function IdentityDetailPage() {
 	const traits = identity.traits as Record<string, unknown>;
 
 	return (
-		<ProtectedPage requiredRole={UserRole.ADMIN}>
+		<ProtectedPage requiredRole={UserRole.VIEWER}>
 			<Box sx={{ p: 3 }}>
 				<PageHeader
 					title={
@@ -197,35 +200,39 @@ export default function IdentityDetailPage() {
 									<Refresh />
 								</IconButton>
 							</Tooltip>
-							<Button variant="outlined" onClick={handleEdit}>
-								<Edit style={{ marginRight: "0.5rem" }} />
-								Edit
-							</Button>
-							<Button variant="outlined" onClick={handleRecover}>
-								<LinkIcon style={{ marginRight: "0.5rem" }} />
-								Recover
-							</Button>
-							<Button
-								variant={identity.state === "active" ? "outlined" : "primary"}
-								onClick={handleStateToggle}
-								disabled={patchIdentityMutation.isPending}
-							>
-								{identity.state === "active" ? (
-									<>
-										<Block style={{ marginRight: "0.5rem" }} />
-										Deactivate
-									</>
-								) : (
-									<>
-										<CheckCircleOutline style={{ marginRight: "0.5rem" }} />
-										Activate
-									</>
-								)}
-							</Button>
-							<Button variant="danger" onClick={handleDelete}>
-								<Delete style={{ marginRight: "0.5rem" }} />
-								Delete
-							</Button>
+							{userIsAdmin && (
+								<>
+									<Button variant="outlined" onClick={handleEdit}>
+										<Edit style={{ marginRight: "0.5rem" }} />
+										Edit
+									</Button>
+									<Button variant="outlined" onClick={handleRecover}>
+										<LinkIcon style={{ marginRight: "0.5rem" }} />
+										Recover
+									</Button>
+									<Button
+										variant={identity.state === "active" ? "outlined" : "primary"}
+										onClick={handleStateToggle}
+										disabled={patchIdentityMutation.isPending}
+									>
+										{identity.state === "active" ? (
+											<>
+												<Block style={{ marginRight: "0.5rem" }} />
+												Deactivate
+											</>
+										) : (
+											<>
+												<CheckCircleOutline style={{ marginRight: "0.5rem" }} />
+												Activate
+											</>
+										)}
+									</Button>
+									<Button variant="danger" onClick={handleDelete}>
+										<Delete style={{ marginRight: "0.5rem" }} />
+										Delete
+									</Button>
+								</>
+							)}
 						</FlexBox>
 					}
 				/>
@@ -416,15 +423,17 @@ export default function IdentityDetailPage() {
 																</Typography>
 															)}
 														</Box>
-														<Tooltip content={`Delete ${CREDENTIAL_TYPE_LABELS[type] || type} credential`}>
-															<IconButton
-																size="small"
-																sx={{ ml: 1, color: "error.main" }}
-																onClick={() => setCredentialToDelete({ type, identifier })}
-															>
-																<Delete fontSize="small" />
-															</IconButton>
-														</Tooltip>
+														{userIsAdmin && (
+															<Tooltip content={`Delete ${CREDENTIAL_TYPE_LABELS[type] || type} credential`}>
+																<IconButton
+																	size="small"
+																	sx={{ ml: 1, color: "error.main" }}
+																	onClick={() => setCredentialToDelete({ type, identifier })}
+																>
+																	<Delete fontSize="small" />
+																</IconButton>
+															</Tooltip>
+														)}
 													</Box>
 												));
 											}
@@ -465,17 +474,18 @@ export default function IdentityDetailPage() {
 															</Typography>
 														)}
 													</Box>
-													{NON_DELETABLE_CREDENTIALS.has(type) ? (
-														<Tooltip content="Cannot be deleted via API">
-															<Lock sx={{ ml: 1, color: "text.disabled", fontSize: "1.2rem" }} />
-														</Tooltip>
-													) : (
-														<Tooltip content={`Delete ${CREDENTIAL_TYPE_LABELS[type] || type} credential`}>
-															<IconButton size="small" sx={{ ml: 1, color: "error.main" }} onClick={() => setCredentialToDelete({ type })}>
-																<Delete fontSize="small" />
-															</IconButton>
-														</Tooltip>
-													)}
+													{userIsAdmin &&
+														(NON_DELETABLE_CREDENTIALS.has(type) ? (
+															<Tooltip content="Cannot be deleted via API">
+																<Lock sx={{ ml: 1, color: "text.disabled", fontSize: "1.2rem" }} />
+															</Tooltip>
+														) : (
+															<Tooltip content={`Delete ${CREDENTIAL_TYPE_LABELS[type] || type} credential`}>
+																<IconButton size="small" sx={{ ml: 1, color: "error.main" }} onClick={() => setCredentialToDelete({ type })}>
+																	<Delete fontSize="small" />
+																</IconButton>
+															</Tooltip>
+														))}
 												</Box>,
 											];
 										})}
@@ -513,15 +523,17 @@ export default function IdentityDetailPage() {
 												<Refresh />
 											</IconButton>
 										</Tooltip>
-										<Button
-											variant="danger"
-											size="small"
-											startIcon={<DeleteSweep />}
-											onClick={handleDeleteAllSessions}
-											disabled={deleteSessionsMutation.isPending || sessionsLoading || !sessionsData?.sessions?.length}
-										>
-											Delete All Sessions
-										</Button>
+										{userIsAdmin && (
+											<Button
+												variant="danger"
+												size="small"
+												startIcon={<DeleteSweep />}
+												onClick={handleDeleteAllSessions}
+												disabled={deleteSessionsMutation.isPending || sessionsLoading || !sessionsData?.sessions?.length}
+											>
+												Delete All Sessions
+											</Button>
+										)}
 									</Box>
 								</Box>
 								<Divider sx={{ mb: 2 }} />

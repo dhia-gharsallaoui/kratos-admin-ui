@@ -91,7 +91,7 @@ export default function SessionsPage() {
 	};
 
 	return (
-		<ProtectedRoute requiredRole={UserRole.ADMIN}>
+		<ProtectedRoute requiredRole={UserRole.VIEWER}>
 			<AdminLayout>
 				<Box sx={{ p: 3 }}>
 					<PageHeader

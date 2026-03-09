@@ -1,4 +1,4 @@
-import { errorResponse, getIntParam, getSearchParams, jsonResponse, withAuth } from "@/lib/api-helpers";
+import { errorResponse, getIntParam, getSearchParams, jsonResponse, withAdminAuth, withAuth } from "@/lib/api-helpers";
 import { createOAuth2Client, listOAuth2Clients } from "@/services/hydra/endpoints/oauth2-clients";
 
 export const GET = withAuth(async (request) => {
@@ -16,7 +16,7 @@ export const GET = withAuth(async (request) => {
 	}
 });
 
-export const POST = withAuth(async (request) => {
+export const POST = withAdminAuth(async (request) => {
 	try {
 		const body = await request.json();
 		const result = await createOAuth2Client(body);

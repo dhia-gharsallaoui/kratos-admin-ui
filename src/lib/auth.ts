@@ -29,6 +29,13 @@ function getConfiguredCredentials(): { username: string; password: string } | nu
 	return { username, password };
 }
 
+function getConfiguredViewerCredentials(): { username: string; password: string } | null {
+	const username = process.env.VIEWER_USERNAME;
+	const password = process.env.VIEWER_PASSWORD;
+	if (!username || !password) return null;
+	return { username, password };
+}
+
 export function validateCredentials(username: string, password: string): SessionData | null {
 	if (isAuthDisabled()) {
 		return { username: username || "admin", role: UserRole.ADMIN, displayName: "Admin", createdAt: Date.now() };
@@ -42,6 +49,11 @@ export function validateCredentials(username: string, password: string): Session
 
 	if (username === creds.username && password === creds.password) {
 		return { username, role: UserRole.ADMIN, displayName: "Administrator", createdAt: Date.now() };
+	}
+
+	const viewerCreds = getConfiguredViewerCredentials();
+	if (viewerCreds && username === viewerCreds.username && password === viewerCreds.password) {
+		return { username, role: UserRole.VIEWER, displayName: "Viewer", createdAt: Date.now() };
 	}
 
 	return null;

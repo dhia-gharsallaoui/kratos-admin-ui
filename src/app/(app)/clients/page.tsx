@@ -22,6 +22,7 @@ import { ErrorState, StatCard } from "@/components";
 import { SearchBar } from "@/components/forms";
 import { ActionBar, PageHeader, ProtectedPage, SectionCard } from "@/components/layout";
 import { Box, Card, Chip, Dialog, DialogActions, DialogContent, EmptyState, Grid, IconButton, Menu, MenuItem, Typography } from "@/components/ui";
+import { isAdmin, useUser } from "@/features/auth";
 import { formatClientId, getClientType, transformOAuth2ClientForTable, useAllOAuth2Clients, useDeleteOAuth2Client } from "@/features/oauth2-clients";
 import { useHydraEnabled } from "@/features/settings/hooks/useSettings";
 import { useDialog } from "@/hooks";
@@ -33,6 +34,9 @@ export default function OAuth2ClientsPage() {
 	const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
 	const [clientToDelete, setClientToDelete] = useState<string | null>(null);
 	const { isOpen: deleteDialogOpen, open: openDeleteDialog, close: closeDeleteDialog } = useDialog();
+
+	const user = useUser();
+	const userIsAdmin = isAdmin(user);
 
 	// Check if Hydra is enabled
 	const hydraEnabled = useHydraEnabled();
@@ -211,13 +215,15 @@ export default function OAuth2ClientsPage() {
 					subtitle="Manage OAuth2 client applications and their configurations"
 					icon={<AppsIcon sx={{ fontSize: 32, color: "white" }} />}
 					actions={
-						<ActionBar
-							primaryAction={{
-								label: "Create Client",
-								icon: <AddIcon />,
-								onClick: () => router.push("/clients/create"),
-							}}
-						/>
+						userIsAdmin ? (
+							<ActionBar
+								primaryAction={{
+									label: "Create Client",
+									icon: <AddIcon />,
+									onClick: () => router.push("/clients/create"),
+								}}
+							/>
+						) : undefined
 					}
 				/>
 
@@ -296,12 +302,16 @@ export default function OAuth2ClientsPage() {
 					<MenuItem icon={<ViewIcon fontSize="small" />} onClick={() => selectedClient && handleView(selectedClient)}>
 						View Details
 					</MenuItem>
-					<MenuItem icon={<EditIcon fontSize="small" />} onClick={() => selectedClient && handleEdit(selectedClient)}>
-						Edit Client
-					</MenuItem>
-					<MenuItem icon={<DeleteIcon fontSize="small" />} onClick={() => selectedClient && handleDeleteClick(selectedClient)}>
-						Delete Client
-					</MenuItem>
+					{userIsAdmin && (
+						<MenuItem icon={<EditIcon fontSize="small" />} onClick={() => selectedClient && handleEdit(selectedClient)}>
+							Edit Client
+						</MenuItem>
+					)}
+					{userIsAdmin && (
+						<MenuItem icon={<DeleteIcon fontSize="small" />} onClick={() => selectedClient && handleDeleteClick(selectedClient)}>
+							Delete Client
+						</MenuItem>
+					)}
 				</Menu>
 
 				{/* Delete Confirmation Dialog */}

@@ -1,4 +1,4 @@
-import { errorResponse, getIntParam, getSearchParams, jsonResponse, withAuth } from "@/lib/api-helpers";
+import { errorResponse, getIntParam, getSearchParams, jsonResponse, withAdminAuth, withAuth } from "@/lib/api-helpers";
 import { createIdentity, listIdentities } from "@/services/kratos/endpoints/identities";
 
 export const GET = withAuth(async (request) => {
@@ -29,7 +29,7 @@ export const GET = withAuth(async (request) => {
 	}
 });
 
-export const POST = withAuth(async (request) => {
+export const POST = withAdminAuth(async (request) => {
 	try {
 		const body = await request.json();
 		const { data } = await createIdentity({ createIdentityBody: body });

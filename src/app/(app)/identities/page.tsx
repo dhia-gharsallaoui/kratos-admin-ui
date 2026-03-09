@@ -13,7 +13,7 @@ const IdentitiesTable = lazy(() => import("@/features/identities/components/Iden
 
 export default function IdentitiesPage() {
 	return (
-		<ProtectedRoute requiredRole={UserRole.ADMIN}>
+		<ProtectedRoute requiredRole={UserRole.VIEWER}>
 			<AdminLayout>
 				<Box sx={{ p: 3 }}>
 					<PageHeader

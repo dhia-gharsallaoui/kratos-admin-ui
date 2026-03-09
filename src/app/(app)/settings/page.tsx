@@ -4,6 +4,7 @@ import { Settings as SettingsIcon } from "@mui/icons-material";
 import { useState } from "react";
 import { PageHeader, ProtectedPage } from "@/components/layout";
 import { Alert, Container, Grid, Snackbar } from "@/components/ui";
+import { UserRole } from "@/features/auth";
 import {
 	useHydraApiKeyConfigured,
 	useHydraEnabled,
@@ -80,7 +81,7 @@ export default function SettingsPage() {
 	};
 
 	return (
-		<ProtectedPage>
+		<ProtectedPage requiredRole={UserRole.ADMIN}>
 			<PageHeader
 				title="Settings"
 				subtitle="Configure application preferences and API endpoints"

@@ -1,4 +1,4 @@
-import { errorResponse, getIntParam, getSearchParams, jsonResponse, withAuth } from "@/lib/api-helpers";
+import { errorResponse, getIntParam, getSearchParams, jsonResponse, withAdminAuth, withAuth } from "@/lib/api-helpers";
 import { listOAuth2ConsentSessions, revokeOAuth2ConsentSessions } from "@/services/hydra/endpoints/oauth2-auth";
 
 export const GET = withAuth(async (request) => {
@@ -16,7 +16,7 @@ export const GET = withAuth(async (request) => {
 	}
 });
 
-export const DELETE = withAuth(async (request) => {
+export const DELETE = withAdminAuth(async (request) => {
 	try {
 		const { subject, client, all } = await request.json();
 		if (!subject) {

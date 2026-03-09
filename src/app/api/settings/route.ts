@@ -1,4 +1,4 @@
-import { errorResponse, jsonResponse, withAuth } from "@/lib/api-helpers";
+import { errorResponse, jsonResponse, withAdminAuth } from "@/lib/api-helpers";
 import { getClientSettings, updateSettings } from "@/lib/settings-store";
 
 export async function GET() {
@@ -10,7 +10,7 @@ export async function GET() {
 	}
 }
 
-export const PUT = withAuth(async (request) => {
+export const PUT = withAdminAuth(async (request) => {
 	try {
 		const body = await request.json();
 		updateSettings(body);

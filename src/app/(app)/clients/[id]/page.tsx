@@ -35,6 +35,7 @@ import {
 	Tooltip,
 	Typography,
 } from "@/components/ui";
+import { isAdmin, useUser } from "@/features/auth";
 import {
 	getClientType,
 	getGrantTypeDisplayName,
@@ -55,6 +56,9 @@ export default function OAuth2ClientDetailPage({ params }: Props) {
 	const { copy, copiedField } = useCopyToClipboard();
 	const { isOpen: deleteDialogOpen, open: openDeleteDialog, close: closeDeleteDialog } = useDialog();
 	const { formatDateTime } = useFormatters();
+
+	const user = useUser();
+	const userIsAdmin = isAdmin(user);
 
 	const { data: clientResponse, isLoading, error } = useOAuth2Client(resolvedParams.id);
 	const deleteClientMutation = useDeleteOAuth2Client();
@@ -158,7 +162,7 @@ export default function OAuth2ClientDetailPage({ params }: Props) {
 						</Box>
 					</Box>
 
-					{!isLoading && client && (
+					{!isLoading && client && userIsAdmin && (
 						<Box sx={{ display: "flex", gap: 1 }}>
 							<Button variant="outlined" onClick={handleEdit}>
 								<EditIcon style={{ marginRight: "0.5rem" }} />

@@ -22,6 +22,7 @@ import {
 	IconButton,
 	Typography,
 } from "@/components/ui";
+import { isAdmin, useUser } from "@/features/auth";
 import { formatDate } from "@/lib/date-utils";
 
 interface SessionDetailDialogProps {
@@ -32,6 +33,8 @@ interface SessionDetailDialogProps {
 }
 
 export const SessionDetailDialog: React.FC<SessionDetailDialogProps> = React.memo(({ open, onClose, sessionId, onSessionUpdated }) => {
+	const user = useUser();
+	const userIsAdmin = isAdmin(user);
 	const [actionLoading, setActionLoading] = useState<string | null>(null);
 	const [error, setError] = useState<string | null>(null);
 	const queryClient = useQueryClient();
@@ -388,26 +391,37 @@ export const SessionDetailDialog: React.FC<SessionDetailDialogProps> = React.mem
 			<DialogActions>
 				<ActionBar
 					align="right"
-					primaryAction={{
-						label: actionLoading === "delete" ? "Revoking..." : "Revoke Session",
-						onClick: handleRevokeSession,
-						disabled: actionLoading === "delete",
-					}}
-					secondaryActions={[
-						...(session.active && !isExpired
+					primaryAction={
+						userIsAdmin
+							? {
+									label: actionLoading === "delete" ? "Revoking..." : "Revoke Session",
+									onClick: handleRevokeSession,
+									disabled: actionLoading === "delete",
+								}
+							: {
+									label: "Close",
+									onClick: onClose,
+								}
+					}
+					secondaryActions={
+						userIsAdmin
 							? [
+									...(session.active && !isExpired
+										? [
+												{
+													label: actionLoading === "extend" ? "Extending..." : "Extend Session",
+													onClick: handleExtendSession,
+													disabled: actionLoading === "extend",
+												},
+											]
+										: []),
 									{
-										label: actionLoading === "extend" ? "Extending..." : "Extend Session",
-										onClick: handleExtendSession,
-										disabled: actionLoading === "extend",
+										label: "Close",
+										onClick: onClose,
 									},
 								]
-							: []),
-						{
-							label: "Close",
-							onClick: onClose,
-						},
-					]}
+							: []
+					}
 				/>
 			</DialogActions>
 		</Dialog>

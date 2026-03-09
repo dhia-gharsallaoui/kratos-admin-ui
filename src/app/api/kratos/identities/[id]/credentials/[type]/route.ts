@@ -1,7 +1,7 @@
-import { errorResponse, withAuth } from "@/lib/api-helpers";
+import { errorResponse, withAdminAuth } from "@/lib/api-helpers";
 import { deleteIdentityCredentials } from "@/services/kratos/endpoints/identities";
 
-export const DELETE = withAuth(async (request, { params }) => {
+export const DELETE = withAdminAuth(async (request, { params }) => {
 	try {
 		const { id, type } = await params;
 		const url = new URL(request.url);

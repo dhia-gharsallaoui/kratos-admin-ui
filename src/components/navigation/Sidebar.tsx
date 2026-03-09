@@ -34,19 +34,19 @@ const mainNavItems: NavItem[] = [
 		title: "Identities",
 		path: "/identities",
 		icon: <PeopleOutlined />,
-		requiredRole: UserRole.ADMIN,
+		requiredRole: UserRole.VIEWER,
 	},
 	{
 		title: "Sessions",
 		path: "/sessions",
 		icon: <SecurityOutlined />,
-		requiredRole: UserRole.ADMIN,
+		requiredRole: UserRole.VIEWER,
 	},
 	{
 		title: "Messages",
 		path: "/messages",
 		icon: <MailOutlined />,
-		requiredRole: UserRole.ADMIN,
+		requiredRole: UserRole.VIEWER,
 	},
 	{
 		title: "Schemas",
@@ -61,7 +61,7 @@ const hydraNavItems: NavItem[] = [
 		title: "OAuth2 Clients",
 		path: "/clients",
 		icon: <Apps />,
-		// requiredRole: UserRole.ADMIN, // Temporarily removed for testing
+		requiredRole: UserRole.VIEWER,
 	},
 	// OAuth2 Tokens - Disabled for now, will be implemented later
 	// {

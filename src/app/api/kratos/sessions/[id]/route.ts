@@ -1,4 +1,4 @@
-import { errorResponse, jsonResponse, withAuth } from "@/lib/api-helpers";
+import { errorResponse, jsonResponse, withAdminAuth, withAuth } from "@/lib/api-helpers";
 import { disableSession, extendSession, getSession } from "@/services/kratos/endpoints/sessions";
 
 export const GET = withAuth(async (request, { params }) => {
@@ -14,7 +14,7 @@ export const GET = withAuth(async (request, { params }) => {
 	}
 });
 
-export const DELETE = withAuth(async (_request, { params }) => {
+export const DELETE = withAdminAuth(async (_request, { params }) => {
 	try {
 		const { id } = await params;
 		await disableSession(id);
@@ -24,7 +24,7 @@ export const DELETE = withAuth(async (_request, { params }) => {
 	}
 });
 
-export const PATCH = withAuth(async (request, { params }) => {
+export const PATCH = withAdminAuth(async (request, { params }) => {
 	try {
 		const { id } = await params;
 		const body = await request.json();

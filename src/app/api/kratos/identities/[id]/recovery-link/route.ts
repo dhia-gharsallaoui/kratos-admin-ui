@@ -1,7 +1,7 @@
-import { errorResponse, jsonResponse, withAuth } from "@/lib/api-helpers";
+import { errorResponse, jsonResponse, withAdminAuth } from "@/lib/api-helpers";
 import { createRecoveryLink } from "@/services/kratos/endpoints/identities";
 
-export const POST = withAuth(async (_request, { params }) => {
+export const POST = withAdminAuth(async (_request, { params }) => {
 	try {
 		const { id } = await params;
 		const { data } = await createRecoveryLink(id);

@@ -1,5 +1,5 @@
 import { ApiCallError } from "@/utils/api-wrapper";
-import { getSessionFromRequest } from "./auth";
+import { getSessionFromRequest, UserRole } from "./auth";
 
 type RouteHandler = (request: Request, context: { params: Promise<Record<string, string>> }) => Promise<Response>;
 
@@ -9,6 +9,20 @@ export function withAuth(handler: RouteHandler): RouteHandler {
 		const session = getSessionFromRequest(request);
 		if (!session) {
 			return Response.json({ error: "Unauthorized", message: "Authentication required" }, { status: 401 });
+		}
+		return handler(request, context);
+	};
+}
+
+/** Wraps a route handler with authentication + admin role check */
+export function withAdminAuth(handler: RouteHandler): RouteHandler {
+	return async (request, context) => {
+		const session = getSessionFromRequest(request);
+		if (!session) {
+			return Response.json({ error: "Unauthorized", message: "Authentication required" }, { status: 401 });
+		}
+		if (session.role !== UserRole.ADMIN) {
+			return Response.json({ error: "Forbidden", message: "Admin access required" }, { status: 403 });
 		}
 		return handler(request, context);
 	};
