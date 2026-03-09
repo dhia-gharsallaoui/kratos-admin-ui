@@ -45,9 +45,7 @@ class Logger {
 
 	private formatMessage(level: LogLevel, message: string, ...args: any[]): [string, ...any[]] {
 		const timestamp = this.config.enableTimestamp
-			? new Date()
-					.toISOString()
-					.slice(11, 23) // HH:mm:ss.sss format
+			? new Date().toISOString().slice(11, 23) // HH:mm:ss.sss format
 			: "";
 
 		const levelName = LogLevel[level];

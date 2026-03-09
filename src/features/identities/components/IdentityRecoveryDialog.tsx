@@ -2,6 +2,7 @@ import { ContentCopy, Link as LinkIcon } from "@mui/icons-material";
 import type { Identity } from "@ory/kratos-client";
 import type React from "react";
 import { useState } from "react";
+import { createRecoveryLink } from "@/api/kratos/identities";
 import {
 	ActionBar,
 	Alert,
@@ -16,7 +17,6 @@ import {
 	TextField,
 	Typography,
 } from "@/components/ui";
-import { createRecoveryLink } from "@/services/kratos";
 
 interface IdentityRecoveryDialogProps {
 	open: boolean;
@@ -38,7 +38,7 @@ export const IdentityRecoveryDialog: React.FC<IdentityRecoveryDialogProps> = ({ 
 		setRecoveryLink(null);
 
 		try {
-			const response = await createRecoveryLink(identity.id);
+			const response = { data: await createRecoveryLink(identity.id) };
 
 			setRecoveryLink(response.data.recovery_link);
 		} catch (err: any) {

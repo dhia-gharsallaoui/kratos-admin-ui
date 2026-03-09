@@ -6,6 +6,7 @@ import { useTheme } from "@mui/material/styles";
 import { useEffect, useState } from "react";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { github, vs2015 } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import { getSchema } from "@/api/kratos/schemas";
 import { AdminLayout, PageHeader } from "@/components/layout";
 import {
 	Box,
@@ -34,7 +35,6 @@ import {
 import { UserRole } from "@/features/auth";
 import { ProtectedRoute } from "@/features/auth/components/ProtectedRoute";
 import { useSchemas } from "@/features/schemas/hooks";
-import { getIdentitySchema } from "@/services/kratos";
 
 // Define the schema interface based on the provided example
 interface SchemaItem {
@@ -129,7 +129,7 @@ export default function SchemasPage() {
 			}
 
 			// If not found, fetch it from the API
-			const response = await getIdentitySchema({ id });
+			const response = { data: await getSchema(id) };
 			setSchemaContent(response.data);
 		} catch (err) {
 			console.error("Error fetching schema:", err);

@@ -7,87 +7,50 @@ import {
 	OidcApi,
 	WellknownApi,
 } from "@ory/hydra-client";
-import { getHydraAdminUrl, getHydraPublicUrl } from "./config";
+import { getHydraAdminUrl, getHydraConfig, getHydraPublicUrl } from "./config";
 
-// Create configurations for Hydra API clients
+function withApiKey(params: ConfigurationParameters): ConfigurationParameters {
+	const { hydraApiKey } = getHydraConfig();
+	if (hydraApiKey) {
+		params.baseOptions = {
+			...params.baseOptions,
+			headers: {
+				...(params.baseOptions?.headers as Record<string, string>),
+				Authorization: `Bearer ${hydraApiKey}`,
+			},
+		};
+	}
+	return params;
+}
+
 const getAdminConfiguration = (): Configuration => {
-	const defaultConfig: ConfigurationParameters = {};
-
-	return new Configuration({
-		...defaultConfig,
-		basePath: getHydraAdminUrl(),
-	});
+	return new Configuration(withApiKey({ basePath: getHydraAdminUrl() }));
 };
 
 const getPublicConfiguration = (): Configuration => {
-	const defaultConfig: ConfigurationParameters = {};
-
-	return new Configuration({
-		...defaultConfig,
-		basePath: getHydraPublicUrl(),
-		baseOptions: {
-			withCredentials: true,
-		},
-	});
+	return new Configuration(withApiKey({ basePath: getHydraPublicUrl() }));
 };
 
-// Singleton API clients for performance optimization
-let adminOAuth2ApiInstance: OAuth2Api | null = null;
-let publicOAuth2ApiInstance: OAuth2Api | null = null;
-let hydraMetadataApiInstance: HydraMetadataApi | null = null;
-let wellknownApiInstance: WellknownApi | null = null;
-let jwkApiInstance: JwkApi | null = null;
-let oidcApiInstance: OidcApi | null = null;
-
-// API client getters with singleton pattern
 export const getAdminOAuth2Api = (): OAuth2Api => {
-	if (!adminOAuth2ApiInstance) {
-		adminOAuth2ApiInstance = new OAuth2Api(getAdminConfiguration());
-	}
-	return adminOAuth2ApiInstance;
+	return new OAuth2Api(getAdminConfiguration());
 };
 
 export const getPublicOAuth2Api = (): OAuth2Api => {
-	if (!publicOAuth2ApiInstance) {
-		publicOAuth2ApiInstance = new OAuth2Api(getPublicConfiguration());
-	}
-	return publicOAuth2ApiInstance;
+	return new OAuth2Api(getPublicConfiguration());
 };
 
 export const getHydraMetadataApi = (): HydraMetadataApi => {
-	if (!hydraMetadataApiInstance) {
-		hydraMetadataApiInstance = new HydraMetadataApi(getPublicConfiguration());
-	}
-	return hydraMetadataApiInstance;
+	return new HydraMetadataApi(getPublicConfiguration());
 };
 
 export const getWellknownApi = (): WellknownApi => {
-	if (!wellknownApiInstance) {
-		wellknownApiInstance = new WellknownApi(getPublicConfiguration());
-	}
-	return wellknownApiInstance;
+	return new WellknownApi(getPublicConfiguration());
 };
 
 export const getJwkApi = (): JwkApi => {
-	if (!jwkApiInstance) {
-		jwkApiInstance = new JwkApi(getAdminConfiguration());
-	}
-	return jwkApiInstance;
+	return new JwkApi(getAdminConfiguration());
 };
 
 export const getOidcApi = (): OidcApi => {
-	if (!oidcApiInstance) {
-		oidcApiInstance = new OidcApi(getPublicConfiguration());
-	}
-	return oidcApiInstance;
-};
-
-// Reset function for testing or configuration changes
-export const resetHydraApiClients = (): void => {
-	adminOAuth2ApiInstance = null;
-	publicOAuth2ApiInstance = null;
-	hydraMetadataApiInstance = null;
-	wellknownApiInstance = null;
-	jwkApiInstance = null;
-	oidcApiInstance = null;
+	return new OidcApi(getPublicConfiguration());
 };

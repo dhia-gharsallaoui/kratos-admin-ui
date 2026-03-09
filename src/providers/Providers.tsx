@@ -1,10 +1,10 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { SettingsInitializer } from "@/components/SettingsInitializer";
 import { AuthProvider } from "./AuthProvider";
 import { CustomMuiThemeProvider } from "./MuiThemeProvider";
 import { QueryProvider } from "./QueryProvider";
+import { SettingsInitializer } from "./SettingsInitializer";
 import { ThemeProvider } from "./ThemeProvider";
 
 interface ProvidersProps {

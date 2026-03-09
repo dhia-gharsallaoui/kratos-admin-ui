@@ -59,7 +59,7 @@ export default function OAuth2ClientDetailPage({ params }: Props) {
 	const { data: clientResponse, isLoading, error } = useOAuth2Client(resolvedParams.id);
 	const deleteClientMutation = useDeleteOAuth2Client();
 
-	const client = clientResponse?.data;
+	const client: import("@ory/hydra-client").OAuth2Client | undefined = clientResponse?.data;
 	const clientType = useMemo(() => (client ? getClientType(client) : null), [client]);
 
 	const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {

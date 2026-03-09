@@ -1,3 +1,5 @@
+"use client";
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
 import {
@@ -9,7 +11,7 @@ import {
 	type RevokeTokenRequest,
 	revokeOAuth2Token,
 	type TokenExchangeRequest,
-} from "@/services/hydra";
+} from "@/api/hydra/tokens";
 
 // Query keys
 export const oauth2TokensKeys = {
@@ -54,7 +56,7 @@ export function useDeleteOAuth2AccessTokens() {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (subject: string) => deleteOAuth2AccessTokens(subject),
+		mutationFn: (clientId: string) => deleteOAuth2AccessTokens(clientId),
 		onSuccess: () => {
 			// Invalidate token-related cache
 			queryClient.invalidateQueries({

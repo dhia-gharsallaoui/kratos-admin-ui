@@ -1,4 +1,4 @@
-import type { OAuth2Client } from "@/services/hydra";
+import type { OAuth2Client } from "@ory/hydra-client";
 import type { OAuth2ClientFormData, OAuth2ClientFormErrors, OAuth2ClientTableRow } from "./types";
 
 // Transform OAuth2 client data for table display

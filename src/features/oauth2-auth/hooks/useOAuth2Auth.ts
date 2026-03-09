@@ -1,21 +1,27 @@
+"use client";
+
+import type { AcceptOAuth2ConsentRequest, AcceptOAuth2LoginRequest, RejectOAuth2Request } from "@ory/hydra-client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-	type AcceptOAuth2ConsentRequest,
-	type AcceptOAuth2LoginRequest,
 	acceptOAuth2ConsentRequest,
 	acceptOAuth2LoginRequest,
 	acceptOAuth2LogoutRequest,
 	getOAuth2ConsentRequest,
 	getOAuth2LoginRequest,
 	getOAuth2LogoutRequest,
-	type ListConsentSessionsParams,
 	listOAuth2ConsentSessions,
-	type RejectOAuth2Request,
 	rejectOAuth2ConsentRequest,
 	rejectOAuth2LoginRequest,
 	rejectOAuth2LogoutRequest,
 	revokeOAuth2ConsentSessions,
-} from "@/services/hydra";
+} from "@/api/hydra/auth";
+
+interface ListConsentSessionsParams {
+	subject?: string;
+	login_session_id?: string;
+	page_size?: number;
+	page_token?: string;
+}
 
 // Query keys
 export const oauth2AuthKeys = {
@@ -180,7 +186,13 @@ export function useRejectOAuth2LogoutRequest() {
 export function useOAuth2ConsentSessions(params: ListConsentSessionsParams = {}) {
 	return useQuery({
 		queryKey: oauth2AuthKeys.consentSessionsList(params),
-		queryFn: () => listOAuth2ConsentSessions(params),
+		queryFn: () =>
+			listOAuth2ConsentSessions({
+				subject: params.subject,
+				login_session_id: params.login_session_id,
+				page_size: params.page_size,
+				page_token: params.page_token,
+			}),
 		enabled: !!params.subject, // Only fetch if subject is provided (required by Hydra API)
 		staleTime: 1000 * 60 * 5, // 5 minutes
 	});

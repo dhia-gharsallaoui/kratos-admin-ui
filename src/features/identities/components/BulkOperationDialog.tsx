@@ -3,10 +3,9 @@ import type { Identity } from "@ory/kratos-client";
 import { useQueryClient } from "@tanstack/react-query";
 import type React from "react";
 import { useCallback, useState } from "react";
+import { deleteIdentity, deleteIdentitySessions, patchIdentity } from "@/api/kratos/identities";
 import { ActionBar } from "@/components/layout";
 import { Alert, Box, FormDialog, Typography } from "@/components/ui";
-import { deleteIdentity, patchIdentity } from "@/services/kratos/endpoints/identities";
-import { deleteIdentitySessions } from "@/services/kratos/endpoints/sessions";
 
 type BulkOperationType = "delete" | "deleteSessions" | "activate" | "deactivate";
 
@@ -60,22 +59,16 @@ function getDisplayName(identity: Identity): string {
 async function executeOperation(type: BulkOperationType, identityId: string): Promise<void> {
 	switch (type) {
 		case "delete":
-			await deleteIdentity({ id: identityId });
+			await deleteIdentity(identityId);
 			break;
 		case "deleteSessions":
 			await deleteIdentitySessions(identityId);
 			break;
 		case "activate":
-			await patchIdentity({
-				id: identityId,
-				jsonPatch: [{ op: "replace", path: "/state", value: "active" }],
-			});
+			await patchIdentity(identityId, [{ op: "replace", path: "/state", value: "active" }]);
 			break;
 		case "deactivate":
-			await patchIdentity({
-				id: identityId,
-				jsonPatch: [{ op: "replace", path: "/state", value: "inactive" }],
-			});
+			await patchIdentity(identityId, [{ op: "replace", path: "/state", value: "inactive" }]);
 			break;
 	}
 }

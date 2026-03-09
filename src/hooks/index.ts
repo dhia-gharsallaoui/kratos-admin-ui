@@ -9,7 +9,6 @@ export type { UseFormattersReturn } from "./useFormatters";
 export { useFormatters } from "./useFormatters";
 export type { UsePaginationReturn } from "./usePagination";
 export { usePagination } from "./usePagination";
-export { useRetryRequest } from "./useRetryRequest";
 export { useSearch } from "./useSearch";
 export type { UseToggleReturn } from "./useToggle";
 export { useToggle } from "./useToggle";

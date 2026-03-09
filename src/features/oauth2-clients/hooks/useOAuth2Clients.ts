@@ -1,17 +1,16 @@
+"use client";
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
-import {
-	type CreateOAuth2ClientRequest,
-	createOAuth2Client,
-	deleteOAuth2Client,
-	getAllOAuth2Clients,
-	getOAuth2Client,
-	type ListOAuth2ClientsParams,
-	listOAuth2Clients,
-	type UpdateOAuth2ClientRequest,
-	updateOAuth2Client,
-} from "@/services/hydra";
+import { createOAuth2Client, deleteOAuth2Client, getOAuth2Client, listOAuth2Clients, updateOAuth2Client } from "@/api/hydra/clients";
 import type { OAuth2ClientFilters } from "../types";
+
+interface ListOAuth2ClientsParams {
+	pageSize?: number;
+	pageToken?: string;
+	clientName?: string;
+	owner?: string;
+}
 
 // Query keys
 export const oauth2ClientsKeys = {
@@ -27,20 +26,29 @@ export const oauth2ClientsKeys = {
 export function useOAuth2Clients(params: ListOAuth2ClientsParams = {}) {
 	return useQuery({
 		queryKey: oauth2ClientsKeys.list(params),
-		queryFn: () => listOAuth2Clients(params),
-		staleTime: 1000 * 60 * 5, // 5 minutes
+		queryFn: () =>
+			listOAuth2Clients({
+				pageSize: params.pageSize,
+				pageToken: params.pageToken,
+				clientName: params.clientName,
+				owner: params.owner,
+			}),
+		staleTime: 1000 * 60 * 5,
 	});
 }
 
-// Hook to get all OAuth2 clients (with pagination handling)
+// Hook to get all OAuth2 clients
 export function useAllOAuth2Clients(options?: { maxPages?: number; pageSize?: number; enabled?: boolean }) {
-	const { enabled = true, ...fetchOptions } = options || {};
+	const { enabled = true } = options || {};
 
 	return useQuery({
 		queryKey: [...oauth2ClientsKeys.all, "all"],
-		queryFn: () => getAllOAuth2Clients(fetchOptions),
+		queryFn: async () => {
+			const result = await listOAuth2Clients({ pageSize: 500 });
+			return { clients: result.data, totalCount: result.data.length, isComplete: true, pagesFetched: 1 };
+		},
 		enabled,
-		staleTime: 1000 * 60 * 10, // 10 minutes
+		staleTime: 1000 * 60 * 10,
 	});
 }
 
@@ -50,7 +58,7 @@ export function useOAuth2Client(clientId: string, enabled = true) {
 		queryKey: oauth2ClientsKeys.detail(clientId),
 		queryFn: () => getOAuth2Client(clientId),
 		enabled: enabled && !!clientId,
-		staleTime: 1000 * 60 * 5, // 5 minutes
+		staleTime: 1000 * 60 * 5,
 	});
 }
 
@@ -59,9 +67,8 @@ export function useCreateOAuth2Client() {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (clientData: CreateOAuth2ClientRequest) => createOAuth2Client(clientData),
+		mutationFn: (clientData: any) => createOAuth2Client(clientData),
 		onSuccess: () => {
-			// Invalidate and refetch OAuth2 clients list
 			queryClient.invalidateQueries({ queryKey: oauth2ClientsKeys.lists() });
 			queryClient.invalidateQueries({ queryKey: oauth2ClientsKeys.stats() });
 		},
@@ -73,11 +80,9 @@ export function useUpdateOAuth2Client() {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: ({ clientId, clientData }: { clientId: string; clientData: UpdateOAuth2ClientRequest }) => updateOAuth2Client(clientId, clientData),
+		mutationFn: ({ clientId, clientData }: { clientId: string; clientData: any }) => updateOAuth2Client(clientId, clientData),
 		onSuccess: (data, variables) => {
-			// Update the specific client in cache
 			queryClient.setQueryData(oauth2ClientsKeys.detail(variables.clientId), data);
-			// Invalidate lists to refresh
 			queryClient.invalidateQueries({ queryKey: oauth2ClientsKeys.lists() });
 			queryClient.invalidateQueries({ queryKey: oauth2ClientsKeys.stats() });
 		},
@@ -91,11 +96,7 @@ export function useDeleteOAuth2Client() {
 	return useMutation({
 		mutationFn: (clientId: string) => deleteOAuth2Client(clientId),
 		onSuccess: (_data, clientId) => {
-			// Remove the client from cache
-			queryClient.removeQueries({
-				queryKey: oauth2ClientsKeys.detail(clientId),
-			});
-			// Invalidate lists to refresh
+			queryClient.removeQueries({ queryKey: oauth2ClientsKeys.detail(clientId) });
 			queryClient.invalidateQueries({ queryKey: oauth2ClientsKeys.lists() });
 			queryClient.invalidateQueries({ queryKey: oauth2ClientsKeys.stats() });
 		},
@@ -109,34 +110,30 @@ export function useOAuth2ClientStats(enabled = true) {
 	return useQuery({
 		queryKey: oauth2ClientsKeys.stats(),
 		queryFn: () => {
-			if (!allClientsData?.clients) {
-				return null;
-			}
+			if (!allClientsData?.clients) return null;
 
 			const clients = allClientsData.clients;
 			const stats = {
 				totalClients: clients.length,
-				activeClients: clients.length, // Assuming all fetched clients are active
-				publicClients: clients.filter((c) => !c.client_secret).length,
-				confidentialClients: clients.filter((c) => !!c.client_secret).length,
+				activeClients: clients.length,
+				publicClients: clients.filter((c: any) => !c.client_secret).length,
+				confidentialClients: clients.filter((c: any) => !!c.client_secret).length,
 				grantTypeDistribution: {} as Record<string, number>,
 				scopeDistribution: {} as Record<string, number>,
 			};
 
-			// Calculate grant type distribution
-			clients.forEach((client) => {
+			clients.forEach((client: any) => {
 				if (client.grant_types) {
-					client.grant_types.forEach((grantType) => {
+					client.grant_types.forEach((grantType: string) => {
 						stats.grantTypeDistribution[grantType] = (stats.grantTypeDistribution[grantType] || 0) + 1;
 					});
 				}
 			});
 
-			// Calculate scope distribution
-			clients.forEach((client) => {
+			clients.forEach((client: any) => {
 				if (client.scope) {
 					const scopes = client.scope.split(" ");
-					scopes.forEach((scope) => {
+					scopes.forEach((scope: string) => {
 						if (scope.trim()) {
 							stats.scopeDistribution[scope.trim()] = (stats.scopeDistribution[scope.trim()] || 0) + 1;
 						}
@@ -147,7 +144,7 @@ export function useOAuth2ClientStats(enabled = true) {
 			return stats;
 		},
 		enabled: enabled && !isLoading && !!allClientsData?.clients,
-		staleTime: 1000 * 60 * 10, // 10 minutes
+		staleTime: 1000 * 60 * 10,
 	});
 }
 
@@ -160,31 +157,27 @@ export function useFilteredOAuth2Clients(filters: OAuth2ClientFilters) {
 
 		let filtered = [...allClientsData.clients];
 
-		// Apply search filter
 		if (filters.search) {
 			const searchLower = filters.search.toLowerCase();
 			filtered = filtered.filter(
-				(client) =>
+				(client: any) =>
 					client.client_name?.toLowerCase().includes(searchLower) ||
 					client.client_id?.toLowerCase().includes(searchLower) ||
 					client.owner?.toLowerCase().includes(searchLower),
 			);
 		}
 
-		// Apply owner filter
 		if (filters.owner) {
-			filtered = filtered.filter((client) => client.owner === filters.owner);
+			filtered = filtered.filter((client: any) => client.owner === filters.owner);
 		}
 
-		// Apply grant type filter
 		if (filters.grant_type) {
-			filtered = filtered.filter((client) => client.grant_types?.includes(filters.grant_type!));
+			filtered = filtered.filter((client: any) => client.grant_types?.includes(filters.grant_type!));
 		}
 
-		// Apply date filters
 		if (filters.created_after) {
 			const afterDate = new Date(filters.created_after);
-			filtered = filtered.filter((client) => {
+			filtered = filtered.filter((client: any) => {
 				if (!client.created_at) return false;
 				return new Date(client.created_at) >= afterDate;
 			});
@@ -192,7 +185,7 @@ export function useFilteredOAuth2Clients(filters: OAuth2ClientFilters) {
 
 		if (filters.created_before) {
 			const beforeDate = new Date(filters.created_before);
-			filtered = filtered.filter((client) => {
+			filtered = filtered.filter((client: any) => {
 				if (!client.created_at) return false;
 				return new Date(client.created_at) <= beforeDate;
 			});

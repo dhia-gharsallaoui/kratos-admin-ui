@@ -84,15 +84,10 @@ services:
       LETSENCRYPT_EMAIL: info@cloud-ctl.com
       KRATOS_ADMIN_URL: http://kratos:4434
       KRATOS_PUBLIC_URL: http://kratos:4433
-      NEXT_PUBLIC_KRATOS_PUBLIC_URL: https://kratos.${DOMAIN}
-      NEXT_PUBLIC_KRATOS_ADMIN_URL: http://kratos:4434
       HYDRA_ADMIN_URL: http://hydra:4445
       HYDRA_PUBLIC_URL: http://hydra:4444
-      NEXT_PUBLIC_HYDRA_PUBLIC_URL: https://hydra.${DOMAIN}
-      NEXT_PUBLIC_HYDRA_ADMIN_URL: http://hydra:4445
-      NEXT_PUBLIC_APP_NAME: '${APP_NAME:-Kratos Admin UI}'
-      NEXT_PUBLIC_APP_URL: https://admin.${DOMAIN}
-      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
       NODE_ENV: production
     networks:
       - web
