@@ -12,7 +12,7 @@
         "@mui/material-nextjs": "^7.3.7",
         "@mui/x-charts": "^8.25.0",
         "@mui/x-data-grid": "^8.25.0",
-        "@ory/hydra-client": "^25.4.0",
+        "@ory/hydra-client": "^26.2.0",
         "@ory/kratos-client": "^25.4.0",
         "@rjsf/core": "6.2.5",
         "@rjsf/mui": "6.2.5",
@@ -223,7 +223,7 @@
 
     "@next/swc-win32-x64-msvc": ["@next/swc-win32-x64-msvc@16.1.4", "", { "os": "win32", "cpu": "x64" }, "sha512-JSVlm9MDhmTXw/sO2PE/MRj+G6XOSMZB+BcZ0a7d6KwVFZVpkHcb2okyoYFBaco6LeiL53BBklRlOrDDbOeE5w=="],
 
-    "@ory/hydra-client": ["@ory/hydra-client@25.4.0", "", { "dependencies": { "axios": "^1.6.1" } }, "sha512-BxffFJlOnhUkXOjtISimmaITCWWJrNo4Y1+HopdTUI8qUFfPHLMi0twKQN9y69qUS5jn3dvh5M2Vd2vPyoV1Ww=="],
+    "@ory/hydra-client": ["@ory/hydra-client@26.2.0", "", { "dependencies": { "axios": "^1.6.1" } }, "sha512-0eWsELw9NQX8dJTP4aSFbgx1MvGusNz0UpwmoGCCLlDWBoD56khVOS96C0T6se2+Oy87/gF/RY0moZw4YVzfGQ=="],
 
     "@ory/kratos-client": ["@ory/kratos-client@25.4.0", "", { "dependencies": { "axios": "^1.6.1" } }, "sha512-D2r1oXwqH+UtplbZb2ib8boutc42JFy0+HqetbS7Ao/YIcTqgOAb+2zC3bMAkyDQr+HUfxlWzlf2TNUJa8PuOg=="],
 
