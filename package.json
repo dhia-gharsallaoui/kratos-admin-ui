@@ -23,7 +23,7 @@
 		"@mui/material-nextjs": "^7.3.7",
 		"@mui/x-charts": "^8.25.0",
 		"@mui/x-data-grid": "^8.25.0",
-		"@ory/hydra-client": "^25.4.0",
+		"@ory/hydra-client": "^26.2.0",
 		"@ory/kratos-client": "^25.4.0",
 		"@rjsf/core": "6.2.5",
 		"@rjsf/mui": "6.2.5",
